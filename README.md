@@ -71,6 +71,26 @@ Legend: ✅ proved unconditionally.  There is no `sorry` anywhere in this projec
 | The trace of a rank-one update | `Matrix.trace_inv_add_smul_vecMulVec` | ✅ |
 | Positive definiteness under `A ± w a a*` | `Matrix.PosDef.add_smul_vecMulVec`, `.sub_smul_vecMulVec` | ✅ |
 
+### The trace of an operator (`BasicResults.OperatorTrace`)
+
+For the passage to a countably infinite second family, where the Gram matrix `J` becomes a
+positive operator of finite trace on `ℓ₂`.  Mathlib has no trace-class theory, so the trace
+is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ⟫`.
+
+| Result | Lean name | Status |
+|---|---|---|
+| Parseval's identity along a Hilbert basis | `Discretization.hasSum_norm_sq_inner` | ✅ |
+| The trace along a basis | `Discretization.traceAlong` | ✅ |
+| `Re ⟪x, T x⟫ = ‖√T x‖²`, so `Tr T` is a squared Hilbert–Schmidt norm | `Discretization.re_inner_apply_eq_norm_sq_sqrt`, `.traceAlong_eq_tsum_norm_sq_sqrt` | ✅ |
+| `Tr T ≥ 0` for `T ≥ 0` | `Discretization.traceAlong_nonneg` | ✅ |
+| The Hilbert–Schmidt sum is invariant under adjoints | `Discretization.tsum_ofReal_norm_sq_adjoint`, `.summable_norm_sq_adjoint_iff`, `.tsum_norm_sq_adjoint` | ✅ |
+| **Cyclicity** `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫` | `Discretization.tsum_inner_apply_comm` | ✅ |
+| **The crude bound** `T ≼ Tr(T) • 1` | `Discretization.le_traceAlong_smul_one` | ✅ |
+| `Tr (P Q) = Tr (√P Q √P)`, and its sign | `Discretization.traceAlong_mul`, `.traceAlong_mul_nonneg`, `.traceAlong_mul_pos` | ✅ |
+| A positive operator with vanishing trace is zero | `Discretization.eq_zero_of_traceAlong_eq_zero` | ✅ |
+| `Tr (T u u*) = ⟪u, T u⟫` | `Discretization.traceAlong_mul_rankOne` | ✅ |
+| Linearity, and existence of `Tr (P Q)` | `Discretization.traceAlong_add`, `.traceAlong_smul`, `.summable_re_inner_apply_mul` | ✅ |
+
 ### The bridge to measure theory (`BasicResults.IntegralQuadraticForm`)
 
 | Result | Lean name | Status |
@@ -110,8 +130,8 @@ Legend: ✅ proved unconditionally.  There is no `sorry` anywhere in this projec
 * **The two edge cases together**, `m = 1` and `M ≤ 1 + 1/n` at the same time; each is
   proved only under the assumption that the other side is regular.
 * **Countably infinite second family**, which is what makes the theorem apply to a
-  reproducing kernel Hilbert space with finite trace.  Mathlib has no trace of an operator,
-  so that has to be built first.
+  reproducing kernel Hilbert space with finite trace.  The trace of an operator is in place;
+  the rank-one update of an inverse and the upper half of the argument are not.
 * **The applications of the paper**: least-squares recovery, sampling numbers, and the
   discretization with equal weights via Kiefer–Wolfowitz.
 
@@ -137,13 +157,17 @@ structure is not needed, and none of it is currently in Mathlib:
 * `Matrix.IsHermitian.ofReal_re_trace` and `RCLike.ofReal_re_of_nonneg` — the trace of a
   Hermitian matrix and any nonnegative scalar are real;
 * `Discretization.integral_quadForm` — the average of a quadratic form is a trace against the
-  Gram matrix.
+  Gram matrix;
+* the whole of `BasicResults.OperatorTrace`: Mathlib has no trace of an operator, and the
+  invariance of the Hilbert–Schmidt norm under adjoints, the cyclicity
+  `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫` and the bound `T ≼ Tr(T) • 1` are general facts.
 
 ## Layout
 
 ```
 BasicResults.lean                        ← root of the general library
 BasicResults/
+  OperatorTrace.lean                     ← the trace of an operator along a Hilbert basis
   LoewnerOrder.lean                      ← comparisons with multiples of the identity
   TraceInequalities.lean                 ← traces of products, Cauchy–Schwarz
   PotentialBounds.lean                   ← Ψ(B)⁻¹ • J ≼ B, via the square root of B

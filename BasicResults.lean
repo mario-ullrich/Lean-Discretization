@@ -8,6 +8,7 @@ import BasicResults.TraceInequalities
 import BasicResults.PotentialBounds
 import BasicResults.ShermanMorrison
 import BasicResults.IntegralQuadraticForm
+import BasicResults.OperatorTrace
 
 /-!
 # General ingredients
@@ -23,6 +24,10 @@ which Mathlib provides after `open scoped MatrixOrder`; positivity of scalars ne
 
 ## Layout
 
+* `BasicResults.OperatorTrace` — the trace of an operator along a Hilbert basis, for the
+  passage to a countably infinite second family: `Re ⟪x, T x⟫ = ‖√T x‖²` for a positive
+  operator, so that the trace is a squared Hilbert–Schmidt norm, and the crude bound
+  `T ≤ Tr(T) • 1`.
 * `BasicResults.LoewnerOrder` — comparisons with multiples of the identity: a Hermitian
   matrix is below `c • 1` once `c` bounds its eigenvalues, a positive semidefinite matrix is
   below `(Tr A) • 1`, the inverse is antitone, and `A - δ • 1` stays positive definite for
