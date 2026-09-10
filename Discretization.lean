@@ -14,6 +14,7 @@ import Discretization.GeneralGram
 import Discretization.CardOne
 import Discretization.SmallEffectiveDim
 import Discretization.NormDiscretization
+import Discretization.Infinite.Potentials
 
 /-!
 # Constructive discretization
@@ -55,4 +56,7 @@ potential gets worse.
 * `Discretization.SmallEffectiveDim` — the edge case of an effective dimension below
   `1 + 1/n`, where the upper verifier becomes a constant,
   `Discretization.bss_generalized_of_small_dim`.
+* `Discretization.Infinite.Potentials` — the upper potential `Ψ_J(B) = Tr (J B⁻¹)` for a
+  positive operator `J` of finite trace, where the second family is indexed by a countable
+  set.
 -/

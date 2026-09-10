@@ -144,14 +144,25 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | Edge case `M ≤ 1 + 1/n`: constant upper verifier | `Discretization.bss_generalized_of_small_dim` | ✅ |
 | A rank-one matrix is below `‖u‖² • 1` | `Matrix.vecMulVec_le_norm_sq_smul_one` | ✅ |
 
+### Towards a countably infinite second family (`Discretization.Infinite`)
+
+| Result | Lean name | Status |
+|---|---|---|
+| Positive, injective, of finite trace | `Discretization.Infinite.IsFiniteTracePos` | ✅ |
+| `J S J` is again such an operator | `Discretization.Infinite.IsFiniteTracePos.conj` | ✅ |
+| The upper potential `Ψ_J(B) = Tr (J B⁻¹)` and its positivity | `Discretization.Infinite.upperPotential`, `.upperPotential_pos` | ✅ |
+| The resolvent identity | `Discretization.Infinite.inverse_sub_inverse_add_smul` | ✅ |
+| Effect of the shift on the potential | `Discretization.Infinite.upperPotential_sub_eq` | ✅ |
+| Growing `B` decreases the potential strictly | `Discretization.Infinite.upperPotential_add_smul_lt` | ✅ |
+
 ## What is left to do
 
 * **The two edge cases together**, `m = 1` and `M ≤ 1 + 1/n` at the same time; each is
   proved only under the assumption that the other side is regular.
 * **Countably infinite second family**, which is what makes the theorem apply to a
   reproducing kernel Hilbert space with finite trace.  The operator analogues of the general
-  ingredients are in place: the trace, the rank-one update of an inverse, and the average of
-  a quadratic form.  The upper half of the construction itself is not.
+  ingredients are in place, as is the upper potential with the effect of the shift on it.
+  The verifier, the barrier lemma, the averaging step and the construction are not.
 * **The applications of the paper**: least-squares recovery, sampling numbers, and the
   discretization with equal weights via Kiefer–Wolfowitz.
 
@@ -209,6 +220,8 @@ Discretization/
   MainTheorem.lean                       ← initial data, frame bounds, the theorem
   GeneralGram.lean                       ← removing the normalisation of the first family
   NormDiscretization.lean                ← the discretization inequality for the L₂-norm
+  Infinite/
+    Potentials.lean                      ← the upper potential of an operator
   CardOne.lean                           ← the edge case of a one-element first family
   SmallEffectiveDim.lean                 ← the edge case of a small effective dimension
 lakefile.toml                            ← package `discretization`, two libraries
