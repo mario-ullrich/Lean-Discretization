@@ -101,6 +101,15 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | Strict positivity under `A ± w u u*` | `Discretization.isStrictlyPositive_add_smul_rankOne`, `.isStrictlyPositive_sub_smul_rankOne` | ✅ |
 | The inverse of a strictly positive operator | `Discretization.isStrictlyPositive_inverse`, `.isSelfAdjoint_inverse` | ✅ |
 
+### Averages of operator quadratic forms (`BasicResults.OperatorQuadraticForm`)
+
+| Result | Lean name | Status |
+|---|---|---|
+| **`∫ Re ⟪b x, Q (b x)⟫ dμ = Tr (J Q)`** | `Discretization.integral_re_inner_apply` | ✅ |
+| `Tr (J Q) = ∑ₖ Re ⟪√Q eₖ, J (√Q eₖ)⟫` | `Discretization.traceAlong_mul_eq_tsum_sqrt` | ✅ |
+| `√Q √J` is Hilbert–Schmidt | `Discretization.summable_norm_sq_sqrt_mul_sqrt` | ✅ |
+| Integrability of the quadratic form | `Discretization.integrable_re_inner_apply` | ✅ |
+
 ### The bridge to measure theory (`BasicResults.IntegralQuadraticForm`)
 
 | Result | Lean name | Status |
@@ -140,8 +149,9 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 * **The two edge cases together**, `m = 1` and `M ≤ 1 + 1/n` at the same time; each is
   proved only under the assumption that the other side is regular.
 * **Countably infinite second family**, which is what makes the theorem apply to a
-  reproducing kernel Hilbert space with finite trace.  The trace of an operator and the
-  rank-one update of an inverse are in place; the upper half of the argument is not.
+  reproducing kernel Hilbert space with finite trace.  The operator analogues of the general
+  ingredients are in place: the trace, the rank-one update of an inverse, and the average of
+  a quadratic form.  The upper half of the construction itself is not.
 * **The applications of the paper**: least-squares recovery, sampling numbers, and the
   discretization with equal weights via Kiefer–Wolfowitz.
 
@@ -172,7 +182,9 @@ structure is not needed, and none of it is currently in Mathlib:
   invariance of the Hilbert–Schmidt norm under adjoints, the cyclicity
   `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫` and the bound `T ≼ Tr(T) • 1` are general facts;
 * `Discretization.inverse_add_smul_rankOne` — Sherman–Morrison for operators, which Mathlib
-  has in no form.
+  has in no form;
+* `Discretization.integral_re_inner_apply` — the average of an operator quadratic form along
+  a square-integrable family is a trace against its Gram operator.
 
 ## Layout
 
@@ -181,6 +193,7 @@ BasicResults.lean                        ← root of the general library
 BasicResults/
   OperatorTrace.lean                     ← the trace of an operator along a Hilbert basis
   OperatorShermanMorrison.lean           ← rank-one updates of an operator
+  OperatorQuadraticForm.lean             ← averages of quadratic forms as traces
   LoewnerOrder.lean                      ← comparisons with multiples of the identity
   TraceInequalities.lean                 ← traces of products, Cauchy–Schwarz
   PotentialBounds.lean                   ← Ψ(B)⁻¹ • J ≼ B, via the square root of B
