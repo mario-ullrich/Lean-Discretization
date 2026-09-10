@@ -15,6 +15,7 @@ import Discretization.CardOne
 import Discretization.SmallEffectiveDim
 import Discretization.NormDiscretization
 import Discretization.Infinite.Potentials
+import Discretization.Infinite.Barrier
 
 /-!
 # Constructive discretization
@@ -59,4 +60,6 @@ potential gets worse.
 * `Discretization.Infinite.Potentials` — the upper potential `Ψ_J(B) = Tr (J B⁻¹)` for a
   positive operator `J` of finite trace, where the second family is indexed by a countable
   set.
+* `Discretization.Infinite.Barrier` — the upper verifier and the barrier lemma for
+  operators.
 -/
