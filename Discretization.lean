@@ -9,6 +9,8 @@ import Discretization.Barrier
 import Discretization.Averages
 import Discretization.Iteration
 import Discretization.MainTheorem
+import Discretization.GeneralGram
+import Discretization.NormDiscretization
 
 /-!
 # Constructive discretization
@@ -39,4 +41,8 @@ potential gets worse.
   matrices stay positive definite and neither potential exceeds its initial value.
 * `Discretization.MainTheorem` — the initial data, the read-off of the frame bounds, and the
   theorem itself, `Discretization.bss_generalized_of_gram_eq_one`.
+* `Discretization.GeneralGram` — removing the normalisation of the first family, which gives
+  the theorem in the form of the paper, `Discretization.bss_generalized`.
+* `Discretization.NormDiscretization` — the same statement read as a discretization
+  inequality for the `L₂`-norm, `Discretization.exists_discretization`.
 -/
