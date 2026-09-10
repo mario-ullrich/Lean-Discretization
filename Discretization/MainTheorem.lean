@@ -74,10 +74,9 @@ theorem lower_bound_of_state [Nonempty ι] {c₀ δ : ℝ} {a : Ω → ι → �
       • (1 : Matrix ι ι ℂ) ≤ lowerState (c₀ • (1 : Matrix ι ι ℂ)) δ a x w :=
     hstate.inv_re_trace_smul_one_le
   have hinv : c⁻¹ ≤ (lowerPotential (lowerState (c₀ • (1 : Matrix ι ι ℂ)) δ a x w))⁻¹ :=
-    one_div_le_one_div_of_le hΦ0 hpot |>.trans_eq (by rw [one_div])
-      |>.trans_eq' (by rw [one_div])
+    inv_anti₀ hΦ0 hpot
   have h2 : c⁻¹ • (1 : Matrix ι ι ℂ) ≤ lowerState (c₀ • (1 : Matrix ι ι ℂ)) δ a x w :=
-    (Matrix.PosSemidef.one.smul_le_smul_of_le hinv).trans h1
+    (smul_le_smul_of_nonneg_right hinv Matrix.PosSemidef.one.nonneg).trans h1
   have h4 : lowerState (c₀ • (1 : Matrix ι ι ℂ)) δ a x w
       = (c₀ - (k : ℝ) * δ) • (1 : Matrix ι ι ℂ)
         + ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) := by
@@ -104,10 +103,9 @@ theorem upper_bound_of_state [Nonempty κ] {J : Matrix κ κ ℂ} (hJ : J.PosDef
       ≤ upperState J (c₀ • (1 : Matrix κ κ ℂ)) ζ b x w :=
     hstate.inv_re_trace_mul_smul_le hJ
   have hinv : c⁻¹ ≤ (upperPotential J (upperState J (c₀ • (1 : Matrix κ κ ℂ)) ζ b x w))⁻¹ :=
-    one_div_le_one_div_of_le hΨ0 hpot |>.trans_eq (by rw [one_div])
-      |>.trans_eq' (by rw [one_div])
+    inv_anti₀ hΨ0 hpot
   have h2 : c⁻¹ • J ≤ upperState J (c₀ • (1 : Matrix κ κ ℂ)) ζ b x w :=
-    (hJ.posSemidef.smul_le_smul_of_le hinv).trans h1
+    (smul_le_smul_of_nonneg_right hinv hJ.posSemidef.nonneg).trans h1
   have h4 : upperState J (c₀ • (1 : Matrix κ κ ℂ)) ζ b x w
       = c₀ • (1 : Matrix κ κ ℂ) + ((k : ℝ) * ζ) • J
         - ∑ i, w i • vecMulVec (b (x i)) (star (b (x i))) := by
@@ -122,9 +120,70 @@ theorem upper_bound_of_state [Nonempty κ] {J : Matrix κ κ ℂ} (hJ : J.PosDef
         - c⁻¹ • J := h5
     _ = c₀ • (1 : Matrix κ κ ℂ) + ((k : ℝ) * ζ - c⁻¹) • J := by module
 
+/-! ### The frame bounds with the parameters of the construction inserted -/
+
+omit [MeasurableSpace Ω] in
+/-- **The lower frame bound of the theorem.**  Started from `A₀ = c₀ • 1` with
+`c₀ = δ m / r`, `δ = (1-r)/n` and `m = n r² + 1`, a final lower potential of at most `r/δ`
+turns into the frame bound `(1-r)² • 1`.
+
+The arithmetic behind it is `c⁻¹ + n δ - c₀ = (1-r)²` for `c = r/δ`. -/
+theorem lower_frame_bound [Nonempty ι] {n : ℕ} (hn0 : (0 : ℝ) < n) {m r δ c₀ : ℝ}
+    (hr0 : 0 < r) (h1r : (1 : ℝ) - r ≠ 0) (hm : m = (n : ℝ) * r ^ 2 + 1)
+    (hδ : δ = (1 - r) / n) (hc₀ : c₀ = δ * m / r) {a : Ω → ι → ℂ} {x : Fin n → Ω}
+    {w : Fin n → ℝ}
+    (hAn : (lowerState (c₀ • (1 : Matrix ι ι ℂ)) δ a x w).PosDef)
+    (hΦn : lowerPotential (lowerState (c₀ • (1 : Matrix ι ι ℂ)) δ a x w) ≤ r / δ) :
+    (1 - r) ^ 2 • (1 : Matrix ι ι ℂ)
+      ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) := by
+  refine le_trans (le_of_eq ?_) (lower_bound_of_state hAn hΦn)
+  congr 1
+  rw [hc₀, hδ, hm]
+  field_simp
+  ring
+
+omit [MeasurableSpace Ω] in
+/-- **The upper frame bound of the theorem.**  Started from `B₀ = d₀ • 1` with
+`d₀ = ζ Tr J / s`, `ζ = (1+s)/n` and `Tr J = Λ (n s² + 1)`, a final upper potential of at
+most `s/ζ` turns into the frame bound `(1+s)² Λ • 1`.
+
+The hypothesis `1/n ≤ s` is what makes the coefficient `n ζ - (s/ζ)⁻¹` of `J` nonnegative,
+so that the bound `J ≤ Λ • 1` may be applied to it; the arithmetic behind the constant is
+`d₀ + (n ζ - ζ/s) Λ = (1+s)² Λ`. -/
+theorem upper_frame_bound [Nonempty κ] {J : Matrix κ κ ℂ} (hJ : J.PosDef) {Λ : ℝ}
+    (hΛ : 0 < Λ) (hJΛ : J ≤ Λ • (1 : Matrix κ κ ℂ)) {n : ℕ} (hn0 : (0 : ℝ) < n)
+    {s ζ d₀ : ℝ} (hs0 : 1 / (n : ℝ) ≤ s) (hζ : ζ = (1 + s) / n)
+    (hd₀ : d₀ = ζ * RCLike.re J.trace / s)
+    (hT : RCLike.re J.trace = Λ * ((n : ℝ) * s ^ 2 + 1)) {b : Ω → κ → ℂ} {x : Fin n → Ω}
+    {w : Fin n → ℝ}
+    (hBn : (upperState J (d₀ • (1 : Matrix κ κ ℂ)) ζ b x w).PosDef)
+    (hΨn : upperPotential J (upperState J (d₀ • (1 : Matrix κ κ ℂ)) ζ b x w) ≤ s / ζ) :
+    ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
+      ≤ ((1 + s) ^ 2 * Λ) • (1 : Matrix κ κ ℂ) := by
+  have hspos : 0 < s := lt_of_lt_of_le (by positivity) hs0
+  have hζ0 : 0 < ζ := by rw [hζ]; exact div_pos (by linarith) hn0
+  have hcoef0 : 0 ≤ (n : ℝ) * ζ - (s / ζ)⁻¹ := by
+    rw [inv_div, show ζ / s = ζ * (1 / s) by ring]
+    nlinarith [hζ0, one_div_le_of_one_div_le hn0 hspos hs0]
+  calc ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
+      ≤ d₀ • (1 : Matrix κ κ ℂ) + ((n : ℝ) * ζ - (s / ζ)⁻¹) • J :=
+        upper_bound_of_state hJ hBn hΨn
+    _ ≤ d₀ • (1 : Matrix κ κ ℂ)
+          + (((n : ℝ) * ζ - (s / ζ)⁻¹) * Λ) • (1 : Matrix κ κ ℂ) := by
+        have hstep : (((n : ℝ) * ζ - (s / ζ)⁻¹) • J : Matrix κ κ ℂ)
+            ≤ (((n : ℝ) * ζ - (s / ζ)⁻¹) * Λ) • (1 : Matrix κ κ ℂ) := by
+          rw [← smul_smul]
+          exact smul_le_smul_of_nonneg_left hJΛ hcoef0
+        exact add_le_add le_rfl hstep
+    _ = ((1 + s) ^ 2 * Λ) • (1 : Matrix κ κ ℂ) := by
+        rw [← add_smul]
+        congr 1
+        rw [hd₀, hT, hζ, inv_div]
+        field_simp
+        ring
+
 /-! ### The theorem -/
 
-set_option maxHeartbeats 1000000 in
 /-- **Generalized sparsification theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
 finite families and a normalized first family.
 
@@ -154,9 +213,8 @@ theorem bss_generalized_of_gram_eq_one [Nonempty ι] [Nonempty κ]
         ≤ ((1 + Real.sqrt ((RCLike.re J.trace / Λ - 1) / n)) ^ 2 * Λ)
             • (1 : Matrix κ κ ℂ) := by
   -- the parameters of the construction
-  have hn2 : 2 ≤ n := le_trans hm hmn
   have hn0 : (0 : ℝ) < n := by
-    have h : 0 < n := lt_of_lt_of_le (by norm_num) hn2
+    have h : 0 < n := lt_of_lt_of_le (by norm_num) (le_trans hm hmn)
     exact_mod_cast h
   set m : ℝ := (Fintype.card ι : ℝ) with hmdef
   have hm2 : (2 : ℝ) ≤ m := by rw [hmdef]; exact_mod_cast hm
@@ -164,38 +222,24 @@ theorem bss_generalized_of_gram_eq_one [Nonempty ι] [Nonempty κ]
   set M : ℝ := RCLike.re J.trace / Λ with hMdef
   set r : ℝ := Real.sqrt ((m - 1) / n) with hrdef
   set s : ℝ := Real.sqrt ((M - 1) / n) with hsdef
-  have hrarg : (0 : ℝ) < (m - 1) / n := div_pos (by linarith) hn0
-  have hr0 : 0 < r := Real.sqrt_pos.2 hrarg
-  have hr2 : r ^ 2 = (m - 1) / n := Real.sq_sqrt hrarg.le
-  have hrlt1 : (m - 1) / (n : ℝ) < 1 := by rw [div_lt_one hn0]; linarith
-  have hr1 : r < 1 := by nlinarith [hr2, hr0, hrlt1]
-  have hMarg : (0 : ℝ) < (M - 1) / n := by
-    have h1 : 0 < 1 / (n : ℝ) := by positivity
-    exact div_pos (by linarith) hn0
-  have hs2 : s ^ 2 = (M - 1) / n := Real.sq_sqrt hMarg.le
-  have hs0 : 1 / (n : ℝ) ≤ s := by
-    have h1 : (1 / (n : ℝ)) ^ 2 ≤ (M - 1) / n := by
-      have h2 : 1 / (n : ℝ) ≤ M - 1 := by linarith
-      calc (1 / (n : ℝ)) ^ 2 = (1 / (n : ℝ)) * (1 / (n : ℝ)) := by ring
-        _ ≤ (M - 1) * (1 / (n : ℝ)) := mul_le_mul_of_nonneg_right h2 (by positivity)
-        _ = (M - 1) / n := by ring
-    calc 1 / (n : ℝ) = Real.sqrt ((1 / (n : ℝ)) ^ 2) := by
-          rw [Real.sqrt_sq (by positivity)]
-      _ ≤ s := by rw [hsdef]; exact Real.sqrt_le_sqrt h1
+  have hr0 : 0 < r := sqrt_div_pos hn0 (by linarith)
+  have hr1 : r < 1 := sqrt_div_lt_one hn0 hmn'
+  have hm_eq : m = (n : ℝ) * r ^ 2 + 1 := eq_mul_sq_sqrt_div_add_one hn0 (by linarith)
+  have hs0 : 1 / (n : ℝ) ≤ s := one_div_le_sqrt_div hn0 hM
   have hspos : 0 < s := lt_of_lt_of_le (by positivity) hs0
+  have hM1 : (1 : ℝ) ≤ M := by
+    have h1 : 0 < 1 / (n : ℝ) := by positivity
+    linarith
+  have hT : RCLike.re J.trace = Λ * ((n : ℝ) * s ^ 2 + 1) := by
+    rw [← eq_mul_sq_sqrt_div_add_one hn0 hM1, hMdef]
+    field_simp
   set δ : ℝ := (1 - r) / n with hδdef
   set ζ : ℝ := (1 + s) / n with hζdef
   have hδ0 : 0 < δ := div_pos (by linarith) hn0
   have hζ0 : 0 < ζ := div_pos (by linarith) hn0
-  have hT0 : 0 < RCLike.re J.trace := (RCLike.pos_iff.mp hJ.trace_pos).1
-  have hM_eq : M = (n : ℝ) * s ^ 2 + 1 := by
-    rw [hs2]; field_simp; ring
-  have hm_eq : m = (n : ℝ) * r ^ 2 + 1 := by
-    rw [hr2]; field_simp; ring
-  have hT : RCLike.re J.trace = Λ * ((n : ℝ) * s ^ 2 + 1) := by
-    rw [← hM_eq, hMdef]; field_simp
   clear_value m M r s
   -- the initial matrices
+  have hT0 : 0 < RCLike.re J.trace := (RCLike.pos_iff.mp hJ.trace_pos).1
   set c₀ : ℝ := δ * m / r with hc₀def
   set d₀ : ℝ := ζ * RCLike.re J.trace / s with hd₀def
   have hc₀0 : 0 < c₀ := div_pos (by positivity) hr0
@@ -214,49 +258,12 @@ theorem bss_generalized_of_gram_eq_one [Nonempty ι] [Nonempty κ]
   have h1r : (1 : ℝ) - r ≠ 0 := by linarith
   have hgap : 1 / ζ + upperPotential J (d₀ • (1 : Matrix κ κ ℂ))
       ≤ 1 / δ - lowerPotential (c₀ • (1 : Matrix ι ι ℂ)) := by
-    rw [hΦ₀, hΨ₀, hδdef, hζdef]
-    have e1 : 1 / ((1 + s) / (n : ℝ)) + s / ((1 + s) / (n : ℝ)) = (n : ℝ) := by field_simp
-    have e2 : 1 / ((1 - r) / (n : ℝ)) - r / ((1 - r) / (n : ℝ)) = (n : ℝ) := by field_simp
-    rw [e1, e2]
-  -- run the construction
+    rw [hΦ₀, hΨ₀, hδdef, hζdef, one_div_add_div_eq hn0 h1s, one_div_sub_div_eq hn0 h1r]
+  -- run the construction and read off the two frame bounds
   obtain ⟨x, w, hwpos, hAn, hBn, hΦn, hΨn⟩ :=
     exists_points_weights hA₀ hJ hB₀ hδ0 hζ0 ha hb hgrama hgramb hgap n
   refine ⟨x, w, hwpos, ?_, ?_⟩
-  · -- the lower frame bound
-    have hpot : lowerPotential (lowerState (c₀ • (1 : Matrix ι ι ℂ)) δ a x w) ≤ r / δ := by
-      rw [← hΦ₀]; exact hΦn
-    refine le_trans (le_of_eq ?_) (lower_bound_of_state hAn hpot)
-    congr 1
-    rw [hc₀def, hδdef, hm_eq]
-    field_simp
-    ring
-  · -- the upper frame bound
-    have hpot : upperPotential J (upperState J (d₀ • (1 : Matrix κ κ ℂ)) ζ b x w) ≤ s / ζ := by
-      rw [← hΨ₀]; exact hΨn
-    have hcoef0 : 0 ≤ (n : ℝ) * ζ - (s / ζ)⁻¹ := by
-      rw [inv_div]
-      have h2 : 1 / s ≤ (n : ℝ) := by
-        rw [div_le_iff₀ hspos]
-        have h3 := mul_le_mul_of_nonneg_left hs0 hn0.le
-        rwa [mul_one_div, div_self hn0.ne'] at h3
-      have h4 : ζ / s = ζ * (1 / s) := by ring
-      rw [h4]
-      nlinarith [hζ0, h2]
-    calc ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
-        ≤ d₀ • (1 : Matrix κ κ ℂ) + ((n : ℝ) * ζ - (s / ζ)⁻¹) • J :=
-          upper_bound_of_state hJ hBn hpot
-      _ ≤ d₀ • (1 : Matrix κ κ ℂ)
-            + (((n : ℝ) * ζ - (s / ζ)⁻¹) * Λ) • (1 : Matrix κ κ ℂ) := by
-          have hstep : (((n : ℝ) * ζ - (s / ζ)⁻¹) • J : Matrix κ κ ℂ)
-              ≤ (((n : ℝ) * ζ - (s / ζ)⁻¹) * Λ) • (1 : Matrix κ κ ℂ) := by
-            rw [← smul_smul]
-            exact Matrix.smul_le_smul_of_nonneg hJΛ hcoef0
-          exact add_le_add le_rfl hstep
-      _ = ((1 + s) ^ 2 * Λ) • (1 : Matrix κ κ ℂ) := by
-          rw [← add_smul]
-          congr 1
-          rw [hd₀def, hT, hζdef, inv_div]
-          field_simp
-          ring
+  · exact lower_frame_bound hn0 hr0 h1r hm_eq hδdef hc₀def hAn (hΦ₀ ▸ hΦn)
+  · exact upper_frame_bound hJ hΛ hJΛ hn0 hs0 hζdef hd₀def hT hBn (hΨ₀ ▸ hΨn)
 
 end Discretization

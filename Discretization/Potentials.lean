@@ -102,10 +102,8 @@ theorem upperPotential_sub_eq {J B : Matrix κ κ ℂ} (hJ : J.PosDef) (hB : B.P
 
 /-- The matrix `J B⁻¹ J` is positive definite for positive definite `J` and `B`. -/
 theorem posDef_conj_inv {J B : Matrix κ κ ℂ} (hJ : J.PosDef) (hB : B.PosDef) :
-    (J * B⁻¹ * J).PosDef := by
-  have hJinj : Function.Injective J.mulVec := Matrix.mulVec_injective_iff_isUnit.2 hJ.isUnit
-  have h := hB.inv.conjTranspose_mul_mul_same (B := J) hJinj
-  rwa [hJ.isHermitian.eq] at h
+    (J * B⁻¹ * J).PosDef :=
+  hB.inv.mul_mul_same_of_isHermitian hJ.isHermitian hJ.isUnit
 
 /-- **Shrinking increases the lower potential**: `Φ(A) < Φ(A - δ • 1)`. -/
 theorem lowerPotential_lt_sub_smul_one [Nonempty ι] {A : Matrix ι ι ℂ} (hA : A.PosDef)

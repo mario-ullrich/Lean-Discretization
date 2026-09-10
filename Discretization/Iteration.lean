@@ -98,13 +98,11 @@ theorem exists_points_weights [Nonempty ι] [Nonempty κ] {A₀ : Matrix ι ι �
         ≤ 1 / δ - lowerPotential (lowerState A₀ δ a x w) := by linarith
     have hΨpos : 0 < upperPotential J (upperState J B₀ ζ b x w) := upperPotential_pos hJ hBk
     have hΦpos : 0 < lowerPotential (lowerState A₀ δ a x w) := lowerPotential_pos hAk
-    have hδ' : δ < (lowerPotential (lowerState A₀ δ a x w))⁻¹ := by
+    have hcpos : 0 < 1 / ζ + upperPotential J (upperState J B₀ ζ b x w) := by
       have hζ' : 0 < 1 / ζ := by positivity
-      have h1 : lowerPotential (lowerState A₀ δ a x w) < 1 / δ := by linarith
-      rw [inv_eq_one_div, lt_div_iff₀ hΦpos]
-      calc δ * lowerPotential (lowerState A₀ δ a x w) < δ * (1 / δ) :=
-            mul_lt_mul_of_pos_left h1 hδ
-        _ = 1 := by field_simp
+      linarith
+    have hδ' : δ < (lowerPotential (lowerState A₀ δ a x w))⁻¹ :=
+      lt_inv_of_le_one_div_sub hδ hΦpos hcpos hgapk
     -- the new point, and the weight it admits
     obtain ⟨y, hy⟩ :=
       exists_admissible_point hAk hJ hBk hδ hδ' hζ ha hb hgrama hgramb hgapk

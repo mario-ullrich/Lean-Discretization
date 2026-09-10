@@ -88,7 +88,6 @@ theorem sum_smul_conj (S : Matrix ι ι ℂ) {k : ℕ} (w : Fin k → ℝ)
 
 /-! ### The theorem without normalisation -/
 
-set_option maxHeartbeats 1000000 in
 /-- **Generalized sparsification theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
 finite families.
 

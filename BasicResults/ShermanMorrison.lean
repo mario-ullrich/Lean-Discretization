@@ -16,6 +16,9 @@ whole argument rests on knowing how the inverse and its trace react.  This file 
 * `Matrix.trace_inv_add_smul_vecMulVec` — its trace,
   `Tr (A + t a a*)⁻¹ = Tr A⁻¹ - t / (1 + t a* A⁻¹ a) · a* A⁻² a`, which is the identity
   behind the lower verifier;
+* `Matrix.PosDef.inv_add_smul_vecMulVec` and `Matrix.PosDef.inv_sub_smul_vecMulVec` — the
+  same formula for a positive definite matrix and a **real** weight, where the quadratic
+  form in the denominator is automatically real;
 * `Matrix.PosDef.add_smul_vecMulVec` and `Matrix.PosDef.sub_smul_vecMulVec` — positive
   definiteness is preserved when a rank-one matrix is added with a nonnegative weight, and
   when it is subtracted with a weight small enough to keep the Sherman–Morrison denominator
@@ -103,16 +106,48 @@ theorem PosDef.add_smul_vecMulVec {A : Matrix n n 𝕜} (hA : A.PosDef) (a : n �
     (hw : 0 ≤ w) : (A + w • vecMulVec a (star a)).PosDef :=
   hA.add_posSemidef ((posSemidef_vecMulVec_self_star a).smul hw)
 
-/-- **Subtracting a rank-one matrix preserves positive definiteness** as long as the
-Sherman–Morrison denominator stays positive, that is `w · a* A⁻¹ a < 1`.
+/-- **Sherman–Morrison with a real weight, added.**
 
-By Sherman–Morrison the inverse of `A - w a a*` equals
-`A⁻¹ + w / (1 - w a* A⁻¹ a) · (A⁻¹ a)(A⁻¹ a)*`, a positive definite matrix plus a positive
-semidefinite one; a matrix whose inverse is positive definite is itself positive definite
-(`Matrix.posDef_inv_iff`). -/
-theorem PosDef.sub_smul_vecMulVec {A : Matrix n n ℂ} (hA : A.PosDef) (a : n → ℂ) {w : ℝ}
-    (hw : 0 ≤ w) (hden : 0 < 1 - w * RCLike.re (star a ⬝ᵥ (A⁻¹ *ᵥ a))) :
-    (A - w • vecMulVec a (star a)).PosDef := by
+For a positive definite `A`, a vector `a` and a weight `w ≥ 0`,
+`(A + w a a*)⁻¹ = A⁻¹ - w/(1 + w · a* A⁻¹ a) · (A⁻¹a)(A⁻¹a)*`.
+
+Every scalar here is real: `a* A⁻¹ a` is a nonnegative quadratic form, so the denominator is
+at least one and in particular nonzero, and no hypothesis beyond `w ≥ 0` is needed.  This is
+the form in which the potential argument uses the formula. -/
+theorem PosDef.inv_add_smul_vecMulVec {A : Matrix n n ℂ} (hA : A.PosDef) (a : n → ℂ) {w : ℝ}
+    (hw : 0 ≤ w) :
+    (A + w • vecMulVec a (star a))⁻¹
+      = A⁻¹ - (w / (1 + w * RCLike.re (star a ⬝ᵥ (A⁻¹ *ᵥ a))))
+          • vecMulVec (A⁻¹ *ᵥ a) (star (A⁻¹ *ᵥ a)) := by
+  have hAdet : IsUnit A.det := (Matrix.isUnit_iff_isUnit_det _).1 hA.isUnit
+  set q := star a ⬝ᵥ (A⁻¹ *ᵥ a) with hqdef
+  set p := RCLike.re q with hp
+  have hq0 : (0 : ℂ) ≤ q := hA.inv.posSemidef.dotProduct_mulVec_nonneg a
+  have hp0 : 0 ≤ p := hA.inv.posSemidef.re_dotProduct_nonneg a
+  have hqre : ((p : ℝ) : ℂ) = q := RCLike.ofReal_re_of_nonneg hq0
+  have hden : 0 < 1 + w * p := by positivity
+  have hcast : (1 : ℂ) + (w : ℂ) * q = ((1 + w * p : ℝ) : ℂ) := by
+    rw [← hqre]; push_cast; ring
+  have hdenC : (1 : ℂ) + (w : ℂ) * q ≠ 0 := by
+    rw [hcast]; exact_mod_cast hden.ne'
+  have hcoef : (w : ℂ) / (1 + (w : ℂ) * q) = ((w / (1 + w * p) : ℝ) : ℂ) := by
+    rw [hcast]; push_cast; ring
+  rw [real_smul_eq_complex_smul w,
+    _root_.Matrix.inv_add_smul_vecMulVec hA.isHermitian hAdet a _ hdenC,
+    real_smul_eq_complex_smul (w / (1 + w * p)), hcoef]
+
+/-- **Sherman–Morrison with a real weight, subtracted.**
+
+For a positive definite `A` and a weight `w` small enough that the denominator
+`1 - w · a* A⁻¹ a` stays positive,
+`(A - w a a*)⁻¹ = A⁻¹ + w/(1 - w · a* A⁻¹ a) · (A⁻¹a)(A⁻¹a)*`.
+
+The correction now has a plus sign: removing mass from `A` makes its inverse larger. -/
+theorem PosDef.inv_sub_smul_vecMulVec {A : Matrix n n ℂ} (hA : A.PosDef) (a : n → ℂ) {w : ℝ}
+    (hden : 0 < 1 - w * RCLike.re (star a ⬝ᵥ (A⁻¹ *ᵥ a))) :
+    (A - w • vecMulVec a (star a))⁻¹
+      = A⁻¹ + (w / (1 - w * RCLike.re (star a ⬝ᵥ (A⁻¹ *ᵥ a))))
+          • vecMulVec (A⁻¹ *ᵥ a) (star (A⁻¹ *ᵥ a)) := by
   have hAdet : IsUnit A.det := (Matrix.isUnit_iff_isUnit_det _).1 hA.isUnit
   set q := star a ⬝ᵥ (A⁻¹ *ᵥ a) with hqdef
   set p := RCLike.re q with hp
@@ -122,14 +157,24 @@ theorem PosDef.sub_smul_vecMulVec {A : Matrix n n ℂ} (hA : A.PosDef) (a : n �
     rw [← hqre]; push_cast; ring
   have hdenC : (1 : ℂ) + (-(w : ℂ)) * q ≠ 0 := by
     rw [hcast]; exact_mod_cast hden.ne'
-  have hsub : A - w • vecMulVec a (star a) = A + (-(w : ℂ)) • vecMulVec a (star a) := by
-    rw [real_smul_eq_complex_smul, neg_smul, ← sub_eq_add_neg]
-  rw [hsub]
-  refine Matrix.posDef_inv_iff.1 ?_
-  rw [inv_add_smul_vecMulVec hA.isHermitian hAdet a _ hdenC]
   have hcoef : -((-(w : ℂ)) / (1 + (-(w : ℂ)) * q)) = ((w / (1 - w * p) : ℝ) : ℂ) := by
     rw [hcast]; push_cast; ring
-  rw [sub_eq_add_neg, ← neg_smul, hcoef, ← real_smul_eq_complex_smul]
+  have hsub : A - w • vecMulVec a (star a) = A + (-(w : ℂ)) • vecMulVec a (star a) := by
+    rw [real_smul_eq_complex_smul, neg_smul, ← sub_eq_add_neg]
+  rw [hsub, _root_.Matrix.inv_add_smul_vecMulVec hA.isHermitian hAdet a _ hdenC,
+    sub_eq_add_neg, ← neg_smul, hcoef, ← real_smul_eq_complex_smul]
+
+/-- **Subtracting a rank-one matrix preserves positive definiteness** as long as the
+Sherman–Morrison denominator stays positive, that is `w · a* A⁻¹ a < 1`.
+
+The inverse of `A - w a a*` is a positive definite matrix plus a positive semidefinite one,
+and a matrix whose inverse is positive definite is itself positive definite
+(`Matrix.posDef_inv_iff`). -/
+theorem PosDef.sub_smul_vecMulVec {A : Matrix n n ℂ} (hA : A.PosDef) (a : n → ℂ) {w : ℝ}
+    (hw : 0 ≤ w) (hden : 0 < 1 - w * RCLike.re (star a ⬝ᵥ (A⁻¹ *ᵥ a))) :
+    (A - w • vecMulVec a (star a)).PosDef := by
+  refine Matrix.posDef_inv_iff.1 ?_
+  rw [hA.inv_sub_smul_vecMulVec a hden]
   exact hA.inv.add_posSemidef
     ((posSemidef_vecMulVec_self_star _).smul (div_nonneg hw hden.le))
 

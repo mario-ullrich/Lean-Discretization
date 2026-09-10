@@ -21,10 +21,15 @@ potential-function argument uses over and over:
 * `Matrix.PosSemidef.le_trace_smul_one` — a positive semidefinite matrix is dominated by
   its own trace times the identity, since the trace is the sum of the (nonnegative)
   eigenvalues;
-* `Matrix.smul_le_smul_of_nonneg` and `Matrix.re_trace_le_re_trace_of_le` — the order is
-  compatible with multiplication by a nonnegative real and with taking traces.
+* `Matrix.re_trace_le_re_trace_of_le` — the order is compatible with taking traces;
+* `Matrix.real_smul_eq_complex_smul` — real and complex scalars agree on complex matrices;
+* `Matrix.PosSemidef.mul_mul_same_of_isHermitian` and its positive definite counterpart —
+  conjugating by a Hermitian matrix preserves positivity.
 
-All four are stated for a general `RCLike` field, and none of them is in Mathlib.
+All of them are stated for a general `RCLike` field, and none of them is in Mathlib.
+Compatibility of the order with multiplication by a nonnegative real is Mathlib's
+`smul_le_smul_of_nonneg_left` and `smul_le_smul_of_nonneg_right`, whose order-module
+instances apply to matrices once `MatrixOrder` is open.
 -/
 
 open scoped ComplexOrder MatrixOrder
@@ -71,26 +76,36 @@ theorem PosSemidef.le_trace_smul_one [DecidableEq n] {A : Matrix n n 𝕜} (hA :
     (fun j _ => hA.eigenvalues_nonneg j) (Finset.mem_univ i)
 
 omit [Fintype n] in
-/-- Multiplying both sides of a Loewner inequality by a nonnegative real preserves it. -/
-theorem smul_le_smul_of_nonneg {A B : Matrix n n 𝕜} (h : A ≤ B) {c : ℝ} (hc : 0 ≤ c) :
-    c • A ≤ c • B := by
-  rw [Matrix.le_iff, ← smul_sub]
-  exact (Matrix.le_iff.1 h).smul hc
-
-omit [Fintype n] in
 /-- Scaling a complex matrix by a real number is scaling it by the corresponding complex
 number.  Used to move between the real weights of the construction and the complex scalars
-of the matrix algebra. -/
+of the matrix algebra.
+
+Mathlib's `RCLike.real_smul_eq_coe_smul` says the same for every `RCLike` field, but spells
+the coercion as `RCLike.ofReal`, which no rewrite identifies with `Complex.ofReal`; the two
+are definitionally equal and `norm_cast` closes the gap. -/
 theorem real_smul_eq_complex_smul (r : ℝ) (M : Matrix n n ℂ) : r • M = (r : ℂ) • M := by
   norm_cast
 
-omit [Fintype n] in
-/-- Scaling a fixed positive semidefinite matrix by a larger factor gives a larger matrix:
-`α ≤ β` implies `α • A ≤ β • A` for `A ≽ 0`. -/
-theorem PosSemidef.smul_le_smul_of_le {A : Matrix n n 𝕜} (hA : A.PosSemidef) {α β : ℝ}
-    (h : α ≤ β) : α • A ≤ β • A := by
-  rw [Matrix.le_iff, ← sub_smul]
-  exact hA.smul (by linarith)
+/-- **Conjugating by a Hermitian matrix preserves positive semidefiniteness:**
+`M A M ≽ 0` for `A ≽ 0` and Hermitian `M`.
+
+This is Mathlib's `Matrix.PosSemidef.conjTranspose_mul_mul_same` with `Mᴴ` rewritten to `M`;
+it occurs throughout the potential argument, where `M` is the inverse of a positive definite
+matrix. -/
+theorem PosSemidef.mul_mul_same_of_isHermitian [DecidableEq n] {A M : Matrix n n 𝕜}
+    (hA : A.PosSemidef) (hM : M.IsHermitian) : (M * A * M).PosSemidef := by
+  have h := hA.conjTranspose_mul_mul_same M
+  rwa [hM.eq] at h
+
+/-- **Conjugating by an invertible Hermitian matrix preserves positive definiteness:**
+`M A M ≻ 0` for `A ≻ 0` and Hermitian invertible `M`.
+
+Invertibility is needed because conjugation by a singular matrix destroys definiteness in
+the directions of its kernel. -/
+theorem PosDef.mul_mul_same_of_isHermitian [DecidableEq n] {A M : Matrix n n 𝕜}
+    (hA : A.PosDef) (hM : M.IsHermitian) (hMu : IsUnit M) : (M * A * M).PosDef := by
+  have h := hA.conjTranspose_mul_mul_same (B := M) (Matrix.mulVec_injective_iff_isUnit.2 hMu)
+  rwa [hM.eq] at h
 
 /-- The trace is monotone for the Loewner order: `A ≤ B` forces `Re Tr A ≤ Re Tr B`,
 because `Tr (B - A) ≥ 0` for a positive semidefinite difference. -/
@@ -115,9 +130,7 @@ omit [Fintype n] in
 /-- **Anything above a positive definite matrix is positive definite.**  Writing
 `B = A + (B - A)` exhibits `B` as a positive definite plus a positive semidefinite matrix. -/
 theorem PosDef.of_le {A B : Matrix n n 𝕜} (hA : A.PosDef) (h : A ≤ B) : B.PosDef := by
-  have key : A + (B - A) = B := by abel
-  have h₂ := hA.add_posSemidef (Matrix.le_iff.1 h)
-  rwa [key] at h₂
+  simpa using hA.add_posSemidef (Matrix.le_iff.1 h)
 
 section Inverse
 

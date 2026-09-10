@@ -57,6 +57,7 @@ Legend: ✅ proved unconditionally.  There is no `sorry` anywhere in this projec
 | Result | Lean name | Status |
 |---|---|---|
 | A Hermitian matrix is below `c • 1` if `c` bounds its eigenvalues | `Matrix.IsHermitian.le_smul_one` | ✅ |
+| Conjugating by a Hermitian matrix preserves positivity | `Matrix.PosSemidef.mul_mul_same_of_isHermitian`, `Matrix.PosDef.mul_mul_same_of_isHermitian` | ✅ |
 | `A ≼ (Tr A) • 1` for `A ≽ 0` | `Matrix.PosSemidef.le_trace_smul_one` | ✅ |
 | The inverse is antitone | `Matrix.PosDef.inv_le_inv_of_le`, `Matrix.PosDef.smul_one_le_of_inv_le` | ✅ |
 | `Φ(A)⁻¹ • 1 ≼ A` | `Matrix.PosDef.inv_re_trace_smul_one_le` | ✅ |
@@ -66,6 +67,7 @@ Legend: ✅ proved unconditionally.  There is no `sorry` anywhere in this projec
 | `Tr (P Q)` is real for Hermitian `P`, `Q` | `Matrix.IsHermitian.ofReal_re_trace_mul` | ✅ |
 | Cauchy–Schwarz for the trace | `Matrix.PosSemidef.norm_trace_mul_sq_le`, `.re_trace_mul_sq_le` | ✅ |
 | Sherman–Morrison for a rank-one update | `Matrix.inv_add_smul_vecMulVec` | ✅ |
+| The same with a real weight, added and subtracted | `Matrix.PosDef.inv_add_smul_vecMulVec`, `.inv_sub_smul_vecMulVec` | ✅ |
 | The trace of a rank-one update | `Matrix.trace_inv_add_smul_vecMulVec` | ✅ |
 | Positive definiteness under `A ± w a a*` | `Matrix.PosDef.add_smul_vecMulVec`, `.sub_smul_vecMulVec` | ✅ |
 
@@ -82,15 +84,18 @@ Legend: ✅ proved unconditionally.  There is no `sorry` anywhere in this projec
 
 | Result | Lean name | Status |
 |---|---|---|
+| The arithmetic of the parameters `r`, `s`, `δ`, `ζ` | `Discretization.one_div_le_sqrt_div`, `.eq_mul_sq_sqrt_div_add_one`, `.one_div_add_div_eq`, `.lt_inv_of_le_one_div_sub` | ✅ |
 | The two potentials and their positivity | `Discretization.lowerPotential`, `.upperPotential` | ✅ |
 | Effect of the shifts on the potentials | `Discretization.lowerPotential_sub_eq`, `.upperPotential_sub_eq` | ✅ |
 | The potential of a rank-one update, in closed form | `Discretization.lowerPotential_add_smul_vecMulVec`, `.upperPotential_sub_smul_vecMulVec` | ✅ |
 | The verifiers | `Discretization.lowerVerifier`, `.upperVerifier` | ✅ |
 | **Barrier lemma** | `Discretization.lowerPotential_update_le`, `.upperPotential_update_le` | ✅ |
+| The inequality each half of it rests on | `Discretization.lower_barrier_ineq`, `.upper_barrier_ineq` | ✅ |
 | The verifiers pass on average | `Discretization.integral_lowerVerifier_gt`, `.integral_upperVerifier_lt` | ✅ |
 | An admissible point exists | `Discretization.exists_admissible_point` | ✅ |
 | The `n`-step construction | `Discretization.exists_points_weights` | ✅ |
 | Reading off the frame bounds | `Discretization.lower_bound_of_state`, `.upper_bound_of_state` | ✅ |
+| The frame bounds with the parameters inserted | `Discretization.lower_frame_bound`, `.upper_frame_bound` | ✅ |
 | **The theorem, normalized first family** | `Discretization.bss_generalized_of_gram_eq_one` | ✅ |
 | Gram matrix of a linearly transformed family | `Discretization.gram_mulVec` | ✅ |
 | **The theorem, general first family** | `Discretization.bss_generalized` | ✅ |
@@ -120,9 +125,13 @@ structure is not needed, and none of it is currently in Mathlib:
 * `Matrix.PosSemidef.le_trace_smul_one` and `Matrix.IsHermitian.le_smul_one`;
 * `Matrix.PosDef.inv_le_inv_of_le` — antitonicity of the inverse in the Loewner order,
   packaged for matrices;
-* `Matrix.inv_add_smul_vecMulVec` and `Matrix.trace_inv_add_smul_vecMulVec` — Sherman–Morrison
-  for rank-one updates written with `Matrix.vecMulVec` (Mathlib has only the block form,
-  `Matrix.add_mul_mul_inv_eq_sub`);
+* `Matrix.inv_add_smul_vecMulVec`, `Matrix.trace_inv_add_smul_vecMulVec` and the real-weight
+  forms `Matrix.PosDef.inv_add_smul_vecMulVec`, `Matrix.PosDef.inv_sub_smul_vecMulVec` —
+  Sherman–Morrison for rank-one updates written with `Matrix.vecMulVec` (Mathlib has only the
+  block form, `Matrix.add_mul_mul_inv_eq_sub`);
+* `Matrix.PosSemidef.mul_mul_same_of_isHermitian` and `Matrix.PosDef.mul_mul_same_of_isHermitian`
+  — conjugation by a Hermitian matrix, the form of
+  `Matrix.PosSemidef.conjTranspose_mul_mul_same` that arises in practice;
 * `Matrix.PosSemidef.norm_trace_mul_sq_le` — Cauchy–Schwarz for the trace semi-inner product
   (Mathlib's own construction of that inner product is `private`);
 * `Matrix.IsHermitian.ofReal_re_trace` and `RCLike.ofReal_re_of_nonneg` — the trace of a
@@ -142,6 +151,7 @@ BasicResults/
   IntegralQuadraticForm.lean             ← Gram matrices and averages of quadratic forms
 Discretization.lean                      ← root of the theory
 Discretization/
+  Parameters.lean                        ← the arithmetic of r, s, δ, ζ
   Potentials.lean                        ← the two potentials and the effect of the shifts
   Barrier.lean                           ← verifiers and the barrier lemma
   Averages.lean                          ← the verifiers pass on average

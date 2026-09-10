@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
 import BasicResults
+import Discretization.Parameters
 import Discretization.Potentials
 import Discretization.Barrier
 import Discretization.Averages
@@ -33,6 +34,8 @@ potential gets worse.
 
 ## Layout
 
+* `Discretization.Parameters` — the arithmetic of the four parameters `r`, `s`, `δ`, `ζ`
+  that drive the construction.
 * `Discretization.Potentials` — the two potentials `Φ(A) = Re Tr A⁻¹` and
   `Ψ_J(B) = Re Tr (J B⁻¹)`, and how the shifts `A ↦ A - δ • 1`, `B ↦ B + ζ • J` change them.
 * `Discretization.Barrier` — the verifiers, which test a single point, and the barrier

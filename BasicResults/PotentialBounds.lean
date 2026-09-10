@@ -36,15 +36,15 @@ namespace Matrix
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
-/-- The positive square root of a positive definite matrix is invertible: its determinant
-squares to the determinant of the matrix. -/
+/-- **The positive square root of a positive definite matrix is invertible.**  This is
+Mathlib's `CFC.isUnit_sqrt_iff`, which says that `√a` is a unit exactly when `a` is. -/
+theorem PosDef.isUnit_sqrt {B : Matrix n n ℂ} (hB : B.PosDef) : IsUnit (CFC.sqrt B) :=
+  (CFC.isUnit_sqrt_iff B hB.posSemidef.nonneg).2 hB.isUnit
+
+/-- The determinant of the positive square root of a positive definite matrix is a unit. -/
 theorem PosDef.isUnit_det_sqrt {B : Matrix n n ℂ} (hB : B.PosDef) :
-    IsUnit (CFC.sqrt B).det := by
-  have hSS : CFC.sqrt B * CFC.sqrt B = B := CFC.sqrt_mul_sqrt_self B hB.posSemidef.nonneg
-  have h : IsUnit ((CFC.sqrt B).det * (CFC.sqrt B).det) := by
-    rw [← det_mul, hSS]
-    exact (Matrix.isUnit_iff_isUnit_det _).1 hB.isUnit
-  exact (IsUnit.mul_iff.1 h).1
+    IsUnit (CFC.sqrt B).det :=
+  (Matrix.isUnit_iff_isUnit_det _).1 hB.isUnit_sqrt
 
 /-- **A positive definite matrix dominates the reciprocal of its upper potential times `J`.**
 
@@ -67,9 +67,8 @@ theorem PosDef.inv_re_trace_mul_smul_le [Nonempty n] {B J : Matrix n n ℂ} (hB 
   have hBinv : B⁻¹ = S⁻¹ * S⁻¹ := by rw [← hSS, mul_inv_rev]
   -- the conjugated matrix `S⁻¹ J S⁻¹` is positive semidefinite with trace `Ψ(B)`
   have hSpsd : S.PosSemidef := Matrix.nonneg_iff_posSemidef.1 hS0
-  have hPpsd : (S⁻¹ * J * S⁻¹).PosSemidef := by
-    have h := hJ.posSemidef.conjTranspose_mul_mul_same S⁻¹
-    rwa [hSpsd.inv.isHermitian.eq] at h
+  have hPpsd : (S⁻¹ * J * S⁻¹).PosSemidef :=
+    hJ.posSemidef.mul_mul_same_of_isHermitian hSpsd.inv.isHermitian
   have htrace : (S⁻¹ * J * S⁻¹).trace = (J * B⁻¹).trace := by
     rw [trace_mul_cycle, trace_mul_comm, ← hBinv]
   have hΨpos : 0 < RCLike.re (J * B⁻¹).trace := hJ.re_trace_mul_pos hB.inv
@@ -88,7 +87,7 @@ theorem PosDef.inv_re_trace_mul_smul_le [Nonempty n] {B J : Matrix n n ℂ} (hB 
     rw [mul_smul_comm, smul_mul_assoc, mul_one, hSS]
   rw [hlhs, hrhs] at hconj
   -- and dividing by the (positive) potential gives the claim
-  have h := smul_le_smul_of_nonneg hconj (inv_nonneg.2 hΨpos.le)
+  have h := smul_le_smul_of_nonneg_left hconj (inv_nonneg.2 hΨpos.le)
   rwa [smul_smul, inv_mul_cancel₀ hΨpos.ne', one_smul] at h
 
 omit [Fintype n] [DecidableEq n] in

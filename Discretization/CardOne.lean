@@ -100,7 +100,6 @@ theorem exists_points_weights_of_unique [Unique ι] [Nonempty κ] {J B₀ : Matr
 
 /-! ### The theorem for a single function -/
 
-set_option maxHeartbeats 1000000 in
 omit [Fintype ι] in
 /-- **Generalized sparsification theorem for a one-element first family.**
 
@@ -122,27 +121,19 @@ theorem bss_generalized_of_unique [Unique ι] [Nonempty κ]
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
   set M : ℝ := RCLike.re J.trace / Λ with hMdef
   set s : ℝ := Real.sqrt ((M - 1) / n) with hsdef
-  have hMarg : (0 : ℝ) < (M - 1) / n := by
-    have h1 : 0 < 1 / (n : ℝ) := by positivity
-    exact div_pos (by linarith) hn0
-  have hs2 : s ^ 2 = (M - 1) / n := Real.sq_sqrt hMarg.le
-  have hs0 : 1 / (n : ℝ) ≤ s := by
-    have h1 : (1 / (n : ℝ)) ^ 2 ≤ (M - 1) / n := by
-      have h2 : 1 / (n : ℝ) ≤ M - 1 := by linarith
-      calc (1 / (n : ℝ)) ^ 2 = (1 / (n : ℝ)) * (1 / (n : ℝ)) := by ring
-        _ ≤ (M - 1) * (1 / (n : ℝ)) := mul_le_mul_of_nonneg_right h2 (by positivity)
-        _ = (M - 1) / n := by ring
-    calc 1 / (n : ℝ) = Real.sqrt ((1 / (n : ℝ)) ^ 2) := by
-          rw [Real.sqrt_sq (by positivity)]
-      _ ≤ s := by rw [hsdef]; exact Real.sqrt_le_sqrt h1
+  have hs0 : 1 / (n : ℝ) ≤ s := one_div_le_sqrt_div hn0 hM
   have hspos : 0 < s := lt_of_lt_of_le (by positivity) hs0
+  have hM1 : (1 : ℝ) ≤ M := by
+    have h1 : 0 < 1 / (n : ℝ) := by positivity
+    linarith
+  have hM_eq : M = (n : ℝ) * s ^ 2 + 1 := eq_mul_sq_sqrt_div_add_one hn0 hM1
+  have hT : RCLike.re J.trace = Λ * ((n : ℝ) * s ^ 2 + 1) := by
+    rw [← hM_eq, hMdef]
+    field_simp
   set ζ : ℝ := (1 + s) / n with hζdef
   have hζ0 : 0 < ζ := div_pos (by linarith) hn0
-  have hT0 : 0 < RCLike.re J.trace := (RCLike.pos_iff.mp hJ.trace_pos).1
-  have hM_eq : M = (n : ℝ) * s ^ 2 + 1 := by rw [hs2]; field_simp; ring
-  have hT : RCLike.re J.trace = Λ * ((n : ℝ) * s ^ 2 + 1) := by
-    rw [← hM_eq, hMdef]; field_simp
   clear_value M s
+  have hT0 : 0 < RCLike.re J.trace := (RCLike.pos_iff.mp hJ.trace_pos).1
   set d₀ : ℝ := ζ * RCLike.re J.trace / s with hd₀def
   have hd₀0 : 0 < d₀ := div_pos (by positivity) hspos
   have hB₀ : (d₀ • (1 : Matrix κ κ ℂ)).PosDef := Matrix.PosDef.one.smul hd₀0
@@ -152,9 +143,7 @@ theorem bss_generalized_of_unique [Unique ι] [Nonempty κ]
     field_simp
   have h1s : (1 : ℝ) + s ≠ 0 := by positivity
   have hgap : 1 / ζ + upperPotential J (d₀ • (1 : Matrix κ κ ℂ)) ≤ n := by
-    rw [hΨ₀, hζdef]
-    have e1 : 1 / ((1 + s) / (n : ℝ)) + s / ((1 + s) / (n : ℝ)) = (n : ℝ) := by field_simp
-    rw [e1]
+    rw [hΨ₀, hζdef, one_div_add_div_eq hn0 h1s]
   -- run the one-sided construction
   obtain ⟨x, w, hwpos, hBn, hΨn, hwk⟩ :=
     exists_points_weights_of_unique hJ hB₀ hζ0 ha hb hgrama hgramb hgap n
@@ -184,32 +173,6 @@ theorem bss_generalized_of_unique [Unique ι] [Nonempty κ]
       field_simp
     rw [hmat]
   · -- the upper frame bound, exactly as in the main theorem
-    have hpot : upperPotential J (upperState J (d₀ • (1 : Matrix κ κ ℂ)) ζ b x w) ≤ s / ζ := by
-      rw [← hΨ₀]; exact hΨn
-    have hcoef0 : 0 ≤ (n : ℝ) * ζ - (s / ζ)⁻¹ := by
-      rw [inv_div]
-      have h2 : 1 / s ≤ (n : ℝ) := by
-        rw [div_le_iff₀ hspos]
-        have h3 := mul_le_mul_of_nonneg_left hs0 hn0.le
-        rwa [mul_one_div, div_self hn0.ne'] at h3
-      have h4 : ζ / s = ζ * (1 / s) := by ring
-      rw [h4]
-      nlinarith [hζ0, h2]
-    calc ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
-        ≤ d₀ • (1 : Matrix κ κ ℂ) + ((n : ℝ) * ζ - (s / ζ)⁻¹) • J :=
-          upper_bound_of_state hJ hBn hpot
-      _ ≤ d₀ • (1 : Matrix κ κ ℂ)
-            + (((n : ℝ) * ζ - (s / ζ)⁻¹) * Λ) • (1 : Matrix κ κ ℂ) := by
-          have hstep : (((n : ℝ) * ζ - (s / ζ)⁻¹) • J : Matrix κ κ ℂ)
-              ≤ (((n : ℝ) * ζ - (s / ζ)⁻¹) * Λ) • (1 : Matrix κ κ ℂ) := by
-            rw [← smul_smul]
-            exact Matrix.smul_le_smul_of_nonneg hJΛ hcoef0
-          exact add_le_add le_rfl hstep
-      _ = ((1 + s) ^ 2 * Λ) • (1 : Matrix κ κ ℂ) := by
-          rw [← add_smul]
-          congr 1
-          rw [hd₀def, hT, hζdef, inv_div]
-          field_simp
-          ring
+    exact upper_frame_bound hJ hΛ hJΛ hn0 hs0 hζdef hd₀def hT hBn (hΨ₀ ▸ hΨn)
 
 end Discretization

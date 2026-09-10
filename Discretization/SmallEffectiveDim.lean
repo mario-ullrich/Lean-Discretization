@@ -57,7 +57,6 @@ theorem integrable_upperVerifierConst {b : Ω → κ → ℂ}
 
 /-! ### The one-sided construction -/
 
-set_option maxHeartbeats 1000000 in
 omit [DecidableEq κ] in
 /-- **The construction for a small effective dimension.**  Only the lower matrix is tracked;
 the weights are chosen as large as the lower verifier allows, which forces
@@ -80,12 +79,8 @@ theorem exists_points_weights_of_small_dim [Nonempty ι] [Nonempty κ] {A₀ : M
     -- the increment is still admissible
     have hΦpos : 0 < lowerPotential (lowerState A₀ δ a x w) := lowerPotential_pos hAk
     have hgapk : (n : ℝ) ≤ 1 / δ - lowerPotential (lowerState A₀ δ a x w) := by linarith
-    have hδ' : δ < (lowerPotential (lowerState A₀ δ a x w))⁻¹ := by
-      have h1 : lowerPotential (lowerState A₀ δ a x w) < 1 / δ := by linarith
-      rw [inv_eq_one_div, lt_div_iff₀ hΦpos]
-      calc δ * lowerPotential (lowerState A₀ δ a x w) < δ * (1 / δ) :=
-            mul_lt_mul_of_pos_left h1 hδ
-        _ = 1 := by field_simp
+    have hδ' : δ < (lowerPotential (lowerState A₀ δ a x w))⁻¹ :=
+      lt_inv_of_le_one_div_sub hδ hΦpos hn0 hgapk
     -- the average of the lower verifier beats that of the constant upper one
     have hlt : ∫ y, (n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b y p‖ ^ 2 ∂μ
         < ∫ y, lowerVerifier (lowerState A₀ δ a x w) δ (a y) ∂μ := by
@@ -123,7 +118,6 @@ theorem exists_points_weights_of_small_dim [Nonempty ι] [Nonempty κ] {A₀ : M
 
 /-! ### The theorem for a small effective dimension -/
 
-set_option maxHeartbeats 1000000 in
 /-- **Generalized sparsification theorem for a small effective dimension.**
 
 For `M = Tr J / Λ ≤ 1 + 1/n` the upper frame bound follows from the crude estimate
@@ -144,21 +138,17 @@ theorem bss_generalized_of_small_dim [Nonempty ι] [Nonempty κ]
         ≤ ((1 + Real.sqrt ((RCLike.re J.trace / Λ - 1) / n)) ^ 2 * Λ)
             • (1 : Matrix κ κ ℂ) := by
   -- the parameters of the lower half of the construction
-  have hn2 : 2 ≤ n := le_trans hm hmn
   have hn0 : (0 : ℝ) < n := by
-    have h : 0 < n := lt_of_lt_of_le (by norm_num) hn2
+    have h : 0 < n := lt_of_lt_of_le (by norm_num) (le_trans hm hmn)
     exact_mod_cast h
   have hn : 0 < n := by exact_mod_cast hn0
   set m : ℝ := (Fintype.card ι : ℝ) with hmdef
   have hm2 : (2 : ℝ) ≤ m := by rw [hmdef]; exact_mod_cast hm
   have hmn' : m ≤ (n : ℝ) := by rw [hmdef]; exact_mod_cast hmn
   set r : ℝ := Real.sqrt ((m - 1) / n) with hrdef
-  have hrarg : (0 : ℝ) < (m - 1) / n := div_pos (by linarith) hn0
-  have hr0 : 0 < r := Real.sqrt_pos.2 hrarg
-  have hr2 : r ^ 2 = (m - 1) / n := Real.sq_sqrt hrarg.le
-  have hrlt1 : (m - 1) / (n : ℝ) < 1 := by rw [div_lt_one hn0]; linarith
-  have hr1 : r < 1 := by nlinarith [hr2, hr0, hrlt1]
-  have hm_eq : m = (n : ℝ) * r ^ 2 + 1 := by rw [hr2]; field_simp; ring
+  have hr0 : 0 < r := sqrt_div_pos hn0 (by linarith)
+  have hr1 : r < 1 := sqrt_div_lt_one hn0 hmn'
+  have hm_eq : m = (n : ℝ) * r ^ 2 + 1 := eq_mul_sq_sqrt_div_add_one hn0 (by linarith)
   set δ : ℝ := (1 - r) / n with hδdef
   have hδ0 : 0 < δ := div_pos (by linarith) hn0
   clear_value m r
@@ -171,9 +161,7 @@ theorem bss_generalized_of_small_dim [Nonempty ι] [Nonempty κ]
     field_simp
   have h1r : (1 : ℝ) - r ≠ 0 := by linarith
   have hgap : (n : ℝ) ≤ 1 / δ - lowerPotential (c₀ • (1 : Matrix ι ι ℂ)) := by
-    rw [hΦ₀, hδdef]
-    have e2 : 1 / ((1 - r) / (n : ℝ)) - r / ((1 - r) / (n : ℝ)) = (n : ℝ) := by field_simp
-    rw [e2]
+    rw [hΦ₀, hδdef, one_div_sub_div_eq hn0 h1r]
   -- the trace of the Gram matrix of the second family
   have hT0 : 0 < RCLike.re J.trace := (RCLike.pos_iff.mp hJ.trace_pos).1
   have hT : 0 < RCLike.re (gram b μ).trace := by rw [hgramb]; exact hT0
@@ -182,13 +170,7 @@ theorem bss_generalized_of_small_dim [Nonempty ι] [Nonempty κ]
     exists_points_weights_of_small_dim hA₀ hδ0 ha hb hgrama hT hn hgap n
   refine ⟨x, w, hwpos, ?_, ?_⟩
   · -- the lower frame bound, exactly as in the main theorem
-    have hpot : lowerPotential (lowerState (c₀ • (1 : Matrix ι ι ℂ)) δ a x w) ≤ r / δ := by
-      rw [← hΦ₀]; exact hΦn
-    refine le_trans (le_of_eq ?_) (lower_bound_of_state hAn hpot)
-    congr 1
-    rw [hc₀def, hδdef, hm_eq]
-    field_simp
-    ring
+    exact lower_frame_bound hn0 hr0 h1r hm_eq hδdef hc₀def hAn (hΦ₀ ▸ hΦn)
   · -- the upper frame bound from the crude rank-one estimate
     set T : ℝ := RCLike.re J.trace with hTdef
     have hweight : ∀ i : Fin n, w i * (∑ p, ‖b (x i) p‖ ^ 2) ≤ T / n := by
@@ -203,7 +185,7 @@ theorem bss_generalized_of_small_dim [Nonempty ι] [Nonempty κ]
     have hstep : ∀ i : Fin n, w i • vecMulVec (b (x i)) (star (b (x i)))
         ≤ (w i * (∑ p, ‖b (x i) p‖ ^ 2)) • (1 : Matrix κ κ ℂ) := by
       intro i
-      have h1 := Matrix.smul_le_smul_of_nonneg (Matrix.vecMulVec_le_norm_sq_smul_one
+      have h1 := smul_le_smul_of_nonneg_left (Matrix.vecMulVec_le_norm_sq_smul_one
         (b (x i))) (hwpos i).le
       rwa [smul_smul] at h1
     have hsum : ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
@@ -225,7 +207,7 @@ theorem bss_generalized_of_small_dim [Nonempty ι] [Nonempty κ]
       · replace hM1 := not_le.mp hM1
         have harg : (0 : ℝ) ≤ (T / Λ - 1) / n := by
           apply div_nonneg (by linarith) hn0.le
-        have hs2 : s ^ 2 = (T / Λ - 1) / n := Real.sq_sqrt harg
+        have hs2 : s ^ 2 = (T / Λ - 1) / n := sq_sqrt_div hn0 (by linarith)
         have h1 : (n : ℝ) * s ^ 2 = T / Λ - 1 := by rw [hs2]; field_simp
         have h2 : s ^ 2 ≤ (1 / (n : ℝ)) ^ 2 := by
           rw [hs2]
@@ -244,6 +226,6 @@ theorem bss_generalized_of_small_dim [Nonempty ι] [Nonempty κ]
     calc ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
         ≤ (∑ i, w i * (∑ p, ‖b (x i) p‖ ^ 2)) • (1 : Matrix κ κ ℂ) := hsum
       _ ≤ ((1 + s) ^ 2 * Λ) • (1 : Matrix κ κ ℂ) :=
-          Matrix.PosSemidef.one.smul_le_smul_of_le (le_trans hTsum hTΛ)
+          smul_le_smul_of_nonneg_right (le_trans hTsum hTΛ) Matrix.PosSemidef.one.nonneg
 
 end Discretization

@@ -3,6 +3,7 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
+import Discretization.Parameters
 import Discretization.Potentials
 
 /-!
@@ -28,13 +29,44 @@ used by Chkifa–Dolbeault–Krieg–Ullrich.
 The exact effect of an update on the potentials is computed first, in
 `Discretization.lowerPotential_add_smul_vecMulVec` and
 `Discretization.upperPotential_sub_smul_vecMulVec`; after that the barrier lemma is
-elementary algebra with real numbers.
+elementary algebra with real numbers, recorded separately as
+`Discretization.lower_barrier_ineq` and `Discretization.upper_barrier_ineq`.
 -/
 
 open Matrix
 open scoped ComplexOrder MatrixOrder
 
 namespace Discretization
+
+/-! ### The arithmetic of the two barriers
+
+Once the potentials are computed in closed form, each half of the barrier lemma is one
+inequality between real numbers.  Both are recorded separately, because they are the only
+part of the barrier argument that does not mention matrices at all. -/
+
+/-- **The inequality behind the lower barrier.**  If the reciprocal weight `1/w` does not
+exceed `s/D - q`, then the decrease `w/(1 + w q) · s` of the lower potential is at least the
+increase `D` caused by the shift.  Here `D > 0` is that increase, `q ≥ 0` the quadratic form
+of the shifted inverse and `s` the quadratic form of its square. -/
+theorem lower_barrier_ineq {D w q s : ℝ} (hD : 0 < D) (hw : 0 < w) (hq : 0 ≤ q)
+    (h : 1 / w ≤ s / D - q) : D ≤ (w / (1 + w * q)) * s := by
+  have hden : 0 < 1 + w * q := by positivity
+  rw [div_mul_eq_mul_div, le_div_iff₀ hden]
+  have h1 := (div_le_iff₀ hw).1 h
+  have h2 : D * (s / D - q) = s - D * q := by field_simp
+  nlinarith
+
+/-- **The inequality behind the upper barrier.**  If `r/E + p` does not exceed the reciprocal
+weight `1/w`, then the increase `w/(1 - w p) · r` of the upper potential is at most the
+decrease `E` caused by the shift.  Here `E > 0` is that decrease, `p` the quadratic form of
+the shifted inverse and `r` the quadratic form of its `J`-conjugate; the hypothesis
+`1 - w p > 0` is the Sherman–Morrison denominator. -/
+theorem upper_barrier_ineq {E w p r : ℝ} (hE : 0 < E) (hw : 0 < w) (hden : 0 < 1 - w * p)
+    (h : r / E + p ≤ 1 / w) : (w / (1 - w * p)) * r ≤ E := by
+  rw [div_mul_eq_mul_div, div_le_iff₀ hden]
+  have h1 := (le_div_iff₀ hw).1 h
+  have h2 : E * (r / E + p) = r + E * p := by field_simp
+  nlinarith
 
 variable {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
 
@@ -48,67 +80,25 @@ theorem lowerPotential_add_smul_vecMulVec {N : Matrix ι ι ℂ} (hN : N.PosDef)
     lowerPotential (N + w • vecMulVec a (star a))
       = lowerPotential N - (w / (1 + w * RCLike.re (star a ⬝ᵥ (N⁻¹ *ᵥ a))))
           * RCLike.re (star a ⬝ᵥ ((N⁻¹ * N⁻¹) *ᵥ a)) := by
-  have hNdet : IsUnit N.det := (Matrix.isUnit_iff_isUnit_det _).1 hN.isUnit
-  have hZZ : (N⁻¹ * N⁻¹).PosSemidef := by
-    have h := Matrix.posSemidef_conjTranspose_mul_self (N⁻¹)
-    rwa [hN.inv.isHermitian.eq] at h
-  set qr := RCLike.re (star a ⬝ᵥ (N⁻¹ *ᵥ a)) with hqr
-  set sr := RCLike.re (star a ⬝ᵥ ((N⁻¹ * N⁻¹) *ᵥ a)) with hsr
-  have hqre : ((qr : ℝ) : ℂ) = star a ⬝ᵥ (N⁻¹ *ᵥ a) :=
-    RCLike.ofReal_re_of_nonneg (hN.inv.posSemidef.dotProduct_mulVec_nonneg a)
-  have hsre : ((sr : ℝ) : ℂ) = star a ⬝ᵥ ((N⁻¹ * N⁻¹) *ᵥ a) :=
-    RCLike.ofReal_re_of_nonneg (hZZ.dotProduct_mulVec_nonneg a)
-  have hq0 : 0 ≤ qr := hN.inv.posSemidef.re_dotProduct_nonneg a
-  have hden : 0 < 1 + w * qr := by have := mul_nonneg hw hq0; linarith
-  have hdenC : (1 : ℂ) + (w : ℂ) * (star a ⬝ᵥ (N⁻¹ *ᵥ a)) ≠ 0 := by
-    rw [← hqre, show (1 : ℂ) + (w : ℂ) * ((qr : ℝ) : ℂ) = ((1 + w * qr : ℝ) : ℂ) by
-      push_cast; ring]
-    exact_mod_cast hden.ne'
-  have hkey : RCLike.re (((w : ℂ) / (1 + (w : ℂ) * (star a ⬝ᵥ (N⁻¹ *ᵥ a))))
-      * (star a ⬝ᵥ ((N⁻¹ * N⁻¹) *ᵥ a))) = (w / (1 + w * qr)) * sr := by
-    rw [← hqre, ← hsre, show ((w : ℂ) / (1 + (w : ℂ) * ((qr : ℝ) : ℂ))) * ((sr : ℝ) : ℂ)
-        = (((w / (1 + w * qr)) * sr : ℝ) : ℂ) by push_cast; ring]
-    exact RCLike.ofReal_re _
-  rw [lowerPotential, lowerPotential, Matrix.real_smul_eq_complex_smul,
-    Matrix.trace_inv_add_smul_vecMulVec hN.isHermitian hNdet a (w : ℂ) hdenC, map_sub, hkey]
+  rw [lowerPotential, lowerPotential, hN.inv_add_smul_vecMulVec a hw, Matrix.trace_sub,
+    map_sub, Matrix.trace_smul, RCLike.smul_re, Matrix.trace_vecMulVec,
+    Matrix.dotProduct_mulVec_self_star hN.inv.isHermitian]
 
 /-- **The upper potential after a rank-one downdate**, in closed form:
 `Ψ_J(M - w b b*) = Ψ_J(M) + w / (1 - w b* M⁻¹ b) · b* M⁻¹ J M⁻¹ b`,
-valid as long as the Sherman–Morrison denominator `1 - w b* M⁻¹ b` is positive. -/
-theorem upperPotential_sub_smul_vecMulVec {J M : Matrix κ κ ℂ} (hJ : J.PosDef)
-    (hM : M.PosDef) (b : κ → ℂ) {w : ℝ}
+valid as long as the Sherman–Morrison denominator `1 - w b* M⁻¹ b` is positive.
+
+The identity holds for an arbitrary `J`; positivity of `J` is what makes the correction
+term nonnegative, and enters only where that is used. -/
+theorem upperPotential_sub_smul_vecMulVec {J M : Matrix κ κ ℂ} (hM : M.PosDef)
+    (b : κ → ℂ) {w : ℝ}
     (hden : 0 < 1 - w * RCLike.re (star b ⬝ᵥ (M⁻¹ *ᵥ b))) :
     upperPotential J (M - w • vecMulVec b (star b))
       = upperPotential J M + (w / (1 - w * RCLike.re (star b ⬝ᵥ (M⁻¹ *ᵥ b))))
           * RCLike.re (star b ⬝ᵥ ((M⁻¹ * J * M⁻¹) *ᵥ b)) := by
-  have hMdet : IsUnit M.det := (Matrix.isUnit_iff_isUnit_det _).1 hM.isUnit
-  have hconj : (M⁻¹ * J * M⁻¹).PosSemidef := by
-    have h := hJ.posSemidef.conjTranspose_mul_mul_same (M⁻¹)
-    rwa [hM.inv.isHermitian.eq] at h
-  set pr := RCLike.re (star b ⬝ᵥ (M⁻¹ *ᵥ b)) with hpr
-  set rr := RCLike.re (star b ⬝ᵥ ((M⁻¹ * J * M⁻¹) *ᵥ b)) with hrr
-  have hpre : ((pr : ℝ) : ℂ) = star b ⬝ᵥ (M⁻¹ *ᵥ b) :=
-    RCLike.ofReal_re_of_nonneg (hM.inv.posSemidef.dotProduct_mulVec_nonneg b)
-  have hrre : ((rr : ℝ) : ℂ) = star b ⬝ᵥ ((M⁻¹ * J * M⁻¹) *ᵥ b) :=
-    RCLike.ofReal_re_of_nonneg (hconj.dotProduct_mulVec_nonneg b)
-  have hdenC : (1 : ℂ) + (-(w : ℂ)) * (star b ⬝ᵥ (M⁻¹ *ᵥ b)) ≠ 0 := by
-    rw [← hpre, show (1 : ℂ) + (-(w : ℂ)) * ((pr : ℝ) : ℂ) = ((1 - w * pr : ℝ) : ℂ) by
-      push_cast; ring]
-    exact_mod_cast hden.ne'
-  have hsub : M - w • vecMulVec b (star b) = M + (-(w : ℂ)) • vecMulVec b (star b) := by
-    rw [Matrix.real_smul_eq_complex_smul, neg_smul, ← sub_eq_add_neg]
-  have hkey : RCLike.re (((-(w : ℂ)) / (1 + (-(w : ℂ)) * (star b ⬝ᵥ (M⁻¹ *ᵥ b))))
-      * (star b ⬝ᵥ ((M⁻¹ * J * M⁻¹) *ᵥ b))) = -((w / (1 - w * pr)) * rr) := by
-    rw [← hpre, ← hrre,
-      show ((-(w : ℂ)) / (1 + (-(w : ℂ)) * ((pr : ℝ) : ℂ))) * ((rr : ℝ) : ℂ)
-        = ((-((w / (1 - w * pr)) * rr) : ℝ) : ℂ) by push_cast; ring]
-    exact RCLike.ofReal_re _
-  rw [upperPotential, upperPotential, hsub,
-    Matrix.inv_add_smul_vecMulVec hM.isHermitian hMdet b _ hdenC, Matrix.mul_sub,
-    Matrix.mul_smul, Matrix.trace_sub, Matrix.trace_smul, smul_eq_mul,
-    Matrix.trace_mul_vecMulVec_self_star,
-    Matrix.dotProduct_conj_mulVec hM.inv.isHermitian, map_sub, hkey]
-  ring
+  rw [upperPotential, upperPotential, hM.inv_sub_smul_vecMulVec b hden, Matrix.mul_add,
+    Matrix.mul_smul, Matrix.trace_add, map_add, Matrix.trace_smul, RCLike.smul_re,
+    Matrix.trace_mul_vecMulVec_self_star, Matrix.dotProduct_conj_mulVec hM.inv.isHermitian]
 
 /-- The **lower verifier** of a candidate vector `a`, measuring how much of the gap opened by
 the shift `A ↦ A - δ • 1` the rank-one update `w a a*` would consume. -/
@@ -144,21 +134,7 @@ theorem lowerPotential_update_le [Nonempty ι] {A : Matrix ι ι ℂ} (hA : A.Po
     * (A - δ • (1 : Matrix ι ι ℂ))⁻¹) *ᵥ a)) with hsr
   have hD : 0 < D := by simp only [hDdef]; linarith
   have hq0 : 0 ≤ qr := hN.inv.posSemidef.re_dotProduct_nonneg a
-  have hden : 0 < 1 + w * qr := by have := mul_nonneg hw.le hq0; linarith
-  have hc : (w / (1 + w * qr)) * (1 + w * qr) = w := by field_simp
-  have hgoal : D * (1 + w * qr) ≤ w * sr := by
-    have h2 : D * (1 / w) ≤ D * (sr / D - qr) := mul_le_mul_of_nonneg_left hcond hD.le
-    have h3 : D * (sr / D - qr) = sr - D * qr := by field_simp
-    rw [h3] at h2
-    have h5 := mul_le_mul_of_nonneg_left h2 hw.le
-    have h4 : w * (D * (1 / w)) = D := by field_simp
-    rw [h4] at h5
-    nlinarith [h5]
-  have hkey : D ≤ (w / (1 + w * qr)) * sr := by
-    refine le_of_mul_le_mul_right ?_ hden
-    calc D * (1 + w * qr) ≤ w * sr := hgoal
-      _ = ((w / (1 + w * qr)) * (1 + w * qr)) * sr := by rw [hc]
-      _ = (w / (1 + w * qr)) * sr * (1 + w * qr) := by ring
+  have hkey : D ≤ (w / (1 + w * qr)) * sr := lower_barrier_ineq hD hw hq0 hcond
   simp only [hDdef] at hkey
   linarith
 
@@ -173,11 +149,9 @@ theorem upperPotential_update_le [Nonempty κ] {J B : Matrix κ κ ℂ} (hJ : J.
   have hM : (B + ζ • J).PosDef := hB.add_smul_posDef hJ hζ
   have hEpos : upperPotential J (B + ζ • J) < upperPotential J B :=
     upperPotential_add_smul_lt hJ hB hζ
-  have hMinvUnit : IsUnit ((B + ζ • J)⁻¹) := Matrix.isUnit_nonsing_inv_iff.2 hM.isUnit
-  have hconjPD : ((B + ζ • J)⁻¹ * J * (B + ζ • J)⁻¹).PosDef := by
-    have h := hJ.conjTranspose_mul_mul_same (B := (B + ζ • J)⁻¹)
-      (Matrix.mulVec_injective_iff_isUnit.2 hMinvUnit)
-    rwa [hM.inv.isHermitian.eq] at h
+  have hconjPD : ((B + ζ • J)⁻¹ * J * (B + ζ • J)⁻¹).PosDef :=
+    hJ.mul_mul_same_of_isHermitian hM.inv.isHermitian
+      (Matrix.isUnit_nonsing_inv_iff.2 hM.isUnit)
   simp only [upperVerifier] at hcond
   set E := upperPotential J B - upperPotential J (B + ζ • J) with hEdef
   set pr := RCLike.re (star b ⬝ᵥ ((B + ζ • J)⁻¹ *ᵥ b)) with hpr
@@ -196,22 +170,8 @@ theorem upperPotential_update_le [Nonempty κ] {J B : Matrix κ κ ℂ} (hJ : J.
       have hwinv : w * (1 / w) = 1 := by field_simp
       nlinarith [hcond, hdiv, hw, hwinv]
   refine ⟨hM.sub_smul_vecMulVec b hw.le hstrict, ?_⟩
-  rw [upperPotential_sub_smul_vecMulVec hJ hM b hstrict]
-  have hc : (w / (1 - w * pr)) * (1 - w * pr) = w := by field_simp
-  have hgoal : w * rr ≤ E * (1 - w * pr) := by
-    have h2 : E * (rr / E + pr) ≤ E * (1 / w) := mul_le_mul_of_nonneg_left hcond hE.le
-    have h3 : E * (rr / E + pr) = rr + E * pr := by field_simp
-    rw [h3] at h2
-    have h5 := mul_le_mul_of_nonneg_left h2 hw.le
-    have h4 : w * (E * (1 / w)) = E := by field_simp
-    rw [h4] at h5
-    nlinarith [h5]
-  have hkey : (w / (1 - w * pr)) * rr ≤ E := by
-    refine le_of_mul_le_mul_right ?_ hstrict
-    calc (w / (1 - w * pr)) * rr * (1 - w * pr)
-        = ((w / (1 - w * pr)) * (1 - w * pr)) * rr := by ring
-      _ = w * rr := by rw [hc]
-      _ ≤ E * (1 - w * pr) := hgoal
+  rw [upperPotential_sub_smul_vecMulVec hM b hstrict]
+  have hkey : (w / (1 - w * pr)) * rr ≤ E := upper_barrier_ineq hE hw hstrict hcond
   simp only [hEdef] at hkey
   linarith
 
@@ -221,9 +181,8 @@ potential. -/
 theorem upperVerifier_nonneg [Nonempty κ] {J B : Matrix κ κ ℂ} (hJ : J.PosDef)
     (hB : B.PosDef) {ζ : ℝ} (hζ : 0 < ζ) (b : κ → ℂ) : 0 ≤ upperVerifier J B ζ b := by
   have hM : (B + ζ • J).PosDef := hB.add_smul_posDef hJ hζ
-  have hconj : ((B + ζ • J)⁻¹ * J * (B + ζ • J)⁻¹).PosSemidef := by
-    have h := hJ.posSemidef.conjTranspose_mul_mul_same ((B + ζ • J)⁻¹)
-    rwa [hM.inv.isHermitian.eq] at h
+  have hconj : ((B + ζ • J)⁻¹ * J * (B + ζ • J)⁻¹).PosSemidef :=
+    hJ.posSemidef.mul_mul_same_of_isHermitian hM.inv.isHermitian
   have h1 : 0 ≤ RCLike.re (star b ⬝ᵥ (((B + ζ • J)⁻¹ * J * (B + ζ • J)⁻¹) *ᵥ b)) :=
     hconj.re_dotProduct_nonneg b
   have h2 : 0 ≤ RCLike.re (star b ⬝ᵥ ((B + ζ • J)⁻¹ *ᵥ b)) :=

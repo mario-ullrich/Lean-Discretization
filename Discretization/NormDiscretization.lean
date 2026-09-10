@@ -42,15 +42,8 @@ omit [DecidableEq ι] in
 `c* (u u*) c = |⟪c, u⟫|²`. -/
 theorem re_dotProduct_vecMulVec_mulVec (u c : ι → ℂ) :
     RCLike.re (star c ⬝ᵥ ((vecMulVec u (star u)) *ᵥ c)) = ‖star c ⬝ᵥ u‖ ^ 2 := by
-  have hz : (star c ⬝ᵥ u) * (starRingEnd ℂ) (star c ⬝ᵥ u)
-      = star c ⬝ᵥ ((vecMulVec u (star u)) *ᵥ c) := by
-    simp only [dotProduct, Matrix.mulVec, Matrix.vecMulVec_apply, Pi.star_apply, map_sum,
-      map_mul, RCLike.star_def, Complex.conj_conj]
-    rw [Finset.sum_mul_sum]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [Finset.mul_sum]
-    exact Finset.sum_congr rfl fun l _ => by ring
-  rw [← hz, RCLike.mul_conj]
+  rw [Matrix.vecMulVec_mulVec, dotProduct_smul, op_smul_eq_mul, Matrix.star_dotProduct u c,
+    RCLike.star_def, RCLike.mul_conj]
   norm_cast
 
 omit [DecidableEq ι] [MeasurableSpace Ω] in
@@ -100,7 +93,6 @@ theorem integral_norm_sq_combination {a : Ω → ι → ℂ}
 
 /-! ### The discretization inequality -/
 
-set_option maxHeartbeats 1000000 in
 /-- **Discretization of the `L₂`-norm.**
 
 Under the hypotheses of `Discretization.bss_generalized_of_gram_eq_one`, the `n` points and
