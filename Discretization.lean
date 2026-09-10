@@ -7,6 +7,8 @@ import BasicResults
 import Discretization.Potentials
 import Discretization.Barrier
 import Discretization.Averages
+import Discretization.Iteration
+import Discretization.MainTheorem
 
 /-!
 # Constructive discretization
@@ -33,4 +35,8 @@ potential gets worse.
   lemma: a weight between the two verifiers keeps both potentials from increasing.
 * `Discretization.Averages` — the verifiers pass the test on average, so an admissible point
   exists.
+* `Discretization.Iteration` — the construction: `n` steps, with the invariant that both
+  matrices stay positive definite and neither potential exceeds its initial value.
+* `Discretization.MainTheorem` — the initial data, the read-off of the frame bounds, and the
+  theorem itself, `Discretization.bss_generalized_of_gram_eq_one`.
 -/
