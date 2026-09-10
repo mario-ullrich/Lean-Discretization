@@ -154,15 +154,22 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | The resolvent identity | `Discretization.Infinite.inverse_sub_inverse_add_smul` | ✅ |
 | Effect of the shift on the potential | `Discretization.Infinite.upperPotential_sub_eq` | ✅ |
 | Growing `B` decreases the potential strictly | `Discretization.Infinite.upperPotential_add_smul_lt` | ✅ |
+| The upper verifier | `Discretization.Infinite.upperVerifier`, `.upperVerifier_nonneg` | ✅ |
+| The potential after a rank-one downdate | `Discretization.Infinite.upperPotential_sub_smul_rankOne` | ✅ |
+| **Barrier lemma, upper half** | `Discretization.Infinite.upperPotential_update_le` | ✅ |
+| The verifier passes on average | `Discretization.Infinite.integral_upperVerifier_lt` | ✅ |
+| An admissible point exists (finite `ι`, countable `κ`) | `Discretization.Infinite.exists_admissible_point` | ✅ |
+| `Ψ_J(B)⁻¹ • J ≼ B` | `Discretization.Infinite.inv_upperPotential_smul_le` | ✅ |
 
 ## What is left to do
 
 * **The two edge cases together**, `m = 1` and `M ≤ 1 + 1/n` at the same time; each is
   proved only under the assumption that the other side is regular.
 * **Countably infinite second family**, which is what makes the theorem apply to a
-  reproducing kernel Hilbert space with finite trace.  The operator analogues of the general
-  ingredients are in place, as is the upper potential with the effect of the shift on it.
-  The verifier, the barrier lemma, the averaging step and the construction are not.
+  reproducing kernel Hilbert space with finite trace.  Every ingredient is in place: the
+  trace, the rank-one update, the average of a quadratic form, the potential, the verifier,
+  the barrier lemma and the read-off.  What is missing is the construction itself, that is
+  the iteration and the assembly of the theorem.
 * **The applications of the paper**: least-squares recovery, sampling numbers, and the
   discretization with equal weights via Kiefer–Wolfowitz.
 
@@ -222,6 +229,9 @@ Discretization/
   NormDiscretization.lean                ← the discretization inequality for the L₂-norm
   Infinite/
     Potentials.lean                      ← the upper potential of an operator
+    Barrier.lean                         ← the upper verifier and the barrier lemma
+    Averages.lean                        ← the verifier passes on average
+    Bounds.lean                          ← a bound on the potential bounds the operator
   CardOne.lean                           ← the edge case of a one-element first family
   SmallEffectiveDim.lean                 ← the edge case of a small effective dimension
 lakefile.toml                            ← package `discretization`, two libraries

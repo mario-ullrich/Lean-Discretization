@@ -16,6 +16,8 @@ import Discretization.SmallEffectiveDim
 import Discretization.NormDiscretization
 import Discretization.Infinite.Potentials
 import Discretization.Infinite.Barrier
+import Discretization.Infinite.Averages
+import Discretization.Infinite.Bounds
 
 /-!
 # Constructive discretization
@@ -62,4 +64,8 @@ potential gets worse.
   set.
 * `Discretization.Infinite.Barrier` — the upper verifier and the barrier lemma for
   operators.
+* `Discretization.Infinite.Averages` — the upper verifier passes the test on average, so an
+  admissible point exists.
+* `Discretization.Infinite.Bounds` — a bound on the upper potential is a bound on the
+  operator, `Ψ_J(B)⁻¹ • J ≼ B`.
 -/
