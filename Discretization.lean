@@ -10,6 +10,8 @@ import Discretization.Averages
 import Discretization.Iteration
 import Discretization.MainTheorem
 import Discretization.GeneralGram
+import Discretization.CardOne
+import Discretization.SmallEffectiveDim
 import Discretization.NormDiscretization
 
 /-!
@@ -45,4 +47,9 @@ potential gets worse.
   the theorem in the form of the paper, `Discretization.bss_generalized`.
 * `Discretization.NormDiscretization` — the same statement read as a discretization
   inequality for the `L₂`-norm, `Discretization.exists_discretization`.
+* `Discretization.CardOne` — the edge case of a one-element first family, where the lower
+  verifier becomes a constant, `Discretization.bss_generalized_of_unique`.
+* `Discretization.SmallEffectiveDim` — the edge case of an effective dimension below
+  `1 + 1/n`, where the upper verifier becomes a constant,
+  `Discretization.bss_generalized_of_small_dim`.
 -/

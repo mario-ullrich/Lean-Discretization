@@ -3,7 +3,7 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Mathlib.Analysis.Matrix.Order
+import BasicResults.LoewnerOrder
 import Mathlib.Analysis.InnerProductSpace.Positive
 
 /-!
@@ -147,5 +147,22 @@ theorem PosSemidef.re_trace_mul_sq_le [DecidableEq n] {Y Z : Matrix n n 𝕜} (h
     rw [hZ.eq, mul_assoc, trace_mul_comm]
   rw [← h₂]
   exact hY.norm_trace_mul_sq_le Z
+
+/-- The trace of a rank-one matrix is the squared euclidean norm of its vector. -/
+theorem trace_vecMulVec_self_star (u : n → ℂ) :
+    (vecMulVec u (star u)).trace = ((∑ k, ‖u k‖ ^ 2 : ℝ) : ℂ) := by
+  rw [trace_vecMulVec, dotProduct]
+  push_cast
+  exact Finset.sum_congr rfl fun k _ => by
+    rw [Pi.star_apply, RCLike.star_def, RCLike.mul_conj]
+    norm_cast
+
+/-- **A rank-one matrix is bounded by its squared norm times the identity.**  This is the
+crude bound used when the effective dimension of the second family is too small for the
+potential argument. -/
+theorem vecMulVec_le_norm_sq_smul_one [DecidableEq n] (u : n → ℂ) :
+    vecMulVec u (star u) ≤ (∑ k, ‖u k‖ ^ 2) • (1 : Matrix n n ℂ) := by
+  have h := PosSemidef.le_trace_smul_one (posSemidef_vecMulVec_self_star u)
+  rwa [trace_vecMulVec_self_star, ← real_smul_eq_complex_smul] at h
 
 end Matrix

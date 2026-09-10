@@ -78,6 +78,13 @@ theorem smul_le_smul_of_nonneg {A B : Matrix n n 𝕜} (h : A ≤ B) {c : ℝ} (
   exact (Matrix.le_iff.1 h).smul hc
 
 omit [Fintype n] in
+/-- Scaling a complex matrix by a real number is scaling it by the corresponding complex
+number.  Used to move between the real weights of the construction and the complex scalars
+of the matrix algebra. -/
+theorem real_smul_eq_complex_smul (r : ℝ) (M : Matrix n n ℂ) : r • M = (r : ℂ) • M := by
+  norm_cast
+
+omit [Fintype n] in
 /-- Scaling a fixed positive semidefinite matrix by a larger factor gives a larger matrix:
 `α ≤ β` implies `α • A ≤ β • A` for `A ≽ 0`. -/
 theorem PosSemidef.smul_le_smul_of_le {A : Matrix n n 𝕜} (hA : A.PosSemidef) {α β : ℝ}

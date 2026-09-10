@@ -40,13 +40,6 @@ namespace Matrix
 
 variable {𝕜 n : Type*} [RCLike 𝕜] [Fintype n] [DecidableEq n]
 
-omit [Fintype n] [DecidableEq n] in
-/-- Scaling a complex matrix by a real number is scaling it by the corresponding complex
-number.  Used to move between the real weights of the construction and the complex scalars
-of the matrix algebra. -/
-theorem real_smul_eq_complex_smul (r : ℝ) (M : Matrix n n ℂ) : r • M = (r : ℂ) • M := by
-  norm_cast
-
 /-- **Sherman–Morrison formula for a rank-one update.**
 
 For an invertible Hermitian `A`, a vector `a` and a scalar `t` with

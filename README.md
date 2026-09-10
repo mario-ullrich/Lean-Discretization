@@ -96,12 +96,17 @@ Legend: ✅ proved unconditionally.  There is no `sorry` anywhere in this projec
 | **The theorem, general first family** | `Discretization.bss_generalized` | ✅ |
 | A quadratic form is a weighted sum of squares | `Discretization.re_dotProduct_sum_mulVec`, `.integral_norm_sq_combination` | ✅ |
 | **The discretization inequality for the `L₂`-norm** | `Discretization.exists_discretization` | ✅ |
+| Edge case `m = 1`: constant lower verifier | `Discretization.bss_generalized_of_unique` | ✅ |
+| Edge case `M ≤ 1 + 1/n`: constant upper verifier | `Discretization.bss_generalized_of_small_dim` | ✅ |
+| A rank-one matrix is below `‖u‖² • 1` | `Matrix.vecMulVec_le_norm_sq_smul_one` | ✅ |
 
 ## What is left to do
 
-* **The two edge cases of the paper.**  `m = 1` (where the lower verifier is replaced by
-  `n |a|²`) and `M < 1 + 1/n` (where the upper verifier is replaced by `n ‖b‖² / Tr J`).
-  With these, the side conditions `m ≥ 2` and `M ≥ 1 + 1/n` disappear.
+* **The two edge cases together.**  Each of `m = 1` and `M ≤ 1 + 1/n` is proved separately,
+  each assuming the other side is in the regular regime.  When both degenerate at once, both
+  verifiers are constant, the two averages are equal, and the averaging step no longer gives
+  a strict inequality; one then has to argue that the set where the two verifiers agree meets
+  the set where the lower one is positive.
 * **Countably infinite second family.**  The paper allows `κ` countable, which is what makes
   the theorem apply to a reproducing kernel Hilbert space with finite trace.  Mathlib has the
   Loewner order, `CFC.sqrt` and the C⋆-structure for operators on a Hilbert space, but no
@@ -151,6 +156,8 @@ Discretization/
   MainTheorem.lean                       ← initial data, frame bounds, the theorem
   GeneralGram.lean                       ← removing the normalisation of the first family
   NormDiscretization.lean                ← the discretization inequality for the L₂-norm
+  CardOne.lean                           ← the edge case of a one-element first family
+  SmallEffectiveDim.lean                 ← the edge case of a small effective dimension
 lakefile.toml                            ← package `discretization`, two libraries
 lean-toolchain                           ← leanprover/lean4:v4.33.1
 lake-manifest.json                       ← Mathlib pinned to the v4.33.1 tag

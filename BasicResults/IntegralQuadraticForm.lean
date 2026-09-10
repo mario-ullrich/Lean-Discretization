@@ -64,6 +64,32 @@ theorem integrable_mul_star (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (k l : ι)
     Integrable (fun x => a x k * star (a x l)) μ :=
   (ha k).integrable_mul (ha l).star
 
+omit [Fintype ι] [MeasurableSpace D] in
+/-- The squared modulus of a complex number, as the real part of `z * star z`. -/
+theorem re_mul_star (z : ℂ) : RCLike.re (z * star z) = ‖z‖ ^ 2 := by
+  rw [RCLike.star_def, RCLike.mul_conj]; norm_cast
+
+omit [Fintype ι] in
+/-- The squared modulus of a square-integrable function is integrable. -/
+theorem integrable_norm_sq (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (p : ι) :
+    Integrable (fun x => ‖a x p‖ ^ 2) μ := by
+  rw [integrable_congr (Filter.Eventually.of_forall fun x => (re_mul_star (a x p)).symm)]
+  exact (integrable_mul_star ha p p).re
+
+omit [Fintype ι] in
+/-- The average of `|aₚ|²` is the `p`-th diagonal entry of the Gram matrix. -/
+theorem integral_norm_sq (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (p : ι) :
+    ∫ x, ‖a x p‖ ^ 2 ∂μ = RCLike.re (gram a μ p p) := by
+  rw [gram_apply, ← integral_re (integrable_mul_star ha p p),
+    integral_congr_ae (Filter.Eventually.of_forall fun x => re_mul_star (a x p))]
+
+/-- The average of the squared euclidean norm of the family is the trace of its Gram
+matrix. -/
+theorem integral_sum_norm_sq (ha : ∀ k, MemLp (fun x => a x k) 2 μ) :
+    ∫ x, ∑ p, ‖a x p‖ ^ 2 ∂μ = RCLike.re (gram a μ).trace := by
+  rw [integral_finsetSum _ fun p _ => integrable_norm_sq ha p, Matrix.trace, map_sum]
+  exact Finset.sum_congr rfl fun p _ => integral_norm_sq ha p
+
 omit [MeasurableSpace D] in
 /-- The quadratic form `a(x)* Q a(x)` written as a double sum. -/
 theorem quadForm_eq_sum (Q : Matrix ι ι ℂ) (x : D) :
