@@ -1,0 +1,30 @@
+# Lake / Lean build artefacts
+.lake/
+build/
+lake-packages/
+
+# Lean tooling state
+*.olean
+*.ilean
+*.trace
+*.hash
+
+# LaTeX intermediate files (the sources in refs/ are tracked)
+*.aux
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.toc
+*.log
+*.out
+*.pdf
+
+# Editor / OS clutter
+.DS_Store
+.vscode/
+.idea/
+.claude/
+*.swp
+*~
