@@ -9,6 +9,7 @@ import BasicResults.PotentialBounds
 import BasicResults.ShermanMorrison
 import BasicResults.IntegralQuadraticForm
 import BasicResults.OperatorTrace
+import BasicResults.OperatorShermanMorrison
 
 /-!
 # General ingredients

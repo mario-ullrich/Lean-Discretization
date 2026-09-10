@@ -91,6 +91,16 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | `Tr (T u u*) = ⟪u, T u⟫` | `Discretization.traceAlong_mul_rankOne` | ✅ |
 | Linearity, and existence of `Tr (P Q)` | `Discretization.traceAlong_add`, `.traceAlong_smul`, `.summable_re_inner_apply_mul` | ✅ |
 
+### Rank-one updates of an operator (`BasicResults.OperatorShermanMorrison`)
+
+| Result | Lean name | Status |
+|---|---|---|
+| **Sherman–Morrison for operators** | `Discretization.inverse_add_smul_rankOne` | ✅ |
+| A rank-one update of a unit is a unit | `Discretization.isUnit_add_smul_rankOne` | ✅ |
+| The same with a real weight, added and subtracted | `Discretization.inverse_add_smul_rankOne_of_nonneg`, `.inverse_sub_smul_rankOne_of_nonneg` | ✅ |
+| Strict positivity under `A ± w u u*` | `Discretization.isStrictlyPositive_add_smul_rankOne`, `.isStrictlyPositive_sub_smul_rankOne` | ✅ |
+| The inverse of a strictly positive operator | `Discretization.isStrictlyPositive_inverse`, `.isSelfAdjoint_inverse` | ✅ |
+
 ### The bridge to measure theory (`BasicResults.IntegralQuadraticForm`)
 
 | Result | Lean name | Status |
@@ -130,8 +140,8 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 * **The two edge cases together**, `m = 1` and `M ≤ 1 + 1/n` at the same time; each is
   proved only under the assumption that the other side is regular.
 * **Countably infinite second family**, which is what makes the theorem apply to a
-  reproducing kernel Hilbert space with finite trace.  The trace of an operator is in place;
-  the rank-one update of an inverse and the upper half of the argument are not.
+  reproducing kernel Hilbert space with finite trace.  The trace of an operator and the
+  rank-one update of an inverse are in place; the upper half of the argument is not.
 * **The applications of the paper**: least-squares recovery, sampling numbers, and the
   discretization with equal weights via Kiefer–Wolfowitz.
 
@@ -160,7 +170,9 @@ structure is not needed, and none of it is currently in Mathlib:
   Gram matrix;
 * the whole of `BasicResults.OperatorTrace`: Mathlib has no trace of an operator, and the
   invariance of the Hilbert–Schmidt norm under adjoints, the cyclicity
-  `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫` and the bound `T ≼ Tr(T) • 1` are general facts.
+  `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫` and the bound `T ≼ Tr(T) • 1` are general facts;
+* `Discretization.inverse_add_smul_rankOne` — Sherman–Morrison for operators, which Mathlib
+  has in no form.
 
 ## Layout
 
@@ -168,6 +180,7 @@ structure is not needed, and none of it is currently in Mathlib:
 BasicResults.lean                        ← root of the general library
 BasicResults/
   OperatorTrace.lean                     ← the trace of an operator along a Hilbert basis
+  OperatorShermanMorrison.lean           ← rank-one updates of an operator
   LoewnerOrder.lean                      ← comparisons with multiples of the identity
   TraceInequalities.lean                 ← traces of products, Cauchy–Schwarz
   PotentialBounds.lean                   ← Ψ(B)⁻¹ • J ≼ B, via the square root of B
