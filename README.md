@@ -102,18 +102,11 @@ Legend: ✅ proved unconditionally.  There is no `sorry` anywhere in this projec
 
 ## What is left to do
 
-* **The two edge cases together.**  Each of `m = 1` and `M ≤ 1 + 1/n` is proved separately,
-  each assuming the other side is in the regular regime.  When both degenerate at once, both
-  verifiers are constant, the two averages are equal, and the averaging step no longer gives
-  a strict inequality; one then has to argue that the set where the two verifiers agree meets
-  the set where the lower one is positive.
-* **Countably infinite second family.**  The paper allows `κ` countable, which is what makes
-  the theorem apply to a reproducing kernel Hilbert space with finite trace.  Mathlib has the
-  Loewner order, `CFC.sqrt` and the C⋆-structure for operators on a Hilbert space, but no
-  trace-class theory, so `Ψ_J(B) = Tr (J B⁻¹)` would have to be built by hand.  In the
-  application `J` is diagonal in the singular basis, so the series
-  `∑ σₖ ⟪eₖ, B⁻¹ eₖ⟫` can serve as the definition, and the whole lower half of the argument
-  carries over verbatim.
+* **The two edge cases together**, `m = 1` and `M ≤ 1 + 1/n` at the same time; each is
+  proved only under the assumption that the other side is regular.
+* **Countably infinite second family**, which is what makes the theorem apply to a
+  reproducing kernel Hilbert space with finite trace.  Mathlib has no trace of an operator,
+  so that has to be built first.
 * **The applications of the paper**: least-squares recovery, sampling numbers, and the
   discretization with equal weights via Kiefer–Wolfowitz.
 

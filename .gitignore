@@ -9,7 +9,10 @@ lake-packages/
 *.trace
 *.hash
 
-# LaTeX intermediate files (the sources in refs/ are tracked)
+# Working documents (plans, reviews) are not part of the repository
+refs/*.md
+
+# LaTeX intermediate files
 *.aux
 *.bbl
 *.blg
