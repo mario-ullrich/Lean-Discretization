@@ -9,9 +9,9 @@ import Discretization.MainTheorem
 # The discretization inequality
 
 The main theorem is a statement about matrices.  This file translates it into the statement
-about functions that motivates it: for a function `f` in the span of the first family, the
-integral `∫ |f|² dμ` is bounded by a weighted sum of `|f(xᵢ)|²`, and for a function `g` in the
-span of the second family the weighted sum is bounded by the squared coefficient norm.
+about functions that motivates it.  For a function `f` in the span of the first family, the
+integral `∫ |f|² dμ` is bounded by a weighted sum of `|f(xᵢ)|²`.  For a function `g` in the
+span of the second family, the weighted sum is bounded by the squared coefficient norm.
 
 The dictionary is elementary.  A coefficient vector `c` gives the function
 `f(x) = ⟪c, a(x)⟫ = ∑ conj (cₖ) aₖ(x)`, and
@@ -104,13 +104,12 @@ and bound the weighted sum for every function in the span of the second family f
 
 `∑ wᵢ |g(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ · ‖c‖²`,
 
-where `c` is the coefficient vector of `g`.  Both statements hold uniformly: the same points
-and weights work for all coefficient vectors.
+where `c` is the coefficient vector of `g`.
 
-This is Corollary 4 of the paper, for finite families.  With the second family taken to be
-the singular basis of the embedding of a reproducing kernel Hilbert space `H` into `L₂`, the
-coefficient norm on the right is the `H`-norm of `g` and `Λ` is the norm of the
-embedding. -/
+This is Corollary 4 of the paper, for finite families.  If the second family is the singular
+basis of the embedding of a reproducing kernel Hilbert space `H` into `L₂`, that is, an
+orthonormal basis of `H` that is orthogonal in `L₂`, then the coefficient norm on the right
+is the `H`-norm of `g` and `Λ` is the norm of the embedding. -/
 theorem exists_discretization [Nonempty ι] [Nonempty κ]
     {J : Matrix κ κ ℂ} (hJ : J.PosDef) {Λ : ℝ} (hΛ : 0 < Λ)
     (hJΛ : J ≤ Λ • (1 : Matrix κ κ ℂ)) {a : Ω → ι → ℂ} {b : Ω → κ → ℂ}

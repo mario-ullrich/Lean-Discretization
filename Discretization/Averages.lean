@@ -14,14 +14,12 @@ shows that on average they are, which is why an admissible point exists at all.
 Let `a : Ω → ι → ℂ` be a family of square-integrable functions whose Gram matrix is the
 identity, and `b : Ω → κ → ℂ` one whose Gram matrix is `J`.  Then
 
-* `Discretization.integral_lowerVerifier_gt` — `∫ lowerVerifier A δ (a x) dμ > 1/δ - Φ(A)`,
-* `Discretization.integral_upperVerifier_lt` — `∫ upperVerifier J B ζ (b x) dμ < 1/ζ + Ψ_J(B)`.
+* `Discretization.integral_lowerVerifier_gt`: `∫ lowerVerifier A δ (a x) dμ > 1/δ - Φ(A)`,
+* `Discretization.integral_upperVerifier_lt`: `∫ upperVerifier J B ζ (b x) dμ < 1/ζ + Ψ_J(B)`.
 
-Consequently, as soon as `1/δ - Φ(A) ≥ 1/ζ + Ψ_J(B)`, the average of the lower verifier
-exceeds the average of the upper one, so some point `x` satisfies
-`upperVerifier J B ζ (b x) < lowerVerifier A δ (a x)`
-(`Discretization.exists_admissible_point`), and any weight `w` between the two reciprocals
-is admissible for both barriers.
+So as soon as `1/δ - Φ(A) ≥ 1/ζ + Ψ_J(B)`, the lower verifier exceeds the upper one on
+average, hence at some point `x` (`Discretization.exists_admissible_point`).  Any weight `w`
+between the two reciprocals is then admissible for both barriers.
 
 The averages are computed with `Discretization.integral_re_quadForm`, which turns the
 average of a quadratic form into a trace against the Gram matrix.  The estimate of the lower

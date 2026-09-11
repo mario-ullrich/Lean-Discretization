@@ -26,11 +26,11 @@ The **barrier lemma** (`Discretization.lowerPotential_update_le` and
 matrices positive definite.  This is Lemma 3.3/3.4 of Batson–Spielman–Srivastava in the form
 used by Chkifa–Dolbeault–Krieg–Ullrich.
 
-The exact effect of an update on the potentials is computed first, in
-`Discretization.lowerPotential_add_smul_vecMulVec` and
-`Discretization.upperPotential_sub_smul_vecMulVec`; after that the barrier lemma is
-elementary algebra with real numbers, recorded separately as
-`Discretization.lower_barrier_ineq` and `Discretization.upper_barrier_ineq`.
+The effect of an update on the potentials is computed exactly
+(`Discretization.lowerPotential_add_smul_vecMulVec`,
+`Discretization.upperPotential_sub_smul_vecMulVec`).  The barrier lemma then follows from two
+inequalities between real numbers (`Discretization.lower_barrier_ineq`,
+`Discretization.upper_barrier_ineq`).
 -/
 
 open Matrix
@@ -41,8 +41,7 @@ namespace Discretization
 /-! ### The arithmetic of the two barriers
 
 Once the potentials are computed in closed form, each half of the barrier lemma is one
-inequality between real numbers.  Both are recorded separately, because they are the only
-part of the barrier argument that does not mention matrices at all. -/
+inequality between real numbers. -/
 
 /-- **The inequality behind the lower barrier.**  If the reciprocal weight `1/w` does not
 exceed `s/D - q`, then the decrease `w/(1 + w q) · s` of the lower potential is at least the
@@ -89,7 +88,7 @@ theorem lowerPotential_add_smul_vecMulVec {N : Matrix ι ι ℂ} (hN : N.PosDef)
 valid as long as the Sherman–Morrison denominator `1 - w b* M⁻¹ b` is positive.
 
 The identity holds for an arbitrary `J`; positivity of `J` is what makes the correction
-term nonnegative, and enters only where that is used. -/
+term nonnegative. -/
 theorem upperPotential_sub_smul_vecMulVec {J M : Matrix κ κ ℂ} (hM : M.PosDef)
     (b : κ → ℂ) {w : ℝ}
     (hden : 0 < 1 - w * RCLike.re (star b ⬝ᵥ (M⁻¹ *ᵥ b))) :
@@ -107,7 +106,10 @@ noncomputable def lowerVerifier (A : Matrix ι ι ℂ) (δ : ℝ) (a : ι → �
       *ᵥ a)) / (lowerPotential (A - δ • (1 : Matrix ι ι ℂ)) - lowerPotential A)
     - RCLike.re (star a ⬝ᵥ ((A - δ • (1 : Matrix ι ι ℂ))⁻¹ *ᵥ a))
 
-/-- The **upper verifier** of a candidate vector `b`. -/
+/-- The **upper verifier** of a candidate vector `b`, measuring how much of the gap opened by
+the shift `B ↦ B + ζ • J` the rank-one update `w b b*` would consume.  Here
+`X = (B + ζ • J)⁻¹`, and the two summands are `b* X J X b / (Ψ_J(B) - Ψ_J(B + ζ • J))` and
+`b* X b`. -/
 noncomputable def upperVerifier (J B : Matrix κ κ ℂ) (ζ : ℝ) (b : κ → ℂ) : ℝ :=
   RCLike.re (star b ⬝ᵥ (((B + ζ • J)⁻¹ * J * (B + ζ • J)⁻¹) *ᵥ b))
       / (upperPotential J B - upperPotential J (B + ζ • J))
@@ -176,8 +178,8 @@ theorem upperPotential_update_le [Nonempty κ] {J B : Matrix κ κ ℂ} (hJ : J.
   linarith
 
 /-- The upper verifier is nonnegative: both of its summands are, the numerator because
-`X J X` is positive semidefinite and the denominator because growing `B` lowers the upper
-potential. -/
+`X J X` is positive semidefinite for `X = (B + ζ • J)⁻¹`, and the denominator because growing
+`B` lowers the upper potential. -/
 theorem upperVerifier_nonneg [Nonempty κ] {J B : Matrix κ κ ℂ} (hJ : J.PosDef)
     (hB : B.PosDef) {ζ : ℝ} (hζ : 0 < ζ) (b : κ → ℂ) : 0 ≤ upperVerifier J B ζ b := by
   have hM : (B + ζ • J).PosDef := hB.add_smul_posDef hJ hζ

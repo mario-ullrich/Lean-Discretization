@@ -11,15 +11,15 @@ import BasicResults.LoewnerOrder
 The construction of sampling points adds one rank-one matrix `w a a*` at a time, and the
 whole argument rests on knowing how the inverse and its trace react.  This file provides:
 
-* `Matrix.inv_add_smul_vecMulVec` — the **Sherman–Morrison formula**
+* `Matrix.inv_add_smul_vecMulVec`: the **Sherman–Morrison formula**
   `(A + t a a*)⁻¹ = A⁻¹ - t / (1 + t a* A⁻¹ a) · (A⁻¹ a)(A⁻¹ a)*`;
-* `Matrix.trace_inv_add_smul_vecMulVec` — its trace,
+* `Matrix.trace_inv_add_smul_vecMulVec`: its trace,
   `Tr (A + t a a*)⁻¹ = Tr A⁻¹ - t / (1 + t a* A⁻¹ a) · a* A⁻² a`, which is the identity
   behind the lower verifier;
-* `Matrix.PosDef.inv_add_smul_vecMulVec` and `Matrix.PosDef.inv_sub_smul_vecMulVec` — the
+* `Matrix.PosDef.inv_add_smul_vecMulVec` and `Matrix.PosDef.inv_sub_smul_vecMulVec`: the
   same formula for a positive definite matrix and a **real** weight, where the quadratic
   form in the denominator is automatically real;
-* `Matrix.PosDef.add_smul_vecMulVec` and `Matrix.PosDef.sub_smul_vecMulVec` — positive
+* `Matrix.PosDef.add_smul_vecMulVec` and `Matrix.PosDef.sub_smul_vecMulVec`: positive
   definiteness is preserved when a rank-one matrix is added with a nonnegative weight, and
   when it is subtracted with a weight small enough to keep the Sherman–Morrison denominator
   `1 - w a* A⁻¹ a` positive.
@@ -27,8 +27,9 @@ whole argument rests on knowing how the inverse and its trace react.  This file 
 Mathlib has the Woodbury identity for block updates
 (`Matrix.add_mul_mul_inv_eq_sub`), but not the rank-one case in terms of
 `Matrix.vecMulVec`, and it has nothing on the trace of an update.  The proof below is a
-direct verification: the product of `A + t a a*` with the claimed inverse collapses to
-`1 + (t - c - t c q) · a (A⁻¹ a)*`, and the scalar factor vanishes by the choice of `c`.
+direct verification: with `q = a* A⁻¹ a` and `c = t / (1 + t q)`, the product of `A + t a a*`
+with the claimed inverse collapses to `1 + (t - c - t c q) · a (A⁻¹ a)*`, and the scalar
+factor vanishes by the choice of `c`.
 -/
 
 open scoped ComplexOrder MatrixOrder
@@ -49,8 +50,8 @@ For an invertible Hermitian `A`, a vector `a` and a scalar `t` with
 `1 + t · a* A⁻¹ a ≠ 0`,
 `(A + t a a*)⁻¹ = A⁻¹ - t / (1 + t a* A⁻¹ a) · (A⁻¹ a)(A⁻¹ a)*`.
 
-The Hermitian hypothesis is only used to identify `star a ᵥ* A⁻¹` with `star (A⁻¹ a)`, so
-that the correction term appears as a rank-one matrix built from the single vector `A⁻¹ a`. -/
+The Hermitian hypothesis is only used to identify the row vector `a* A⁻¹` with `(A⁻¹ a)*`,
+so that the correction term is a rank-one matrix built from the single vector `A⁻¹ a`. -/
 theorem inv_add_smul_vecMulVec {A : Matrix n n 𝕜} (hA : A.IsHermitian) (hdet : IsUnit A.det)
     (a : n → 𝕜) (t : 𝕜) (ht : 1 + t * (star a ⬝ᵥ (A⁻¹ *ᵥ a)) ≠ 0) :
     (A + t • vecMulVec a (star a))⁻¹
@@ -142,7 +143,7 @@ For a positive definite `A` and a weight `w` small enough that the denominator
 `1 - w · a* A⁻¹ a` stays positive,
 `(A - w a a*)⁻¹ = A⁻¹ + w/(1 - w · a* A⁻¹ a) · (A⁻¹a)(A⁻¹a)*`.
 
-The correction now has a plus sign: removing mass from `A` makes its inverse larger. -/
+The correction has a plus sign: removing mass from `A` makes its inverse larger. -/
 theorem PosDef.inv_sub_smul_vecMulVec {A : Matrix n n ℂ} (hA : A.PosDef) (a : n → ℂ) {w : ℝ}
     (hden : 0 < 1 - w * RCLike.re (star a ⬝ᵥ (A⁻¹ *ᵥ a))) :
     (A - w • vecMulVec a (star a))⁻¹
@@ -164,8 +165,8 @@ theorem PosDef.inv_sub_smul_vecMulVec {A : Matrix n n ℂ} (hA : A.PosDef) (a : 
   rw [hsub, _root_.Matrix.inv_add_smul_vecMulVec hA.isHermitian hAdet a _ hdenC,
     sub_eq_add_neg, ← neg_smul, hcoef, ← real_smul_eq_complex_smul]
 
-/-- **Subtracting a rank-one matrix preserves positive definiteness** as long as the
-Sherman–Morrison denominator stays positive, that is `w · a* A⁻¹ a < 1`.
+/-- **Subtracting a rank-one matrix preserves positive definiteness** as long as the weight
+is nonnegative and the Sherman–Morrison denominator stays positive, that is `w · a* A⁻¹ a < 1`.
 
 The inverse of `A - w a a*` is a positive definite matrix plus a positive semidefinite one,
 and a matrix whose inverse is positive definite is itself positive definite

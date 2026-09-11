@@ -10,18 +10,18 @@ import Discretization.Infinite.Bounds
 /-!
 # The construction with an operator on the upper side
 
-The construction of `Discretization.Iteration`, with the second family replaced by a
+The construction of `Discretization.Iteration`, for a second family given by a
 square-integrable map into a Hilbert space.  The first family stays finite, so the lower
 state is the matrix
 
 `A_k = A₀ - k δ • 1 + ∑ᵢ wᵢ a(xᵢ) a(xᵢ)*`
 
-of the finite development, reused verbatim, while the upper state becomes the operator
+of the finite case, while the upper state is the operator
 
 `B_k = B₀ + k ζ • J - ∑ᵢ wᵢ b(xᵢ) b(xᵢ)*`   (`Discretization.Infinite.upperState`).
 
-The invariant is the same as in finite dimension: both states stay positive — the operator
-one **strictly** positive, that is invertible as well — and neither potential exceeds its
+The invariant is the same as in finite dimension: both states stay positive, the operator
+one even **strictly** positive (that is, invertible), and neither potential exceeds its
 initial value.  The step is `Discretization.Infinite.exists_admissible_point` followed by the
 two barrier lemmas, the lower one for matrices and the upper one for operators.
 
@@ -48,6 +48,7 @@ noncomputable def upperState (J B₀ : H →L[ℂ] H) (ζ : ℝ) (b : Ω → H) 
   B₀ + ((k : ℝ) * ζ) • J - ∑ i, w i • rankOne ℂ (b (x i)) (b (x i))
 
 omit [CompleteSpace H] [MeasurableSpace Ω] in
+/-- With no points chosen, the upper state is `B₀`. -/
 @[simp]
 theorem upperState_zero (J B₀ : H →L[ℂ] H) (ζ : ℝ) (b : Ω → H) (x : Fin 0 → Ω)
     (w : Fin 0 → ℝ) : upperState J B₀ ζ b x w = B₀ := by simp [upperState]
@@ -69,8 +70,8 @@ theorem upperState_snoc (J B₀ : H →L[ℂ] H) (ζ : ℝ) (b : Ω → H) {k : 
 weights `w₁, …, wₙ` such that the lower matrix stays positive definite, the upper operator
 stays strictly positive, and neither potential exceeds its initial value.
 
-The proof is the induction of `Discretization.exists_points_weights`, with the upper half
-replaced by its operator counterpart. -/
+The proof is the induction of `Discretization.exists_points_weights`, with the operator
+barrier lemma in the upper half. -/
 theorem exists_points_weights [Nonempty ι] [Nonempty κ] [Countable κ]
     {A₀ : Matrix ι ι ℂ} (hA₀ : A₀.PosDef) (hJ : IsFiniteTracePos e J) {B₀ : H →L[ℂ] H}
     (hB₀ : IsStrictlyPositive B₀) {δ ζ : ℝ} (hδ : 0 < δ) (hζ : 0 < ζ) {a : Ω → ι → ℂ}

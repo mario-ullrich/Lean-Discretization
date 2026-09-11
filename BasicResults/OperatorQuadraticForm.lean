@@ -13,7 +13,7 @@ import Mathlib.MeasureTheory.Function.L2Space
 This is the operator counterpart of `BasicResults.IntegralQuadraticForm`, and the only place
 in the infinite-dimensional development where measure theory meets the trace.
 
-The second family is now a single square-integrable map `b : Ω → H` into a Hilbert space, and
+The second family is a single square-integrable map `b : Ω → H` into a Hilbert space, and
 its Gram operator is a positive operator `J` of finite trace, tied to `b` by
 
 `Re ⟪u, J u⟫ = ∫ |⟪u, b x⟫|² dμ(x)`   for every `u`.
@@ -23,13 +23,12 @@ along `b` gives the trace of `J Q`:
 
 `∫ Re ⟪b x, Q (b x)⟫ dμ(x) = Tr (J Q)`   (`Discretization.integral_re_inner_apply`).
 
-Both sides are approached through square roots.  Pointwise, `Re ⟪b, Q b⟫ = ‖√Q b‖²`, and
-Parseval turns that into `∑ₖ |⟪√Q eₖ, b⟫|²`; interchanging sum and integral, which is
-legitimate because the terms are nonnegative and their integrals sum to the trace, and then
-using the Gram identity gives `∑ₖ Re ⟪√Q eₖ, J (√Q eₖ)⟫`.  That is `Tr (√Q J √Q)`, and it
-equals `Tr (J Q) = ∑ₖ Re ⟪√J eₖ, Q (√J eₖ)⟫` because both are the squared Hilbert–Schmidt
-norm of `√Q √J`, one read through the operator and one through its adjoint
-(`Discretization.tsum_norm_sq_adjoint`).
+Both sides are computed through square roots and Parseval's identity.  Pointwise,
+`Re ⟪b, Q b⟫ = ‖√Q b‖² = ∑ₖ |⟪√Q eₖ, b⟫|²`.  Sum and integral may be interchanged because all
+terms are nonnegative, and the Gram identity turns the result into
+`∑ₖ Re ⟪√Q eₖ, J (√Q eₖ)⟫ = Tr (√Q J √Q)`.  This equals `Tr (J Q)` because both are the
+squared Hilbert–Schmidt norm of `√Q √J`, once read through the operator and once through its
+adjoint (`Discretization.tsum_norm_sq_adjoint`).
 
 Countability of the index set of the basis enters here for the first time: the interchange of
 sum and integral is `MeasureTheory.integral_tsum_of_summable_integral_norm`, which needs a
@@ -46,8 +45,8 @@ variable {κ Ω H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [Com
 
 /-! ### The two symmetrizations of `Tr (J Q)` -/
 
-/-- The adjoint of `√Q √J` is `√J √Q`; square roots are self-adjoint whatever they are taken
-of, because `CFC.sqrt` is nonnegative by construction. -/
+/-- The adjoint of `√Q √J` is `√J √Q`; the square root of any operator is self-adjoint,
+because `CFC.sqrt` is nonnegative by construction. -/
 private theorem adjoint_sqrt_mul_sqrt (J Q : H →L[ℂ] H) :
     ContinuousLinearMap.adjoint (CFC.sqrt Q * CFC.sqrt J) = CFC.sqrt J * CFC.sqrt Q := by
   rw [← ContinuousLinearMap.star_eq_adjoint, star_mul,
@@ -55,7 +54,7 @@ private theorem adjoint_sqrt_mul_sqrt (J Q : H →L[ℂ] H) :
     (IsSelfAdjoint.of_nonneg (CFC.sqrt_nonneg Q)).star_eq]
 
 /-- The composition `√Q √J` is Hilbert–Schmidt as soon as `J` has finite trace, because `√J`
-is and `√Q` is bounded. -/
+is Hilbert–Schmidt and `√Q` is bounded. -/
 theorem summable_norm_sq_sqrt_mul_sqrt (e : HilbertBasis κ ℂ H) {J Q : H →L[ℂ] H} (hJ : 0 ≤ J)
     (hsum : Summable fun k => RCLike.re ⟪e k, J (e k)⟫_ℂ) :
     Summable fun k => ‖CFC.sqrt Q (CFC.sqrt J (e k))‖ ^ 2 :=
@@ -65,9 +64,9 @@ theorem summable_norm_sq_sqrt_mul_sqrt (e : HilbertBasis κ ℂ H) {J Q : H →L
 `Tr (J Q) = ∑ₖ Re ⟪√Q eₖ, J (√Q eₖ)⟫`.
 
 Both this and `Discretization.traceAlong_mul` express the trace as a squared
-Hilbert–Schmidt norm of `√Q √J`, the two readings differing by an adjoint.  The form proved
-here is the one the averaging step produces, the form of `Discretization.traceAlong_mul` the
-one the potential argument consumes. -/
+Hilbert–Schmidt norm of `√Q √J`, the two readings differing by an adjoint.  The averaging
+step produces this form; the potential argument uses the form of
+`Discretization.traceAlong_mul`. -/
 theorem traceAlong_mul_eq_tsum_sqrt (e : HilbertBasis κ ℂ H) {J Q : H →L[ℂ] H} (hJ : 0 ≤ J)
     (hQ : 0 ≤ Q) (hsum : Summable fun k => RCLike.re ⟪e k, J (e k)⟫_ℂ) :
     traceAlong e (J * Q) = ∑' k, RCLike.re ⟪CFC.sqrt Q (e k), J (CFC.sqrt Q (e k))⟫_ℂ := by
@@ -105,14 +104,8 @@ theorem integrable_re_inner_apply {b : Ω → H} (hb : MemLp b 2 μ) (Q : H →L
     _ = ‖Q‖ * ‖b x‖ ^ 2 := by ring
 
 omit [CompleteSpace H] in
-/-- The integral of one coefficient of the family, read through the Gram operator. -/
-private theorem integral_norm_sq_inner {J : H →L[ℂ] H} {b : Ω → H}
-    (hgram : ∀ u, RCLike.re ⟪u, J u⟫_ℂ = ∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ) (u : H) :
-    ∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ = RCLike.re ⟪u, J u⟫_ℂ := (hgram u).symm
-
-omit [CompleteSpace H] in
 /-- Each coefficient of the family is square-integrable. -/
-private theorem integrable_norm_sq_inner {b : Ω → H} (hb : MemLp b 2 μ) (u : H) :
+theorem integrable_norm_sq_inner {b : Ω → H} (hb : MemLp b 2 μ) (u : H) :
     Integrable (fun x => ‖⟪u, b x⟫_ℂ‖ ^ 2) μ :=
   ((hb.continuousLinearMap_comp (innerSL ℂ u)).norm).integrable_sq
 
@@ -123,8 +116,7 @@ bounded operator `Q`,
 
 `∫ Re ⟪b x, Q (b x)⟫ dμ(x) = Tr (J Q)`.
 
-This is the operator form of `Discretization.integral_re_quadForm`, and it is what turns the
-average of a verifier into an expression in the potentials. -/
+This is the operator form of `Discretization.integral_re_quadForm`. -/
 theorem integral_re_inner_apply [Countable κ] (e : HilbertBasis κ ℂ H) {J Q : H →L[ℂ] H}
     (hJ : 0 ≤ J) (hQ : 0 ≤ Q) (hsum : Summable fun k => RCLike.re ⟪e k, J (e k)⟫_ℂ)
     {b : Ω → H} (hb : MemLp b 2 μ)
@@ -136,7 +128,7 @@ theorem integral_re_inner_apply [Countable κ] (e : HilbertBasis κ ℂ H) {J Q 
   set g : κ → Ω → ℝ := fun k x => ‖⟪CFC.sqrt Q (e k), b x⟫_ℂ‖ ^ 2 with hg
   have hgint : ∀ k, Integrable (g k) μ := fun k => integrable_norm_sq_inner hb _
   have hgval : ∀ k, ∫ x, g k x ∂μ = RCLike.re ⟪CFC.sqrt Q (e k), J (CFC.sqrt Q (e k))⟫_ℂ :=
-    fun k => integral_norm_sq_inner hgram _
+    fun k => (hgram _).symm
   have hgsum : Summable fun k => ∫ x, ‖g k x‖ ∂μ := by
     have hterm : ∀ k, ∫ x, ‖g k x‖ ∂μ = ‖CFC.sqrt J (CFC.sqrt Q (e k))‖ ^ 2 := fun k => by
       rw [integral_congr_ae (Filter.Eventually.of_forall fun x =>

@@ -19,10 +19,9 @@ and `Discretization.Infinite.upperPotential_update_le` says that a weight `w` wi
 does not increase the upper potential.
 
 The real-number inequality behind it is shared with the finite-dimensional proof: it is
-`Discretization.upper_barrier_ineq`.  What has to be redone is the closed form of the
-potential after a rank-one downdate, which now rests on
-`Discretization.inverse_sub_smul_rankOne_of_nonneg`, and the positivity of the numerator,
-which rests on the injectivity of `J`.
+`Discretization.upper_barrier_ineq`.  The operator-specific ingredients are the closed form
+of the potential after a rank-one downdate (`Discretization.inverse_sub_smul_rankOne_of_nonneg`)
+and the positivity of the numerator, which rests on the injectivity of `J`.
 -/
 
 open scoped InnerProductSpace ComplexOrder
@@ -39,8 +38,8 @@ variable {κ H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [Comple
 
 /-- **The quadratic form of a positive injective operator is positive on nonzero vectors.**
 
-This is the substitute for positive definiteness: the eigenvalues of `J` accumulate at zero,
-but the quadratic form still does not vanish anywhere except at `0`. -/
+This is the substitute for positive definiteness: `J` need not be bounded away from zero,
+but its quadratic form vanishes only at `0`. -/
 theorem IsFiniteTracePos.re_inner_pos (hJ : IsFiniteTracePos e J) {y : H} (hy : y ≠ 0) :
     0 < RCLike.re ⟪y, J y⟫_ℂ := by
   have hsq : CFC.sqrt J * CFC.sqrt J = J := CFC.sqrt_mul_sqrt_self J hJ.nonneg
@@ -55,8 +54,8 @@ theorem IsFiniteTracePos.re_inner_pos (hJ : IsFiniteTracePos e J) {y : H} (hy : 
       _ = 0 := map_zero _
   · positivity
 
-/-- The conjugate `X J X` of a positive injective operator by an invertible self-adjoint one
-has a positive quadratic form on nonzero vectors. -/
+/-- The conjugate `X J X` of a positive injective operator by a strictly positive one has a
+positive quadratic form on nonzero vectors. -/
 theorem re_inner_conj_pos (hJ : IsFiniteTracePos e J) {X : H →L[ℂ] H}
     (hX : IsStrictlyPositive X) {u : H} (hu : u ≠ 0) :
     0 < RCLike.re ⟪u, (X * J * X) u⟫_ℂ := by
@@ -134,7 +133,7 @@ theorem upperVerifier_nonneg [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : H �
 `U_B^ζ(u) ≤ 1/w`, then the updated operator `B + ζ • J - w u u*` is again strictly positive
 and its upper potential has not increased.
 
-The real arithmetic is `Discretization.upper_barrier_ineq`, shared verbatim with the
+The real arithmetic is `Discretization.upper_barrier_ineq`, the same as in the
 finite-dimensional proof. -/
 theorem upperPotential_update_le [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}
     (hB : IsStrictlyPositive B) {ζ : ℝ} (hζ : 0 < ζ) (u : H) {w : ℝ} (hw : 0 < w)

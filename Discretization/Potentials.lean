@@ -21,8 +21,8 @@ Before each step of the construction, `A` is shrunk by `δ • 1` and `B` is gro
 Both shifts move the potentials in the unfavourable direction, and the exact amount is
 computed here:
 
-* `Discretization.lowerPotential_sub_eq` — `Φ(A - δ • 1) - Φ(A) = δ · Re Tr ((A - δ • 1)⁻¹ A⁻¹)`,
-* `Discretization.upperPotential_sub_eq` — `Ψ_J(B) - Ψ_J(B + ζ • J) = ζ · Re Tr (J B⁻¹ J (B + ζ • J)⁻¹)`.
+* `Discretization.lowerPotential_sub_eq`: `Φ(A - δ • 1) - Φ(A) = δ · Re Tr ((A - δ • 1)⁻¹ A⁻¹)`,
+* `Discretization.upperPotential_sub_eq`: `Ψ_J(B) - Ψ_J(B + ζ • J) = ζ · Re Tr (J B⁻¹ J (B + ζ • J)⁻¹)`.
 
 Both right-hand sides are positive, so shrinking increases the lower potential and growing
 decreases the upper one; the gap this opens is what a new sampling point is allowed to

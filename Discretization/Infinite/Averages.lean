@@ -15,15 +15,15 @@ square-integrable family `b` whose Gram operator is `J`,
 `∫ U_B^ζ(b x) dμ(x) < 1/ζ + Ψ_J(B)`   (`Discretization.Infinite.integral_upperVerifier_lt`),
 
 so a point at which the upper verifier is small exists as soon as the lower verifier is
-large on average.  Since the first family stays finite, that comparison mixes a matrix
-statement with an operator one; both are averages of real functions, and the conclusion is
-`Discretization.Infinite.exists_admissible_point`.
+large on average.  Since the first family stays finite, the lower verifier is a matrix
+quantity and the upper one an operator quantity; both are real functions on `Ω`, and the
+conclusion is `Discretization.Infinite.exists_admissible_point`.
 
 Two ingredients do the work.  The average of a quadratic form is a trace
-(`Discretization.integral_re_inner_apply`), which turns the average of the verifier into
-`Tr (J X J X) / E + Ψ_J(B + ζ • J)` with `E` the gain of the potential; and the numerator is
-bounded by `E/ζ`, because `X ≤ W` conjugates to `J X J ≤ J W J` and the trace of a product
-with a positive operator is monotone in its other factor.
+(`Discretization.integral_re_inner_apply`).  With `W = B⁻¹` and `X = (B + ζ • J)⁻¹` it turns
+the average of the verifier into `Tr (J X J X) / E + Ψ_J(B + ζ • J)`, where
+`E = ζ Tr (J W J X)` is the gain of the potential.  Then `X ≤ W` bounds the numerator by
+`E/ζ`.
 -/
 
 open MeasureTheory
@@ -131,8 +131,8 @@ theorem integral_upperVerifier_lt [Nonempty κ] [Countable κ] (hJ : IsFiniteTra
 /-! ### An admissible point exists -/
 
 /-- **An admissible point exists.**  If the gap opened by the two shifts is large enough,
-`1/δ - Φ(A) ≥ 1/ζ + Ψ_J(B)`, then some point passes the test of both verifiers — the lower
-one of the finite first family, the upper one of the operator second family. -/
+`1/δ - Φ(A) ≥ 1/ζ + Ψ_J(B)`, then some point passes the test of both verifiers, the lower
+one for the finite first family and the upper one for the operator second family. -/
 theorem exists_admissible_point {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
     [Nonempty κ] [Countable κ] {A : Matrix ι ι ℂ} (hA : A.PosDef) {δ : ℝ} (hδ : 0 < δ)
     (hδ' : δ < (lowerPotential A)⁻¹) {a : Ω → ι → ℂ}

@@ -9,7 +9,8 @@ import Discretization.Infinite.Iteration
 /-!
 # The generalized sparsification theorem with a countable second family
 
-The theorem of `Discretization.MainTheorem` for a second family indexed by a countable set:
+The theorem `Discretization.bss_generalized_of_gram_eq_one` for a second family indexed by a
+countable set:
 the first family is finite, with Gram matrix the identity, and the second is a
 square-integrable map `b : Ω → H` into a Hilbert space whose Gram operator `J` is positive,
 injective and of finite trace, bounded by `Λ • 1`.  With
@@ -23,10 +24,9 @@ the conclusion is that for every `n ≥ m` there are `n` points and positive wei
 the first in the matrix order, the second in the operator order.  This is
 `Discretization.Infinite.bss_generalized_of_gram_eq_one`.
 
-The lower half is taken over unchanged from the finite development, down to the read-off
-`Discretization.lower_frame_bound`; so is the arithmetic of the four parameters, which lives
-in `Discretization.Parameters`.  What is proved here is the operator counterpart of the
-upper read-off and the assembly.
+The lower half and the arithmetic of the four parameters are those of the finite case
+(`Discretization.lower_frame_bound`, `Discretization.Parameters`).  This file proves the
+operator counterpart of the upper read-off and assembles the theorem.
 -/
 
 open MeasureTheory
@@ -149,7 +149,7 @@ are `n` points and positive weights such that
 `(1 - √((m-1)/n))² • 1 ≼ ∑ᵢ wᵢ a(xᵢ) a(xᵢ)*`  and
 `∑ᵢ wᵢ b(xᵢ) b(xᵢ)* ≼ (1 + √((M-1)/n))² Λ • 1`.
 
-Compared with `Discretization.bss_generalized_of_gram_eq_one`, the second family may now be
+Compared with `Discretization.bss_generalized_of_gram_eq_one`, the second family may be
 infinite: what bounds the number of points is its **effective dimension**, and that is
 finite as soon as `J` has finite trace. -/
 theorem bss_generalized_of_gram_eq_one [Nonempty ι] [Nonempty κ] [Countable κ]

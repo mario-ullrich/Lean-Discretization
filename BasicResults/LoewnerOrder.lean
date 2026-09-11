@@ -16,20 +16,23 @@ numbers is itself scoped, so `open scoped ComplexOrder` is needed as well.
 This file collects the elementary comparisons with multiples of the identity that the
 potential-function argument uses over and over:
 
-* `Matrix.IsHermitian.le_smul_one` — a Hermitian matrix is dominated by `c • 1` as soon as
+* `Matrix.IsHermitian.le_smul_one`: a Hermitian matrix is dominated by `c • 1` as soon as
   `c` dominates every eigenvalue;
-* `Matrix.PosSemidef.le_trace_smul_one` — a positive semidefinite matrix is dominated by
+* `Matrix.PosSemidef.le_trace_smul_one`: a positive semidefinite matrix is dominated by
   its own trace times the identity, since the trace is the sum of the (nonnegative)
   eigenvalues;
-* `Matrix.re_trace_le_re_trace_of_le` — the order is compatible with taking traces;
-* `Matrix.real_smul_eq_complex_smul` — real and complex scalars agree on complex matrices;
-* `Matrix.PosSemidef.mul_mul_same_of_isHermitian` and its positive definite counterpart —
+* `Matrix.re_trace_le_re_trace_of_le`: the order is compatible with taking traces;
+* `Matrix.real_smul_eq_complex_smul`: real and complex scalars agree on complex matrices;
+* `Matrix.PosSemidef.mul_mul_same_of_isHermitian` and its positive definite counterpart:
   conjugating by a Hermitian matrix preserves positivity.
 
-All of them are stated for a general `RCLike` field, and none of them is in Mathlib.
-Compatibility of the order with multiplication by a nonnegative real is Mathlib's
-`smul_le_smul_of_nonneg_left` and `smul_le_smul_of_nonneg_right`, whose order-module
-instances apply to matrices once `MatrixOrder` is open.
+The section on inverses adds `Matrix.PosDef.inv_le_inv_of_le` (the inverse is antitone),
+`Matrix.PosDef.inv_re_trace_smul_one_le` (`(Re Tr A⁻¹)⁻¹ • 1 ≤ A`) and
+`Matrix.PosDef.sub_smul_one` (`A - δ • 1` stays positive definite for `δ < (Re Tr A⁻¹)⁻¹`).
+
+Everything outside that section is stated for a general `RCLike` field; none of it is in
+Mathlib.  Multiplying an inequality by a nonnegative real is Mathlib's
+`smul_le_smul_of_nonneg_left` and `smul_le_smul_of_nonneg_right`.
 -/
 
 open scoped ComplexOrder MatrixOrder
@@ -63,8 +66,8 @@ theorem IsHermitian.le_smul_one [DecidableEq n] {A : Matrix n n 𝕜} (hA : A.Is
 /-- **A positive semidefinite matrix is dominated by its trace times the identity.**
 
 For `A ≽ 0` we have `A ≤ (Tr A) • 1`.  Indeed the trace is the sum of the eigenvalues of
-`A`, all of which are nonnegative, so every single eigenvalue is at most the trace; now
-apply `Matrix.IsHermitian.le_smul_one`.
+`A`, all of which are nonnegative, so every eigenvalue is at most the trace, and
+`Matrix.IsHermitian.le_smul_one` applies.
 
 This is the crude bound `‖A‖ ≤ Tr A` for positive semidefinite `A`, written as a matrix
 inequality. -/
@@ -80,9 +83,9 @@ omit [Fintype n] in
 number.  Used to move between the real weights of the construction and the complex scalars
 of the matrix algebra.
 
-Mathlib's `RCLike.real_smul_eq_coe_smul` says the same for every `RCLike` field, but spells
-the coercion as `RCLike.ofReal`, which no rewrite identifies with `Complex.ofReal`; the two
-are definitionally equal and `norm_cast` closes the gap. -/
+Mathlib's `RCLike.real_smul_eq_coe_smul` says the same for every `RCLike` field, but writes
+the real number as `RCLike.ofReal r` rather than `Complex.ofReal r`.  The two are equal by
+definition, but Lean's rewriting does not see that, so the complex spelling is kept here. -/
 theorem real_smul_eq_complex_smul (r : ℝ) (M : Matrix n n ℂ) : r • M = (r : ℂ) • M := by
   norm_cast
 
@@ -117,9 +120,9 @@ theorem re_trace_le_re_trace_of_le {A B : Matrix n n 𝕜} (h : A ≤ B) :
   rw [map_sub] at h₂
   linarith
 
-/-- The trace of a Hermitian matrix is real: it agrees with the image of its own real part.
-This is the bridge used whenever a potential, defined as a real number, has to be fed back
-into a matrix identity. -/
+/-- The trace of a Hermitian matrix is real: it equals its own real part, viewed as an
+element of `𝕜`.  This is used whenever a potential, a real number, has to be fed back into
+a matrix identity. -/
 theorem IsHermitian.ofReal_re_trace {A : Matrix n n 𝕜} (hA : A.IsHermitian) :
     ((RCLike.re A.trace : ℝ) : 𝕜) = A.trace := by
   have h : (starRingEnd 𝕜) A.trace = A.trace := by
@@ -180,7 +183,7 @@ theorem PosDef.inv_re_trace_smul_one_le [Nonempty n] {A : Matrix n n ℂ} (hA : 
   rwa [← hAinv.isHermitian.ofReal_re_trace, ← RCLike.real_smul_eq_coe_smul (K := ℂ)] at h
 
 /-- **Shrinking a positive definite matrix by a small multiple of the identity keeps it
-positive definite.**  The admissible range for the increment `δ` is exactly what the
+positive definite.**  The admissible range for the shift `δ` is exactly what the
 potential allows: `δ < Φ(A)⁻¹ = (Re Tr A⁻¹)⁻¹`. -/
 theorem PosDef.sub_smul_one [Nonempty n] {A : Matrix n n ℂ} (hA : A.PosDef) {δ : ℝ}
     (hδ : δ < (RCLike.re (A⁻¹).trace)⁻¹) : (A - δ • (1 : Matrix n n ℂ)).PosDef := by

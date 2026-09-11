@@ -9,23 +9,26 @@ import Mathlib.Analysis.InnerProductSpace.Positive
 /-!
 # Traces of products of positive semidefinite matrices
 
-Three facts about the bilinear form `(P, Q) ↦ Tr (P * Q)` on Hermitian matrices, none of
-them in Mathlib, all of them needed for the potential-function argument:
+Facts about the bilinear form `(P, Q) ↦ Tr (P * Q)` on Hermitian matrices, none of them in
+Mathlib, all of them needed for the potential-function argument:
 
-* `Matrix.PosSemidef.trace_mul_nonneg` — `Tr (P * Q) ≥ 0` for positive semidefinite `P`
+* `Matrix.PosSemidef.trace_mul_nonneg`: `Tr (P * Q) ≥ 0` for positive semidefinite `P`
   and `Q`, with the strict version `Matrix.PosDef.re_trace_mul_pos` for positive definite
   matrices;
-* `Matrix.IsHermitian.ofReal_re_trace_mul` — `Tr (P * Q)` is real for Hermitian `P` and `Q`,
+* `Matrix.IsHermitian.ofReal_re_trace_mul`: `Tr (P * Q)` is real for Hermitian `P` and `Q`,
   even though the product itself need not be Hermitian;
-* `Matrix.PosSemidef.norm_trace_mul_sq_le` — the **Cauchy–Schwarz inequality**
-  `|Tr (Z * Y)|² ≤ Tr Y · Tr (Z * Y * Zᴴ)` for the semi-inner product
+* `Matrix.PosSemidef.norm_trace_mul_sq_le`: the **Cauchy–Schwarz inequality**
+  `|Tr (Z * Y)|² ≤ Re Tr Y · Re Tr (Z * Y * Zᴴ)` for the semi-inner product
   `⟪P, Q⟫ = Tr (Q * Y * Pᴴ)` attached to a positive semidefinite `Y`.
+
+The file also records that a rank-one matrix is bounded by its norm,
+`u u* ≤ ‖u‖² • 1` (`Matrix.vecMulVec_le_norm_sq_smul_one`).
 
 The proofs of the first two rest on the representation of a positive semidefinite matrix as
 a sum of rank-one matrices `v v*` (`Matrix.posSemidef_iff_eq_sum_vecMulVec`), for which
 `Matrix.trace_mul_vecMulVec_self_star` computes the trace.  The Cauchy–Schwarz inequality is
-Mathlib's `InnerProductSpace.Core.inner_mul_inner_self_le` for the semi-inner product above;
-its instance is built locally, since Mathlib's identical construction is private.
+Mathlib's `InnerProductSpace.Core.inner_mul_inner_self_le` for the semi-inner product above,
+which is set up on the spot.
 -/
 
 open scoped ComplexOrder MatrixOrder
@@ -104,8 +107,7 @@ theorem IsHermitian.ofReal_re_trace_mul {P Q : Matrix n n 𝕜} (hP : P.IsHermit
 
 A positive semidefinite matrix `Y` induces the semi-inner product
 `⟪P, Q⟫ = Tr (Q * Y * Pᴴ)` on matrices.  Cauchy–Schwarz applied to the pair `1`, `Z` reads
-`|Tr (Z * Y)|² ≤ Tr Y · Tr (Z * Y * Zᴴ)`, which is the form used to estimate the average of
-the lower verifier.
+`|Tr (Z * Y)|² ≤ Re Tr Y · Re Tr (Z * Y * Zᴴ)`.
 
 No commutation of `Y` and `Z` is required.  For Hermitian `Z` the right-hand side is
 `Tr Y · Tr (Y * Z * Z)`, see `Matrix.PosSemidef.re_trace_mul_sq_le`. -/

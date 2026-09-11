@@ -33,17 +33,14 @@ where `√T` is the positive square root from the continuous functional calculus
 
 is the squared Hilbert–Schmidt norm of `√T`.  This is the form in which the trace is used:
 
-* `Discretization.traceAlong_nonneg` — the trace of a positive operator is nonnegative;
-* `Discretization.le_traceAlong_smul_one` — the **crude bound** `T ≤ Tr(T) • 1`, the operator
-  analogue of `Matrix.PosSemidef.le_trace_smul_one`.  Its proof runs through Parseval and the
-  Cauchy–Schwarz inequality for a single inner product, which is what makes the passage from
-  the Hilbert–Schmidt norm to the operator norm elementary and, incidentally, makes basis
-  independence unnecessary.
+* `Discretization.traceAlong_nonneg`: the trace of a positive operator is nonnegative;
+* `Discretization.le_traceAlong_smul_one`: the **crude bound** `T ≤ Tr(T) • 1`, the operator
+  analogue of `Matrix.PosSemidef.le_trace_smul_one`, proved with Parseval's identity and the
+  Cauchy–Schwarz inequality alone.
 
-Mathlib supplies everything else: `HilbertBasis` with `HilbertBasis.hasSum_inner_mul_inner`
-for Parseval, the C⋆-algebra structure of `H →L[ℂ] H`, its Loewner order
-(`ContinuousLinearMap.instLoewnerPartialOrder`, with positivity `ContinuousLinearMap.IsPositive`),
-and `CFC.sqrt` with `CFC.sqrt_mul_sqrt_self`.
+Mathlib supplies `HilbertBasis` with Parseval's identity
+(`HilbertBasis.hasSum_inner_mul_inner`), the order on `H →L[ℂ] H` and the square root
+`CFC.sqrt`.
 -/
 
 open scoped InnerProductSpace ComplexOrder
@@ -74,7 +71,7 @@ theorem summable_norm_sq_inner (e : HilbertBasis κ ℂ H) (x : H) :
     Summable fun k => ‖⟪e k, x⟫_ℂ‖ ^ 2 :=
   (hasSum_norm_sq_inner e x).summable
 
-/-! ### Two lemmas used throughout -/
+/-! ### Lemmas used throughout -/
 
 omit [CompleteSpace H] in
 /-- A vector of a Hilbert basis is nonzero. -/
@@ -115,9 +112,8 @@ theorem summable_norm_sq_comp (e : HilbertBasis κ ℂ H) (S : H →L[ℂ] H) {T
 
 /-- The **trace of `T` along the Hilbert basis `e`**, `∑' k, Re ⟪e k, T (e k)⟫`.
 
-For a positive operator this is the sum of a family of nonnegative numbers, hence either a
-genuine finite trace or, by the convention of `tsum`, zero; every statement that uses the
-value assumes the family summable. -/
+For a positive operator the terms are nonnegative.  If their sum diverges, Lean's `∑'`
+returns `0`, so every statement about the value assumes that the family is summable. -/
 noncomputable def traceAlong (e : HilbertBasis κ ℂ H) (T : H →L[ℂ] H) : ℝ :=
   ∑' k, RCLike.re ⟪e k, T (e k)⟫_ℂ
 
@@ -153,16 +149,15 @@ theorem traceAlong_nonneg (e : HilbertBasis κ ℂ H) {T : H →L[ℂ] H} (hT : 
 /-! ### The Hilbert–Schmidt sum and adjoints
 
 The trace of a positive operator is the squared Hilbert–Schmidt norm of its square root, and
-the passage from an operator to its adjoint leaves that quantity unchanged.  This is the one
-place where a double series has to be rearranged; doing it in `ℝ≥0∞`, where every sum is
-defined and `ENNReal.tsum_comm` is unconditional, avoids any summability hypothesis. -/
+the passage from an operator to its adjoint leaves that quantity unchanged.  Here a double
+series has to be rearranged; doing it in `ℝ≥0∞`, where every sum is defined and
+`ENNReal.tsum_comm` is unconditional, avoids any summability hypothesis. -/
 
-/-- Summability of a nonnegative family, read off from its sum in `ℝ≥0∞`. -/
-private theorem summable_of_tsum_ofReal_ne_top {f : κ → ℝ} (hf : ∀ k, 0 ≤ f k)
-    (h : ∑' k, ENNReal.ofReal (f k) ≠ ⊤) : Summable f := by
-  have h1 : Summable fun k => (f k).toNNReal :=
-    ENNReal.tsum_coe_ne_top_iff_summable.1 h
-  exact (NNReal.summable_coe.2 h1).congr fun k => Real.coe_toNNReal _ (hf k)
+/-- Summability of a nonnegative family, read off from its sum in `ℝ≥0∞`
+(`ENNReal.summable_toReal`). -/
+theorem summable_of_tsum_ofReal_ne_top {f : κ → ℝ} (hf : ∀ k, 0 ≤ f k)
+    (h : ∑' k, ENNReal.ofReal (f k) ≠ ⊤) : Summable f :=
+  (ENNReal.summable_toReal h).congr fun k => ENNReal.toReal_ofReal (hf k)
 
 omit [CompleteSpace H] in
 /-- **Parseval's identity in `ℝ≥0∞`**, where no summability hypothesis is needed. -/
@@ -251,7 +246,7 @@ theorem eq_zero_of_traceAlong_eq_zero (e : HilbertBasis κ ℂ H) {T : H →L[�
 /-! ### The trace of a product
 
 The trace of a product of two positive operators is nonnegative, and this is where the
-double series of the previous section is rearranged once more, now with complex terms.  The
+double series of the previous section is rearranged again, with complex terms.  The
 identity behind it is
 
 `Re Tr (P Q) = ∑ₖ Re ⟪√P eₖ, Q (√P eₖ)⟫`,
@@ -260,7 +255,7 @@ whose right-hand side is a sum of nonnegative terms as soon as `Q` is positive. 
 language of the finite-dimensional argument this is `Tr (P Q) = Tr (√P Q √P)`. -/
 
 omit [CompleteSpace H] in
-/-- The pairing `∑ₖ ⟪S eₖ, T eₖ⟫` of two Hilbert–Schmidt operators converges absolutely. -/
+/-- The pairing `∑ₖ ⟪S eₖ, T eₖ⟫` of two Hilbert–Schmidt operators is summable. -/
 theorem summable_inner_apply (e : HilbertBasis κ ℂ H) {S T : H →L[ℂ] H}
     (hS : Summable fun k => ‖S (e k)‖ ^ 2) (hT : Summable fun k => ‖T (e k)‖ ^ 2) :
     Summable fun k => ⟪S (e k), T (e k)⟫_ℂ := by
@@ -390,11 +385,6 @@ theorem le_traceAlong_smul_one (e : HilbertBasis κ ℂ H) {T : H →L[ℂ] H} (
     rw [ContinuousLinearMap.reApplyInnerSelf, hval, inner_sub_left, map_sub, hsmul]
     linarith
 
-/-- Real parts commute with a convergent sum. -/
-private theorem re_tsum {f : κ → ℂ} (hf : Summable f) :
-    RCLike.re (∑' k, f k) = ∑' k, RCLike.re (f k) :=
-  ((hf.hasSum.mapL (RCLike.reCLM (K := ℂ))).tsum_eq).symm
-
 /-- **The trace of a product, symmetrized:**
 `Tr (P Q) = ∑ₖ Re ⟪√P eₖ, Q (√P eₖ)⟫` for a positive `P` with summable trace and a positive
 `Q`.
@@ -445,9 +435,9 @@ theorem traceAlong_mul (e : HilbertBasis κ ℂ H) {P Q : H →L[ℂ] H} (hP : 0
   have hsumR : Summable fun k => ⟪Q (CFC.sqrt P (e k)), CFC.sqrt P (e k)⟫_ℂ :=
     ((summable_inner_apply e hTadj hSadj).congr hR)
   calc traceAlong e (P * Q) = RCLike.re (∑' k, ⟪e k, (P * Q) (e k)⟫_ℂ) :=
-        (re_tsum hsumL).symm
+        (RCLike.re_tsum _ hsumL).symm
     _ = RCLike.re (∑' k, ⟪Q (CFC.sqrt P (e k)), CFC.sqrt P (e k)⟫_ℂ) := by rw [hswap]
-    _ = ∑' k, RCLike.re ⟪Q (CFC.sqrt P (e k)), CFC.sqrt P (e k)⟫_ℂ := re_tsum hsumR
+    _ = ∑' k, RCLike.re ⟪Q (CFC.sqrt P (e k)), CFC.sqrt P (e k)⟫_ℂ := RCLike.re_tsum _ hsumR
     _ = ∑' k, RCLike.re ⟪CFC.sqrt P (e k), Q (CFC.sqrt P (e k))⟫_ℂ :=
         tsum_congr fun k => inner_re_symm (𝕜 := ℂ) _ _
 
@@ -464,7 +454,7 @@ theorem traceAlong_mul_nonneg (e : HilbertBasis κ ℂ H) {P Q : H →L[ℂ] H} 
 nonzero and the bounded factor is positive and invertible, the operator analogue of
 `Matrix.PosDef.re_trace_mul_pos`.
 
-Invertibility of `Q` is what replaces positive definiteness: it makes `√Q` injective, so a
+Invertibility of `Q` plays the role of positive definiteness: it makes `√Q` injective, so a
 vanishing trace would force `√P` to annihilate the whole basis. -/
 theorem traceAlong_mul_pos (e : HilbertBasis κ ℂ H) {P Q : H →L[ℂ] H} (hP : 0 ≤ P)
     (hQ : 0 ≤ Q) (hQu : IsUnit Q) (hsum : Summable fun k => RCLike.re ⟪e k, P (e k)⟫_ℂ)
@@ -527,7 +517,7 @@ theorem traceAlong_smul (e : HilbertBasis κ ℂ H) (c : ℝ) (T : H →L[ℂ] H
     rw [show (c • T) (e k) = c • T (e k) from rfl, RCLike.real_smul_eq_coe_smul (K := ℂ),
       inner_smul_real_right, RCLike.smul_re]
 
-/-- **The pairing of a product with the basis is absolutely summable** when the first factor
+/-- **The pairing of a product with the basis is summable** when the first factor
 is positive with summable trace and the second is positive.
 
 This is the summability that makes `Tr (P Q)` an honest sum, and it is not a consequence of
@@ -569,18 +559,18 @@ theorem summable_re_inner_apply_mul (e : HilbertBasis κ ℂ H) {P Q : H →L[�
 
 omit [CompleteSpace H] in
 /-- **The trace against a rank-one operator is a quadratic form:**
-`Tr (T · u u*) = ⟪u, T u⟫`.
+`Tr (T · u u*) = Re ⟪u, T u⟫`.
 
 This is the operator form of `Matrix.trace_mul_vecMulVec_self_star`, and it is what turns the
-rank-one update of the construction into a pointwise condition on the new sampling point.  No
-summability hypothesis is needed: the series is the one of Parseval's identity. -/
+rank-one update of the construction into a pointwise condition on a candidate sampling point.
+No summability hypothesis is needed: the series is the one of Parseval's identity. -/
 theorem traceAlong_mul_rankOne (e : HilbertBasis κ ℂ H) (T : H →L[ℂ] H) (u : H) :
     traceAlong e (T * InnerProductSpace.rankOne ℂ u u) = RCLike.re ⟪u, T u⟫_ℂ := by
   have hterm : ∀ k, RCLike.re ⟪e k, (T * InnerProductSpace.rankOne ℂ u u) (e k)⟫_ℂ
       = RCLike.re (⟪u, e k⟫_ℂ * ⟪e k, T u⟫_ℂ) := fun k => by
     rw [show (T * InnerProductSpace.rankOne ℂ u u) (e k) = T (⟪u, e k⟫_ℂ • u) from rfl,
       ContinuousLinearMap.map_smul, inner_smul_right]
-  rw [traceAlong, tsum_congr hterm, ← re_tsum (e.summable_inner_mul_inner u (T u)),
+  rw [traceAlong, tsum_congr hterm, ← RCLike.re_tsum _ (e.summable_inner_mul_inner u (T u)),
     e.tsum_inner_mul_inner]
 
 end Discretization

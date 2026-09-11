@@ -12,23 +12,20 @@ The construction of sampling points changes the operator of the upper bound by a
 operator at a time, so the whole argument rests on knowing how the inverse reacts.  This
 file is the operator counterpart of `BasicResults.ShermanMorrison`.
 
-Two things change compared with matrices.  The rank-one operator `u u*` is Mathlib's bundled
-`InnerProductSpace.rankOne ℂ u u`, which sends `z` to `⟪u, z⟫ • u`, and the inverse is
-`Ring.inverse`, defined on all of `H →L[ℂ] H` and equal to the honest inverse exactly on the
-units.  The formula itself is unchanged:
+Two notations differ from the matrix case.  The rank-one operator `u u*` is Mathlib's
+`InnerProductSpace.rankOne ℂ u u`, which sends `z` to `⟪u, z⟫ • u`.  The inverse is
+`Ring.inverse`, which is defined for every operator and is the inverse whenever the operator
+is invertible.  The formula itself is the same:
 
 `(A + t u u*)⁻¹ = A⁻¹ - t / (1 + t ⟪u, A⁻¹ u⟫) · (A⁻¹u)(A⁻¹u)*`,
 
 and so is its proof, a direct verification that the right-hand side is a two-sided inverse.
-Every rewrite it needs is in Mathlib's rank-one API: `InnerProductSpace.comp_rankOne`,
-`InnerProductSpace.rankOne_comp` and `InnerProductSpace.rankOne_comp_rankOne`.
 
-The file also records the two forms in which the potential argument uses the formula, with a
-**real** weight added (`Discretization.inverse_add_smul_rankOne_of_nonneg`) or subtracted
-(`Discretization.inverse_sub_smul_rankOne_of_nonneg`), where the quadratic form
-`⟪u, A⁻¹ u⟫` in the denominator is automatically real, together with the fact that both
-updates keep the operator positive and invertible, the second as long as the
-Sherman–Morrison denominator stays positive.
+The formula is also recorded with a **real** weight, added
+(`Discretization.inverse_add_smul_rankOne_of_nonneg`) or subtracted
+(`Discretization.inverse_sub_smul_rankOne_of_nonneg`); then the quadratic form `⟪u, A⁻¹ u⟫`
+in the denominator is real.  Both updates keep the operator positive and invertible, the
+second one as long as the Sherman–Morrison denominator stays positive.
 
 Positivity here is Mathlib's `IsStrictlyPositive`, which is positivity together with
 invertibility.  That is the right notion in infinite dimension: a positive operator need not
@@ -54,7 +51,7 @@ theorem inverse_eq_of_mul_eq_one {R : Type*} [Ring R] {x y : R} (h₁ : x * y = 
 
 /-- The two products that identify the Sherman–Morrison candidate as a two-sided inverse.
 
-This is the computational heart of the file: both products collapse to
+Both products collapse to
 `1 + (t - c - t c q) · u v*`, with `c` the Sherman–Morrison coefficient and
 `q = ⟪u, A⁻¹ u⟫`, and that scalar vanishes by the choice of `c`. -/
 private theorem mul_eq_one_add_smul_rankOne {A : H →L[ℂ] H} (hA : IsUnit A)
@@ -132,7 +129,7 @@ theorem inverse_add_smul_rankOne {A : H →L[ℂ] H} (hA : IsUnit A) (hsa : IsSe
 
 omit [CompleteSpace H] in
 /-- Scaling an operator by a real number is scaling it by the corresponding complex number,
-with the coercion spelled as `Complex.ofReal`, which is what the casts of this file use. -/
+with the real number written as `Complex.ofReal r`, the spelling used throughout this file. -/
 private theorem real_smul_eq_complex_smul (r : ℝ) (X : H →L[ℂ] H) : r • X = (r : ℂ) • X :=
   RCLike.real_smul_eq_coe_smul (K := ℂ) r X
 
@@ -148,8 +145,9 @@ theorem re_inner_inverse_nonneg {A : H →L[ℂ] H} (hA : IsStrictlyPositive A) 
   ((ContinuousLinearMap.nonneg_iff_isPositive _).1
     hA.ringInverse.nonneg).re_inner_nonneg_right u
 
-/-- Being nonnegative, that quadratic form is real. -/
-private theorem ofReal_re_inner_inverse {A : H →L[ℂ] H} (hA : IsStrictlyPositive A) (u : H) :
+/-- The quadratic form of the inverse of a strictly positive operator is real, being
+nonnegative. -/
+theorem ofReal_re_inner_inverse {A : H →L[ℂ] H} (hA : IsStrictlyPositive A) (u : H) :
     ((RCLike.re ⟪u, Ring.inverse A u⟫_ℂ : ℝ) : ℂ) = ⟪u, Ring.inverse A u⟫_ℂ := by
   have h0 : (0 : ℂ) ≤ ⟪u, Ring.inverse A u⟫_ℂ :=
     ((ContinuousLinearMap.nonneg_iff_isPositive _).1
@@ -198,7 +196,7 @@ For a strictly positive `A` and a weight `w` small enough that the Sherman–Mor
 denominator `1 - w ⟪u, A⁻¹ u⟫` stays positive,
 `(A - w u u*)⁻¹ = A⁻¹ + w/(1 - w ⟪u, A⁻¹ u⟫) · (A⁻¹u)(A⁻¹u)*`.
 
-The correction now has a plus sign: removing mass from `A` makes its inverse larger. -/
+The correction has a plus sign: removing mass from `A` makes its inverse larger. -/
 theorem inverse_sub_smul_rankOne_of_nonneg {A : H →L[ℂ] H} (hA : IsStrictlyPositive A)
     (u : H) {w : ℝ} (hden : 0 < 1 - w * RCLike.re ⟪u, Ring.inverse A u⟫_ℂ) :
     Ring.inverse (A - w • rankOne ℂ u u)

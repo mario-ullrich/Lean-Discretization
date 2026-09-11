@@ -44,7 +44,7 @@ theorem inv_smul_one {c : ℝ} (hc : c ≠ 0) :
   rw [Matrix.smul_mul, Matrix.mul_smul, Matrix.one_mul, smul_smul, mul_inv_cancel₀ hc,
     one_smul]
 
-/-- `Φ(c • 1) = m / c`, where `m` is the size of the matrix. -/
+/-- `Φ(c • 1) = card ι / c`. -/
 theorem lowerPotential_smul_one {c : ℝ} (hc : c ≠ 0) :
     lowerPotential (c • (1 : Matrix ι ι ℂ)) = Fintype.card ι / c := by
   rw [lowerPotential, inv_smul_one hc, Matrix.trace_smul, RCLike.smul_re, Matrix.trace_one]

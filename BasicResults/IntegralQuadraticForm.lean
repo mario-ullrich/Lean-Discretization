@@ -22,15 +22,14 @@ every matrix `Q` satisfies
 
 `∫ a(x)* Q a(x) dμ(x) = Tr (Q · gram a μ)`.
 
-Read from left to right this computes the average of a quadratic form along the family;
-read from right to left it says that the trace of `Q` against the Gram matrix is an
-average, which is how the potential-function argument finds a good sampling point.
+Read from right to left, it says that a trace against the Gram matrix is an average, and an
+average is attained somewhere.  That is how a good sampling point is found.
 
 The file also records the two auxiliary facts that go with it: the integrand is integrable
 (Cauchy–Schwarz for `L₂` functions, `MeasureTheory.MemLp.integrable_mul`), and if the
-average of `g` is smaller than the average of `f`, then `g x ≤ f x` at some point
-(`Discretization.exists_lt_of_integral_lt`).  The latter replaces the "set of positive
-measure" formulation of the paper: for our purposes one single good point is enough.
+average of `g` is smaller than the average of `f`, then `g x < f x` at some point
+(`Discretization.exists_lt_of_integral_lt`).  The paper phrases this as a set of positive
+measure; one good point is all that is needed here.
 -/
 
 open Matrix MeasureTheory
@@ -46,6 +45,7 @@ noncomputable def gram (a : D → ι → ℂ) (μ : Measure D) : Matrix ι ι �
   Matrix.of fun k l => ∫ x, a x k * star (a x l) ∂μ
 
 omit [Fintype ι] in
+/-- The entries of the Gram matrix, by definition. -/
 @[simp]
 theorem gram_apply (a : D → ι → ℂ) (μ : Measure D) (k l : ι) :
     gram a μ k l = ∫ x, a x k * star (a x l) ∂μ := rfl

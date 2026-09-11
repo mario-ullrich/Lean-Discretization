@@ -9,8 +9,8 @@ import Discretization.Infinite.MainTheorem
 /-!
 # The discretization inequality with a countable second family
 
-The theorem of `Discretization.Infinite.MainTheorem` read as an inequality between norms,
-the operator counterpart of `Discretization.NormDiscretization`.
+The theorem `Discretization.Infinite.bss_generalized_of_gram_eq_one` read as an inequality
+between norms, the operator counterpart of `Discretization.exists_discretization`.
 
 For a coefficient vector `c` the function `f(x) = ⟪c, a(x)⟫` lies in the span of the first
 family, and the lower frame bound says
@@ -24,8 +24,9 @@ upper frame bound says
 `∑ᵢ wᵢ |g(xᵢ)|² ≤ (1 + s)² Λ ‖u‖²`.
 
 Both statements hold uniformly, with the same points and weights.  This is Corollary 4 of
-the paper: with `b` the singular basis of the embedding of a reproducing kernel Hilbert space
-into `L₂`, the right-hand side is the squared norm of `g` in that space.
+the paper: if `b` is the singular basis of the embedding of a reproducing kernel Hilbert
+space into `L₂`, that is, an orthonormal basis of the space that is orthogonal in `L₂`, then
+the right-hand side is the squared norm of `g` in that space.
 
 The dictionary is the same as in finite dimension, with the quadratic form of a weighted sum
 of rank-one operators (`Discretization.Infinite.re_inner_sum_rankOne`) in place of the
@@ -94,8 +95,8 @@ and bound the weighted sum for every function in the span of the second family f
 
 `∑ᵢ wᵢ |⟪u, b(xᵢ)⟫|² ≤ (1 + √((M-1)/n))² Λ · ‖u‖²`.
 
-This is Corollary 4 of the paper, now for an infinite-dimensional second family: what
-controls the number of points is the effective dimension `M = Tr J / Λ`. -/
+This is Corollary 4 of the paper for an infinite-dimensional second family: what controls
+the number of points is the effective dimension `M = Tr J / Λ`. -/
 theorem exists_discretization [Nonempty ι] [Nonempty κ] [Countable κ]
     (hJ : IsFiniteTracePos e J) {Λ : ℝ} (hΛ : 0 < Λ)
     (hJΛ : J ≤ Λ • (1 : H →L[ℂ] H)) {a : Ω → ι → ℂ} {b : Ω → H}
@@ -112,7 +113,7 @@ theorem exists_discretization [Nonempty ι] [Nonempty κ] [Countable κ]
   obtain ⟨x, w, hwpos, hlow, hup⟩ :=
     bss_generalized_of_gram_eq_one hJ hΛ hJΛ ha hb hgrama hgramb hm hmn hM
   refine ⟨x, w, hwpos, fun c => ?_, fun u => ?_⟩
-  · -- the lower half is the finite statement, unchanged
+  · -- the lower half is the finite statement
     have h1 : RCLike.re (star c ⬝ᵥ ((1 : Matrix ι ι ℂ) *ᵥ c)) = ∑ k, ‖c k‖ ^ 2 := by
       simpa using re_quadForm_smul_one (ι := ι) 1 c
     calc (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 * ∫ y, ‖star c ⬝ᵥ a y‖ ^ 2 ∂μ

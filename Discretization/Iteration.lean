@@ -22,7 +22,8 @@ restores the invariant.
 
 The result is `Discretization.exists_points_weights`.  Note that the number of steps `n` is
 arbitrary: the initial gap condition alone drives the whole construction, and it is the
-choice of `A₀`, `B₀`, `δ` and `ζ` in the next file that ties `n` to the frame bounds.
+choice of `A₀`, `B₀`, `δ` and `ζ` in `Discretization.MainTheorem` that ties `n` to the frame
+bounds.
 -/
 
 open Matrix MeasureTheory
@@ -44,11 +45,13 @@ noncomputable def upperState (J B₀ : Matrix κ κ ℂ) (ζ : ℝ) (b : Ω → 
   B₀ + ((k : ℝ) * ζ) • J - ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
 
 omit [Fintype ι] [MeasurableSpace Ω] in
+/-- With no points chosen, the lower state is `A₀`. -/
 @[simp]
 theorem lowerState_zero (A₀ : Matrix ι ι ℂ) (δ : ℝ) (a : Ω → ι → ℂ) (x : Fin 0 → Ω)
     (w : Fin 0 → ℝ) : lowerState A₀ δ a x w = A₀ := by simp [lowerState]
 
 omit [Fintype κ] [DecidableEq κ] [MeasurableSpace Ω] in
+/-- With no points chosen, the upper state is `B₀`. -/
 @[simp]
 theorem upperState_zero (J B₀ : Matrix κ κ ℂ) (ζ : ℝ) (b : Ω → κ → ℂ) (x : Fin 0 → Ω)
     (w : Fin 0 → ℝ) : upperState J B₀ ζ b x w = B₀ := by simp [upperState]

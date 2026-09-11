@@ -13,19 +13,20 @@ the same potential as in finite dimension,
 
 `Ψ_J(B) = Tr (J B⁻¹)`,
 
-now with `J` a positive operator of finite trace, `B` a strictly positive operator, and the
+with `J` a positive operator of finite trace, `B` a strictly positive operator, and the
 trace taken along a fixed Hilbert basis.  This file provides the potential, the exact effect
 of the shift `B ↦ B + ζ • J` on it, and the resulting strict decrease.
 
-Three hypotheses on `J` recur, and they are bundled as `Discretization.Infinite.IsFiniteTracePos`:
-`J` is positive, its trace along the basis converges, and it is injective.  Injectivity is
-what replaces positive definiteness of the Gram matrix: a positive operator of finite trace
-on an infinite-dimensional space is compact, so it is never bounded away from zero, and
-injectivity is exactly what the strict inequalities of the argument need.
+Three hypotheses on `J` recur, and they are collected in
+`Discretization.Infinite.IsFiniteTracePos`: `J` is positive, its trace along the basis
+converges, and it is injective.  Injectivity stands in for positive definiteness of the Gram
+matrix.  A positive operator of finite trace on an infinite-dimensional space is compact, so
+it is never bounded away from zero, and injectivity is exactly what the strict inequalities
+of the argument need.
 
 For `B` the right notion is Mathlib's `IsStrictlyPositive`, positivity together with
-invertibility, and the inverse is `Ring.inverse`.  The resolvent identity is Mathlib's
-`Ring.inverse_sub_inverse`, valid in any ring, and the antitonicity of the inverse is
+invertibility, and the inverse is `Ring.inverse`.  The resolvent identity and the
+antitonicity of the inverse are Mathlib's `Ring.inverse_sub_inverse` and
 `CStarAlgebra.ringInverse_le_ringInverse`.
 -/
 
@@ -67,7 +68,7 @@ theorem IsFiniteTracePos.summable_norm_sq_apply (hJ : IsFiniteTracePos e J) :
   rw [show CFC.sqrt J (CFC.sqrt J (e k)) = J (e k) from
     congrArg (fun S : H →L[ℂ] H => S (e k)) hsq]
 
-/-- Conjugating a positive operator by a self-adjoint one keeps it positive: `J S J ≽ 0`. -/
+/-- The product `J S J` of two positive operators `J` and `S` is positive. -/
 theorem nonneg_conj {S : H →L[ℂ] H} (hJ : 0 ≤ J) (hS : 0 ≤ S) : (0 : H →L[ℂ] H) ≤ J * S * J := by
   have hJadj : ContinuousLinearMap.adjoint J = J := hJ.isSelfAdjoint.star_eq
   have h := ((ContinuousLinearMap.nonneg_iff_isPositive S).1 hS).adjoint_conj J
@@ -76,7 +77,7 @@ theorem nonneg_conj {S : H →L[ℂ] H} (hJ : 0 ≤ J) (hS : 0 ≤ S) : (0 : H �
   simpa [ContinuousLinearMap.mul_def, ContinuousLinearMap.comp_assoc] using h
 
 /-- **The conjugate `J S J` of a positive operator of finite trace is again one**, provided
-the conjugating operator `S` is strictly positive.
+`S` is strictly positive.
 
 Positivity and the finiteness of the trace only need `S` positive and bounded; injectivity is
 where invertibility of `S` enters, through the injectivity of `√S`. -/
@@ -151,7 +152,7 @@ theorem isStrictlyPositive_add_smul (hJ : 0 ≤ J) {B : H →L[ℂ] H} (hB : IsS
 /-- **The resolvent identity** for the shift by a multiple of `J`:
 `B⁻¹ - (B + ζ • J)⁻¹ = ζ • (B⁻¹ J (B + ζ • J)⁻¹)`.
 
-This is Mathlib's `Ring.inverse_sub_inverse`, which holds in any ring. -/
+This is an instance of Mathlib's `Ring.inverse_sub_inverse`. -/
 theorem inverse_sub_inverse_add_smul (hJ : 0 ≤ J) {B : H →L[ℂ] H} (hB : IsStrictlyPositive B)
     {ζ : ℝ} (hζ : 0 ≤ ζ) :
     Ring.inverse B - Ring.inverse (B + ζ • J)
@@ -173,7 +174,7 @@ theorem inverse_add_smul_le (hJ : 0 ≤ J) {B : H →L[ℂ] H} (hB : IsStrictlyP
 `Ψ_J(B) - Ψ_J(B + ζ • J) = ζ · Tr ((J B⁻¹ J) (B + ζ • J)⁻¹)`.
 
 The right-hand side is a trace of a product of two positive operators, the first of finite
-trace, so it is nonnegative — and positive, which is the content of
+trace, so it is nonnegative.  It is even positive, which is the content of
 `Discretization.Infinite.upperPotential_add_smul_lt`. -/
 theorem upperPotential_sub_eq (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}
     (hB : IsStrictlyPositive B) {ζ : ℝ} (hζ : 0 ≤ ζ) :

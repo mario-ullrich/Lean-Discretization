@@ -21,12 +21,12 @@ bound an identity:
 
 `∑ wᵢ |a(xᵢ)|² = ∑ 1/n = 1 = (1 - √((m-1)/n))²`.
 
-The upper half of the argument is unchanged, so the upper potential machinery of the previous
-files is reused verbatim; only the induction is one-sided
+The upper half of the argument is that of the main theorem; only the induction is one-sided
 (`Discretization.exists_points_weights_of_unique`).  The result is
 `Discretization.bss_generalized_of_unique`.
 
-Here `card ι = 1` is expressed as `[Unique ι]`, and `default : ι` is the single index.
+Here `card ι = 1` is expressed by the typeclass assumption `[Unique ι]`, and `default : ι` is
+the single index.
 -/
 
 open Matrix MeasureTheory
@@ -104,8 +104,8 @@ omit [Fintype ι] in
 /-- **Generalized sparsification theorem for a one-element first family.**
 
 For `card ι = 1` the lower frame bound is `1 = (1 - √((m-1)/n))²`, and the upper bound is as
-in `Discretization.bss_generalized_of_gram_eq_one`.  This removes the hypothesis `m ≥ 2`
-there, at the price of assuming `card ι = 1`; the two statements together cover every `m`. -/
+in `Discretization.bss_generalized_of_gram_eq_one`.  Together with that theorem, which needs
+`m ≥ 2`, every `m` is covered. -/
 theorem bss_generalized_of_unique [Unique ι] [Nonempty κ]
     {J : Matrix κ κ ℂ} (hJ : J.PosDef) {Λ : ℝ} (hΛ : 0 < Λ)
     (hJΛ : J ≤ Λ • (1 : Matrix κ κ ℂ)) {a : Ω → ι → ℂ} {b : Ω → κ → ℂ}

@@ -16,10 +16,10 @@ the operator analogue of `Matrix.PosDef.inv_re_trace_mul_smul_le`.  This is what
 final bound on the potential into the upper frame bound of the theorem.
 
 The proof conjugates by the square root `S = √B`.  The operator `S⁻¹ J S⁻¹` is positive, and
-its trace is again `Ψ_J(B)`: expanding `Tr (J B⁻¹)` through the square root of `B⁻¹`, which
-is `S⁻¹` by `CFC.sqrt_ringInverse`, gives exactly `∑ₖ Re ⟪S⁻¹ eₖ, J (S⁻¹ eₖ)⟫`.  Hence the
-crude bound `Discretization.le_traceAlong_smul_one` applies to it, and conjugating back by
-`S` turns `S⁻¹ J S⁻¹ ≼ Ψ_J(B) • 1` into `J ≼ Ψ_J(B) • B`.
+its trace is again `Ψ_J(B)`: the square root of `B⁻¹` is `S⁻¹` (`CFC.sqrt_ringInverse`), so
+`Tr (J B⁻¹)` expands to `∑ₖ Re ⟪S⁻¹ eₖ, J (S⁻¹ eₖ)⟫`.  Hence the bound
+`Discretization.le_traceAlong_smul_one` gives `S⁻¹ J S⁻¹ ≼ Ψ_J(B) • 1`, and conjugating back
+by `S` turns this into `J ≼ Ψ_J(B) • B`.
 -/
 
 open scoped InnerProductSpace ComplexOrder
@@ -46,7 +46,7 @@ theorem traceAlong_conj_inv_sqrt (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}
     hsqrtinv, traceAlong]
   exact tsum_congr fun k => re_inner_conj_apply hsa J (e k)
 
-/-- The conjugate `B^{-1/2} J B^{-1/2}` is positive and its trace converges. -/
+/-- The trace of the conjugate `B^{-1/2} J B^{-1/2}` converges. -/
 theorem summable_trace_conj_inv_sqrt (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}
     (hB : IsStrictlyPositive B) :
     Summable fun k => RCLike.re ⟪e k,

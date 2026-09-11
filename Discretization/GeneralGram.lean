@@ -18,11 +18,10 @@ The two ingredients are the behaviour of the Gram matrix under a linear change o
 `gram (S a) μ = S · (gram a μ) · S*`  (`Discretization.gram_mulVec`),
 
 and the fact that conjugation by a positive matrix preserves the Loewner order, which is
-Mathlib's `conjugate_le_conjugate_of_nonneg` for the C⋆-algebra of matrices.
+Mathlib's `conjugate_le_conjugate_of_nonneg`.
 
-The result is `Discretization.bss_generalized`: the lower frame bound becomes
-`(1 - √((m-1)/n))² • I` instead of `(1 - √((m-1)/n))² • 1`.  In eigenvalue form this is the
-factor `λ_min(I)` of the paper.
+The result is `Discretization.bss_generalized`, with lower frame bound
+`(1 - √((m-1)/n))² • I`.  In eigenvalue form this is the factor `λ_min(I)` of the paper.
 -/
 
 open Matrix MeasureTheory

@@ -10,8 +10,8 @@ import Discretization.MainTheorem
 
 The main theorem needs `M = Tr J / Λ ≥ 1 + 1/n`, because the initial matrix
 `B₀ = (ζ Tr J / s) • 1` involves `s = √((M-1)/n)`, which is too small otherwise.  As the
-paper observes, for `M < 1 + 1/n` the upper potential is not needed: the upper verifier can
-be replaced by the constant
+paper observes, for `M ≤ 1 + 1/n` the upper potential is not needed: a constant upper
+verifier does the job,
 
 `U(x) = n ‖b(x)‖² / Tr J`,   with   `∫ U dμ = n`.
 
@@ -23,8 +23,7 @@ crude bound `b b* ≼ ‖b‖² • 1` (`Matrix.vecMulVec_le_norm_sq_smul_one`) 
 
 the last step because `M ≤ 1 + 1/n` forces `s ≤ 1/n` and hence `M = 1 + n s² ≤ 1 + s`.
 
-The lower half of the argument is unchanged, so the lower potential machinery is reused
-verbatim; only the induction is one-sided
+The lower half of the argument is that of the main theorem; only the induction is one-sided
 (`Discretization.exists_points_weights_of_small_dim`).  The result is
 `Discretization.bss_generalized_of_small_dim`.
 -/
@@ -121,9 +120,9 @@ theorem exists_points_weights_of_small_dim [Nonempty ι] [Nonempty κ] {A₀ : M
 /-- **Generalized sparsification theorem for a small effective dimension.**
 
 For `M = Tr J / Λ ≤ 1 + 1/n` the upper frame bound follows from the crude estimate
-`b b* ≼ ‖b‖² • 1` alone.  This removes the hypothesis `M ≥ 1 + 1/n` of
-`Discretization.bss_generalized_of_gram_eq_one`; the two statements together cover every
-effective dimension. -/
+`b b* ≼ ‖b‖² • 1` alone; the first family still needs `m ≥ 2`.  Together with
+`Discretization.bss_generalized_of_gram_eq_one`, which needs `M ≥ 1 + 1/n`, every effective
+dimension is covered. -/
 theorem bss_generalized_of_small_dim [Nonempty ι] [Nonempty κ]
     {J : Matrix κ κ ℂ} (hJ : J.PosDef) {Λ : ℝ} (hΛ : 0 < Λ)
     {a : Ω → ι → ℂ} {b : Ω → κ → ℂ}

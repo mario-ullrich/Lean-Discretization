@@ -16,14 +16,13 @@ quantities
 * `Ψ(B) = Re Tr (J B⁻¹)`, the **upper potential** relative to a positive definite `J`.
 
 Their whole point is that a bound on the potential is a bound on the matrix:
-`Φ(A)⁻¹ • 1 ≤ A` (already proved in `BasicResults.LoewnerOrder` as
-`Matrix.PosDef.inv_re_trace_smul_one_le`) and `Ψ(B)⁻¹ • J ≤ B`, proved here as
-`Matrix.PosDef.inv_re_trace_mul_smul_le`.
+`Φ(A)⁻¹ • 1 ≤ A` (`Matrix.PosDef.inv_re_trace_smul_one_le` in `BasicResults.LoewnerOrder`)
+and `Ψ(B)⁻¹ • J ≤ B`, proved here as `Matrix.PosDef.inv_re_trace_mul_smul_le`.
 
 The `J`-weighted statement is the one that makes the upper frame bound of the main theorem
-dimension-free.  Its proof conjugates by the positive square root `S = B^{1/2}`: the matrix
-`S⁻¹ J S⁻¹` is positive semidefinite with trace `Tr (J B⁻¹) = Ψ(B)`, hence is bounded by
-`Ψ(B) • 1`, and conjugating that inequality back by `S` turns it into `J ≤ Ψ(B) • B`.
+dimension-free.  Its proof conjugates by the positive square root `S = B^{1/2}`.  The matrix
+`S⁻¹ J S⁻¹` is positive semidefinite with trace `Tr (J B⁻¹) = Ψ(B)`, hence bounded by
+`Ψ(B) • 1`.  Conjugating back by `S` gives `J ≤ Ψ(B) • B`.
 
 Square roots of matrices are Mathlib's `CFC.sqrt`, from the continuous functional calculus;
 they require the C⋆-algebra structure of `Matrix n n ℂ`, whose norm is scoped in
@@ -52,9 +51,8 @@ For positive definite `B` and `J`, the upper potential `Ψ(B) = Re Tr (J B⁻¹)
 `Ψ(B)⁻¹ • J ≤ B`.  Equivalently `J ≤ Ψ(B) • B`: a small upper potential forces `B` to be
 large in the directions where `J` is large.
 
-Together with `Matrix.PosDef.inv_re_trace_smul_one_le` this is the reason potentials control
-frame bounds: at the end of the construction the two potentials have not increased, and the
-inequalities above convert that into the eigenvalue bounds of the main theorem. -/
+Together with `Matrix.PosDef.inv_re_trace_smul_one_le` this is how a bound on a potential
+becomes a frame bound. -/
 theorem PosDef.inv_re_trace_mul_smul_le [Nonempty n] {B J : Matrix n n ℂ} (hB : B.PosDef)
     (hJ : J.PosDef) : (RCLike.re (J * B⁻¹).trace)⁻¹ • J ≤ B := by
   -- the positive square root of `B` and its elementary properties

@@ -18,25 +18,24 @@ They are chosen so that the initial gap closes exactly, `1/δ - Φ(A₀) = n = 1
 and so that the two frame bounds come out as `(1-r)²` and `(1+s)² Λ`.  This file collects
 the arithmetic of these four numbers, with no matrices in sight:
 
-* `Discretization.sqrt_div_pos` and `Discretization.sqrt_div_lt_one` — `0 < r < 1` for
+* `Discretization.sqrt_div_pos` and `Discretization.sqrt_div_lt_one`: `0 < r < 1` for
   `1 < m ≤ n`, which is what makes `δ` positive and `A₀` positive definite;
-* `Discretization.one_div_le_sqrt_div` — `1/n ≤ s`, the quantitative form of the hypothesis
+* `Discretization.one_div_le_sqrt_div`: `1/n ≤ s`, the quantitative form of the hypothesis
   `M ≥ 1 + 1/n`, and the reason the final coefficient of `J` is nonnegative;
-* `Discretization.eq_mul_sq_sqrt_div_add_one` — `M = n s² + 1`, which turns the effective
+* `Discretization.eq_mul_sq_sqrt_div_add_one`: `M = n s² + 1`, which turns the effective
   dimension into the parameter `s`;
-* `Discretization.one_div_add_div_eq` and `Discretization.one_div_sub_div_eq` — the two
+* `Discretization.one_div_add_div_eq` and `Discretization.one_div_sub_div_eq`: the two
   identities `1/ζ + s/ζ = n` and `1/δ - r/δ = n` that close the initial gap;
-* `Discretization.lt_inv_of_le_one_div_sub` — an open gap keeps the shift `δ` admissible,
+* `Discretization.lt_inv_of_le_one_div_sub`: an open gap keeps the shift `δ` admissible,
   which is the hypothesis `δ < Φ(A)⁻¹` of the barrier lemma;
-* `Discretization.nonneg_mul_sub_inv_div` and `Discretization.frame_constant_eq` — the
+* `Discretization.nonneg_mul_sub_inv_div` and `Discretization.frame_constant_eq`: the
   coefficient of `J` in the upper read-off is nonnegative, and the constant it produces is
   `(1+s)² Λ`.
 
-Everything here is used twice, once for a finite second family and once for a countable one,
-which is why it is separated from the matrices and the operators.
+Everything here is used twice, once for a finite second family and once for a countable one.
 
-The square roots are never unfolded: only `Real.sq_sqrt`, `Real.sqrt_nonneg`,
-`Real.le_sqrt` and `Real.sqrt_lt'` are used.
+The square roots are never unfolded: only `Real.sq_sqrt`, `Real.sqrt_pos`, `Real.le_sqrt`
+and `Real.sqrt_lt'` are used.
 -/
 
 namespace Discretization
@@ -45,7 +44,7 @@ namespace Discretization
 theorem sqrt_div_pos {m n : ℝ} (hn : 0 < n) (hm : 1 < m) : 0 < Real.sqrt ((m - 1) / n) :=
   Real.sqrt_pos.2 (div_pos (by linarith) hn)
 
-/-- For `1 ≤ m ≤ n` the parameter `r = √((m-1)/n)` is smaller than one.  This is what leaves
+/-- For `m ≤ n` the parameter `r = √((m-1)/n)` is smaller than one.  This is what leaves
 room for the shift `δ = (1-r)/n`. -/
 theorem sqrt_div_lt_one {m n : ℝ} (hn : 0 < n) (hmn : m ≤ n) : Real.sqrt ((m - 1) / n) < 1 := by
   rw [Real.sqrt_lt' zero_lt_one, one_pow, div_lt_one hn]
@@ -68,8 +67,8 @@ theorem eq_mul_sq_sqrt_div_add_one {M n : ℝ} (hn : 0 < n) (hM : 1 ≤ M) :
 /-- **The hypothesis `M ≥ 1 + 1/n` in terms of the parameter `s`:** it says exactly that
 `s = √((M-1)/n)` is at least `1/n`.
 
-This is the smallest effective dimension the potential argument can handle; below it the
-upper verifier is replaced by a constant, see `Discretization.bss_generalized_of_small_dim`. -/
+This is the smallest effective dimension the potential argument can handle; below it a
+constant upper verifier is used instead, see `Discretization.bss_generalized_of_small_dim`. -/
 theorem one_div_le_sqrt_div {M n : ℝ} (hn : 0 < n) (hM : 1 + 1 / n ≤ M) :
     1 / n ≤ Real.sqrt ((M - 1) / n) := by
   have h1 : 1 ≤ (M - 1) * n := by
@@ -123,9 +122,8 @@ theorem frame_constant_eq {n s ζ d₀ T Λ : ℝ} (hn0 : 0 < n) (hs0 : 1 / n �
   field_simp
   ring
 
-/-- **An open gap keeps the shift admissible.**  If some positive number `c` fits below
-`1/δ - Φ`, then `δ < Φ⁻¹`, which is the hypothesis under which shrinking a positive definite
-matrix by `δ • 1` keeps it positive definite.
+/-- **An open gap keeps the shift admissible.**  If `c ≤ 1/δ - Φ` for some positive `c`, then
+`δ < Φ⁻¹`.  That is the hypothesis under which `A - δ • 1` stays positive definite.
 
 In the construction `c` is `1/ζ + Ψ_J(B)`, and in the edge case of a small effective
 dimension it is `n`. -/

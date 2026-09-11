@@ -1,4 +1,4 @@
-# Constructive discretization — Lean 4 / Mathlib formalisation
+# Constructive discretization in Lean 4 / Mathlib
 
 ## The question
 
@@ -47,11 +47,32 @@ same two bounds hold with the second one in the order of operators; this is
 changes, because it is governed by the effective dimension `M = Tr J / Λ` and not by the size
 of the family.
 
-The proof is the potential-function argument of BSS.  Two matrices are carried along, a
-small one for the lower bound and a large one for the upper one; the two **potentials**
-`Φ(A) = Re Tr A⁻¹` and `Ψ_J(B) = Re Tr (J B⁻¹)` measure how close they are to failure; each
-step shifts the matrices, which makes both potentials worse by a computable amount, and then
-spends that budget on one new sampling point chosen so that neither potential increases.
+## The proof
+
+The proof is the potential-function argument of BSS, with the second potential weighted by
+`J`.  Two matrices `A` and `B` are carried along, and two real numbers measure how close each
+is to failure: the **lower potential** `Φ(A) = Tr A⁻¹`, which is large when `A` has a small
+eigenvalue, and the **upper potential** `Ψ_J(B) = Tr (J B⁻¹)`, which is large when `B` is
+small where `J` is large.  Each of the `n` steps has the same shape.
+
+1. **Shift.**  Replace `A` by `A - δ • 1` and `B` by `B + ζ • J`.  This makes both potentials
+   worse, by an amount that is computed exactly (`Discretization/Potentials.lean`).
+2. **Test a point.**  Two real functions on `Ω`, the **verifiers**, measure how much of that
+   gap a point `x` with weight `w` would use up.  The **barrier lemma** says that a weight
+   between the two verifiers keeps both matrices positive definite and lets neither potential
+   increase (`Discretization/Barrier.lean`).
+3. **Average.**  Averaging the verifiers over `μ` turns them into traces against the Gram
+   matrices, and a Cauchy–Schwarz inequality shows that on average the lower verifier exceeds
+   the upper one.  So an admissible point exists (`Discretization/Averages.lean`).
+4. **Iterate.**  Starting from multiples of the identity, `n` such steps keep both potentials
+   below their initial values (`Discretization/Iteration.lean`).
+5. **Read off.**  A bound on a potential is a bound on the matrix, `Φ(A)⁻¹ • 1 ≤ A` and
+   `Ψ_J(B)⁻¹ • J ≤ B`.  With `δ = (1 - √((m-1)/n))/n` and `ζ = (1 + √((M-1)/n))/n` the
+   accumulated sums satisfy the two frame bounds (`Discretization/MainTheorem.lean`).
+
+For a countably infinite second family, `B` is a positive invertible operator, the traces are
+sums along a fixed Hilbert basis, and steps 1, 2, 3 and 5 are redone for the upper side in
+`Discretization/Infinite/`.  The lower side and the parameters are shared.
 
 ## What is formalised
 
@@ -96,7 +117,7 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | **The crude bound** `T ≼ Tr(T) • 1` | `Discretization.le_traceAlong_smul_one` | ✅ |
 | `Tr (P Q) = Tr (√P Q √P)`, and its sign | `Discretization.traceAlong_mul`, `.traceAlong_mul_nonneg`, `.traceAlong_mul_pos` | ✅ |
 | A positive operator with vanishing trace is zero | `Discretization.eq_zero_of_traceAlong_eq_zero` | ✅ |
-| `Tr (T u u*) = ⟪u, T u⟫` | `Discretization.traceAlong_mul_rankOne` | ✅ |
+| `Tr (T u u*) = Re ⟪u, T u⟫` | `Discretization.traceAlong_mul_rankOne` | ✅ |
 | Linearity, and existence of `Tr (P Q)` | `Discretization.traceAlong_add`, `.traceAlong_smul`, `.summable_re_inner_apply_mul` | ✅ |
 
 ### Rank-one updates of an operator (`BasicResults.OperatorShermanMorrison`)
@@ -107,7 +128,6 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | A rank-one update of a unit is a unit | `Discretization.isUnit_add_smul_rankOne` | ✅ |
 | The same with a real weight, added and subtracted | `Discretization.inverse_add_smul_rankOne_of_nonneg`, `.inverse_sub_smul_rankOne_of_nonneg` | ✅ |
 | Strict positivity under `A ± w u u*` | `Discretization.isStrictlyPositive_add_smul_rankOne`, `.isStrictlyPositive_sub_smul_rankOne` | ✅ |
-| The inverse of a strictly positive operator | `Discretization.isStrictlyPositive_inverse`, `.isSelfAdjoint_inverse` | ✅ |
 
 ### Averages of operator quadratic forms (`BasicResults.OperatorQuadraticForm`)
 
@@ -152,7 +172,7 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | Edge case `M ≤ 1 + 1/n`: constant upper verifier | `Discretization.bss_generalized_of_small_dim` | ✅ |
 | A rank-one matrix is below `‖u‖² • 1` | `Matrix.vecMulVec_le_norm_sq_smul_one` | ✅ |
 
-### Towards a countably infinite second family (`Discretization.Infinite`)
+### A countably infinite second family (`Discretization.Infinite`)
 
 | Result | Lean name | Status |
 |---|---|---|
@@ -187,34 +207,34 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 ## Candidates for Mathlib
 
 Everything in `BasicResults` is stated for a general `RCLike` field wherever the C⋆-algebra
-structure is not needed, and none of it is currently in Mathlib:
+structure is not needed, and none of it is in Mathlib:
 
-* `Matrix.PosSemidef.trace_mul_nonneg` and `Matrix.PosDef.re_trace_mul_pos` — the trace of a
+* `Matrix.PosSemidef.trace_mul_nonneg` and `Matrix.PosDef.re_trace_mul_pos`: the trace of a
   product of positive semidefinite matrices;
 * `Matrix.PosSemidef.le_trace_smul_one` and `Matrix.IsHermitian.le_smul_one`;
-* `Matrix.PosDef.inv_le_inv_of_le` — antitonicity of the inverse in the Loewner order,
+* `Matrix.PosDef.inv_le_inv_of_le`: antitonicity of the inverse in the Loewner order,
   packaged for matrices;
 * `Matrix.inv_add_smul_vecMulVec`, `Matrix.trace_inv_add_smul_vecMulVec` and the real-weight
-  forms `Matrix.PosDef.inv_add_smul_vecMulVec`, `Matrix.PosDef.inv_sub_smul_vecMulVec` —
+  forms `Matrix.PosDef.inv_add_smul_vecMulVec`, `Matrix.PosDef.inv_sub_smul_vecMulVec`:
   Sherman–Morrison for rank-one updates written with `Matrix.vecMulVec` (Mathlib has only the
   block form, `Matrix.add_mul_mul_inv_eq_sub`);
-* `Matrix.PosSemidef.mul_mul_same_of_isHermitian` and `Matrix.PosDef.mul_mul_same_of_isHermitian`
-  — conjugation by a Hermitian matrix, the form of
+* `Matrix.PosSemidef.mul_mul_same_of_isHermitian` and `Matrix.PosDef.mul_mul_same_of_isHermitian`:
+  conjugation by a Hermitian matrix, the form of
   `Matrix.PosSemidef.conjTranspose_mul_mul_same` that arises in practice;
-* `Matrix.PosSemidef.norm_trace_mul_sq_le` — Cauchy–Schwarz for the trace semi-inner product
+* `Matrix.PosSemidef.norm_trace_mul_sq_le`: Cauchy–Schwarz for the trace semi-inner product
   (Mathlib's own construction of that inner product is `private`);
-* `Matrix.IsHermitian.ofReal_re_trace` and `RCLike.ofReal_re_of_nonneg` — the trace of a
+* `Matrix.IsHermitian.ofReal_re_trace` and `RCLike.ofReal_re_of_nonneg`: the trace of a
   Hermitian matrix and any nonnegative scalar are real;
-* `Discretization.integral_quadForm` — the average of a quadratic form is a trace against the
+* `Discretization.integral_quadForm`: the average of a quadratic form is a trace against the
   Gram matrix;
 * the whole of `BasicResults.OperatorTrace`: Mathlib has no trace of an operator, and the
   invariance of the Hilbert–Schmidt norm under adjoints, the cyclicity
   `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫` and the bound `T ≼ Tr(T) • 1` are general facts;
-* `Discretization.inverse_add_smul_rankOne` — Sherman–Morrison for operators, which Mathlib
+* `Discretization.inverse_add_smul_rankOne`: Sherman–Morrison for operators, which Mathlib
   has in no form;
-* `Discretization.integral_re_inner_apply` — the average of an operator quadratic form along
+* `Discretization.integral_re_inner_apply`: the average of an operator quadratic form along
   a square-integrable family is a trace against its Gram operator;
-* `Discretization.inverse_eq_of_mul_eq_one` — a two-sided inverse computes `Ring.inverse`,
+* `Discretization.inverse_eq_of_mul_eq_one`: a two-sided inverse computes `Ring.inverse`,
   the converse of the two cancellation laws of Mathlib.
 
 ## Layout
@@ -240,6 +260,8 @@ Discretization/
   MainTheorem.lean                       ← initial data, frame bounds, the theorem
   GeneralGram.lean                       ← removing the normalisation of the first family
   NormDiscretization.lean                ← the discretization inequality for the L₂-norm
+  CardOne.lean                           ← the edge case of a one-element first family
+  SmallEffectiveDim.lean                 ← the edge case of a small effective dimension
   Infinite/
     Potentials.lean                      ← the upper potential of an operator
     Barrier.lean                         ← the upper verifier and the barrier lemma
@@ -248,8 +270,6 @@ Discretization/
     Iteration.lean                       ← the construction, matrix below, operator above
     MainTheorem.lean                     ← the theorem for a countable second family
     NormDiscretization.lean              ← the discretization inequality
-  CardOne.lean                           ← the edge case of a one-element first family
-  SmallEffectiveDim.lean                 ← the edge case of a small effective dimension
 lakefile.toml                            ← package `discretization`, two libraries
 lean-toolchain                           ← leanprover/lean4:v4.33.1
 lake-manifest.json                       ← Mathlib pinned to the v4.33.1 tag
@@ -274,11 +294,11 @@ from the working directory.
 ## References
 
 A. Chkifa, M. Dolbeault, D. Krieg, M. Ullrich, *Constructive discretization and approximation
-in reproducing kernel Hilbert spaces* — Theorem 3 is the result formalised here, and
+in reproducing kernel Hilbert spaces*.  Theorem 3 is the result formalised here, and
 Section 4 is the proof followed in `Discretization/`.
 
 J. Batson, D. A. Spielman, N. Srivastava, *Twice-Ramanujan sparsifiers*, SIAM Review 56
-(2014), 315–334 — the original potential-function argument.
+(2014), 315–334.  The original potential-function argument.
 
 ## AI assistance
 
