@@ -27,7 +27,13 @@ the arithmetic of these four numbers, with no matrices in sight:
 * `Discretization.one_div_add_div_eq` and `Discretization.one_div_sub_div_eq` — the two
   identities `1/ζ + s/ζ = n` and `1/δ - r/δ = n` that close the initial gap;
 * `Discretization.lt_inv_of_le_one_div_sub` — an open gap keeps the shift `δ` admissible,
-  which is the hypothesis `δ < Φ(A)⁻¹` of the barrier lemma.
+  which is the hypothesis `δ < Φ(A)⁻¹` of the barrier lemma;
+* `Discretization.nonneg_mul_sub_inv_div` and `Discretization.frame_constant_eq` — the
+  coefficient of `J` in the upper read-off is nonnegative, and the constant it produces is
+  `(1+s)² Λ`.
+
+Everything here is used twice, once for a finite second family and once for a countable one,
+which is why it is separated from the matrices and the operators.
 
 The square roots are never unfolded: only `Real.sq_sqrt`, `Real.sqrt_nonneg`,
 `Real.le_sqrt` and `Real.sqrt_lt'` are used.
@@ -91,6 +97,31 @@ theorem one_div_add_div_eq {n s : ℝ} (hn : 0 < n) (hs : 1 + s ≠ 0) :
 theorem one_div_sub_div_eq {n r : ℝ} (hn : 0 < n) (hr : 1 - r ≠ 0) :
     1 / ((1 - r) / n) - r / ((1 - r) / n) = n := by
   field_simp
+
+/-- **The coefficient of `J` in the upper read-off is nonnegative:**
+`0 ≤ n ζ - (s/ζ)⁻¹` for `ζ = (1+s)/n` and `1/n ≤ s`.
+
+Without this the bound `J ≼ Λ • 1` could not be applied to that coefficient, and it is
+exactly the hypothesis `M ≥ 1 + 1/n` that makes it true. -/
+theorem nonneg_mul_sub_inv_div {n s ζ : ℝ} (hn0 : 0 < n) (hs0 : 1 / n ≤ s)
+    (hζ : ζ = (1 + s) / n) : 0 ≤ n * ζ - (s / ζ)⁻¹ := by
+  have hspos : 0 < s := lt_of_lt_of_le (by positivity) hs0
+  have hζ0 : 0 < ζ := by rw [hζ]; exact div_pos (by linarith) hn0
+  rw [inv_div, show ζ / s = ζ * (1 / s) by ring]
+  nlinarith [hζ0, one_div_le_of_one_div_le hn0 hspos hs0]
+
+/-- **The constant of the upper frame bound:** `d₀ + (n ζ - (s/ζ)⁻¹) Λ = (1+s)² Λ`, for
+`ζ = (1+s)/n`, `d₀ = ζ T / s` and `T = Λ (n s² + 1)`.
+
+Here `T` is the trace of the Gram operator of the second family; the identity is what turns
+the read-off of the potential into the frame bound of the theorem. -/
+theorem frame_constant_eq {n s ζ d₀ T Λ : ℝ} (hn0 : 0 < n) (hs0 : 1 / n ≤ s) (hΛ : 0 < Λ)
+    (hζ : ζ = (1 + s) / n) (hd₀ : d₀ = ζ * T / s) (hT : T = Λ * (n * s ^ 2 + 1)) :
+    d₀ + (n * ζ - (s / ζ)⁻¹) * Λ = (1 + s) ^ 2 * Λ := by
+  have hspos : 0 < s := lt_of_lt_of_le (by positivity) hs0
+  rw [hd₀, hT, hζ, inv_div]
+  field_simp
+  ring
 
 /-- **An open gap keeps the shift admissible.**  If some positive number `c` fits below
 `1/δ - Φ`, then `δ < Φ⁻¹`, which is the hypothesis under which shrinking a positive definite

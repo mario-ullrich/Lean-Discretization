@@ -160,11 +160,7 @@ theorem upper_frame_bound [Nonempty κ] {J : Matrix κ κ ℂ} (hJ : J.PosDef) {
     (hΨn : upperPotential J (upperState J (d₀ • (1 : Matrix κ κ ℂ)) ζ b x w) ≤ s / ζ) :
     ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
       ≤ ((1 + s) ^ 2 * Λ) • (1 : Matrix κ κ ℂ) := by
-  have hspos : 0 < s := lt_of_lt_of_le (by positivity) hs0
-  have hζ0 : 0 < ζ := by rw [hζ]; exact div_pos (by linarith) hn0
-  have hcoef0 : 0 ≤ (n : ℝ) * ζ - (s / ζ)⁻¹ := by
-    rw [inv_div, show ζ / s = ζ * (1 / s) by ring]
-    nlinarith [hζ0, one_div_le_of_one_div_le hn0 hspos hs0]
+  have hcoef0 : 0 ≤ (n : ℝ) * ζ - (s / ζ)⁻¹ := nonneg_mul_sub_inv_div hn0 hs0 hζ
   calc ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
       ≤ d₀ • (1 : Matrix κ κ ℂ) + ((n : ℝ) * ζ - (s / ζ)⁻¹) • J :=
         upper_bound_of_state hJ hBn hΨn
@@ -178,9 +174,7 @@ theorem upper_frame_bound [Nonempty κ] {J : Matrix κ κ ℂ} (hJ : J.PosDef) {
     _ = ((1 + s) ^ 2 * Λ) • (1 : Matrix κ κ ℂ) := by
         rw [← add_smul]
         congr 1
-        rw [hd₀, hT, hζ, inv_div]
-        field_simp
-        ring
+        exact frame_constant_eq hn0 hs0 hΛ hζ hd₀ hT
 
 /-! ### The theorem -/
 
