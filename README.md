@@ -40,6 +40,13 @@ normalisation of the first family the lower bound reads `(1 - √((m-1)/n))² �
 `I = ∫ a a* dμ`, which is `Discretization.bss_generalized`; in eigenvalue form that is the
 factor `λ_min(I)` of the paper.
 
+The second family may also be **infinite**.  Then `b` is a square-integrable map into a
+Hilbert space, its Gram operator `J` is positive, injective and of finite trace, and the
+same two bounds hold with the second one in the order of operators; this is
+`Discretization.Infinite.bss_generalized_of_gram_eq_one`.  Nothing about the number of points
+changes, because it is governed by the effective dimension `M = Tr J / Λ` and not by the size
+of the family.
+
 The proof is the potential-function argument of BSS.  Two matrices are carried along, a
 small one for the lower bound and a large one for the upper one; the two **potentials**
 `Φ(A) = Re Tr A⁻¹` and `Ψ_J(B) = Re Tr (J B⁻¹)` measure how close they are to failure; each
@@ -49,8 +56,9 @@ spends that budget on one new sampling point chosen so that neither potential in
 ## What is formalised
 
 Legend: ✅ proved unconditionally.  There is no `sorry` anywhere in this project, and
-`#print axioms Discretization.bss_generalized_of_gram_eq_one` reports only `propext`,
-`Classical.choice` and `Quot.sound`.
+`#print axioms` reports only `propext`, `Classical.choice` and `Quot.sound` for every
+theorem marked as a main result, in finite dimension and for a countable second family
+alike.
 
 ### Matrix analysis (`BasicResults`)
 
@@ -160,16 +168,19 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | The verifier passes on average | `Discretization.Infinite.integral_upperVerifier_lt` | ✅ |
 | An admissible point exists (finite `ι`, countable `κ`) | `Discretization.Infinite.exists_admissible_point` | ✅ |
 | `Ψ_J(B)⁻¹ • J ≼ B` | `Discretization.Infinite.inv_upperPotential_smul_le` | ✅ |
+| The `n`-step construction | `Discretization.Infinite.exists_points_weights` | ✅ |
+| Reading off the upper frame bound | `Discretization.Infinite.upper_bound_of_state`, `.upper_frame_bound` | ✅ |
+| **The theorem, countable second family** | `Discretization.Infinite.bss_generalized_of_gram_eq_one` | ✅ |
+| **The discretization inequality** | `Discretization.Infinite.exists_discretization` | ✅ |
 
 ## What is left to do
 
 * **The two edge cases together**, `m = 1` and `M ≤ 1 + 1/n` at the same time; each is
   proved only under the assumption that the other side is regular.
-* **Countably infinite second family**, which is what makes the theorem apply to a
-  reproducing kernel Hilbert space with finite trace.  Every ingredient is in place: the
-  trace, the rank-one update, the average of a quadratic form, the potential, the verifier,
-  the barrier lemma and the read-off.  What is missing is the construction itself, that is
-  the iteration and the assembly of the theorem.
+* **The application to a reproducing kernel Hilbert space.**  The theorem for a countable
+  second family is proved; what is not formalised is the construction of the Gram operator
+  from a kernel, that is the singular value decomposition of the embedding into `L₂` which
+  supplies the family `b` and makes `J` diagonal.
 * **The applications of the paper**: least-squares recovery, sampling numbers, and the
   discretization with equal weights via Kiefer–Wolfowitz.
 
@@ -202,7 +213,9 @@ structure is not needed, and none of it is currently in Mathlib:
 * `Discretization.inverse_add_smul_rankOne` — Sherman–Morrison for operators, which Mathlib
   has in no form;
 * `Discretization.integral_re_inner_apply` — the average of an operator quadratic form along
-  a square-integrable family is a trace against its Gram operator.
+  a square-integrable family is a trace against its Gram operator;
+* `Discretization.inverse_eq_of_mul_eq_one` — a two-sided inverse computes `Ring.inverse`,
+  the converse of the two cancellation laws of Mathlib.
 
 ## Layout
 
@@ -232,6 +245,9 @@ Discretization/
     Barrier.lean                         ← the upper verifier and the barrier lemma
     Averages.lean                        ← the verifier passes on average
     Bounds.lean                          ← a bound on the potential bounds the operator
+    Iteration.lean                       ← the construction, matrix below, operator above
+    MainTheorem.lean                     ← the theorem for a countable second family
+    NormDiscretization.lean              ← the discretization inequality
   CardOne.lean                           ← the edge case of a one-element first family
   SmallEffectiveDim.lean                 ← the edge case of a small effective dimension
 lakefile.toml                            ← package `discretization`, two libraries

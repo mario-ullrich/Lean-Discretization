@@ -18,6 +18,9 @@ import Discretization.Infinite.Potentials
 import Discretization.Infinite.Barrier
 import Discretization.Infinite.Averages
 import Discretization.Infinite.Bounds
+import Discretization.Infinite.Iteration
+import Discretization.Infinite.MainTheorem
+import Discretization.Infinite.NormDiscretization
 
 /-!
 # Constructive discretization
@@ -68,4 +71,10 @@ potential gets worse.
   admissible point exists.
 * `Discretization.Infinite.Bounds` — a bound on the upper potential is a bound on the
   operator, `Ψ_J(B)⁻¹ • J ≼ B`.
+* `Discretization.Infinite.Iteration` — the construction, with a matrix on the lower side and
+  an operator on the upper one.
+* `Discretization.Infinite.MainTheorem` — the theorem for a countable second family,
+  `Discretization.Infinite.bss_generalized_of_gram_eq_one`.
+* `Discretization.Infinite.NormDiscretization` — the same statement read as a discretization
+  inequality, `Discretization.Infinite.exists_discretization`.
 -/
