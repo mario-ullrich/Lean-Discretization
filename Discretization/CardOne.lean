@@ -34,12 +34,11 @@ open scoped ComplexOrder MatrixOrder
 
 namespace Discretization
 
-variable {ι κ Ω : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
+variable {ι κ Ω : Type*} [DecidableEq ι] [Fintype κ] [DecidableEq κ]
   [MeasurableSpace Ω] {μ : Measure Ω}
 
 /-! ### The constant lower verifier -/
 
-omit [Fintype ι] in
 /-- The single function of a normalized one-element family has `∫ |a|² dμ = 1`. -/
 theorem integral_norm_sq_eq_one [Unique ι] {a : Ω → ι → ℂ}
     (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hgrama : gram a μ = 1) :
@@ -49,7 +48,6 @@ theorem integral_norm_sq_eq_one [Unique ι] {a : Ω → ι → ℂ}
 
 /-! ### The one-sided construction -/
 
-omit [Fintype ι] in
 /-- **The construction for a single function.**  Only the upper matrix is tracked; the weights
 are chosen as large as the constant lower verifier allows, so that each point contributes
 exactly `1/n` to the lower frame bound. -/
@@ -100,7 +98,6 @@ theorem exists_points_weights_of_unique [Unique ι] [Nonempty κ] {J B₀ : Matr
 
 /-! ### The theorem for a single function -/
 
-omit [Fintype ι] in
 /-- **Generalized sparsification theorem for a one-element first family.**
 
 For `card ι = 1` the lower frame bound is `1 = (1 - √((m-1)/n))²`, and the upper bound is as

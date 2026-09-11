@@ -41,20 +41,17 @@ namespace Discretization
 
 namespace Infinite
 
-variable {ι κ Ω H : Type*} [Fintype ι] [DecidableEq ι] [NormedAddCommGroup H]
-  [InnerProductSpace ℂ H] [CompleteSpace H] [MeasurableSpace Ω] {μ : Measure Ω}
+variable {ι κ Ω H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
   {e : HilbertBasis κ ℂ H} {J : H →L[ℂ] H}
 
 /-! ### Quadratic forms of operators -/
 
-omit [Fintype ι] [DecidableEq ι] [CompleteSpace H] [MeasurableSpace Ω] in
 /-- The quadratic form of a rank-one operator is a squared modulus. -/
 theorem re_inner_rankOne (v u : H) :
     RCLike.re ⟪u, (rankOne ℂ v v) u⟫_ℂ = ‖⟪u, v⟫_ℂ‖ ^ 2 := by
   rw [rankOne_apply, inner_smul_right, ← inner_conj_symm v u, RCLike.conj_mul]
   norm_cast
 
-omit [Fintype ι] [DecidableEq ι] [CompleteSpace H] [MeasurableSpace Ω] in
 /-- **The quadratic form of a weighted sum of rank-one operators** is the corresponding
 weighted sum of squared moduli. -/
 theorem re_inner_sum_rankOne {k : ℕ} (x : Fin k → Ω) (w : Fin k → ℝ) (b : Ω → H) (u : H) :
@@ -65,16 +62,14 @@ theorem re_inner_sum_rankOne {k : ℕ} (x : Fin k → Ω) (w : Fin k → ℝ) (b
   rw [_root_.smul_apply, RCLike.real_smul_eq_coe_smul (K := ℂ),
     inner_smul_real_right, RCLike.smul_re, re_inner_rankOne]
 
-omit [Fintype ι] [DecidableEq ι] [MeasurableSpace Ω] in
 /-- The quadratic form is monotone for the operator order. -/
-theorem re_inner_le_of_le {S T : H →L[ℂ] H} (h : S ≤ T) (u : H) :
+theorem re_inner_le_of_le [CompleteSpace H] {S T : H →L[ℂ] H} (h : S ≤ T) (u : H) :
     RCLike.re ⟪u, S u⟫_ℂ ≤ RCLike.re ⟪u, T u⟫_ℂ := by
   have hd := ((ContinuousLinearMap.nonneg_iff_isPositive _).1
     (sub_nonneg.2 h)).re_inner_nonneg_right u
   rw [show (T - S) u = T u - S u from rfl, inner_sub_right, map_sub] at hd
   linarith
 
-omit [Fintype ι] [DecidableEq ι] [CompleteSpace H] [MeasurableSpace Ω] in
 /-- The quadratic form of a multiple of the identity is the squared norm. -/
 theorem re_inner_smul_one (c : ℝ) (u : H) :
     RCLike.re ⟪u, (c • (1 : H →L[ℂ] H)) u⟫_ℂ = c * ‖u‖ ^ 2 := by
@@ -82,6 +77,8 @@ theorem re_inner_smul_one (c : ℝ) (u : H) :
     inner_smul_real_right, RCLike.smul_re, inner_self_eq_norm_sq]
 
 /-! ### The discretization inequality -/
+
+variable [Fintype ι] [DecidableEq ι] [CompleteSpace H] [MeasurableSpace Ω] {μ : Measure Ω}
 
 /-- **Discretization of the `L₂`-norm, with a countable second family.**
 

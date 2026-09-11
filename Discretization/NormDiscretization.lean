@@ -32,12 +32,11 @@ open scoped ComplexOrder MatrixOrder
 
 namespace Discretization
 
-variable {ι κ Ω : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
+variable {ι κ Ω : Type*} [Fintype ι] [Fintype κ] [DecidableEq κ]
   [MeasurableSpace Ω] {μ : Measure Ω}
 
 /-! ### Quadratic forms and sums of squares -/
 
-omit [DecidableEq ι] in
 /-- The quadratic form of a rank-one matrix is a squared modulus:
 `c* (u u*) c = |⟪c, u⟫|²`. -/
 theorem re_dotProduct_vecMulVec_mulVec (u c : ι → ℂ) :
@@ -46,7 +45,7 @@ theorem re_dotProduct_vecMulVec_mulVec (u c : ι → ℂ) :
     RCLike.star_def, RCLike.mul_conj]
   norm_cast
 
-omit [DecidableEq ι] [MeasurableSpace Ω] in
+omit [MeasurableSpace Ω] in
 /-- The quadratic form of a weighted sum of rank-one matrices is the corresponding weighted
 sum of squared moduli. -/
 theorem re_dotProduct_sum_mulVec {k : ℕ} (x : Fin k → Ω) (w : Fin k → ℝ) (c : ι → ℂ)
@@ -56,7 +55,6 @@ theorem re_dotProduct_sum_mulVec {k : ℕ} (x : Fin k → Ω) (w : Fin k → ℝ
   simp only [Matrix.sum_mulVec, dotProduct_sum, map_sum, Matrix.smul_mulVec,
     dotProduct_smul, RCLike.smul_re, re_dotProduct_vecMulVec_mulVec]
 
-omit [DecidableEq ι] in
 /-- The quadratic form is monotone for the Loewner order. -/
 theorem re_quadForm_le_of_le {A B : Matrix ι ι ℂ} (h : A ≤ B) (c : ι → ℂ) :
     RCLike.re (star c ⬝ᵥ (A *ᵥ c)) ≤ RCLike.re (star c ⬝ᵥ (B *ᵥ c)) := by
@@ -66,14 +64,13 @@ theorem re_quadForm_le_of_le {A B : Matrix ι ι ℂ} (h : A ≤ B) (c : ι → 
 
 /-- The quadratic form of a multiple of the identity is the squared norm of the coefficient
 vector. -/
-theorem re_quadForm_smul_one (α : ℝ) (c : ι → ℂ) :
+theorem re_quadForm_smul_one [DecidableEq ι] (α : ℝ) (c : ι → ℂ) :
     RCLike.re (star c ⬝ᵥ ((α • (1 : Matrix ι ι ℂ)) *ᵥ c)) = α * ∑ k, ‖c k‖ ^ 2 := by
   rw [Matrix.smul_mulVec, Matrix.one_mulVec, dotProduct_smul, RCLike.smul_re]
   congr 1
   simp only [dotProduct, Pi.star_apply, map_sum, RCLike.star_def]
   exact Finset.sum_congr rfl fun k _ => by rw [RCLike.conj_mul]; norm_cast
 
-omit [DecidableEq ι] in
 /-- The average of `|f|²` for the function `f` with coefficient vector `c` is the quadratic
 form of the Gram matrix. -/
 theorem integral_norm_sq_combination {a : Ω → ι → ℂ}
@@ -92,6 +89,8 @@ theorem integral_norm_sq_combination {a : Ω → ι → ℂ}
     Matrix.trace_mul_comm, Matrix.trace_mul_vecMulVec_self_star]
 
 /-! ### The discretization inequality -/
+
+variable [DecidableEq ι]
 
 /-- **Discretization of the `L₂`-norm.**
 

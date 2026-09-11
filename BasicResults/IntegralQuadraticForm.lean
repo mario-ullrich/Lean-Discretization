@@ -34,51 +34,48 @@ open Matrix MeasureTheory
 
 namespace Discretization
 
-variable {ι D : Type*} [Fintype ι] [MeasurableSpace D] {μ : Measure D} {a : D → ι → ℂ}
+variable {ι D : Type*} [MeasurableSpace D] {μ : Measure D} {a : D → ι → ℂ}
 
 /-- The **Gram matrix** of a finite family of functions `a : D → ι → ℂ`, with entries
 `∫ aₖ · conj aₗ dμ`.  In the notation of the paper this is `∫ a(x) a(x)* dμ(x)`. -/
 noncomputable def gram (a : D → ι → ℂ) (μ : Measure D) : Matrix ι ι ℂ :=
   Matrix.of fun k l => ∫ x, a x k * star (a x l) ∂μ
 
-omit [Fintype ι] in
 /-- The entries of the Gram matrix, by definition. -/
 @[simp]
 theorem gram_apply (a : D → ι → ℂ) (μ : Measure D) (k l : ι) :
     gram a μ k l = ∫ x, a x k * star (a x l) ∂μ := rfl
 
-omit [Fintype ι] in
 /-- The Gram matrix is Hermitian: swapping the two indices conjugates the entry. -/
 theorem isHermitian_gram (a : D → ι → ℂ) (μ : Measure D) : (gram a μ).IsHermitian := by
   ext k l
   rw [Matrix.conjTranspose_apply, gram_apply, gram_apply, RCLike.star_def, ← integral_conj]
   exact integral_congr_ae (Filter.Eventually.of_forall fun x => by simp [mul_comm])
 
-omit [Fintype ι] in
 /-- The product of two members of the family is integrable, by Cauchy–Schwarz for
 `L₂`-functions. -/
 theorem integrable_mul_star (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (k l : ι) :
     Integrable (fun x => a x k * star (a x l)) μ :=
   (ha k).integrable_mul (ha l).star
 
-omit [Fintype ι] [MeasurableSpace D] in
+omit [MeasurableSpace D] in
 /-- The squared modulus of a complex number, as the real part of `z * star z`. -/
 theorem re_mul_star (z : ℂ) : RCLike.re (z * star z) = ‖z‖ ^ 2 := by
   rw [RCLike.star_def, RCLike.mul_conj]; norm_cast
 
-omit [Fintype ι] in
 /-- The squared modulus of a square-integrable function is integrable. -/
 theorem integrable_norm_sq (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (p : ι) :
     Integrable (fun x => ‖a x p‖ ^ 2) μ := by
   rw [integrable_congr (Filter.Eventually.of_forall fun x => (re_mul_star (a x p)).symm)]
   exact (integrable_mul_star ha p p).re
 
-omit [Fintype ι] in
 /-- The average of `|aₚ|²` is the `p`-th diagonal entry of the Gram matrix. -/
 theorem integral_norm_sq (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (p : ι) :
     ∫ x, ‖a x p‖ ^ 2 ∂μ = RCLike.re (gram a μ p p) := by
   rw [gram_apply, ← integral_re (integrable_mul_star ha p p),
     integral_congr_ae (Filter.Eventually.of_forall fun x => re_mul_star (a x p))]
+
+variable [Fintype ι]
 
 /-- The average of the squared euclidean norm of the family is the trace of its Gram
 matrix. -/

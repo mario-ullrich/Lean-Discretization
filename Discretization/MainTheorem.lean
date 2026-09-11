@@ -34,7 +34,6 @@ open scoped ComplexOrder MatrixOrder
 namespace Discretization
 
 variable {ι κ Ω : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
-  [MeasurableSpace Ω] {μ : Measure Ω}
 
 /-! ### Potentials of a multiple of the identity -/
 
@@ -59,7 +58,6 @@ theorem upperPotential_smul_one (J : Matrix κ κ ℂ) {c : ℝ} (hc : c ≠ 0) 
 
 /-! ### Reading off the frame bounds -/
 
-omit [MeasurableSpace Ω] in
 /-- **The lower frame bound.**  If the final lower state, started from `c₀ • 1`, is positive
 definite with lower potential at most `c`, then the accumulated sum of rank-one matrices is
 at least `(c⁻¹ + k δ - c₀) • 1`. -/
@@ -88,7 +86,6 @@ theorem lower_bound_of_state [Nonempty ι] {c₀ δ : ℝ} {a : Ω → ι → �
       = c⁻¹ • (1 : Matrix ι ι ℂ) - (c₀ - (k : ℝ) * δ) • (1 : Matrix ι ι ℂ) := by module
     _ ≤ _ := by simpa using h5
 
-omit [MeasurableSpace Ω] in
 /-- **The upper frame bound.**  If the final upper state, started from `c₀ • 1`, is positive
 definite with upper potential at most `c`, then the accumulated sum of rank-one matrices is
 at most `c₀ • 1 + (k ζ - c⁻¹) • J`. -/
@@ -123,7 +120,6 @@ theorem upper_bound_of_state [Nonempty κ] {J : Matrix κ κ ℂ} (hJ : J.PosDef
 
 /-! ### The frame bounds with the parameters of the construction inserted -/
 
-omit [MeasurableSpace Ω] in
 /-- **The lower frame bound of the theorem.**  Started from `A₀ = c₀ • 1` with
 `c₀ = δ m / r`, `δ = (1-r)/n` and `m = n r² + 1`, a final lower potential of at most `r/δ`
 turns into the frame bound `(1-r)² • 1`.
@@ -143,7 +139,6 @@ theorem lower_frame_bound [Nonempty ι] {n : ℕ} (hn0 : (0 : ℝ) < n) {m r δ 
   field_simp
   ring
 
-omit [MeasurableSpace Ω] in
 /-- **The upper frame bound of the theorem.**  Started from `B₀ = d₀ • 1` with
 `d₀ = ζ Tr J / s`, `ζ = (1+s)/n` and `Tr J = Λ (n s² + 1)`, a final upper potential of at
 most `s/ζ` turns into the frame bound `(1+s)² Λ • 1`.
@@ -178,6 +173,8 @@ theorem upper_frame_bound [Nonempty κ] {J : Matrix κ κ ℂ} (hJ : J.PosDef) {
         exact frame_constant_eq hn0 hs0 hΛ hζ hd₀ hT
 
 /-! ### The theorem -/
+
+variable [MeasurableSpace Ω] {μ : Measure Ω}
 
 /-- **Generalized sparsification theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
 finite families and a normalized first family.

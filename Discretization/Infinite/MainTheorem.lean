@@ -39,8 +39,7 @@ namespace Discretization
 namespace Infinite
 
 variable {ι κ Ω H : Type*} [Fintype ι] [DecidableEq ι] [NormedAddCommGroup H]
-  [InnerProductSpace ℂ H] [CompleteSpace H] [MeasurableSpace Ω] {μ : Measure Ω}
-  {e : HilbertBasis κ ℂ H} {J : H →L[ℂ] H}
+  [InnerProductSpace ℂ H] [CompleteSpace H] {e : HilbertBasis κ ℂ H} {J : H →L[ℂ] H}
 
 /-! ### Multiples of the identity -/
 
@@ -70,7 +69,6 @@ theorem upperPotential_smul_one {c : ℝ} (hc : c ≠ 0) :
 
 /-! ### Reading off the upper frame bound -/
 
-omit [MeasurableSpace Ω] in
 /-- **The upper frame bound.**  If the final upper state, started from `c₀ • 1`, is strictly
 positive with upper potential at most `c`, then the accumulated sum of rank-one operators is
 at most `c₀ • 1 + (k ζ - c⁻¹) • J`. -/
@@ -103,7 +101,6 @@ theorem upper_bound_of_state [Nonempty κ] (hJ : IsFiniteTracePos e J) {c₀ ζ 
     _ ≤ c₀ • (1 : H →L[ℂ] H) + ((k : ℝ) * ζ) • J - c⁻¹ • J := h5
     _ = c₀ • (1 : H →L[ℂ] H) + ((k : ℝ) * ζ - c⁻¹) • J := by module
 
-omit [MeasurableSpace Ω] in
 /-- **The upper frame bound of the theorem.**  Started from `B₀ = d₀ • 1` with
 `d₀ = ζ Tr J / s`, `ζ = (1+s)/n` and `Tr J = Λ (n s² + 1)`, a final upper potential of at
 most `s/ζ` turns into the frame bound `(1+s)² Λ • 1`.
@@ -136,6 +133,8 @@ theorem upper_frame_bound [Nonempty κ] (hJ : IsFiniteTracePos e J) {Λ : ℝ} (
         exact frame_constant_eq hn0 hs0 hΛ hζ hd₀ hT
 
 /-! ### The theorem -/
+
+variable [MeasurableSpace Ω] {μ : Measure Ω}
 
 /-- **Generalized sparsification theorem for a countable second family**
 (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3).

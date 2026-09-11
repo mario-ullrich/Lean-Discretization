@@ -33,12 +33,11 @@ open scoped ComplexOrder MatrixOrder
 
 namespace Discretization
 
-variable {ι κ Ω : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
+variable {ι κ Ω : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ]
   [MeasurableSpace Ω] {μ : Measure Ω}
 
 /-! ### The constant upper verifier -/
 
-omit [DecidableEq κ] in
 /-- The average of the constant upper verifier is `n`. -/
 theorem integral_upperVerifierConst {b : Ω → κ → ℂ}
     (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
@@ -47,7 +46,6 @@ theorem integral_upperVerifierConst {b : Ω → κ → ℂ}
   rw [integral_const_mul, integral_sum_norm_sq hb]
   field_simp
 
-omit [DecidableEq κ] in
 /-- The constant upper verifier is integrable. -/
 theorem integrable_upperVerifierConst {b : Ω → κ → ℂ}
     (hb : ∀ k, MemLp (fun x => b x k) 2 μ) (c : ℝ) :
@@ -56,7 +54,6 @@ theorem integrable_upperVerifierConst {b : Ω → κ → ℂ}
 
 /-! ### The one-sided construction -/
 
-omit [DecidableEq κ] in
 /-- **The construction for a small effective dimension.**  Only the lower matrix is tracked;
 the weights are chosen as large as the lower verifier allows, which forces
 `wᵢ · U(xᵢ) ≤ 1` for the constant upper verifier `U`. -/
@@ -116,6 +113,8 @@ theorem exists_points_weights_of_small_dim [Nonempty ι] [Nonempty κ] {A₀ : M
       · intro j; simpa using hwk j
 
 /-! ### The theorem for a small effective dimension -/
+
+variable [DecidableEq κ]
 
 /-- **Generalized sparsification theorem for a small effective dimension.**
 

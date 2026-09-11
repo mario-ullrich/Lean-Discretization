@@ -29,12 +29,11 @@ open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator
 
 namespace Discretization
 
-variable {ι κ Ω : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
+variable {ι κ Ω : Type*} [Fintype ι] [Fintype κ] [DecidableEq κ]
   [MeasurableSpace Ω] {μ : Measure Ω}
 
 /-! ### A linear change of the family -/
 
-omit [DecidableEq ι] in
 /-- A linearly transformed family is still square-integrable. -/
 theorem memLp_mulVec (S : Matrix ι ι ℂ) {a : Ω → ι → ℂ}
     (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (k : ι) :
@@ -44,7 +43,6 @@ theorem memLp_mulVec (S : Matrix ι ι ℂ) {a : Ω → ι → ℂ}
   rw [h]
   exact memLp_finsetSum _ fun p _ => (ha p).const_mul _
 
-omit [DecidableEq ι] in
 /-- **The Gram matrix of a linearly transformed family**: `gram (S a) μ = S (gram a μ) S*`. -/
 theorem gram_mulVec (S : Matrix ι ι ℂ) {a : Ω → ι → ℂ}
     (ha : ∀ k, MemLp (fun x => a x k) 2 μ) :
@@ -71,7 +69,7 @@ theorem gram_mulVec (S : Matrix ι ι ℂ) {a : Ω → ι → ℂ}
           rw [Finset.sum_mul]
           exact Finset.sum_congr rfl fun p _ => by ring
 
-omit [DecidableEq ι] [MeasurableSpace Ω] in
+omit [MeasurableSpace Ω] in
 /-- The rank-one matrix of a transformed vector is the conjugated rank-one matrix. -/
 theorem vecMulVec_mulVec_self_star (S : Matrix ι ι ℂ) (u : ι → ℂ) :
     vecMulVec (S *ᵥ u) (star (S *ᵥ u)) = S * vecMulVec u (star u) * Sᴴ := by
@@ -86,6 +84,8 @@ theorem sum_smul_conj (S : Matrix ι ι ℂ) {k : ℕ} (w : Fin k → ℝ)
   exact Finset.sum_congr rfl fun i _ => by rw [mul_smul_comm, smul_mul_assoc]
 
 /-! ### The theorem without normalisation -/
+
+variable [DecidableEq ι]
 
 /-- **Generalized sparsification theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
 finite families.
