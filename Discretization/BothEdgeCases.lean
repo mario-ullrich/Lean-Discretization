@@ -58,9 +58,7 @@ theorem exists_admissible_point_of_unique_of_small_dim [Unique ι] {a : Ω → �
     integral_upperVerifierConst hb hT n
   refine exists_le_of_integral_le ((integrable_norm_sq ha default).const_mul _)
     (integrable_upperVerifierConst hb _) (fun y => by positivity) (fun y => ?_) ?_ ?_
-  · have h1 : 0 ≤ ∑ p, ‖b y p‖ ^ 2 := Finset.sum_nonneg fun p _ => by positivity
-    have h2 : 0 ≤ (n : ℝ) / RCLike.re (gram b μ).trace := by positivity
-    exact mul_nonneg h2 h1
+  · exact upperVerifierConst_nonneg (by positivity) y
   · rw [hfint]; exact hn0
   · rw [hfint, hgint]
 
@@ -112,9 +110,7 @@ theorem bss_generalized_of_unique_of_small_dim [Unique ι] [Nonempty κ]
     -- and the crude rank-one estimate
     have hTΛ : RCLike.re J.trace
         ≤ (1 + Real.sqrt ((RCLike.re J.trace / Λ - 1) / n)) ^ 2 * Λ := by
-      have hMs := le_sq_one_add_sqrt_div hn0 hMlt
-      rw [div_le_iff₀ hΛ] at hMs
-      linarith
+      exact le_sq_one_add_sqrt_div_mul hn0 hΛ hMlt
     exact (sum_smul_vecMulVec_le_smul_one hn0 (fun _ => y) _
       (fun _ => (one_div_pos.2 hLpos).le) hweight).trans
       (smul_le_smul_of_nonneg_right hTΛ Matrix.PosSemidef.one.nonneg)

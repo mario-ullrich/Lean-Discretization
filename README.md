@@ -163,13 +163,14 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | Result | Lean name | Status |
 |---|---|---|
 | The arithmetic of the parameters `r`, `s`, `δ`, `ζ` | `Discretization.one_div_le_sqrt_div`, `.eq_mul_sq_sqrt_div_add_one`, `.one_div_add_div_eq`, `.lt_inv_of_le_one_div_sub` | ✅ |
-| A small effective dimension is below `(1+s)²` | `Discretization.le_sq_one_add_sqrt_div` | ✅ |
+| A small effective dimension is below `(1+s)²` | `Discretization.le_sq_one_add_sqrt_div`, `.le_sq_one_add_sqrt_div_mul` | ✅ |
 | The two potentials and their positivity | `Discretization.lowerPotential`, `.upperPotential` | ✅ |
 | Effect of the shifts on the potentials | `Discretization.lowerPotential_sub_eq`, `.upperPotential_sub_eq` | ✅ |
 | The potential of a rank-one update, in closed form | `Discretization.lowerPotential_add_smul_vecMulVec`, `.upperPotential_sub_smul_vecMulVec` | ✅ |
 | The verifiers | `Discretization.lowerVerifier`, `.upperVerifier` | ✅ |
 | **Barrier lemma** | `Discretization.lowerPotential_update_le`, `.upperPotential_update_le` | ✅ |
 | The inequality each half of it rests on | `Discretization.lower_barrier_ineq`, `.upper_barrier_ineq` | ✅ |
+| The weight a pair of verifier values admits | `Discretization.weight_of_verifier_lt`, `.one_sub_mul_pos` | ✅ |
 | The verifiers pass on average | `Discretization.integral_lowerVerifier_gt`, `.integral_upperVerifier_lt` | ✅ |
 | An admissible point exists | `Discretization.exists_admissible_point` | ✅ |
 | The `n`-step construction | `Discretization.exists_points_weights` | ✅ |

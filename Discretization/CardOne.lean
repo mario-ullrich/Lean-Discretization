@@ -113,15 +113,10 @@ theorem exists_points_weights_of_unique [Unique ι] [Nonempty κ] {J B₀ : Matr
     have hU0 : 0 ≤ upperVerifier J (upperState J B₀ ζ b x w) ζ (b y) :=
       upperVerifier_nonneg hJ hBk hζ (b y)
     have hLpos : 0 < (n : ℝ) * ‖a y default‖ ^ 2 := lt_of_le_of_lt hU0 hy
-    have hwnew : 0 < 1 / ((n : ℝ) * ‖a y default‖ ^ 2) := one_div_pos.2 hLpos
-    have hcondU : upperVerifier J (upperState J B₀ ζ b x w) ζ (b y)
-        ≤ 1 / (1 / ((n : ℝ) * ‖a y default‖ ^ 2)) := by
-      rw [one_div_one_div]; exact hy.le
+    obtain ⟨hwnew, -, hcondU⟩ := weight_of_verifier_lt hU0 hy
     obtain ⟨hBnew, hΨnew⟩ := upperPotential_update_le hJ hBk hζ (b y) hwnew hcondU
     refine ⟨Fin.snoc x y, Fin.snoc w (1 / ((n : ℝ) * ‖a y default‖ ^ 2)), ?_, ?_, ?_, ?_⟩
-    · refine Fin.lastCases ?_ ?_
-      · simpa using hwnew
-      · intro j; simpa using hwpos j
+    · exact forall_snoc_pos hwpos hwnew
     · rw [upperState_snoc]; exact hBnew
     · rw [upperState_snoc]; exact hΨnew.trans hΨ
     · refine Fin.lastCases ?_ ?_

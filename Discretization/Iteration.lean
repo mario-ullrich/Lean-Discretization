@@ -45,6 +45,14 @@ noncomputable def upperState (J B₀ : Matrix κ κ ℂ) (ζ : ℝ) (b : Ω → 
     (x : Fin k → Ω) (w : Fin k → ℝ) : Matrix κ κ ℂ :=
   B₀ + ((k : ℝ) * ζ) • J - ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
 
+/-- Appending a positive weight to a family of positive weights keeps all of them
+positive. -/
+theorem forall_snoc_pos {k : ℕ} {w : Fin k → ℝ} (hw : ∀ i, 0 < w i) {v : ℝ} (hv : 0 < v) :
+    ∀ i, 0 < (Fin.snoc w v : Fin (k + 1) → ℝ) i := by
+  refine Fin.lastCases ?_ ?_
+  · simpa using hv
+  · intro j; simpa using hw j
+
 omit [Fintype ι] [MeasurableSpace Ω] in
 /-- With no points chosen, the lower state is `A₀`. -/
 @[simp]
@@ -112,20 +120,12 @@ theorem exists_points_weights [Nonempty ι] [Nonempty κ] {A₀ : Matrix ι ι �
       exists_admissible_point hAk hJ hBk hδ hδ' hζ ha hb hgrama hgramb hgapk
     have hU0 : 0 ≤ upperVerifier J (upperState J B₀ ζ b x w) ζ (b y) :=
       upperVerifier_nonneg hJ hBk hζ (b y)
-    have hLpos : 0 < lowerVerifier (lowerState A₀ δ a x w) δ (a y) := lt_of_le_of_lt hU0 hy
-    have hwnew : 0 < 1 / lowerVerifier (lowerState A₀ δ a x w) δ (a y) := one_div_pos.2 hLpos
-    have hcondL : 1 / (1 / lowerVerifier (lowerState A₀ δ a x w) δ (a y))
-        ≤ lowerVerifier (lowerState A₀ δ a x w) δ (a y) := by rw [one_div_one_div]
-    have hcondU : upperVerifier J (upperState J B₀ ζ b x w) ζ (b y)
-        ≤ 1 / (1 / lowerVerifier (lowerState A₀ δ a x w) δ (a y)) := by
-      rw [one_div_one_div]; exact hy.le
+    obtain ⟨hwnew, hcondL, hcondU⟩ := weight_of_verifier_lt hU0 hy
     obtain ⟨hAnew, hΦnew⟩ := lowerPotential_update_le hAk hδ hδ' (a y) hwnew hcondL
     obtain ⟨hBnew, hΨnew⟩ := upperPotential_update_le hJ hBk hζ (b y) hwnew hcondU
     refine ⟨Fin.snoc x y, Fin.snoc w (1 / lowerVerifier (lowerState A₀ δ a x w) δ (a y)),
       ?_, ?_, ?_, ?_, ?_⟩
-    · refine Fin.lastCases ?_ ?_
-      · simpa using hwnew
-      · intro j; simpa using hwpos j
+    · exact forall_snoc_pos hwpos hwnew
     · rw [lowerState_snoc]; exact hAnew
     · rw [upperState_snoc]; exact hBnew
     · rw [lowerState_snoc]; exact hΦnew.trans hΦ

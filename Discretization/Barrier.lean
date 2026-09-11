@@ -67,6 +67,25 @@ theorem upper_barrier_ineq {E w p r : ℝ} (hE : 0 < E) (hw : 0 < w) (hden : 0 <
   have h2 : E * (r / E + p) = r + E * p := by field_simp
   nlinarith
 
+/-- **The weight that a pair of verifier values admits.**  If the upper value `U` is
+nonnegative and below the lower value `L`, then `w = 1/L` is positive and satisfies
+`U ≤ 1/w ≤ L`, which is what the two halves of the barrier lemma ask for. -/
+theorem weight_of_verifier_lt {U L : ℝ} (hU0 : 0 ≤ U) (h : U < L) :
+    0 < 1 / L ∧ 1 / (1 / L) ≤ L ∧ U ≤ 1 / (1 / L) := by
+  rw [one_div_one_div]
+  exact ⟨one_div_pos.2 (hU0.trans_lt h), le_rfl, h.le⟩
+
+/-- **The Sherman–Morrison denominator of the upper update is positive.**  If the verifier
+value `r/E + p` stays below `1/w`, then `w p < 1`, because `r/E` is positive.
+
+Positivity of `r`, the quadratic form of the conjugate of `J`, is where the positive
+definiteness of `J` enters, or its injectivity in infinite dimension. -/
+theorem one_sub_mul_pos {E w p r : ℝ} (hE : 0 < E) (hw : 0 < w) (hr : 0 < r)
+    (hcond : r / E + p ≤ 1 / w) : 0 < 1 - w * p := by
+  have hdiv : 0 < r / E := div_pos hr hE
+  have hwinv : w * (1 / w) = 1 := by field_simp
+  nlinarith [hcond, hdiv, hw, hwinv]
+
 variable {ι κ : Type*} [Fintype ι] [DecidableEq ι] [Fintype κ] [DecidableEq κ]
 
 /-- **The lower potential after a rank-one update**, in closed form:
@@ -165,12 +184,8 @@ theorem upperPotential_update_le [Nonempty κ] {J B : Matrix κ κ ℂ} (hJ : J.
     rcases eq_or_ne b 0 with rfl | hb
     · simp only [hpr]
       simp
-    · have hrpos : 0 < rr := by
-        simp only [hrr]
-        exact hconjPD.re_dotProduct_pos hb
-      have hdiv : 0 < rr / E := div_pos hrpos hE
-      have hwinv : w * (1 / w) = 1 := by field_simp
-      nlinarith [hcond, hdiv, hw, hwinv]
+    · exact one_sub_mul_pos hE hw (by simp only [hrr]; exact hconjPD.re_dotProduct_pos hb)
+        hcond
   refine ⟨hM.sub_smul_vecMulVec b hw.le hstrict, ?_⟩
   rw [upperPotential_sub_smul_vecMulVec hM b hstrict]
   have hkey : (w / (1 - w * pr)) * rr ≤ E := upper_barrier_ineq hE hw hstrict hcond

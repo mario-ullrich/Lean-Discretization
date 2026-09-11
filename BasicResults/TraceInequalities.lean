@@ -43,12 +43,6 @@ theorem trace_mul_vecMulVec_self_star (P : Matrix n n 𝕜) (a : n → 𝕜) :
     (P * vecMulVec a (star a)).trace = star a ⬝ᵥ (P *ᵥ a) := by
   rw [mul_vecMulVec, trace_vecMulVec, dotProduct_comm]
 
-/-- The trace of a rank-one matrix sandwiched between two matrices is again a quadratic
-form: `Tr (Z * a a* * Z') = a* (Z' Z) a`. -/
-theorem trace_mul_vecMulVec_mul (Z Z' : Matrix n n 𝕜) (a : n → 𝕜) :
-    (Z * vecMulVec a (star a) * Z').trace = star a ⬝ᵥ ((Z' * Z) *ᵥ a) := by
-  rw [trace_mul_cycle, trace_mul_vecMulVec_self_star]
-
 /-- **The trace of a product of two positive semidefinite matrices is nonnegative.**
 
 Writing `Q = ∑ vᵢ vᵢ*` as a sum of rank-one matrices turns `Tr (P * Q)` into the sum of the

@@ -105,20 +105,12 @@ theorem exists_points_weights [Nonempty ι] [Nonempty κ] [Countable κ]
       exists_admissible_point hAk hδ hδ' ha hgrama hJ hBk hζ hb hgramb hgapk
     have hU0 : 0 ≤ upperVerifier e J (upperState J B₀ ζ b x w) ζ (b y) :=
       upperVerifier_nonneg hJ hBk hζ (b y)
-    have hLpos : 0 < lowerVerifier (lowerState A₀ δ a x w) δ (a y) := lt_of_le_of_lt hU0 hy
-    have hwnew : 0 < 1 / lowerVerifier (lowerState A₀ δ a x w) δ (a y) := one_div_pos.2 hLpos
-    have hcondL : 1 / (1 / lowerVerifier (lowerState A₀ δ a x w) δ (a y))
-        ≤ lowerVerifier (lowerState A₀ δ a x w) δ (a y) := by rw [one_div_one_div]
-    have hcondU : upperVerifier e J (upperState J B₀ ζ b x w) ζ (b y)
-        ≤ 1 / (1 / lowerVerifier (lowerState A₀ δ a x w) δ (a y)) := by
-      rw [one_div_one_div]; exact hy.le
+    obtain ⟨hwnew, hcondL, hcondU⟩ := weight_of_verifier_lt hU0 hy
     obtain ⟨hAnew, hΦnew⟩ := lowerPotential_update_le hAk hδ hδ' (a y) hwnew hcondL
     obtain ⟨hBnew, hΨnew⟩ := upperPotential_update_le hJ hBk hζ (b y) hwnew hcondU
     refine ⟨Fin.snoc x y, Fin.snoc w (1 / lowerVerifier (lowerState A₀ δ a x w) δ (a y)),
       ?_, ?_, ?_, ?_, ?_⟩
-    · refine Fin.lastCases ?_ ?_
-      · simpa using hwnew
-      · intro j; simpa using hwpos j
+    · exact forall_snoc_pos hwpos hwnew
     · rw [lowerState_snoc]; exact hAnew
     · rw [upperState_snoc]; exact hBnew
     · rw [lowerState_snoc]; exact hΦnew.trans hΦ

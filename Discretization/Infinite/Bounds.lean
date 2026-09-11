@@ -41,23 +41,20 @@ theorem traceAlong_conj_inv_sqrt (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}
       = upperPotential e J B := by
   have hBinv : IsStrictlyPositive (Ring.inverse B) := hB.ringInverse
   have hsqrtinv : CFC.sqrt (Ring.inverse B) = Ring.inverse (CFC.sqrt B) := CFC.sqrt_ringInverse
-  have hsa : IsSelfAdjoint (Ring.inverse (CFC.sqrt B)) := by
-    rw [← hsqrtinv]
-    exact IsSelfAdjoint.of_nonneg (CFC.sqrt_nonneg _)
+  have hsa : IsSelfAdjoint (Ring.inverse (CFC.sqrt B)) :=
+    (IsSelfAdjoint.of_nonneg (CFC.sqrt_nonneg B)).ringInverse
   rw [upperPotential, traceAlong_mul_eq_tsum_sqrt e hJ.nonneg hBinv.nonneg hJ.summableTrace,
     hsqrtinv, traceAlong]
   exact tsum_congr fun k => re_inner_conj_apply hsa J (e k)
 
-/-- The trace of the conjugate `B^{-1/2} J B^{-1/2}` converges. -/
-theorem summable_trace_conj_inv_sqrt (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}
-    (hB : IsStrictlyPositive B) :
+/-- The trace of the conjugate `B^{-1/2} J B^{-1/2}` converges.  No hypothesis on `B` is
+needed: whatever `B` is, `B^{-1/2}` is a bounded operator, and composing with a bounded
+operator preserves the Hilbert–Schmidt property. -/
+theorem summable_trace_conj_inv_sqrt (hJ : IsFiniteTracePos e J) (B : H →L[ℂ] H) :
     Summable fun k => RCLike.re ⟪e k,
       (Ring.inverse (CFC.sqrt B) * J * Ring.inverse (CFC.sqrt B)) (e k)⟫_ℂ := by
-  have hBinv : IsStrictlyPositive (Ring.inverse B) := hB.ringInverse
-  have hsqrtinv : CFC.sqrt (Ring.inverse B) = Ring.inverse (CFC.sqrt B) := CFC.sqrt_ringInverse
-  have hsa : IsSelfAdjoint (Ring.inverse (CFC.sqrt B)) := by
-    rw [← hsqrtinv]
-    exact IsSelfAdjoint.of_nonneg (CFC.sqrt_nonneg _)
+  have hsa : IsSelfAdjoint (Ring.inverse (CFC.sqrt B)) :=
+    (IsSelfAdjoint.of_nonneg (CFC.sqrt_nonneg B)).ringInverse
   have hterm : ∀ k, RCLike.re ⟪e k,
       (Ring.inverse (CFC.sqrt B) * J * Ring.inverse (CFC.sqrt B)) (e k)⟫_ℂ
       = ‖CFC.sqrt J (Ring.inverse (CFC.sqrt B) (e k))‖ ^ 2 := fun k => by
@@ -96,7 +93,7 @@ theorem inv_upperPotential_smul_le [Nonempty κ] (hJ : IsFiniteTracePos e J) {B 
     nonneg_conj (IsStrictlyPositive.ringInverse ⟨hS0, hSunit⟩).nonneg hJ.nonneg
   have hP : Ring.inverse (CFC.sqrt B) * J * Ring.inverse (CFC.sqrt B)
       ≤ (upperPotential e J B) • (1 : H →L[ℂ] H) := by
-    have h := le_traceAlong_smul_one e hPpos (summable_trace_conj_inv_sqrt hJ hB)
+    have h := le_traceAlong_smul_one e hPpos (summable_trace_conj_inv_sqrt hJ B)
     rwa [traceAlong_conj_inv_sqrt hJ hB] at h
   -- conjugating back by `√B`
   have hconj := conjugate_le_conjugate_of_nonneg hP hS0

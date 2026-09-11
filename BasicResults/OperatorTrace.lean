@@ -466,15 +466,8 @@ theorem traceAlong_mul_pos (e : HilbertBasis κ ℂ H) {P Q : H →L[ℂ] H} (hP
   have hval : traceAlong e (P * Q) = ∑' k, ‖CFC.sqrt Q (CFC.sqrt P (e k))‖ ^ 2 := by
     rw [traceAlong_mul e hP hQ hsum]
     exact tsum_congr fun k => re_inner_apply_eq_norm_sq_sqrt hQ _
-  have hQsum : Summable fun k => ‖CFC.sqrt Q (CFC.sqrt P (e k))‖ ^ 2 := by
-    refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_)
-      (hS.mul_left (‖CFC.sqrt Q‖ ^ 2))
-    have h := (CFC.sqrt Q).le_opNorm (CFC.sqrt P (e k))
-    have h0 : (0 : ℝ) ≤ ‖CFC.sqrt Q (CFC.sqrt P (e k))‖ := norm_nonneg _
-    have h1 : (0 : ℝ) ≤ ‖CFC.sqrt Q‖ * ‖CFC.sqrt P (e k)‖ := by positivity
-    calc ‖CFC.sqrt Q (CFC.sqrt P (e k))‖ ^ 2 ≤ (‖CFC.sqrt Q‖ * ‖CFC.sqrt P (e k)‖) ^ 2 := by
-          nlinarith
-      _ = ‖CFC.sqrt Q‖ ^ 2 * ‖CFC.sqrt P (e k)‖ ^ 2 := by ring
+  have hQsum : Summable fun k => ‖CFC.sqrt Q (CFC.sqrt P (e k))‖ ^ 2 :=
+    summable_norm_sq_comp e (CFC.sqrt Q) hS
   -- `√Q` is injective, because `Q` is a unit
   have hinj : ∀ y : H, CFC.sqrt Q y = 0 → y = 0 := fun y hy =>
     (ContinuousLinearMap.isUnit_iff_bijective.1

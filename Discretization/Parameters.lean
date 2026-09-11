@@ -31,8 +31,9 @@ the arithmetic of these four numbers, with no matrices in sight:
 * `Discretization.nonneg_mul_sub_inv_div` and `Discretization.frame_constant_eq`: the
   coefficient of `J` in the upper read-off is nonnegative, and the constant it produces is
   `(1+s)² Λ`;
-* `Discretization.le_sq_one_add_sqrt_div`: an effective dimension below `1 + 1/n` is itself
-  below `(1+s)²`, which is what the edge case of a small effective dimension needs.
+* `Discretization.le_sq_one_add_sqrt_div` and `Discretization.le_sq_one_add_sqrt_div_mul`: an
+  effective dimension below `1 + 1/n` is itself below `(1+s)²`, which is what the edge cases
+  of a small effective dimension need.
 
 Everything here is used twice, once for a finite second family and once for a countable one.
 
@@ -149,6 +150,17 @@ theorem le_sq_one_add_sqrt_div {M n : ℝ} (hn0 : 0 < n) (hM : M ≤ 1 + 1 / n) 
       have h6 := mul_le_mul_of_nonneg_left h4 hn0.le
       rwa [mul_one_div, div_self hn0.ne'] at h6
     nlinarith [h1, h5, hs0]
+
+/-- **The upper frame constant dominates the trace** when the effective dimension is small:
+`T ≤ (1 + s)² Λ` for `s = √((T/Λ - 1)/n)` and `T/Λ ≤ 1 + 1/n`.
+
+This is `Discretization.le_sq_one_add_sqrt_div` with the `Λ` multiplied out, the form in
+which the edge cases read off their upper frame bound. -/
+theorem le_sq_one_add_sqrt_div_mul {T Λ n : ℝ} (hn0 : 0 < n) (hΛ : 0 < Λ)
+    (h : T / Λ ≤ 1 + 1 / n) : T ≤ (1 + Real.sqrt ((T / Λ - 1) / n)) ^ 2 * Λ := by
+  have hMs := le_sq_one_add_sqrt_div hn0 h
+  rw [div_le_iff₀ hΛ] at hMs
+  linarith
 
 /-- **An open gap keeps the shift admissible.**  If `c ≤ 1/δ - Φ` for some positive `c`, then
 `δ < Φ⁻¹`.  That is the hypothesis under which `A - δ • 1` stays positive definite.

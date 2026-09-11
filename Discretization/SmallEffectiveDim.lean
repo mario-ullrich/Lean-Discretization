@@ -47,6 +47,12 @@ theorem integral_upperVerifierConst {b : Ω → κ → ℂ}
   rw [integral_const_mul, integral_sum_norm_sq hb]
   field_simp
 
+omit [MeasurableSpace Ω] in
+/-- The constant upper verifier is nonnegative. -/
+theorem upperVerifierConst_nonneg {b : Ω → κ → ℂ} {c : ℝ} (hc : 0 ≤ c) (y : Ω) :
+    0 ≤ c * ∑ p, ‖b y p‖ ^ 2 :=
+  mul_nonneg hc (Finset.sum_nonneg fun p _ => by positivity)
+
 /-- The constant upper verifier is integrable. -/
 theorem integrable_upperVerifierConst {b : Ω → κ → ℂ}
     (hb : ∀ k, MemLp (fun x => b x k) 2 μ) (c : ℝ) :
@@ -89,20 +95,14 @@ theorem exists_points_weights_of_small_dim [Nonempty ι] [Nonempty κ] {A₀ : M
       (g := fun y => (n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b y p‖ ^ 2)
       (integrable_lowerVerifier ha) (integrable_upperVerifierConst hb _) hlt
     -- the weight allowed by the lower verifier
-    have hU0 : 0 ≤ (n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b y p‖ ^ 2 := by
-      have h1 : 0 ≤ ∑ p, ‖b y p‖ ^ 2 := Finset.sum_nonneg fun p _ => by positivity
-      have h2 : 0 ≤ (n : ℝ) / RCLike.re (gram b μ).trace := by positivity
-      exact mul_nonneg h2 h1
+    have hU0 : 0 ≤ (n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b y p‖ ^ 2 :=
+      upperVerifierConst_nonneg (by positivity) y
     have hLpos : 0 < lowerVerifier (lowerState A₀ δ a x w) δ (a y) := lt_of_le_of_lt hU0 hy
-    have hwnew : 0 < 1 / lowerVerifier (lowerState A₀ δ a x w) δ (a y) := one_div_pos.2 hLpos
-    have hcondL : 1 / (1 / lowerVerifier (lowerState A₀ δ a x w) δ (a y))
-        ≤ lowerVerifier (lowerState A₀ δ a x w) δ (a y) := by rw [one_div_one_div]
+    obtain ⟨hwnew, hcondL, -⟩ := weight_of_verifier_lt hU0 hy
     obtain ⟨hAnew, hΦnew⟩ := lowerPotential_update_le hAk hδ hδ' (a y) hwnew hcondL
     refine ⟨Fin.snoc x y, Fin.snoc w (1 / lowerVerifier (lowerState A₀ δ a x w) δ (a y)),
       ?_, ?_, ?_, ?_⟩
-    · refine Fin.lastCases ?_ ?_
-      · simpa using hwnew
-      · intro j; simpa using hwpos j
+    · exact forall_snoc_pos hwpos hwnew
     · rw [lowerState_snoc]; exact hAnew
     · rw [lowerState_snoc]; exact hΦnew.trans hΦ
     · refine Fin.lastCases ?_ ?_
@@ -212,9 +212,7 @@ theorem bss_generalized_of_small_dim [Nonempty ι] [Nonempty κ]
         field_simp
       rwa [h4, mul_one] at h3
     have hTΛ : T ≤ (1 + Real.sqrt ((T / Λ - 1) / n)) ^ 2 * Λ := by
-      have hMs := le_sq_one_add_sqrt_div hn0 hMlt
-      rw [div_le_iff₀ hΛ] at hMs
-      linarith
+      exact le_sq_one_add_sqrt_div_mul hn0 hΛ hMlt
     calc ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
         ≤ T • (1 : Matrix κ κ ℂ) :=
           sum_smul_vecMulVec_le_smul_one hn0 x w (fun i => (hwpos i).le) hweight

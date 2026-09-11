@@ -158,12 +158,8 @@ theorem upperPotential_update_le [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : 
     rcases eq_or_ne u 0 with rfl | hu
     · simp only [hpdef]
       simp
-    · have hrpos : 0 < r := by
-        simp only [hrdef]
-        exact re_inner_conj_pos hJ hMinv hu
-      have hdiv : 0 < r / E := div_pos hrpos hE
-      have hwinv : w * (1 / w) = 1 := by field_simp
-      nlinarith [hcond, hdiv, hw, hwinv]
+    · exact one_sub_mul_pos hE hw (by simp only [hrdef]; exact re_inner_conj_pos hJ hMinv hu)
+        hcond
   refine ⟨isStrictlyPositive_sub_smul_rankOne hM u hw.le hstrict, ?_⟩
   rw [upperPotential_sub_smul_rankOne hJ hM u hw.le hstrict]
   have hkey : (w / (1 - w * p)) * r ≤ E := upper_barrier_ineq hE hw hstrict hcond
