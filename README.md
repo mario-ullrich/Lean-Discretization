@@ -1,5 +1,11 @@
 # Constructive discretization in Lean 4 / Mathlib
 
+**Blueprint**: a human-readable account of the mathematics, with the Lean declaration named
+at every statement and a dependency graph, is built from `blueprint/` by GitHub Actions on
+every push.  Once this repository has a remote, the rendered site and the PDF are published
+to GitHub Pages, and every run also leaves them as a downloadable artifact under
+*Actions -> latest run -> blueprint-YYYYMMDD*.
+
 ## The question
 
 Given a family of functions on a measure space, can one replace the integral
@@ -292,6 +298,17 @@ Discretization/
 lakefile.toml                            ← package `discretization`, two libraries
 lean-toolchain                           ← leanprover/lean4:v4.33.1
 lake-manifest.json                       ← Mathlib pinned to the v4.33.1 tag
+.github/workflows/blueprint.yml          ← CI: builds the project and the blueprint
+blueprint/
+  src/
+    content.tex                          ← the blueprint itself, with \lean and \uses tags
+    print.tex                            ← pdflatex master (leanblueprint pdf)
+    web.tex                              ← plastex master (leanblueprint web)
+    plastex.cfg                          ← plastex / leanblueprint configuration
+    latexmkrc                            ← latexmk configuration for the PDF build
+    extra_styles.css                     ← CSS tweaks for the rendered site
+  scripts/
+    link_lean_decls.py                   ← points the \lean links at this repository
 ```
 
 The dependencies live **outside** the repository, in `../lake-packages/v4.33.1`, so that all
@@ -309,6 +326,18 @@ lake build
 Do **not** run `lake update`: it re-resolves the dependencies and makes the build
 non-reproducible.  Run `lake` from inside this folder, since `elan` reads `lean-toolchain`
 from the working directory.
+
+The blueprint needs a TeX installation, `graphviz` and the `leanblueprint` package:
+
+```
+pip install leanblueprint
+leanblueprint pdf     # blueprint/print/print.pdf
+leanblueprint web     # blueprint/web/index.html
+```
+
+The PDF needs TeX alone; the web build also needs `graphviz` for the dependency graph, and
+`leanblueprint checkdecls` verifies every `\lean` tag against the compiled project.  Both
+outputs are regenerated on every push, so neither is committed.
 
 ## References
 

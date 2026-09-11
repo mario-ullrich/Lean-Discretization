@@ -1,0 +1,191 @@
+# Builds the Lean project and the leanblueprint, then publishes the result
+# two ways:
+#
+#   * GitHub Pages (public repository): the rendered blueprint is deployed to
+#     https://<owner>.github.io/Lean-Discretization/ with the PDF at
+#     https://<owner>.github.io/Lean-Discretization/blueprint.pdf.
+#     While the repository is private, the deploy job is skipped (Pages is
+#     unavailable on the free plan for private repositories).
+#
+#   * Workflow artifact (always): `blueprint-YYYYMMDD` is downloadable from
+#     every run summary under the Actions tab. It contains the PDF and the
+#     web pages.
+
+name: Build blueprint
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      # GitHub-hosted runners start with roughly 20 GB free on `/`, and both
+      # `~/.elan` and the workspace live there. A Lean toolchain, the Mathlib
+      # oleans and TeX Live together do not fit next to the preinstalled
+      # language toolchains, so drop the ones this project never uses.
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/share/swift
+          sudo rm -rf /usr/local/.ghcup /opt/ghc
+          sudo rm -rf /usr/local/share/boost
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo docker image prune --all --force || true
+          df -h /
+
+      # This project keeps its Lake dependencies outside the repository, in
+      # `../lake-packages/v4.33.1` (the `packagesDir` line of lakefile.toml), so
+      # that folder is what has to be cached rather than `.lake/packages`.
+      # Exact key only, no `restore-keys`: on a Mathlib bump the fallback would
+      # restore the *previous* toolchain and olean set, and the new ones would
+      # then have to fit alongside them.
+      - name: Cache Lean toolchain and Lake artifacts
+        uses: actions/cache@v5
+        with:
+          path: |
+            ~/.elan
+            ../lake-packages
+            .lake/build
+          key: ${{ runner.os }}-lean-${{ hashFiles('lake-manifest.json') }}
+
+      # ----- Lean side: build the project so that checkdecls can verify
+      # each `\lean{Decl}` tag against the actually-existing declaration.
+      - name: Install elan (Lean version manager)
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+
+      # Use the Mathlib revision pinned in lake-manifest.json (do NOT run
+      # `lake update`: that pulls bleeding-edge Mathlib, making CI builds
+      # non-reproducible and breaking them whenever Mathlib changes upstream).
+      - name: Download Mathlib cache (pinned by lake-manifest.json)
+        run: lake exe cache get || true
+
+      - name: Build the Lean project
+        run: lake build
+
+      # ----- Blueprint side: TeX, graphviz, leanblueprint
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install TeX Live and graphviz
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            texlive-latex-base texlive-latex-extra texlive-fonts-recommended \
+            latexmk dvisvgm graphviz libgraphviz-dev
+
+      - name: Install leanblueprint
+        run: |
+          python -m pip install --upgrade pip
+          pip install leanblueprint
+
+      - name: Build blueprint PDF
+        run: leanblueprint pdf
+        continue-on-error: true   # PDF is nice-to-have; don't break the build if TeX hiccups
+
+      - name: Build blueprint web
+        run: leanblueprint web
+
+      # Tidy the dependency graph. plastexdepgraph exposes no options for
+      # this, so we post-process the generated page:
+      #   * Recolor the "ready to formalize" nodes from blue (#A3D6FF) to white,
+      #     so the graph reads two-tone: green = proof formalized, white = the
+      #     statement is formalized (green border) but the proof is still a `sorry`.
+      #   * Drop the legend rows that never apply here: "Orange border" and
+      #     "Blue border" (every statement is formalized, so no node has either)
+      #     and "Blue background" (now recolored white; the green-border row
+      #     already explains a stated-but-unproved node).
+      #   * Reorient the graph left-to-right (rankdir=LR): base results on the
+      #     left, derived results on the right. plastexdepgraph sets no rankdir,
+      #     so we inject one right after the "digraph ... {" opening brace.
+      - name: Tidy dependency graph (recolor sorry-nodes white, drop unused legend rows, lay out left-to-right)
+        run: |
+          sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\(digraph[^{]*{\)/\1 rankdir="LR";/' blueprint/web/dep_graph_document.html
+
+      # Point the `\lean{...}` links at this repository. leanblueprint builds
+      # them as `{dochome}/find/#doc/Decl` and, with no `\dochome` set, falls
+      # back to Mathlib's documentation site, where none of this project's
+      # declarations exist. That URL shape is fixed inside the plugin, so the
+      # links are rewritten here into permalinks at the commit being built.
+      # The script fails the build if a cited declaration cannot be located, or
+      # if it finds no links at all -- which is how an upstream template change
+      # would show up.
+      - name: Link Lean declarations to their sources
+        run: |
+          python blueprint/scripts/link_lean_decls.py \
+            --repo "$GITHUB_REPOSITORY" \
+            --rev "$GITHUB_SHA"
+
+      - name: Verify Lean declaration references
+        run: leanblueprint checkdecls
+        continue-on-error: true   # Reported, but not treated as a build failure.
+
+      # Bundle the PDF with the web artifact, so one download has both.
+      - name: Include the PDF in the web bundle
+        run: |
+          if [ -f blueprint/print/print.pdf ]; then
+            cp blueprint/print/print.pdf blueprint/web/blueprint.pdf
+          fi
+
+      # ----- Upload as a workflow artifact (downloadable from the run page).
+      # The artifact contains the PDF and the web pages.
+      - name: Name the artifact after the build date
+        id: stamp
+        run: echo "name=blueprint-$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload blueprint (HTML site with blueprint.pdf)
+        uses: actions/upload-artifact@v5
+        with:
+          name: ${{ steps.stamp.outputs.name }}
+          path: blueprint/web/
+          retention-days: 30
+
+      # Same directory again, packaged in the special format deploy-pages
+      # expects (upload-artifact ZIPs are not compatible with Pages).
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: blueprint/web
+
+  # ----- Deploy the rendered blueprint to GitHub Pages. Skipped while the
+  # repository is private; once it is public, the next push to main (or a
+  # manual workflow_dispatch run) deploys. configure-pages enables Pages
+  # with source "GitHub Actions" automatically on the first run.
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main' && !github.event.repository.private
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+      contents: read
+      actions: read
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Enable and configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
