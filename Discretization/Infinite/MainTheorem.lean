@@ -3,8 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.MainTheorem
+import Discretization.Infinite.Bounds
 import Discretization.Infinite.Iteration
+import Discretization.MainTheorem
 
 /-!
 # The generalized sparsification theorem with a countable second family

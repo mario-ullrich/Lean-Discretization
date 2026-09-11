@@ -29,7 +29,8 @@ In Lean this order is switched on by the command `open scoped MatrixOrder`, and 
 * `BasicResults.LoewnerOrder`: comparisons with multiples of the identity.  A Hermitian
   matrix is below `c • 1` once `c` bounds its eigenvalues, a positive semidefinite matrix is
   below `(Re Tr A) • 1`, the inverse is antitone, and `A - δ • 1` stays positive definite for
-  `δ` below the reciprocal of `Re Tr A⁻¹`.
+  `δ` below the reciprocal of `Re Tr A⁻¹`.  It also holds the resolvent identity for the two
+  shifts `A ↦ A - δ • 1` and `B ↦ B + ζ • J` of the construction.
 * `BasicResults.TraceInequalities`: the trace of a product of positive semidefinite
   matrices is nonnegative (positive for positive definite ones), the trace of a product of
   Hermitian matrices is real, and Cauchy–Schwarz for the semi-inner product
@@ -46,7 +47,9 @@ In Lean this order is switched on by the command `open scoped MatrixOrder`, and 
   `Re ⟪x, T x⟫ = ‖√T x‖²`, so the trace is a squared Hilbert–Schmidt norm, and the crude
   bound `T ≤ Tr(T) • 1` holds.
 * `BasicResults.OperatorShermanMorrison`: rank-one updates of an operator, with the
-  Sherman–Morrison formula for `Ring.inverse` and the preservation of strict positivity.
+  Sherman–Morrison formula for `Ring.inverse` and the preservation of strict positivity.  The
+  last section is the operator counterpart of the order facts above, for the shift
+  `B ↦ B + ζ • J`.
 * `BasicResults.OperatorQuadraticForm`: the average of a quadratic form along a
   square-integrable family is a trace against the Gram operator.
 -/

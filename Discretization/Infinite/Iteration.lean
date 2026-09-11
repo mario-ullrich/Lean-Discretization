@@ -3,9 +3,8 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.Iteration
 import Discretization.Infinite.Averages
-import Discretization.Infinite.Bounds
+import Discretization.Iteration
 
 /-!
 # The construction with an operator on the upper side

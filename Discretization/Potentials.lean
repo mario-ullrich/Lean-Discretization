@@ -3,7 +3,7 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults
+import BasicResults.TraceInequalities
 
 /-!
 # Potentials
@@ -26,36 +26,13 @@ computed here:
 
 Both right-hand sides are positive, so shrinking increases the lower potential and growing
 decreases the upper one; the gap this opens is what a new sampling point is allowed to
-consume.  Both identities come from Mathlib's resolvent identity `Matrix.inv_sub_inv`, and
-the sign from the positivity of the trace of a product of positive definite matrices
-(`Matrix.PosDef.re_trace_mul_pos`).
+consume.  Both identities come from the resolvent identities of
+`BasicResults.LoewnerOrder`, and the sign from the positivity of the trace of a product of
+positive definite matrices (`Matrix.PosDef.re_trace_mul_pos`).
 -/
 
 open Matrix
 open scoped ComplexOrder MatrixOrder
-
-namespace Matrix
-
-variable {𝕜 n : Type*} [RCLike 𝕜] [Fintype n] [DecidableEq n]
-
-/-- The resolvent identity for a shift by a multiple of the identity:
-`(A - δ • 1)⁻¹ - A⁻¹ = δ • ((A - δ • 1)⁻¹ A⁻¹)`. -/
-theorem inv_sub_smul_one_sub_inv {A : Matrix n n 𝕜} (hA : IsUnit A) {δ : ℝ}
-    (hN : IsUnit (A - δ • (1 : Matrix n n 𝕜))) :
-    (A - δ • (1 : Matrix n n 𝕜))⁻¹ - A⁻¹
-      = δ • ((A - δ • (1 : Matrix n n 𝕜))⁻¹ * A⁻¹) := by
-  have hAN : A - (A - δ • (1 : Matrix n n 𝕜)) = δ • 1 := by abel
-  rw [Matrix.inv_sub_inv (iff_of_true hN hA), hAN, mul_smul_comm, mul_one, smul_mul_assoc]
-
-/-- The resolvent identity for a shift by a multiple of a fixed matrix:
-`B⁻¹ - (B + ζ • J)⁻¹ = ζ • (B⁻¹ J (B + ζ • J)⁻¹)`. -/
-theorem inv_sub_inv_add_smul {B J : Matrix n n 𝕜} (hB : IsUnit B) {ζ : ℝ}
-    (hA : IsUnit (B + ζ • J)) :
-    B⁻¹ - (B + ζ • J)⁻¹ = ζ • (B⁻¹ * J * (B + ζ • J)⁻¹) := by
-  have hAN : B + ζ • J - B = ζ • J := by abel
-  rw [Matrix.inv_sub_inv (iff_of_true hB hA), hAN, mul_smul_comm, smul_mul_assoc]
-
-end Matrix
 
 namespace Discretization
 

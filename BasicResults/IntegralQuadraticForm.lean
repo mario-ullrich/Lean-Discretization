@@ -3,10 +3,8 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.LoewnerOrder
+import Mathlib.LinearAlgebra.Matrix.Hermitian
 import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
-import Mathlib.MeasureTheory.Function.LpSeminorm.Monotonicity
-import Mathlib.Data.ENNReal.Holder
 
 /-!
 # From integrals of quadratic forms to Gram matrices
@@ -33,7 +31,6 @@ measure; one good point is all that is needed here.
 -/
 
 open Matrix MeasureTheory
-open scoped ComplexOrder MatrixOrder
 
 namespace Discretization
 

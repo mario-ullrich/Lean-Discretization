@@ -3,7 +3,8 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.OperatorTrace
+import Mathlib.Analysis.InnerProductSpace.StarOrder
+import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 
 /-!
 # Rank-one updates of an operator
@@ -26,6 +27,10 @@ The formula is also recorded with a **real** weight, added
 (`Discretization.inverse_sub_smul_rankOne_of_nonneg`); then the quadratic form `⟪u, A⁻¹ u⟫`
 in the denominator is real.  Both updates keep the operator positive and invertible, the
 second one as long as the Sherman–Morrison denominator stays positive.
+
+A last section collects the facts about the order that the shift `B ↦ B + ζ • J` needs: it
+keeps `B` strictly positive, the inverse follows by a resolvent identity, and it can only
+lower that inverse.
 
 Positivity here is Mathlib's `IsStrictlyPositive`, which is positivity together with
 invertibility.  That is the right notion in infinite dimension: a positive operator need not
@@ -242,5 +247,50 @@ theorem isStrictlyPositive_sub_smul_rankOne {A : H →L[ℂ] H} (hA : IsStrictly
   rw [inverse_sub_smul_rankOne_of_nonneg hA u hden]
   exact add_nonneg hA.ringInverse.nonneg
     (smul_nonneg (div_nonneg hw hden.le) (nonneg_rankOne_self _))
+
+/-! ### Order and inverses
+
+Two operators are shifted against each other in the construction, `B ↦ B + ζ • J`, and the
+inverse has to follow.  These facts are about the order alone, with no rank-one operator in
+sight. -/
+
+/-- The product `J S J` of two positive operators `J` and `S` is positive. -/
+theorem nonneg_conj {J S : H →L[ℂ] H} (hJ : 0 ≤ J) (hS : 0 ≤ S) :
+    (0 : H →L[ℂ] H) ≤ J * S * J := by
+  have hJadj : ContinuousLinearMap.adjoint J = J := hJ.isSelfAdjoint.star_eq
+  have h := ((ContinuousLinearMap.nonneg_iff_isPositive S).1 hS).adjoint_conj J
+  rw [hJadj] at h
+  rw [ContinuousLinearMap.nonneg_iff_isPositive]
+  simpa [ContinuousLinearMap.mul_def, ContinuousLinearMap.comp_assoc] using h
+
+/-- Growing `B` by a nonnegative multiple of a positive operator keeps it strictly
+positive. -/
+theorem isStrictlyPositive_add_smul {J B : H →L[ℂ] H} (hJ : 0 ≤ J)
+    (hB : IsStrictlyPositive B) {ζ : ℝ} (hζ : 0 ≤ ζ) : IsStrictlyPositive (B + ζ • J) := by
+  have hle : B ≤ B + ζ • J := by
+    have h : (0 : H →L[ℂ] H) ≤ ζ • J := smul_nonneg hζ hJ
+    simpa using add_le_add_left h B
+  exact ⟨hB.nonneg.trans hle, CStarAlgebra.isUnit_of_le B hle hB⟩
+
+/-- **The resolvent identity** for the shift by a multiple of `J`:
+`B⁻¹ - (B + ζ • J)⁻¹ = ζ • (B⁻¹ J (B + ζ • J)⁻¹)`.
+
+This is an instance of Mathlib's `Ring.inverse_sub_inverse`. -/
+theorem inverse_sub_inverse_add_smul {J B : H →L[ℂ] H} (hJ : 0 ≤ J)
+    (hB : IsStrictlyPositive B) {ζ : ℝ} (hζ : 0 ≤ ζ) :
+    Ring.inverse B - Ring.inverse (B + ζ • J)
+      = ζ • (Ring.inverse B * J * Ring.inverse (B + ζ • J)) := by
+  have hM : IsStrictlyPositive (B + ζ • J) := isStrictlyPositive_add_smul hJ hB hζ
+  rw [Ring.inverse_sub_inverse (iff_of_true hB.isUnit hM.isUnit)]
+  have hdiff : B + ζ • J - B = ζ • J := by abel
+  rw [hdiff, mul_smul_comm, smul_mul_assoc]
+
+/-- The shifted inverse is below the original one: `(B + ζ • J)⁻¹ ≼ B⁻¹`. -/
+theorem inverse_add_smul_le {J B : H →L[ℂ] H} (hJ : 0 ≤ J) (hB : IsStrictlyPositive B)
+    {ζ : ℝ} (hζ : 0 ≤ ζ) : Ring.inverse (B + ζ • J) ≤ Ring.inverse B := by
+  have hle : B ≤ B + ζ • J := by
+    have h : (0 : H →L[ℂ] H) ≤ ζ • J := smul_nonneg hζ hJ
+    simpa using add_le_add_left h B
+  exact CStarAlgebra.ringInverse_le_ringInverse hle hB
 
 end Discretization

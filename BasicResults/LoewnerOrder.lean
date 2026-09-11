@@ -24,14 +24,19 @@ potential-function argument uses over and over:
 * `Matrix.re_trace_le_re_trace_of_le`: the order is compatible with taking traces;
 * `Matrix.real_smul_eq_complex_smul`: real and complex scalars agree on complex matrices;
 * `Matrix.PosSemidef.mul_mul_same_of_isHermitian` and its positive definite counterpart:
-  conjugating by a Hermitian matrix preserves positivity.
+  conjugating by a Hermitian matrix preserves positivity;
+* `Matrix.PosDef.of_le` and `Matrix.PosDef.add_smul_posDef`: anything above a positive
+  definite matrix is positive definite, so in particular `B + ζ • J` is.
 
-The section on inverses adds `Matrix.PosDef.inv_le_inv_of_le` (the inverse is antitone),
-`Matrix.PosDef.inv_re_trace_smul_one_le` (`(Re Tr A⁻¹)⁻¹ • 1 ≤ A`) and
-`Matrix.PosDef.sub_smul_one` (`A - δ • 1` stays positive definite for `δ < (Re Tr A⁻¹)⁻¹`).
+Two sections follow.  `Resolvent` records how the inverse reacts to the two shifts
+`A ↦ A - δ • 1` and `B ↦ B + ζ • J`, and `Inverse` proves that the inverse is antitone
+(`Matrix.PosDef.inv_le_inv_of_le`), that `(Re Tr A⁻¹)⁻¹ • 1 ≤ A`
+(`Matrix.PosDef.inv_re_trace_smul_one_le`), and that `A - δ • 1` stays positive definite for
+`δ < (Re Tr A⁻¹)⁻¹` (`Matrix.PosDef.sub_smul_one`).
 
-Everything outside that section is stated for a general `RCLike` field; none of it is in
-Mathlib.  Multiplying an inequality by a nonnegative real is Mathlib's
+None of this is in Mathlib.  The statements about the order hold over any `RCLike` field;
+those that invert a matrix are stated for `ℂ`, whose matrices carry the C⋆-algebra structure
+the proofs use.  Multiplying an inequality by a nonnegative real is Mathlib's
 `smul_le_smul_of_nonneg_left` and `smul_le_smul_of_nonneg_right`.
 -/
 
@@ -134,6 +139,41 @@ omit [Fintype n] in
 `B = A + (B - A)` exhibits `B` as a positive definite plus a positive semidefinite matrix. -/
 theorem PosDef.of_le {A B : Matrix n n 𝕜} (hA : A.PosDef) (h : A ≤ B) : B.PosDef := by
   simpa using hA.add_posSemidef (Matrix.le_iff.1 h)
+
+omit [Fintype n] in
+/-- Adding a positive multiple of a positive definite matrix keeps positive definiteness.
+This is the increment step `B ↦ B + ζ • J` of the construction. -/
+theorem PosDef.add_smul_posDef {B J : Matrix n n ℂ} (hB : B.PosDef) (hJ : J.PosDef) {ζ : ℝ}
+    (hζ : 0 < ζ) : (B + ζ • J).PosDef :=
+  hB.add (hJ.smul hζ)
+
+/-! ### Resolvent identities
+
+How the inverse reacts to a shift.  Both are instances of Mathlib's `Matrix.inv_sub_inv`
+`A⁻¹ - B⁻¹ = A⁻¹ (B - A) B⁻¹`, written for the two shifts of the construction. -/
+
+section Resolvent
+
+variable [DecidableEq n]
+
+/-- The resolvent identity for a shift by a multiple of the identity:
+`(A - δ • 1)⁻¹ - A⁻¹ = δ • ((A - δ • 1)⁻¹ A⁻¹)`. -/
+theorem inv_sub_smul_one_sub_inv {A : Matrix n n 𝕜} (hA : IsUnit A) {δ : ℝ}
+    (hN : IsUnit (A - δ • (1 : Matrix n n 𝕜))) :
+    (A - δ • (1 : Matrix n n 𝕜))⁻¹ - A⁻¹
+      = δ • ((A - δ • (1 : Matrix n n 𝕜))⁻¹ * A⁻¹) := by
+  have hAN : A - (A - δ • (1 : Matrix n n 𝕜)) = δ • 1 := by abel
+  rw [Matrix.inv_sub_inv (iff_of_true hN hA), hAN, mul_smul_comm, mul_one, smul_mul_assoc]
+
+/-- The resolvent identity for a shift by a multiple of a fixed matrix:
+`B⁻¹ - (B + ζ • J)⁻¹ = ζ • (B⁻¹ J (B + ζ • J)⁻¹)`. -/
+theorem inv_sub_inv_add_smul {B J : Matrix n n 𝕜} (hB : IsUnit B) {ζ : ℝ}
+    (hA : IsUnit (B + ζ • J)) :
+    B⁻¹ - (B + ζ • J)⁻¹ = ζ • (B⁻¹ * J * (B + ζ • J)⁻¹) := by
+  have hAN : B + ζ • J - B = ζ • J := by abel
+  rw [Matrix.inv_sub_inv (iff_of_true hB hA), hAN, mul_smul_comm, smul_mul_assoc]
+
+end Resolvent
 
 section Inverse
 

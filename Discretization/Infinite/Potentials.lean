@@ -3,7 +3,8 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults
+import BasicResults.OperatorShermanMorrison
+import BasicResults.OperatorTrace
 
 /-!
 # The upper potential of an operator
@@ -25,9 +26,8 @@ it is never bounded away from zero, and injectivity is exactly what the strict i
 of the argument need.
 
 For `B` the right notion is Mathlib's `IsStrictlyPositive`, positivity together with
-invertibility, and the inverse is `Ring.inverse`.  The resolvent identity and the
-antitonicity of the inverse are Mathlib's `Ring.inverse_sub_inverse` and
-`CStarAlgebra.ringInverse_le_ringInverse`.
+invertibility, and the inverse is `Ring.inverse`.  How that inverse reacts to the shift is
+`BasicResults.OperatorShermanMorrison`.
 -/
 
 open scoped InnerProductSpace ComplexOrder
@@ -67,14 +67,6 @@ theorem IsFiniteTracePos.summable_norm_sq_apply (hJ : IsFiniteTracePos e J) :
     ((summable_norm_sq_sqrt_iff e hJ.nonneg).2 hJ.summableTrace)).congr fun k => ?_
   rw [show CFC.sqrt J (CFC.sqrt J (e k)) = J (e k) from
     congrArg (fun S : H →L[ℂ] H => S (e k)) hsq]
-
-/-- The product `J S J` of two positive operators `J` and `S` is positive. -/
-theorem nonneg_conj {S : H →L[ℂ] H} (hJ : 0 ≤ J) (hS : 0 ≤ S) : (0 : H →L[ℂ] H) ≤ J * S * J := by
-  have hJadj : ContinuousLinearMap.adjoint J = J := hJ.isSelfAdjoint.star_eq
-  have h := ((ContinuousLinearMap.nonneg_iff_isPositive S).1 hS).adjoint_conj J
-  rw [hJadj] at h
-  rw [ContinuousLinearMap.nonneg_iff_isPositive]
-  simpa [ContinuousLinearMap.mul_def, ContinuousLinearMap.comp_assoc] using h
 
 /-- **The conjugate `J S J` of a positive operator of finite trace is again one**, provided
 `S` is strictly positive.
@@ -140,35 +132,6 @@ theorem upperPotential_pos [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : H →L
     (hB.ringInverse).isUnit hJ.summableTrace hJ0
 
 /-! ### The effect of the shift -/
-
-/-- Growing `B` by `ζ • J` keeps it strictly positive. -/
-theorem isStrictlyPositive_add_smul (hJ : 0 ≤ J) {B : H →L[ℂ] H} (hB : IsStrictlyPositive B)
-    {ζ : ℝ} (hζ : 0 ≤ ζ) : IsStrictlyPositive (B + ζ • J) := by
-  have hle : B ≤ B + ζ • J := by
-    have h : (0 : H →L[ℂ] H) ≤ ζ • J := smul_nonneg hζ hJ
-    simpa using add_le_add_left h B
-  exact ⟨hB.nonneg.trans hle, CStarAlgebra.isUnit_of_le B hle hB⟩
-
-/-- **The resolvent identity** for the shift by a multiple of `J`:
-`B⁻¹ - (B + ζ • J)⁻¹ = ζ • (B⁻¹ J (B + ζ • J)⁻¹)`.
-
-This is an instance of Mathlib's `Ring.inverse_sub_inverse`. -/
-theorem inverse_sub_inverse_add_smul (hJ : 0 ≤ J) {B : H →L[ℂ] H} (hB : IsStrictlyPositive B)
-    {ζ : ℝ} (hζ : 0 ≤ ζ) :
-    Ring.inverse B - Ring.inverse (B + ζ • J)
-      = ζ • (Ring.inverse B * J * Ring.inverse (B + ζ • J)) := by
-  have hM : IsStrictlyPositive (B + ζ • J) := isStrictlyPositive_add_smul hJ hB hζ
-  rw [Ring.inverse_sub_inverse (iff_of_true hB.isUnit hM.isUnit)]
-  have hdiff : B + ζ • J - B = ζ • J := by abel
-  rw [hdiff, mul_smul_comm, smul_mul_assoc]
-
-/-- The shifted inverse is below the original one: `(B + ζ • J)⁻¹ ≼ B⁻¹`. -/
-theorem inverse_add_smul_le (hJ : 0 ≤ J) {B : H →L[ℂ] H} (hB : IsStrictlyPositive B)
-    {ζ : ℝ} (hζ : 0 ≤ ζ) : Ring.inverse (B + ζ • J) ≤ Ring.inverse B := by
-  have hle : B ≤ B + ζ • J := by
-    have h : (0 : H →L[ℂ] H) ≤ ζ • J := smul_nonneg hζ hJ
-    simpa using add_le_add_left h B
-  exact CStarAlgebra.ringInverse_le_ringInverse hle hB
 
 /-- **The gain of the upper potential under the shift:**
 `Ψ_J(B) - Ψ_J(B + ζ • J) = ζ · Tr ((J B⁻¹ J) (B + ζ • J)⁻¹)`.

@@ -5,8 +5,6 @@ Authors: Mario Ullrich
 -/
 import Mathlib.Analysis.InnerProductSpace.L2Space
 import Mathlib.Analysis.InnerProductSpace.StarOrder
-import Mathlib.Analysis.CStarAlgebra.ContinuousLinearMap
-import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 
 /-!
 # The trace of an operator along a Hilbert basis

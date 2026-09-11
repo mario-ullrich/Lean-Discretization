@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
 import Discretization.Averages
+import Discretization.Parameters
 
 /-!
 # The construction, step by step

@@ -92,6 +92,8 @@ alike.
 | `Φ(A)⁻¹ • 1 ≼ A` | `Matrix.PosDef.inv_re_trace_smul_one_le` | ✅ |
 | `Ψ_J(B)⁻¹ • J ≼ B` | `Matrix.PosDef.inv_re_trace_mul_smul_le` | ✅ |
 | `A - δ • 1` stays positive definite for `δ < Φ(A)⁻¹` | `Matrix.PosDef.sub_smul_one` | ✅ |
+| `B + ζ • J` stays positive definite | `Matrix.PosDef.add_smul_posDef` | ✅ |
+| The resolvent identity for the two shifts | `Matrix.inv_sub_smul_one_sub_inv`, `Matrix.inv_sub_inv_add_smul` | ✅ |
 | `Tr (P Q) ≥ 0`, and `> 0` for positive definite factors | `Matrix.PosSemidef.trace_mul_nonneg`, `Matrix.PosDef.re_trace_mul_pos` | ✅ |
 | `Tr (P Q)` is real for Hermitian `P`, `Q` | `Matrix.IsHermitian.ofReal_re_trace_mul` | ✅ |
 | Cauchy–Schwarz for the trace | `Matrix.PosSemidef.norm_trace_mul_sq_le`, `.re_trace_mul_sq_le` | ✅ |
@@ -128,6 +130,9 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | A rank-one update of a unit is a unit | `Discretization.isUnit_add_smul_rankOne` | ✅ |
 | The same with a real weight, added and subtracted | `Discretization.inverse_add_smul_rankOne_of_nonneg`, `.inverse_sub_smul_rankOne_of_nonneg` | ✅ |
 | Strict positivity under `A ± w u u*` | `Discretization.isStrictlyPositive_add_smul_rankOne`, `.isStrictlyPositive_sub_smul_rankOne` | ✅ |
+| `J S J ≽ 0` for positive `J`, `S` | `Discretization.nonneg_conj` | ✅ |
+| `B + ζ • J` stays strictly positive | `Discretization.isStrictlyPositive_add_smul` | ✅ |
+| The resolvent identity, and `(B + ζ • J)⁻¹ ≼ B⁻¹` | `Discretization.inverse_sub_inverse_add_smul`, `.inverse_add_smul_le` | ✅ |
 
 ### Averages of operator quadratic forms (`BasicResults.OperatorQuadraticForm`)
 
@@ -179,7 +184,6 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | Positive, injective, of finite trace | `Discretization.Infinite.IsFiniteTracePos` | ✅ |
 | `J S J` is again such an operator | `Discretization.Infinite.IsFiniteTracePos.conj` | ✅ |
 | The upper potential `Ψ_J(B) = Tr (J B⁻¹)` and its positivity | `Discretization.Infinite.upperPotential`, `.upperPotential_pos` | ✅ |
-| The resolvent identity | `Discretization.Infinite.inverse_sub_inverse_add_smul` | ✅ |
 | Effect of the shift on the potential | `Discretization.Infinite.upperPotential_sub_eq` | ✅ |
 | Growing `B` decreases the potential strictly | `Discretization.Infinite.upperPotential_add_smul_lt` | ✅ |
 | The upper verifier | `Discretization.Infinite.upperVerifier`, `.upperVerifier_nonneg` | ✅ |

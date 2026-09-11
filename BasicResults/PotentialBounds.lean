@@ -3,7 +3,6 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.LoewnerOrder
 import BasicResults.TraceInequalities
 
 /-!
@@ -87,12 +86,5 @@ theorem PosDef.inv_re_trace_mul_smul_le [Nonempty n] {B J : Matrix n n ℂ} (hB 
   -- and dividing by the (positive) potential gives the claim
   have h := smul_le_smul_of_nonneg_left hconj (inv_nonneg.2 hΨpos.le)
   rwa [smul_smul, inv_mul_cancel₀ hΨpos.ne', one_smul] at h
-
-omit [Fintype n] [DecidableEq n] in
-/-- Adding a positive multiple of a positive definite matrix keeps positive definiteness.
-This is the increment step `B ↦ B + ζ • J` of the construction. -/
-theorem PosDef.add_smul_posDef {B J : Matrix n n ℂ} (hB : B.PosDef) (hJ : J.PosDef) {ζ : ℝ}
-    (hζ : 0 < ζ) : (B + ζ • J).PosDef :=
-  hB.add (hJ.smul hζ)
 
 end Matrix
