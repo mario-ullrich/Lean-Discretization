@@ -3,7 +3,7 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.MainTheorem
+import Discretization.BothEdgeCases
 
 /-!
 # Removing the normalisation of the first family
@@ -90,23 +90,24 @@ variable [DecidableEq ι]
 /-- **Generalized sparsification theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
 finite families.
 
-Let `a` be a family of square-integrable functions indexed by a finite set `ι` of `m ≥ 2`
-elements with positive definite Gram matrix `I = ∫ a a* dμ`, and let `b` be a second family
-whose Gram matrix `J` is positive definite and bounded by `Λ • 1`, with effective dimension
-`M = Tr J / Λ ≥ 1 + 1/n`.  Then for every `n ≥ m` there are `n` points and positive weights
+Let `a` be a family of square-integrable functions indexed by a finite nonempty set `ι` of
+`m` elements with positive definite Gram matrix `I = ∫ a a* dμ`, and let `b` be a second
+family whose Gram matrix `J` is positive definite and bounded by `Λ • 1`, with effective
+dimension `M = Tr J / Λ`.  Then for every `n ≥ m` there are `n` points and positive weights
 with
 
 `(1 - √((m-1)/n))² • I ≤ ∑ wᵢ a(xᵢ) a(xᵢ)*`  and
 `∑ wᵢ b(xᵢ) b(xᵢ)* ≤ (1 + √((M-1)/n))² Λ • 1`.
 
-The first bound is the Loewner form of the paper's `(1 - √((m-1)/n))² λ_min(I)`. -/
+The first bound is the Loewner form of the paper's `(1 - √((m-1)/n))² λ_min(I)`.  There is
+no side condition: the edge cases of `m` and of `M` are covered by
+`Discretization.bss_generalized_of_gram_eq_one'`. -/
 theorem bss_generalized [Nonempty ι] [Nonempty κ]
     {J : Matrix κ κ ℂ} (hJ : J.PosDef) {Λ : ℝ} (hΛ : 0 < Λ)
     (hJΛ : J ≤ Λ • (1 : Matrix κ κ ℂ)) {a : Ω → ι → ℂ} {b : Ω → κ → ℂ}
     (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
     (hI : (gram a μ).PosDef) (hgramb : gram b μ = J)
-    {n : ℕ} (hm : 2 ≤ Fintype.card ι) (hmn : Fintype.card ι ≤ n)
-    (hM : 1 + 1 / (n : ℝ) ≤ RCLike.re J.trace / Λ) :
+    {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
       (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 • gram a μ
         ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) ∧
@@ -126,7 +127,7 @@ theorem bss_generalized [Nonempty ι] [Nonempty κ]
   have hgram' : gram (fun x => T⁻¹ *ᵥ a x) μ = 1 := by
     rw [gram_mulVec _ ha, hSherm, ← hTT, ← mul_assoc, hST, one_mul, hTS]
   obtain ⟨x, w, hwpos, hlow, hup⟩ :=
-    bss_generalized_of_gram_eq_one hJ hΛ hJΛ (memLp_mulVec T⁻¹ ha) hb hgram' hgramb hm hmn hM
+    bss_generalized_of_gram_eq_one' hJ hΛ hJΛ (memLp_mulVec T⁻¹ ha) hb hgram' hgramb hmn
   refine ⟨x, w, hwpos, ?_, hup⟩
   -- conjugate the lower bound back by `T`
   have hsum : ∑ i, w i • vecMulVec (T⁻¹ *ᵥ a (x i)) (star (T⁻¹ *ᵥ a (x i)))

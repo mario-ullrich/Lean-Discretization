@@ -21,12 +21,12 @@ Kadison–Singer theorem.
 
 ## The theorem
 
-Let `(Ω, μ)` be a measure space, `ι` a finite index set with `m = card ι ≥ 2` elements, and
-`κ` a second finite index set.  Let
+Let `(Ω, μ)` be a measure space, `ι` a finite nonempty index set with `m = card ι` elements,
+and `κ` a second finite index set.  Let
 
 * `a : Ω → ι → ℂ` be square-integrable with Gram matrix `∫ a a* dμ = 1`, and
-* `b : Ω → κ → ℂ` be square-integrable with Gram matrix `J = ∫ b b* dμ` positive definite,
-  `J ≤ Λ • 1`, and effective dimension `M = Tr J / Λ ≥ 1 + 1/n`.
+* `b : Ω → κ → ℂ` be square-integrable with Gram matrix `J = ∫ b b* dμ` positive definite and
+  bounded by `Λ • 1`, of effective dimension `M = Tr J / Λ`.
 
 Then for every `n ≥ m` there are points `x₁, …, xₙ ∈ Ω` and weights `w₁, …, wₙ > 0` with
 
@@ -35,10 +35,15 @@ Then for every `n ≥ m` there are points `x₁, …, xₙ ∈ Ω` and weights `
 ∑ wᵢ b(xᵢ) b(xᵢ)*      ≤  (1 + √((M-1)/n))² Λ • 1  (upper frame bound)
 ```
 
-in the Loewner order.  This is `Discretization.bss_generalized_of_gram_eq_one`.  Without the
-normalisation of the first family the lower bound reads `(1 - √((m-1)/n))² • I` with
-`I = ∫ a a* dμ`, which is `Discretization.bss_generalized`; in eigenvalue form that is the
-factor `λ_min(I)` of the paper.
+in the Loewner order, with no side condition.  This is
+`Discretization.bss_generalized_of_gram_eq_one'`.  The potential argument itself needs
+`m ≥ 2` and `M ≥ 1 + 1/n` (`Discretization.bss_generalized_of_gram_eq_one`); three further
+theorems cover the cases where one or both of these fail, and the four together give the
+statement above.
+
+Without the normalisation of the first family the lower bound reads
+`(1 - √((m-1)/n))² • I` with `I = ∫ a a* dμ`, which is `Discretization.bss_generalized`; in
+eigenvalue form that is the factor `λ_min(I)` of the paper.
 
 The second family may also be **infinite**.  Then `b` is a square-integrable map into a
 Hilbert space, its Gram operator `J` is positive, injective and of finite trace, and the
@@ -171,6 +176,7 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | Reading off the frame bounds | `Discretization.lower_bound_of_state`, `.upper_bound_of_state` | ✅ |
 | The frame bounds with the parameters inserted | `Discretization.lower_frame_bound`, `.upper_frame_bound` | ✅ |
 | **The theorem, normalized first family** | `Discretization.bss_generalized_of_gram_eq_one` | ✅ |
+| **The same without side conditions** | `Discretization.bss_generalized_of_gram_eq_one'` | ✅ |
 | Gram matrix of a linearly transformed family | `Discretization.gram_mulVec` | ✅ |
 | **The theorem, general first family** | `Discretization.bss_generalized` | ✅ |
 | A quadratic form is a weighted sum of squares | `Discretization.re_dotProduct_sum_mulVec`, `.integral_norm_sq_combination` | ✅ |
@@ -178,6 +184,7 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | Edge case `m = 1`: constant lower verifier | `Discretization.bss_generalized_of_unique` | ✅ |
 | Edge case `M ≤ 1 + 1/n`: constant upper verifier | `Discretization.bss_generalized_of_small_dim` | ✅ |
 | **Both edge cases at once** | `Discretization.bss_generalized_of_unique_of_small_dim` | ✅ |
+| For `m = 1` the lower frame constant is `1` | `Discretization.sq_one_sub_sqrt_div_card_eq_one` | ✅ |
 | The two read-offs the edge cases use | `Discretization.sum_smul_vecMulVec_eq_one`, `.sum_smul_vecMulVec_le_smul_one` | ✅ |
 | A rank-one matrix is below `‖u‖² • 1` | `Matrix.vecMulVec_le_norm_sq_smul_one` | ✅ |
 

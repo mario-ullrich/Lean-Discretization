@@ -3,7 +3,7 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.MainTheorem
+import Discretization.BothEdgeCases
 
 /-!
 # The discretization inequality
@@ -94,7 +94,7 @@ variable [DecidableEq ι]
 
 /-- **Discretization of the `L₂`-norm.**
 
-Under the hypotheses of `Discretization.bss_generalized_of_gram_eq_one`, the `n` points and
+Under the hypotheses of `Discretization.bss_generalized_of_gram_eq_one'`, the `n` points and
 weights discretize the norm of every function in the span of the first family from below,
 
 `(1 - √((m-1)/n))² · ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²`,
@@ -114,8 +114,7 @@ theorem exists_discretization [Nonempty ι] [Nonempty κ]
     (hJΛ : J ≤ Λ • (1 : Matrix κ κ ℂ)) {a : Ω → ι → ℂ} {b : Ω → κ → ℂ}
     (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
     (hgrama : gram a μ = 1) (hgramb : gram b μ = J)
-    {n : ℕ} (hm : 2 ≤ Fintype.card ι) (hmn : Fintype.card ι ≤ n)
-    (hM : 1 + 1 / (n : ℝ) ≤ RCLike.re J.trace / Λ) :
+    {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
       (∀ c : ι → ℂ, (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
             * ∫ y, ‖star c ⬝ᵥ a y‖ ^ 2 ∂μ
@@ -124,7 +123,7 @@ theorem exists_discretization [Nonempty ι] [Nonempty κ]
           ≤ (1 + Real.sqrt ((RCLike.re J.trace / Λ - 1) / n)) ^ 2 * Λ
               * ∑ k, ‖c k‖ ^ 2) := by
   obtain ⟨x, w, hwpos, hlow, hup⟩ :=
-    bss_generalized_of_gram_eq_one hJ hΛ hJΛ ha hb hgrama hgramb hm hmn hM
+    bss_generalized_of_gram_eq_one' hJ hΛ hJΛ ha hb hgrama hgramb hmn
   refine ⟨x, w, hwpos, fun c => ?_, fun c => ?_⟩
   · have h1 : RCLike.re (star c ⬝ᵥ ((1 : Matrix ι ι ℂ) *ᵥ c)) = ∑ k, ‖c k‖ ^ 2 := by
       simpa using re_quadForm_smul_one (ι := ι) 1 c

@@ -23,6 +23,10 @@ together with the crude estimate `b b* ≼ ‖b‖² • 1`.  There is no induct
 The two averages agree here, so the point comes from
 `Discretization.exists_le_of_integral_le` and not from the strict comparison that the other
 cases use.  The result is `Discretization.bss_generalized_of_unique_of_small_dim`.
+
+With it the four cases are complete, and a case distinction on `m ≥ 2` and on
+`M ≥ 1 + 1/n` assembles them into `Discretization.bss_generalized_of_gram_eq_one'`, the
+theorem with no side condition beyond `n ≥ m`.
 -/
 
 open Matrix MeasureTheory
@@ -114,5 +118,54 @@ theorem bss_generalized_of_unique_of_small_dim [Unique ι] [Nonempty κ]
     exact (sum_smul_vecMulVec_le_smul_one hn0 (fun _ => y) _
       (fun _ => (one_div_pos.2 hLpos).le) hweight).trans
       (smul_le_smul_of_nonneg_right hTΛ Matrix.PosSemidef.one.nonneg)
+
+/-! ### The theorem without side conditions -/
+
+omit [DecidableEq ι] [Fintype κ] [DecidableEq κ] [MeasurableSpace Ω] in
+/-- For a one-element first family the lower frame constant is `1`. -/
+theorem sq_one_sub_sqrt_div_card_eq_one [Fintype ι] {n : ℕ} (h : Fintype.card ι = 1) :
+    (1 - Real.sqrt (((Fintype.card ι : ℝ) - 1) / n)) ^ 2 = 1 := by
+  rw [h]
+  norm_num
+
+/-- **Generalized sparsification theorem for a normalized first family**, with no side
+condition beyond `n ≥ m`.
+
+The potential argument of `Discretization.bss_generalized_of_gram_eq_one` needs `m ≥ 2` and
+`M ≥ 1 + 1/n`.  A case distinction on those two conditions hands the remaining cases to
+`Discretization.bss_generalized_of_unique`,
+`Discretization.bss_generalized_of_small_dim` and
+`Discretization.bss_generalized_of_unique_of_small_dim`.  For `m = 1` the lower frame
+constant `(1 - √((m-1)/n))²` is `1`, which is what those two theorems state. -/
+theorem bss_generalized_of_gram_eq_one' [Fintype ι] [Nonempty ι] [Nonempty κ]
+    {J : Matrix κ κ ℂ} (hJ : J.PosDef) {Λ : ℝ} (hΛ : 0 < Λ)
+    (hJΛ : J ≤ Λ • (1 : Matrix κ κ ℂ)) {a : Ω → ι → ℂ} {b : Ω → κ → ℂ}
+    (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
+    (hgrama : gram a μ = 1) (hgramb : gram b μ = J)
+    {n : ℕ} (hmn : Fintype.card ι ≤ n) :
+    ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
+      (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 • (1 : Matrix ι ι ℂ)
+        ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) ∧
+      ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
+        ≤ ((1 + Real.sqrt ((RCLike.re J.trace / Λ - 1) / n)) ^ 2 * Λ)
+            • (1 : Matrix κ κ ℂ) := by
+  have hcard : 0 < Fintype.card ι := Fintype.card_pos
+  have hn : 0 < n := lt_of_lt_of_le hcard hmn
+  by_cases hM : 1 + 1 / (n : ℝ) ≤ RCLike.re J.trace / Λ
+  · by_cases hm : 2 ≤ Fintype.card ι
+    · exact bss_generalized_of_gram_eq_one hJ hΛ hJΛ ha hb hgrama hgramb hm hmn hM
+    · -- a single function, with the effective dimension in the regular range
+      have hcard1 : Fintype.card ι = 1 := by omega
+      rw [sq_one_sub_sqrt_div_card_eq_one hcard1, one_smul]
+      have : Unique ι := (Fintype.card_eq_one_iff_nonempty_unique.1 hcard1).some
+      exact bss_generalized_of_unique hJ hΛ hJΛ ha hb hgrama hgramb hn hM
+  · replace hM := (not_le.mp hM).le
+    by_cases hm : 2 ≤ Fintype.card ι
+    · exact bss_generalized_of_small_dim hJ hΛ ha hb hgrama hgramb hm hmn hM
+    · -- a single function and a small effective dimension
+      have hcard1 : Fintype.card ι = 1 := by omega
+      rw [sq_one_sub_sqrt_div_card_eq_one hcard1, one_smul]
+      have : Unique ι := (Fintype.card_eq_one_iff_nonempty_unique.1 hcard1).some
+      exact bss_generalized_of_unique_of_small_dim hJ hΛ ha hb hgrama hgramb hn hM
 
 end Discretization
