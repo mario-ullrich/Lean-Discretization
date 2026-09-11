@@ -43,23 +43,14 @@ namespace Discretization
 
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 
-/-- A two-sided inverse computes `Ring.inverse`. -/
-private theorem inverse_eq_of_mul_eq_one {R : Type*} [Ring R] {x y : R} (h₁ : x * y = 1)
+/-- **A two-sided inverse computes `Ring.inverse`.**
+
+In a noncommutative ring one product does not suffice, but two do: they exhibit `x` as a
+unit with inverse `y`.  Mathlib has the two cancellation laws `Ring.mul_inverse_cancel` and
+`Ring.inverse_mul_cancel` but not this converse. -/
+theorem inverse_eq_of_mul_eq_one {R : Type*} [Ring R] {x y : R} (h₁ : x * y = 1)
     (h₂ : y * x = 1) : Ring.inverse x = y := by
   simpa using Ring.inverse_unit (⟨x, y, h₁, h₂⟩ : Rˣ)
-
-/-- The inverse of a self-adjoint unit is self-adjoint. -/
-theorem isSelfAdjoint_inverse {A : H →L[ℂ] H} (hA : IsUnit A) (hsa : IsSelfAdjoint A) :
-    IsSelfAdjoint (Ring.inverse A) := by
-  have hAW : A * Ring.inverse A = 1 := Ring.mul_inverse_cancel A hA
-  have hWA : Ring.inverse A * A = 1 := Ring.inverse_mul_cancel A hA
-  have h₁ : A * star (Ring.inverse A) = 1 := by
-    have := congrArg (star : (H →L[ℂ] H) → H →L[ℂ] H) hWA
-    rwa [star_mul, hsa.star_eq, star_one] at this
-  have h₂ : star (Ring.inverse A) * A = 1 := by
-    have := congrArg (star : (H →L[ℂ] H) → H →L[ℂ] H) hAW
-    rwa [star_mul, hsa.star_eq, star_one] at this
-  exact (inverse_eq_of_mul_eq_one h₁ h₂).symm
 
 /-- The two products that identify the Sherman–Morrison candidate as a two-sided inverse.
 
@@ -76,7 +67,7 @@ private theorem mul_eq_one_add_smul_rankOne {A : H →L[ℂ] H} (hA : IsUnit A)
         * (A + t • rankOne ℂ u u) = 1 := by
   have hAadj : ContinuousLinearMap.adjoint A = A := hsa.star_eq
   have hWadj : ContinuousLinearMap.adjoint (Ring.inverse A) = Ring.inverse A :=
-    (isSelfAdjoint_inverse hA hsa).star_eq
+    hsa.ringInverse.star_eq
   have hAW : A * Ring.inverse A = 1 := Ring.mul_inverse_cancel A hA
   have hWA : Ring.inverse A * A = 1 := Ring.inverse_mul_cancel A hA
   set W := Ring.inverse A with hWdef
@@ -151,25 +142,18 @@ theorem nonneg_rankOne_self (u : H) : (0 : H →L[ℂ] H) ≤ rankOne ℂ u u :=
   rw [ContinuousLinearMap.nonneg_iff_isPositive]
   exact InnerProductSpace.isPositive_rankOne_self u
 
-/-- The inverse of a strictly positive operator is strictly positive. -/
-theorem isStrictlyPositive_inverse {A : H →L[ℂ] H} (hA : IsStrictlyPositive A) :
-    IsStrictlyPositive (Ring.inverse A) :=
-  ⟨(CFC.ringInverse_nonneg_iff_nonneg_of_isUnit hA.isUnit).2 hA.nonneg,
-    ⟨⟨Ring.inverse A, A, Ring.inverse_mul_cancel A hA.isUnit,
-      Ring.mul_inverse_cancel A hA.isUnit⟩, rfl⟩⟩
-
 /-- The quadratic form of the inverse of a strictly positive operator is nonnegative. -/
 theorem re_inner_inverse_nonneg {A : H →L[ℂ] H} (hA : IsStrictlyPositive A) (u : H) :
     0 ≤ RCLike.re ⟪u, Ring.inverse A u⟫_ℂ :=
   ((ContinuousLinearMap.nonneg_iff_isPositive _).1
-    (isStrictlyPositive_inverse hA).nonneg).re_inner_nonneg_right u
+    hA.ringInverse.nonneg).re_inner_nonneg_right u
 
 /-- Being nonnegative, that quadratic form is real. -/
 private theorem ofReal_re_inner_inverse {A : H →L[ℂ] H} (hA : IsStrictlyPositive A) (u : H) :
     ((RCLike.re ⟪u, Ring.inverse A u⟫_ℂ : ℝ) : ℂ) = ⟪u, Ring.inverse A u⟫_ℂ := by
   have h0 : (0 : ℂ) ≤ ⟪u, Ring.inverse A u⟫_ℂ :=
     ((ContinuousLinearMap.nonneg_iff_isPositive _).1
-      (isStrictlyPositive_inverse hA).nonneg).inner_nonneg_right u
+      hA.ringInverse.nonneg).inner_nonneg_right u
   have h : ⟪u, Ring.inverse A u⟫_ℂ = (⟪u, Ring.inverse A u⟫_ℂ).re :=
     Complex.eq_re_of_ofReal_le (r := 0) (by rw [Complex.ofReal_zero]; exact h0)
   rw [h]
@@ -258,7 +242,7 @@ theorem isStrictlyPositive_sub_smul_rankOne {A : H →L[ℂ] H} (hA : IsStrictly
     rw [hsub]; exact isUnit_add_smul_rankOne hA.isUnit hA.isSelfAdjoint u _ hne
   refine ⟨(CFC.ringInverse_nonneg_iff_nonneg_of_isUnit hunit).1 ?_, hunit⟩
   rw [inverse_sub_smul_rankOne_of_nonneg hA u hden]
-  exact add_nonneg (isStrictlyPositive_inverse hA).nonneg
+  exact add_nonneg hA.ringInverse.nonneg
     (smul_nonneg (div_nonneg hw hden.le) (nonneg_rankOne_self _))
 
 end Discretization

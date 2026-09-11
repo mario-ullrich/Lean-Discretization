@@ -31,21 +31,13 @@ namespace Infinite
 variable {κ H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
   {e : HilbertBasis κ ℂ H} {J : H →L[ℂ] H}
 
-/-- Moving a self-adjoint operator across the inner product: `⟪x, S J S x⟫ = ⟪S x, J (S x)⟫`. -/
-private theorem re_inner_conj_apply {S : H →L[ℂ] H} (hS : IsSelfAdjoint S) (T : H →L[ℂ] H)
-    (x : H) : RCLike.re ⟪x, (S * T * S) x⟫_ℂ = RCLike.re ⟪S x, T (S x)⟫_ℂ := by
-  have hSadj : ContinuousLinearMap.adjoint S = S := hS.star_eq
-  have h := ContinuousLinearMap.adjoint_inner_right S x (T (S x))
-  rw [hSadj] at h
-  rw [show (S * T * S) x = S (T (S x)) from rfl, h]
-
 /-- **The conjugate of `J` by the inverse square root of `B` has the upper potential as its
 trace:** `Tr (B^{-1/2} J B^{-1/2}) = Ψ_J(B)`. -/
 theorem traceAlong_conj_inv_sqrt (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}
     (hB : IsStrictlyPositive B) :
     traceAlong e (Ring.inverse (CFC.sqrt B) * J * Ring.inverse (CFC.sqrt B))
       = upperPotential e J B := by
-  have hBinv : IsStrictlyPositive (Ring.inverse B) := isStrictlyPositive_inverse hB
+  have hBinv : IsStrictlyPositive (Ring.inverse B) := hB.ringInverse
   have hsqrtinv : CFC.sqrt (Ring.inverse B) = Ring.inverse (CFC.sqrt B) := CFC.sqrt_ringInverse
   have hsa : IsSelfAdjoint (Ring.inverse (CFC.sqrt B)) := by
     rw [← hsqrtinv]
@@ -59,7 +51,7 @@ theorem summable_trace_conj_inv_sqrt (hJ : IsFiniteTracePos e J) {B : H →L[ℂ
     (hB : IsStrictlyPositive B) :
     Summable fun k => RCLike.re ⟪e k,
       (Ring.inverse (CFC.sqrt B) * J * Ring.inverse (CFC.sqrt B)) (e k)⟫_ℂ := by
-  have hBinv : IsStrictlyPositive (Ring.inverse B) := isStrictlyPositive_inverse hB
+  have hBinv : IsStrictlyPositive (Ring.inverse B) := hB.ringInverse
   have hsqrtinv : CFC.sqrt (Ring.inverse B) = Ring.inverse (CFC.sqrt B) := CFC.sqrt_ringInverse
   have hsa : IsSelfAdjoint (Ring.inverse (CFC.sqrt B)) := by
     rw [← hsqrtinv]
@@ -77,17 +69,8 @@ theorem summable_trace_conj_inv_sqrt (hJ : IsFiniteTracePos e J) {B : H →L[ℂ
   have hother : Summable fun k => ‖ContinuousLinearMap.adjoint
       (CFC.sqrt J * Ring.inverse (CFC.sqrt B)) (e k)‖ ^ 2 := by
     simp only [hadj]
-    have hS : Summable fun k => ‖CFC.sqrt J (e k)‖ ^ 2 :=
-      (summable_norm_sq_sqrt_iff e hJ.nonneg).2 hJ.summableTrace
-    refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_)
-      (hS.mul_left (‖Ring.inverse (CFC.sqrt B)‖ ^ 2))
-    have h := (Ring.inverse (CFC.sqrt B)).le_opNorm (CFC.sqrt J (e k))
-    have h0 : (0 : ℝ) ≤ ‖Ring.inverse (CFC.sqrt B) (CFC.sqrt J (e k))‖ := norm_nonneg _
-    have h1 : (0 : ℝ) ≤ ‖Ring.inverse (CFC.sqrt B)‖ * ‖CFC.sqrt J (e k)‖ := by positivity
-    calc ‖(Ring.inverse (CFC.sqrt B) * CFC.sqrt J) (e k)‖ ^ 2
-        = ‖Ring.inverse (CFC.sqrt B) (CFC.sqrt J (e k))‖ ^ 2 := rfl
-      _ ≤ (‖Ring.inverse (CFC.sqrt B)‖ * ‖CFC.sqrt J (e k)‖) ^ 2 := by nlinarith
-      _ = ‖Ring.inverse (CFC.sqrt B)‖ ^ 2 * ‖CFC.sqrt J (e k)‖ ^ 2 := by ring
+    exact summable_norm_sq_comp e (Ring.inverse (CFC.sqrt B))
+      ((summable_norm_sq_sqrt_iff e hJ.nonneg).2 hJ.summableTrace)
   exact (summable_norm_sq_adjoint_iff e (CFC.sqrt J * Ring.inverse (CFC.sqrt B))).1 hother
 
 /-- **A bound on the upper potential is a bound on the operator:** `Ψ_J(B)⁻¹ • J ≼ B`.
@@ -108,7 +91,7 @@ theorem inv_upperPotential_smul_le [Nonempty κ] (hJ : IsFiniteTracePos e J) {B 
   -- the conjugated operator is positive, with trace the potential
   have hPpos : (0 : H →L[ℂ] H)
       ≤ Ring.inverse (CFC.sqrt B) * J * Ring.inverse (CFC.sqrt B) :=
-    nonneg_conj (isStrictlyPositive_inverse ⟨hS0, hSunit⟩).nonneg hJ.nonneg
+    nonneg_conj (IsStrictlyPositive.ringInverse ⟨hS0, hSunit⟩).nonneg hJ.nonneg
   have hP : Ring.inverse (CFC.sqrt B) * J * Ring.inverse (CFC.sqrt B)
       ≤ (upperPotential e J B) • (1 : H →L[ℂ] H) := by
     have h := le_traceAlong_smul_one e hPpos (summable_trace_conj_inv_sqrt hJ hB)

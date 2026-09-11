@@ -58,16 +58,8 @@ private theorem adjoint_sqrt_mul_sqrt (J Q : H →L[ℂ] H) :
 is and `√Q` is bounded. -/
 theorem summable_norm_sq_sqrt_mul_sqrt (e : HilbertBasis κ ℂ H) {J Q : H →L[ℂ] H} (hJ : 0 ≤ J)
     (hsum : Summable fun k => RCLike.re ⟪e k, J (e k)⟫_ℂ) :
-    Summable fun k => ‖CFC.sqrt Q (CFC.sqrt J (e k))‖ ^ 2 := by
-  have hS : Summable fun k => ‖CFC.sqrt J (e k)‖ ^ 2 := (summable_norm_sq_sqrt_iff e hJ).2 hsum
-  refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_)
-    (hS.mul_left (‖CFC.sqrt Q‖ ^ 2))
-  have h := (CFC.sqrt Q).le_opNorm (CFC.sqrt J (e k))
-  have h0 : (0 : ℝ) ≤ ‖CFC.sqrt Q (CFC.sqrt J (e k))‖ := norm_nonneg _
-  have h1 : (0 : ℝ) ≤ ‖CFC.sqrt Q‖ * ‖CFC.sqrt J (e k)‖ := by positivity
-  calc ‖CFC.sqrt Q (CFC.sqrt J (e k))‖ ^ 2
-      ≤ (‖CFC.sqrt Q‖ * ‖CFC.sqrt J (e k)‖) ^ 2 := by nlinarith
-    _ = ‖CFC.sqrt Q‖ ^ 2 * ‖CFC.sqrt J (e k)‖ ^ 2 := by ring
+    Summable fun k => ‖CFC.sqrt Q (CFC.sqrt J (e k))‖ ^ 2 :=
+  summable_norm_sq_comp e (CFC.sqrt Q) ((summable_norm_sq_sqrt_iff e hJ).2 hsum)
 
 /-- **The trace of `J Q`, symmetrized on the other side:**
 `Tr (J Q) = ∑ₖ Re ⟪√Q eₖ, J (√Q eₖ)⟫`.

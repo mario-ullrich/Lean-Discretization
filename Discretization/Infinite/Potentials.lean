@@ -61,21 +61,11 @@ Indeed `J eₖ = √J (√J eₖ)`, so `‖J eₖ‖ ≤ ‖√J‖ · ‖√J e
 the terms of the trace. -/
 theorem IsFiniteTracePos.summable_norm_sq_apply (hJ : IsFiniteTracePos e J) :
     Summable fun k => ‖J (e k)‖ ^ 2 := by
-  have hS : Summable fun k => ‖CFC.sqrt J (e k)‖ ^ 2 :=
-    (summable_norm_sq_sqrt_iff e hJ.nonneg).2 hJ.summableTrace
   have hsq : CFC.sqrt J * CFC.sqrt J = J := CFC.sqrt_mul_sqrt_self J hJ.nonneg
-  refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_)
-    (hS.mul_left (‖CFC.sqrt J‖ ^ 2))
-  have happ : J (e k) = CFC.sqrt J (CFC.sqrt J (e k)) :=
-    congrArg (fun S : H →L[ℂ] H => S (e k)) hsq.symm
-  have h := (CFC.sqrt J).le_opNorm (CFC.sqrt J (e k))
-  have h0 : (0 : ℝ) ≤ ‖J (e k)‖ := norm_nonneg _
-  have h1 : (0 : ℝ) ≤ ‖CFC.sqrt J‖ * ‖CFC.sqrt J (e k)‖ := by positivity
-  calc ‖J (e k)‖ ^ 2 = ‖CFC.sqrt J (CFC.sqrt J (e k))‖ ^ 2 := by rw [happ]
-    _ ≤ (‖CFC.sqrt J‖ * ‖CFC.sqrt J (e k)‖) ^ 2 := by
-        have h2 : ‖CFC.sqrt J (CFC.sqrt J (e k))‖ ≤ ‖CFC.sqrt J‖ * ‖CFC.sqrt J (e k)‖ := h
-        nlinarith [norm_nonneg (CFC.sqrt J (CFC.sqrt J (e k)))]
-    _ = ‖CFC.sqrt J‖ ^ 2 * ‖CFC.sqrt J (e k)‖ ^ 2 := by ring
+  refine (summable_norm_sq_comp e (CFC.sqrt J)
+    ((summable_norm_sq_sqrt_iff e hJ.nonneg).2 hJ.summableTrace)).congr fun k => ?_
+  rw [show CFC.sqrt J (CFC.sqrt J (e k)) = J (e k) from
+    congrArg (fun S : H →L[ℂ] H => S (e k)) hsq]
 
 /-- Conjugating a positive operator by a self-adjoint one keeps it positive: `J S J ≽ 0`. -/
 theorem nonneg_conj {S : H →L[ℂ] H} (hJ : 0 ≤ J) (hS : 0 ≤ S) : (0 : H →L[ℂ] H) ≤ J * S * J := by
@@ -94,12 +84,9 @@ theorem IsFiniteTracePos.conj (hJ : IsFiniteTracePos e J) {S : H →L[ℂ] H}
     (hS : IsStrictlyPositive S) : IsFiniteTracePos e (J * S * J) := by
   refine ⟨nonneg_conj hJ.nonneg hS.nonneg, ?_, ?_⟩
   · -- `Re ⟪eₖ, J S J eₖ⟫ = Re ⟪J eₖ, S (J eₖ)⟫ ≤ ‖S‖ ‖J eₖ‖²`
-    have hJadj : ContinuousLinearMap.adjoint J = J := hJ.nonneg.isSelfAdjoint.star_eq
     have hterm : ∀ k, RCLike.re ⟪e k, (J * S * J) (e k)⟫_ℂ
-        = RCLike.re ⟪J (e k), S (J (e k))⟫_ℂ := fun k => by
-      have h := ContinuousLinearMap.adjoint_inner_right J (e k) (S (J (e k)))
-      rw [hJadj] at h
-      rw [show (J * S * J) (e k) = J (S (J (e k))) from rfl, h]
+        = RCLike.re ⟪J (e k), S (J (e k))⟫_ℂ := fun k =>
+      re_inner_conj_apply hJ.nonneg.isSelfAdjoint S (e k)
     refine Summable.of_nonneg_of_le (fun k => ?_) (fun k => ?_)
       (hJ.summable_norm_sq_apply.mul_left (‖S‖))
     · rw [hterm k]
@@ -116,20 +103,11 @@ theorem IsFiniteTracePos.conj (hJ : IsFiniteTracePos e J) {S : H →L[ℂ] H}
       nlinarith
   · -- injectivity, through the injectivity of `√S`
     intro v hv
-    have hSsqrt : IsUnit (CFC.sqrt S) := (CFC.isUnit_sqrt_iff S hS.nonneg).2 hS.isUnit
-    obtain ⟨w, hw⟩ := hSsqrt
-    have hinjS : ∀ y : H, CFC.sqrt S y = 0 → y = 0 := fun y hy => by
-      have h1 : ((↑w⁻¹ : H →L[ℂ] H) * (↑w : H →L[ℂ] H)) y = y := by rw [w.inv_mul]; rfl
-      have h2 : (↑w : H →L[ℂ] H) y = 0 := by rw [hw]; exact hy
-      calc y = ((↑w⁻¹ : H →L[ℂ] H) * (↑w : H →L[ℂ] H)) y := h1.symm
-        _ = (↑w⁻¹ : H →L[ℂ] H) ((↑w : H →L[ℂ] H) y) := rfl
-        _ = (↑w⁻¹ : H →L[ℂ] H) 0 := by rw [h2]
-        _ = 0 := map_zero _
-    have hJadj : ContinuousLinearMap.adjoint J = J := hJ.nonneg.isSelfAdjoint.star_eq
+    have hinjS : ∀ y : H, CFC.sqrt S y = 0 → y = 0 := fun y hy =>
+      (ContinuousLinearMap.isUnit_iff_bijective.1
+        ((CFC.isUnit_sqrt_iff S hS.nonneg).2 hS.isUnit)).1 (by rw [hy, map_zero])
     have hzero : RCLike.re ⟪J v, S (J v)⟫_ℂ = 0 := by
-      have h := ContinuousLinearMap.adjoint_inner_right J v (S (J v))
-      rw [hJadj] at h
-      rw [← h, show J (S (J v)) = (J * S * J) v from rfl, hv]
+      rw [← re_inner_conj_apply hJ.nonneg.isSelfAdjoint S v, hv]
       simp
     rw [re_inner_apply_eq_norm_sq_sqrt hS.nonneg (J v)] at hzero
     have : CFC.sqrt S (J v) = 0 := by
@@ -148,21 +126,17 @@ noncomputable def upperPotential (e : HilbertBasis κ ℂ H) (J B : H →L[ℂ] 
 /-- The upper potential is nonnegative. -/
 theorem upperPotential_nonneg (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}
     (hB : IsStrictlyPositive B) : 0 ≤ upperPotential e J B :=
-  traceAlong_mul_nonneg e hJ.nonneg (isStrictlyPositive_inverse hB).nonneg hJ.summableTrace
+  traceAlong_mul_nonneg e hJ.nonneg (hB.ringInverse).nonneg hJ.summableTrace
 
 /-- **The upper potential is positive.**  It vanishes only if `J` does, which injectivity
 forbids as soon as the space is nonzero. -/
 theorem upperPotential_pos [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}
     (hB : IsStrictlyPositive B) : 0 < upperPotential e J B := by
   obtain ⟨k⟩ := ‹Nonempty κ›
-  have hek : e k ≠ 0 := by
-    intro h
-    have : ‖e k‖ = 1 := e.orthonormal.1 k
-    rw [h, norm_zero] at this
-    exact absurd this (by norm_num)
-  have hJ0 : J ≠ 0 := fun h => hek (hJ.injective (e k) (by rw [h]; rfl))
-  exact traceAlong_mul_pos e hJ.nonneg (isStrictlyPositive_inverse hB).nonneg
-    (isStrictlyPositive_inverse hB).isUnit hJ.summableTrace hJ0
+  have hJ0 : J ≠ 0 := fun h =>
+    basis_ne_zero e k (hJ.injective (e k) (by rw [h]; rfl))
+  exact traceAlong_mul_pos e hJ.nonneg (hB.ringInverse).nonneg
+    (hB.ringInverse).isUnit hJ.summableTrace hJ0
 
 /-! ### The effect of the shift -/
 
@@ -215,7 +189,7 @@ theorem upperPotential_sub_eq (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}
         + J * (Ring.inverse B - Ring.inverse (B + ζ • J)) := by
     rw [mul_sub]; abel
   have h₁ : Summable fun k => RCLike.re ⟪e k, (J * Ring.inverse (B + ζ • J)) (e k)⟫_ℂ :=
-    summable_re_inner_apply_mul e hJ.nonneg (isStrictlyPositive_inverse hM).nonneg
+    summable_re_inner_apply_mul e hJ.nonneg (hM.ringInverse).nonneg
       hJ.summableTrace
   have h₂ : Summable fun k =>
       RCLike.re ⟪e k, (J * (Ring.inverse B - Ring.inverse (B + ζ • J))) (e k)⟫_ℂ :=
@@ -235,18 +209,13 @@ theorem upperPotential_add_smul_lt [Nonempty κ] (hJ : IsFiniteTracePos e J) {B 
     upperPotential e J (B + ζ • J) < upperPotential e J B := by
   have hM : IsStrictlyPositive (B + ζ • J) := isStrictlyPositive_add_smul hJ.nonneg hB hζ.le
   have hconj : IsFiniteTracePos e (J * Ring.inverse B * J) :=
-    hJ.conj (isStrictlyPositive_inverse hB)
+    hJ.conj (hB.ringInverse)
   obtain ⟨k⟩ := ‹Nonempty κ›
-  have hek : e k ≠ 0 := by
-    intro h
-    have : ‖e k‖ = 1 := e.orthonormal.1 k
-    rw [h, norm_zero] at this
-    exact absurd this (by norm_num)
   have hne : J * Ring.inverse B * J ≠ 0 := fun h =>
-    hek (hconj.injective (e k) (by rw [h]; rfl))
+    basis_ne_zero e k (hconj.injective (e k) (by rw [h]; rfl))
   have hpos : 0 < traceAlong e ((J * Ring.inverse B * J) * Ring.inverse (B + ζ • J)) :=
-    traceAlong_mul_pos e hconj.nonneg (isStrictlyPositive_inverse hM).nonneg
-      (isStrictlyPositive_inverse hM).isUnit hconj.summableTrace hne
+    traceAlong_mul_pos e hconj.nonneg (hM.ringInverse).nonneg
+      (hM.ringInverse).isUnit hconj.summableTrace hne
   have heq := upperPotential_sub_eq hJ hB hζ.le
   nlinarith [heq, hpos, hζ]
 

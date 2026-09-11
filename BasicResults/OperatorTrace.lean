@@ -74,6 +74,43 @@ theorem summable_norm_sq_inner (e : HilbertBasis κ ℂ H) (x : H) :
     Summable fun k => ‖⟪e k, x⟫_ℂ‖ ^ 2 :=
   (hasSum_norm_sq_inner e x).summable
 
+/-! ### Two lemmas used throughout -/
+
+omit [CompleteSpace H] in
+/-- A vector of a Hilbert basis is nonzero. -/
+theorem basis_ne_zero (e : HilbertBasis κ ℂ H) (k : κ) : e k ≠ 0 := by
+  intro h
+  have h1 : ‖e k‖ = 1 := e.orthonormal.1 k
+  rw [h, norm_zero] at h1
+  exact absurd h1 (by norm_num)
+
+/-- Moving a self-adjoint operator from one side of the inner product to the other. -/
+theorem inner_apply_isSelfAdjoint {S : H →L[ℂ] H} (hS : IsSelfAdjoint S) (x y : H) :
+    ⟪x, S y⟫_ℂ = ⟪S x, y⟫_ℂ := by
+  have hadj : ContinuousLinearMap.adjoint S = S := hS.star_eq
+  have h := ContinuousLinearMap.adjoint_inner_right S x y
+  rwa [hadj] at h
+
+/-- The quadratic form of a conjugate, for a self-adjoint conjugating operator:
+`Re ⟪x, S T S x⟫ = Re ⟪S x, T (S x)⟫`. -/
+theorem re_inner_conj_apply {S : H →L[ℂ] H} (hS : IsSelfAdjoint S) (T : H →L[ℂ] H) (x : H) :
+    RCLike.re ⟪x, (S * T * S) x⟫_ℂ = RCLike.re ⟪S x, T (S x)⟫_ℂ := by
+  rw [show (S * T * S) x = S (T (S x)) from rfl, inner_apply_isSelfAdjoint hS]
+
+omit [CompleteSpace H] in
+/-- **Composing with a bounded operator preserves the Hilbert–Schmidt property.**
+
+Used whenever a square-summable family of vectors is pushed through an operator, which
+happens at every step of the trace estimates. -/
+theorem summable_norm_sq_comp (e : HilbertBasis κ ℂ H) (S : H →L[ℂ] H) {T : H →L[ℂ] H}
+    (h : Summable fun k => ‖T (e k)‖ ^ 2) : Summable fun k => ‖S (T (e k))‖ ^ 2 := by
+  refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_)
+    (h.mul_left (‖S‖ ^ 2))
+  have hb := S.le_opNorm (T (e k))
+  have h0 : (0 : ℝ) ≤ ‖S (T (e k))‖ := norm_nonneg _
+  have h1 : (0 : ℝ) ≤ ‖S‖ * ‖T (e k)‖ := by positivity
+  nlinarith
+
 /-! ### The trace along a basis -/
 
 /-- The **trace of `T` along the Hilbert basis `e`**, `∑' k, Re ⟪e k, T (e k)⟫`.
@@ -90,13 +127,9 @@ theorem re_inner_apply_eq_norm_sq_sqrt {T : H →L[ℂ] H} (hT : 0 ≤ T) (x : H
     RCLike.re ⟪x, T x⟫_ℂ = ‖CFC.sqrt T x‖ ^ 2 := by
   have hsq : CFC.sqrt T * CFC.sqrt T = T := CFC.sqrt_mul_sqrt_self T hT
   have hsa : IsSelfAdjoint (CFC.sqrt T) := .of_nonneg (CFC.sqrt_nonneg T)
-  have hstar : ContinuousLinearMap.adjoint (CFC.sqrt T) = CFC.sqrt T := hsa.star_eq
   have happ : T x = CFC.sqrt T (CFC.sqrt T x) :=
     congrArg (fun S : H →L[ℂ] H => S x) hsq.symm
-  have hmove : ⟪x, CFC.sqrt T (CFC.sqrt T x)⟫_ℂ = ⟪CFC.sqrt T x, CFC.sqrt T x⟫_ℂ := by
-    have h := ContinuousLinearMap.adjoint_inner_right (CFC.sqrt T) x (CFC.sqrt T x)
-    rwa [hstar] at h
-  rw [happ, hmove, inner_self_eq_norm_sq]
+  rw [happ, inner_apply_isSelfAdjoint hsa, inner_self_eq_norm_sq]
 
 /-- The trace of a positive operator is the squared Hilbert–Schmidt norm of its square
 root: `Tr T = ∑' k, ‖√T (e k)‖²`. -/
@@ -387,24 +420,17 @@ theorem traceAlong_mul (e : HilbertBasis κ ℂ H) {P Q : H →L[ℂ] H} (hP : 0
   have hTadj : Summable fun k =>
       ‖ContinuousLinearMap.adjoint (CFC.sqrt P * Q) (e k)‖ ^ 2 := by
     simp only [hadjT]
-    refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_) (hS.mul_left (‖Q‖ ^ 2))
-    have h : ‖Q (CFC.sqrt P (e k))‖ ≤ ‖Q‖ * ‖CFC.sqrt P (e k)‖ := Q.le_opNorm _
-    have h0 : (0 : ℝ) ≤ ‖Q (CFC.sqrt P (e k))‖ := norm_nonneg _
-    have h1 : (0 : ℝ) ≤ ‖Q‖ * ‖CFC.sqrt P (e k)‖ := by positivity
-    calc ‖(Q * CFC.sqrt P) (e k)‖ ^ 2 = ‖Q (CFC.sqrt P (e k))‖ ^ 2 := rfl
-      _ ≤ (‖Q‖ * ‖CFC.sqrt P (e k)‖) ^ 2 := by nlinarith
-      _ = ‖Q‖ ^ 2 * ‖CFC.sqrt P (e k)‖ ^ 2 := by ring
+    exact summable_norm_sq_comp e Q hS
   have hT : Summable fun k => ‖(CFC.sqrt P * Q) (e k)‖ ^ 2 :=
     (summable_norm_sq_adjoint_iff e (CFC.sqrt P * Q)).1 hTadj
   -- the two sides of the swap, term by term
+  have hsaP : IsSelfAdjoint (CFC.sqrt P) := .of_nonneg (CFC.sqrt_nonneg P)
   have hL : ∀ k, ⟪CFC.sqrt P (e k), (CFC.sqrt P * Q) (e k)⟫_ℂ = ⟪e k, (P * Q) (e k)⟫_ℂ :=
     fun k => by
-      have h := ContinuousLinearMap.adjoint_inner_right (CFC.sqrt P) (e k)
-        (CFC.sqrt P (Q (e k)))
-      rw [hstarP] at h
       calc ⟪CFC.sqrt P (e k), (CFC.sqrt P * Q) (e k)⟫_ℂ
           = ⟪CFC.sqrt P (e k), CFC.sqrt P (Q (e k))⟫_ℂ := rfl
-        _ = ⟪e k, CFC.sqrt P (CFC.sqrt P (Q (e k)))⟫_ℂ := h.symm
+        _ = ⟪e k, CFC.sqrt P (CFC.sqrt P (Q (e k)))⟫_ℂ :=
+            (inner_apply_isSelfAdjoint hsaP (e k) (CFC.sqrt P (Q (e k)))).symm
         _ = ⟪e k, (CFC.sqrt P * CFC.sqrt P) (Q (e k))⟫_ℂ := rfl
         _ = ⟪e k, (P * Q) (e k)⟫_ℂ := by rw [hsqP]; rfl
   have hR : ∀ k, ⟪ContinuousLinearMap.adjoint (CFC.sqrt P * Q) (e k),
@@ -458,14 +484,9 @@ theorem traceAlong_mul_pos (e : HilbertBasis κ ℂ H) {P Q : H →L[ℂ] H} (hP
           nlinarith
       _ = ‖CFC.sqrt Q‖ ^ 2 * ‖CFC.sqrt P (e k)‖ ^ 2 := by ring
   -- `√Q` is injective, because `Q` is a unit
-  obtain ⟨u, hu⟩ := (CFC.isUnit_sqrt_iff Q hQ).2 hQu
-  have hinj : ∀ y : H, CFC.sqrt Q y = 0 → y = 0 := fun y hy => by
-    have h1 : ((↑u⁻¹ : H →L[ℂ] H) * (↑u : H →L[ℂ] H)) y = y := by rw [u.inv_mul]; rfl
-    have h2 : (↑u : H →L[ℂ] H) y = 0 := by rw [hu]; exact hy
-    calc y = ((↑u⁻¹ : H →L[ℂ] H) * (↑u : H →L[ℂ] H)) y := h1.symm
-      _ = (↑u⁻¹ : H →L[ℂ] H) ((↑u : H →L[ℂ] H) y) := rfl
-      _ = (↑u⁻¹ : H →L[ℂ] H) 0 := by rw [h2]
-      _ = 0 := map_zero _
+  have hinj : ∀ y : H, CFC.sqrt Q y = 0 → y = 0 := fun y hy =>
+    (ContinuousLinearMap.isUnit_iff_bijective.1
+      ((CFC.isUnit_sqrt_iff Q hQ).2 hQu)).1 (by rw [hy, map_zero])
   -- a vanishing trace would make `√P` vanish on the basis, hence `P = 0`
   rcases eq_or_lt_of_le (traceAlong_mul_nonneg e hP hQ hsum) with h0 | h
   · refine absurd ?_ hP0
@@ -527,22 +548,15 @@ theorem summable_inner_apply_mul (e : HilbertBasis κ ℂ H) {P Q : H →L[ℂ] 
   have hTadj : Summable fun k =>
       ‖ContinuousLinearMap.adjoint (CFC.sqrt P * Q) (e k)‖ ^ 2 := by
     simp only [hadjT]
-    refine Summable.of_nonneg_of_le (fun k => by positivity) (fun k => ?_) (hS.mul_left (‖Q‖ ^ 2))
-    have h : ‖Q (CFC.sqrt P (e k))‖ ≤ ‖Q‖ * ‖CFC.sqrt P (e k)‖ := Q.le_opNorm _
-    have h0 : (0 : ℝ) ≤ ‖Q (CFC.sqrt P (e k))‖ := norm_nonneg _
-    have h1 : (0 : ℝ) ≤ ‖Q‖ * ‖CFC.sqrt P (e k)‖ := by positivity
-    calc ‖(Q * CFC.sqrt P) (e k)‖ ^ 2 = ‖Q (CFC.sqrt P (e k))‖ ^ 2 := rfl
-      _ ≤ (‖Q‖ * ‖CFC.sqrt P (e k)‖) ^ 2 := by nlinarith
-      _ = ‖Q‖ ^ 2 * ‖CFC.sqrt P (e k)‖ ^ 2 := by ring
+    exact summable_norm_sq_comp e Q hS
   have hT : Summable fun k => ‖(CFC.sqrt P * Q) (e k)‖ ^ 2 :=
     (summable_norm_sq_adjoint_iff e (CFC.sqrt P * Q)).1 hTadj
+  have hsaP : IsSelfAdjoint (CFC.sqrt P) := .of_nonneg (CFC.sqrt_nonneg P)
   refine (summable_inner_apply e hS hT).congr fun k => ?_
-  have h := ContinuousLinearMap.adjoint_inner_right (CFC.sqrt P) (e k)
-    (CFC.sqrt P (Q (e k)))
-  rw [hstarP] at h
   calc ⟪CFC.sqrt P (e k), (CFC.sqrt P * Q) (e k)⟫_ℂ
       = ⟪CFC.sqrt P (e k), CFC.sqrt P (Q (e k))⟫_ℂ := rfl
-    _ = ⟪e k, CFC.sqrt P (CFC.sqrt P (Q (e k)))⟫_ℂ := h.symm
+    _ = ⟪e k, CFC.sqrt P (CFC.sqrt P (Q (e k)))⟫_ℂ :=
+        (inner_apply_isSelfAdjoint hsaP (e k) (CFC.sqrt P (Q (e k)))).symm
     _ = ⟪e k, (CFC.sqrt P * CFC.sqrt P) (Q (e k))⟫_ℂ := rfl
     _ = ⟪e k, (P * Q) (e k)⟫_ℂ := by rw [hsqP]; rfl
 

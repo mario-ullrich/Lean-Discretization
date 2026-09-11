@@ -60,22 +60,9 @@ has a positive quadratic form on nonzero vectors. -/
 theorem re_inner_conj_pos (hJ : IsFiniteTracePos e J) {X : H →L[ℂ] H}
     (hX : IsStrictlyPositive X) {u : H} (hu : u ≠ 0) :
     0 < RCLike.re ⟪u, (X * J * X) u⟫_ℂ := by
-  have hXadj : ContinuousLinearMap.adjoint X = X := hX.nonneg.isSelfAdjoint.star_eq
-  have hXu : X u ≠ 0 := by
-    intro h
-    obtain ⟨v, hv⟩ := hX.isUnit
-    refine hu ?_
-    have h1 : ((↑v⁻¹ : H →L[ℂ] H) * (↑v : H →L[ℂ] H)) u = u := by rw [v.inv_mul]; rfl
-    have h2 : (↑v : H →L[ℂ] H) u = 0 := by rw [hv]; exact h
-    calc u = ((↑v⁻¹ : H →L[ℂ] H) * (↑v : H →L[ℂ] H)) u := h1.symm
-      _ = (↑v⁻¹ : H →L[ℂ] H) ((↑v : H →L[ℂ] H) u) := rfl
-      _ = (↑v⁻¹ : H →L[ℂ] H) 0 := by rw [h2]
-      _ = 0 := map_zero _
-  have hmove : ⟪u, (X * J * X) u⟫_ℂ = ⟪X u, J (X u)⟫_ℂ := by
-    have h := ContinuousLinearMap.adjoint_inner_right X u (J (X u))
-    rw [hXadj] at h
-    rw [show (X * J * X) u = X (J (X u)) from rfl, h]
-  rw [hmove]
+  have hXu : X u ≠ 0 := fun h =>
+    hu ((ContinuousLinearMap.isUnit_iff_bijective.1 hX.isUnit).1 (by rw [h, map_zero]))
+  rw [re_inner_conj_apply hX.nonneg.isSelfAdjoint J u]
   exact hJ.re_inner_pos hXu
 
 /-! ### The potential after a rank-one downdate -/
@@ -90,7 +77,7 @@ theorem upperPotential_sub_smul_rankOne (hJ : IsFiniteTracePos e J) {M : H →L[
       = upperPotential e J M
         + (w / (1 - w * RCLike.re ⟪u, Ring.inverse M u⟫_ℂ))
           * RCLike.re ⟪u, (Ring.inverse M * J * Ring.inverse M) u⟫_ℂ := by
-  have hMinv : IsStrictlyPositive (Ring.inverse M) := isStrictlyPositive_inverse hM
+  have hMinv : IsStrictlyPositive (Ring.inverse M) := hM.ringInverse
   have hWadj : ContinuousLinearMap.adjoint (Ring.inverse M) = Ring.inverse M :=
     hMinv.nonneg.isSelfAdjoint.star_eq
   have hc0 : 0 ≤ w / (1 - w * RCLike.re ⟪u, Ring.inverse M u⟫_ℂ) := div_nonneg hw hden.le
@@ -131,7 +118,7 @@ theorem upperVerifier_nonneg [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : H �
     (hB : IsStrictlyPositive B) {ζ : ℝ} (hζ : 0 < ζ) (u : H) :
     0 ≤ upperVerifier e J B ζ u := by
   have hM : IsStrictlyPositive (B + ζ • J) := isStrictlyPositive_add_smul hJ.nonneg hB hζ.le
-  have hMinv : IsStrictlyPositive (Ring.inverse (B + ζ • J)) := isStrictlyPositive_inverse hM
+  have hMinv : IsStrictlyPositive (Ring.inverse (B + ζ • J)) := hM.ringInverse
   have h₁ : 0 ≤ RCLike.re ⟪u,
       (Ring.inverse (B + ζ • J) * J * Ring.inverse (B + ζ • J)) u⟫_ℂ :=
     ((ContinuousLinearMap.nonneg_iff_isPositive _).1
@@ -155,7 +142,7 @@ theorem upperPotential_update_le [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : 
     IsStrictlyPositive (B + ζ • J - w • rankOne ℂ u u) ∧
       upperPotential e J (B + ζ • J - w • rankOne ℂ u u) ≤ upperPotential e J B := by
   have hM : IsStrictlyPositive (B + ζ • J) := isStrictlyPositive_add_smul hJ.nonneg hB hζ.le
-  have hMinv : IsStrictlyPositive (Ring.inverse (B + ζ • J)) := isStrictlyPositive_inverse hM
+  have hMinv : IsStrictlyPositive (Ring.inverse (B + ζ • J)) := hM.ringInverse
   have hEpos : upperPotential e J (B + ζ • J) < upperPotential e J B :=
     upperPotential_add_smul_lt hJ hB hζ
   simp only [upperVerifier] at hcond

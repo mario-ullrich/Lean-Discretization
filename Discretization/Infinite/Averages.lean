@@ -82,8 +82,8 @@ theorem integral_upperVerifier_lt [Nonempty κ] [Countable κ] (hJ : IsFiniteTra
     (hgram : ∀ u, RCLike.re ⟪u, J u⟫_ℂ = ∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ) :
     ∫ x, upperVerifier e J B ζ (b x) ∂μ < 1 / ζ + upperPotential e J B := by
   have hM : IsStrictlyPositive (B + ζ • J) := isStrictlyPositive_add_smul hJ.nonneg hB hζ.le
-  have hX : IsStrictlyPositive (Ring.inverse (B + ζ • J)) := isStrictlyPositive_inverse hM
-  have hW : IsStrictlyPositive (Ring.inverse B) := isStrictlyPositive_inverse hB
+  have hX : IsStrictlyPositive (Ring.inverse (B + ζ • J)) := hM.ringInverse
+  have hW : IsStrictlyPositive (Ring.inverse B) := hB.ringInverse
   have hXW : Ring.inverse (B + ζ • J) ≤ Ring.inverse B :=
     inverse_add_smul_le hJ.nonneg hB hζ.le
   have hconjX : (0 : H →L[ℂ] H)
