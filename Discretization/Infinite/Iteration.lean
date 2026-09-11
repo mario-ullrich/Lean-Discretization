@@ -30,6 +30,7 @@ The result is `Discretization.Infinite.exists_points_weights`.
 open MeasureTheory
 open scoped InnerProductSpace ComplexOrder
 open InnerProductSpace
+open ContinuousLinearMap
 
 namespace Discretization
 

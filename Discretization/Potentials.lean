@@ -71,7 +71,7 @@ theorem upperPotential_sub_eq {J B : Matrix κ κ ℂ} (hJ : J.PosDef) (hB : B.P
     (hζ : 0 < ζ) :
     upperPotential J B - upperPotential J (B + ζ • J)
       = ζ * RCLike.re ((J * B⁻¹ * J) * (B + ζ • J)⁻¹).trace := by
-  have hA : (B + ζ • J).PosDef := hB.add_smul_posDef hJ hζ
+  have hA : (B + ζ • J).PosDef := hB.add_smul hJ hζ
   have hid := Matrix.inv_sub_inv_add_smul hB.isUnit (ζ := ζ) hA.isUnit
   have h := congrArg (fun M => RCLike.re (Matrix.trace (J * M))) hid
   simpa [upperPotential, Matrix.mul_sub, Matrix.trace_sub, map_sub, Matrix.mul_smul,
@@ -96,7 +96,7 @@ theorem lowerPotential_lt_sub_smul_one [Nonempty ι] {A : Matrix ι ι ℂ} (hA 
 theorem upperPotential_add_smul_lt [Nonempty κ] {J B : Matrix κ κ ℂ} (hJ : J.PosDef)
     (hB : B.PosDef) {ζ : ℝ} (hζ : 0 < ζ) :
     upperPotential J (B + ζ • J) < upperPotential J B := by
-  have hA : (B + ζ • J).PosDef := hB.add_smul_posDef hJ hζ
+  have hA : (B + ζ • J).PosDef := hB.add_smul hJ hζ
   have htr := upperPotential_sub_eq hJ hB hζ
   have hpos : 0 < RCLike.re ((J * B⁻¹ * J) * (B + ζ • J)⁻¹).trace :=
     (posDef_conj_inv hJ hB).re_trace_mul_pos hA.inv

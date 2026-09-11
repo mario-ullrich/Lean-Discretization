@@ -21,7 +21,7 @@ quantity and the upper one an operator quantity; both are real functions on `Ω`
 conclusion is `Discretization.Infinite.exists_admissible_point`.
 
 Two ingredients do the work.  The average of a quadratic form is a trace
-(`Discretization.integral_re_inner_apply`).  With `W = B⁻¹` and `X = (B + ζ • J)⁻¹` it turns
+(`ContinuousLinearMap.integral_re_inner_apply`).  With `W = B⁻¹` and `X = (B + ζ • J)⁻¹` it turns
 the average of the verifier into `Tr (J X J X) / E + Ψ_J(B + ζ • J)`, where
 `E = ζ Tr (J W J X)` is the gain of the potential.  Then `X ≤ W` bounds the numerator by
 `E/ζ`.
@@ -30,6 +30,7 @@ the average of the verifier into `Tr (J X J X) / E + Ψ_J(B + ζ • J)`, where
 open MeasureTheory
 open scoped InnerProductSpace ComplexOrder
 open InnerProductSpace
+open ContinuousLinearMap
 
 namespace Discretization
 

@@ -123,7 +123,7 @@ theorem integral_upperVerifier_lt [Nonempty κ] {J B : Matrix κ κ ℂ} (hJ : J
     (hB : B.PosDef) {ζ : ℝ} (hζ : 0 < ζ) {b : Ω → κ → ℂ}
     (hb : ∀ k, MemLp (fun x => b x k) 2 μ) (hgram : gram b μ = J) :
     ∫ x, upperVerifier J B ζ (b x) ∂μ < 1 / ζ + upperPotential J B := by
-  have hM : (B + ζ • J).PosDef := hB.add_smul_posDef hJ hζ
+  have hM : (B + ζ • J).PosDef := hB.add_smul hJ hζ
   -- split the average into two traces
   have hQint : Integrable (fun x => RCLike.re (star (b x) ⬝ᵥ
       (((B + ζ • J)⁻¹ * J * (B + ζ • J)⁻¹) *ᵥ b x))) μ := (integrable_quadForm hb _).re

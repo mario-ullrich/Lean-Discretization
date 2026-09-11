@@ -23,7 +23,7 @@ standard basis of `ℓ₂`.
 
 For a **positive** operator the sum is a sum of nonnegative terms, because
 
-`Re ⟪x, T x⟫ = ‖√T x‖²`   (`Discretization.re_inner_apply_eq_norm_sq_sqrt`),
+`Re ⟪x, T x⟫ = ‖√T x‖²`   (`ContinuousLinearMap.re_inner_apply_eq_norm_sq_sqrt`),
 
 where `√T` is the positive square root from the continuous functional calculus, so that
 
@@ -31,8 +31,8 @@ where `√T` is the positive square root from the continuous functional calculus
 
 is the squared Hilbert–Schmidt norm of `√T`.  This is the form in which the trace is used:
 
-* `Discretization.traceAlong_nonneg`: the trace of a positive operator is nonnegative;
-* `Discretization.le_traceAlong_smul_one`: the **crude bound** `T ≤ Tr(T) • 1`, the operator
+* `ContinuousLinearMap.traceAlong_nonneg`: the trace of a positive operator is nonnegative;
+* `ContinuousLinearMap.le_traceAlong_smul_one`: the **crude bound** `T ≤ Tr(T) • 1`, the operator
   analogue of `Matrix.PosSemidef.le_trace_smul_one`, proved with Parseval's identity and the
   Cauchy–Schwarz inequality alone.
 
@@ -43,9 +43,9 @@ Mathlib supplies `HilbertBasis` with Parseval's identity
 
 open scoped InnerProductSpace ComplexOrder
 
-namespace Discretization
-
 variable {κ H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+
+namespace HilbertBasis
 
 /-! ### Parseval's identity -/
 
@@ -67,17 +67,21 @@ omit [CompleteSpace H] in
 /-- The coefficients of a vector are square-summable along a Hilbert basis. -/
 theorem summable_norm_sq_inner (e : HilbertBasis κ ℂ H) (x : H) :
     Summable fun k => ‖⟪e k, x⟫_ℂ‖ ^ 2 :=
-  (hasSum_norm_sq_inner e x).summable
-
-/-! ### Lemmas used throughout -/
+  (e.hasSum_norm_sq_inner x).summable
 
 omit [CompleteSpace H] in
 /-- A vector of a Hilbert basis is nonzero. -/
-theorem basis_ne_zero (e : HilbertBasis κ ℂ H) (k : κ) : e k ≠ 0 := by
+theorem ne_zero (e : HilbertBasis κ ℂ H) (k : κ) : e k ≠ 0 := by
   intro h
   have h1 : ‖e k‖ = 1 := e.orthonormal.1 k
   rw [h, norm_zero] at h1
   exact absurd h1 (by norm_num)
+
+end HilbertBasis
+
+namespace ContinuousLinearMap
+
+/-! ### Lemmas used throughout -/
 
 /-- Moving a self-adjoint operator from one side of the inner product to the other. -/
 theorem inner_apply_isSelfAdjoint {S : H →L[ℂ] H} (hS : IsSelfAdjoint S) (x y : H) :
@@ -161,8 +165,8 @@ omit [CompleteSpace H] in
 /-- **Parseval's identity in `ℝ≥0∞`**, where no summability hypothesis is needed. -/
 theorem tsum_ofReal_norm_sq_inner (e : HilbertBasis κ ℂ H) (x : H) :
     ∑' k, ENNReal.ofReal (‖⟪e k, x⟫_ℂ‖ ^ 2) = ENNReal.ofReal (‖x‖ ^ 2) := by
-  rw [← ENNReal.ofReal_tsum_of_nonneg (fun k => by positivity) (summable_norm_sq_inner e x),
-    (hasSum_norm_sq_inner e x).tsum_eq]
+  rw [← ENNReal.ofReal_tsum_of_nonneg (fun k => by positivity) (e.summable_norm_sq_inner x),
+    (e.hasSum_norm_sq_inner x).tsum_eq]
 
 /-- **The Hilbert–Schmidt sum of an operator equals that of its adjoint**, as an identity in
 `ℝ≥0∞`.
@@ -282,12 +286,12 @@ private theorem summable_uncurry_inner_mul (e : HilbertBasis κ ℂ H) {S T : H 
   have hmaj : Summable fun p : κ × κ =>
       (‖⟪e p.2, S (e p.1)⟫_ℂ‖ ^ 2 + ‖⟪e p.2, T (e p.1)⟫_ℂ‖ ^ 2) / 2 := by
     refine (summable_prod_of_nonneg fun p => by positivity).2 ⟨fun k => ?_, ?_⟩
-    · exact ((summable_norm_sq_inner e (S (e k))).add
-        (summable_norm_sq_inner e (T (e k)))).div_const 2
+    · exact ((e.summable_norm_sq_inner (S (e k))).add
+        (e.summable_norm_sq_inner (T (e k)))).div_const 2
     · refine ((hS.add hT).div_const 2).congr fun k => ?_
-      rw [tsum_div_const, Summable.tsum_add (summable_norm_sq_inner e (S (e k)))
-        (summable_norm_sq_inner e (T (e k))), (hasSum_norm_sq_inner e (S (e k))).tsum_eq,
-        (hasSum_norm_sq_inner e (T (e k))).tsum_eq]
+      rw [tsum_div_const, Summable.tsum_add (e.summable_norm_sq_inner (S (e k)))
+        (e.summable_norm_sq_inner (T (e k))), (e.hasSum_norm_sq_inner (S (e k))).tsum_eq,
+        (e.hasSum_norm_sq_inner (T (e k))).tsum_eq]
   refine Summable.of_norm (Summable.of_nonneg_of_le (fun p => norm_nonneg _) (fun p => ?_) hmaj)
   rw [Function.uncurry_apply_pair, norm_mul, hcoefS p.1 p.2, hcoefT p.1 p.2]
   nlinarith [sq_nonneg (‖⟪e p.2, S (e p.1)⟫_ℂ‖ - ‖⟪e p.2, T (e p.1)⟫_ℂ‖),
@@ -345,7 +349,7 @@ theorem re_inner_apply_le_traceAlong_mul (e : HilbertBasis κ ℂ H) {T : H →L
     rw [← hstar, ContinuousLinearMap.adjoint_inner_left, hstar]
   calc RCLike.re ⟪x, T x⟫_ℂ = ‖CFC.sqrt T x‖ ^ 2 := re_inner_apply_eq_norm_sq_sqrt hT x
     _ = ∑' k, ‖⟪CFC.sqrt T (e k), x⟫_ℂ‖ ^ 2 := by
-        rw [(hasSum_norm_sq_inner e (CFC.sqrt T x)).tsum_eq.symm]
+        rw [(e.hasSum_norm_sq_inner (CFC.sqrt T x)).tsum_eq.symm]
         exact tsum_congr fun k => by rw [hcoef k]
     _ ≤ ∑' k, ‖CFC.sqrt T (e k)‖ ^ 2 * ‖x‖ ^ 2 := by
         refine Summable.tsum_le_tsum (fun k => ?_) ?_ (hsqsum.mul_right _)
@@ -355,7 +359,7 @@ theorem re_inner_apply_le_traceAlong_mul (e : HilbertBasis κ ℂ H) {T : H →L
                 have h0 : (0 : ℝ) ≤ ‖⟪CFC.sqrt T (e k), x⟫_ℂ‖ := norm_nonneg _
                 nlinarith
             _ = ‖CFC.sqrt T (e k)‖ ^ 2 * ‖x‖ ^ 2 := by ring
-        · exact ((summable_norm_sq_inner e (CFC.sqrt T x)).congr
+        · exact ((e.summable_norm_sq_inner (CFC.sqrt T x)).congr
             fun k => by rw [hcoef k])
     _ = traceAlong e T * ‖x‖ ^ 2 := by
         rw [tsum_mul_right, traceAlong_eq_tsum_norm_sq_sqrt e hT]
@@ -548,7 +552,7 @@ theorem summable_inner_apply_mul (e : HilbertBasis κ ℂ H) {P Q : H →L[ℂ] 
     _ = ⟪e k, (CFC.sqrt P * CFC.sqrt P) (Q (e k))⟫_ℂ := rfl
     _ = ⟪e k, (P * Q) (e k)⟫_ℂ := by rw [hsqP]; rfl
 
-/-- The real form of `Discretization.summable_inner_apply_mul`: the trace of a product of a
+/-- The real form of `ContinuousLinearMap.summable_inner_apply_mul`: the trace of a product of a
 positive operator of finite trace with a positive operator exists. -/
 theorem summable_re_inner_apply_mul (e : HilbertBasis κ ℂ H) {P Q : H →L[ℂ] H} (hP : 0 ≤ P)
     (hQ : 0 ≤ Q) (hsum : Summable fun k => RCLike.re ⟪e k, P (e k)⟫_ℂ) :
@@ -571,4 +575,4 @@ theorem traceAlong_mul_rankOne (e : HilbertBasis κ ℂ H) (T : H →L[ℂ] H) (
   rw [traceAlong, tsum_congr hterm, ← RCLike.re_tsum _ (e.summable_inner_mul_inner u (T u)),
     e.tsum_inner_mul_inner]
 
-end Discretization
+end ContinuousLinearMap

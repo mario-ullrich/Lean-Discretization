@@ -33,6 +33,7 @@ operator counterpart of the upper read-off and assembles the theorem.
 open MeasureTheory
 open scoped InnerProductSpace ComplexOrder MatrixOrder
 open InnerProductSpace
+open ContinuousLinearMap
 
 namespace Discretization
 
@@ -47,7 +48,7 @@ omit [CompleteSpace H] in
 /-- The inverse of a positive multiple of the identity. -/
 theorem inverse_smul_one {c : ℝ} (hc : c ≠ 0) :
     Ring.inverse (c • (1 : H →L[ℂ] H)) = c⁻¹ • (1 : H →L[ℂ] H) := by
-  refine inverse_eq_of_mul_eq_one ?_ ?_ <;>
+  refine Ring.inverse_eq_of_mul_eq_one ?_ ?_ <;>
     rw [smul_mul_assoc, one_mul, smul_smul]
   · rw [mul_inv_cancel₀ hc, one_smul]
   · rw [inv_mul_cancel₀ hc, one_smul]

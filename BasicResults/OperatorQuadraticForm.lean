@@ -20,14 +20,14 @@ its Gram operator is a positive operator `J` of finite trace, tied to `b` by
 The identity to be proved is that averaging the quadratic form of a positive operator `Q`
 along `b` gives the trace of `J Q`:
 
-`∫ Re ⟪b x, Q (b x)⟫ dμ(x) = Tr (J Q)`   (`Discretization.integral_re_inner_apply`).
+`∫ Re ⟪b x, Q (b x)⟫ dμ(x) = Tr (J Q)`   (`ContinuousLinearMap.integral_re_inner_apply`).
 
 Both sides are computed through square roots and Parseval's identity.  Pointwise,
 `Re ⟪b, Q b⟫ = ‖√Q b‖² = ∑ₖ |⟪√Q eₖ, b⟫|²`.  Sum and integral may be interchanged because all
 terms are nonnegative, and the Gram identity turns the result into
 `∑ₖ Re ⟪√Q eₖ, J (√Q eₖ)⟫ = Tr (√Q J √Q)`.  This equals `Tr (J Q)` because both are the
 squared Hilbert–Schmidt norm of `√Q √J`, once read through the operator and once through its
-adjoint (`Discretization.tsum_norm_sq_adjoint`).
+adjoint (`ContinuousLinearMap.tsum_norm_sq_adjoint`).
 
 Countability of the index set of the basis enters here for the first time: the interchange of
 sum and integral is `MeasureTheory.integral_tsum_of_summable_integral_norm`, which needs a
@@ -37,7 +37,7 @@ countable index.
 open MeasureTheory
 open scoped InnerProductSpace ComplexOrder
 
-namespace Discretization
+namespace ContinuousLinearMap
 
 variable {κ Ω H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
   [MeasurableSpace Ω] {μ : Measure Ω}
@@ -62,10 +62,10 @@ theorem summable_norm_sq_sqrt_mul_sqrt (e : HilbertBasis κ ℂ H) {J Q : H →L
 /-- **The trace of `J Q`, symmetrized on the other side:**
 `Tr (J Q) = ∑ₖ Re ⟪√Q eₖ, J (√Q eₖ)⟫`.
 
-Both this and `Discretization.traceAlong_mul` express the trace as a squared
+Both this and `ContinuousLinearMap.traceAlong_mul` express the trace as a squared
 Hilbert–Schmidt norm of `√Q √J`, the two readings differing by an adjoint.  The averaging
 step produces this form; the potential argument uses the form of
-`Discretization.traceAlong_mul`. -/
+`ContinuousLinearMap.traceAlong_mul`. -/
 theorem traceAlong_mul_eq_tsum_sqrt (e : HilbertBasis κ ℂ H) {J Q : H →L[ℂ] H} (hJ : 0 ≤ J)
     (hQ : 0 ≤ Q) (hsum : Summable fun k => RCLike.re ⟪e k, J (e k)⟫_ℂ) :
     traceAlong e (J * Q) = ∑' k, RCLike.re ⟪CFC.sqrt Q (e k), J (CFC.sqrt Q (e k))⟫_ℂ := by
@@ -141,7 +141,7 @@ theorem integral_re_inner_apply [Countable κ] (e : HilbertBasis κ ℂ H) {J Q 
   -- pointwise Parseval, then interchange of sum and integral
   have hpoint : ∀ x, RCLike.re ⟪b x, Q (b x)⟫_ℂ = ∑' k, g k x := fun x => by
     rw [re_inner_apply_eq_norm_sq_sqrt hQ (b x),
-      ← (hasSum_norm_sq_inner e (CFC.sqrt Q (b x))).tsum_eq]
+      ← (e.hasSum_norm_sq_inner (CFC.sqrt Q (b x))).tsum_eq]
     refine tsum_congr fun k => ?_
     rw [hg]
     congr 1
@@ -152,4 +152,4 @@ theorem integral_re_inner_apply [Countable κ] (e : HilbertBasis κ ℂ H) {J Q 
     _ = ∑' k, RCLike.re ⟪CFC.sqrt Q (e k), J (CFC.sqrt Q (e k))⟫_ℂ := tsum_congr hgval
     _ = traceAlong e (J * Q) := (traceAlong_mul_eq_tsum_sqrt e hJ hQ hsum).symm
 
-end Discretization
+end ContinuousLinearMap

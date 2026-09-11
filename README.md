@@ -92,7 +92,7 @@ alike.
 | `Φ(A)⁻¹ • 1 ≼ A` | `Matrix.PosDef.inv_re_trace_smul_one_le` | ✅ |
 | `Ψ_J(B)⁻¹ • J ≼ B` | `Matrix.PosDef.inv_re_trace_mul_smul_le` | ✅ |
 | `A - δ • 1` stays positive definite for `δ < Φ(A)⁻¹` | `Matrix.PosDef.sub_smul_one` | ✅ |
-| `B + ζ • J` stays positive definite | `Matrix.PosDef.add_smul_posDef` | ✅ |
+| `B + ζ • J` stays positive definite | `Matrix.PosDef.add_smul` | ✅ |
 | The resolvent identity for the two shifts | `Matrix.inv_sub_smul_one_sub_inv`, `Matrix.inv_sub_inv_add_smul` | ✅ |
 | `Tr (P Q) ≥ 0`, and `> 0` for positive definite factors | `Matrix.PosSemidef.trace_mul_nonneg`, `Matrix.PosDef.re_trace_mul_pos` | ✅ |
 | `Tr (P Q)` is real for Hermitian `P`, `Q` | `Matrix.IsHermitian.ofReal_re_trace_mul` | ✅ |
@@ -110,38 +110,38 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 
 | Result | Lean name | Status |
 |---|---|---|
-| Parseval's identity along a Hilbert basis | `Discretization.hasSum_norm_sq_inner` | ✅ |
-| The trace along a basis | `Discretization.traceAlong` | ✅ |
-| `Re ⟪x, T x⟫ = ‖√T x‖²`, so `Tr T` is a squared Hilbert–Schmidt norm | `Discretization.re_inner_apply_eq_norm_sq_sqrt`, `.traceAlong_eq_tsum_norm_sq_sqrt` | ✅ |
-| `Tr T ≥ 0` for `T ≥ 0` | `Discretization.traceAlong_nonneg` | ✅ |
-| The Hilbert–Schmidt sum is invariant under adjoints | `Discretization.tsum_ofReal_norm_sq_adjoint`, `.summable_norm_sq_adjoint_iff`, `.tsum_norm_sq_adjoint` | ✅ |
-| **Cyclicity** `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫` | `Discretization.tsum_inner_apply_comm` | ✅ |
-| **The crude bound** `T ≼ Tr(T) • 1` | `Discretization.le_traceAlong_smul_one` | ✅ |
-| `Tr (P Q) = Tr (√P Q √P)`, and its sign | `Discretization.traceAlong_mul`, `.traceAlong_mul_nonneg`, `.traceAlong_mul_pos` | ✅ |
-| A positive operator with vanishing trace is zero | `Discretization.eq_zero_of_traceAlong_eq_zero` | ✅ |
-| `Tr (T u u*) = Re ⟪u, T u⟫` | `Discretization.traceAlong_mul_rankOne` | ✅ |
-| Linearity, and existence of `Tr (P Q)` | `Discretization.traceAlong_add`, `.traceAlong_smul`, `.summable_re_inner_apply_mul` | ✅ |
+| Parseval's identity along a Hilbert basis | `HilbertBasis.hasSum_norm_sq_inner` | ✅ |
+| The trace along a basis | `ContinuousLinearMap.traceAlong` | ✅ |
+| `Re ⟪x, T x⟫ = ‖√T x‖²`, so `Tr T` is a squared Hilbert–Schmidt norm | `ContinuousLinearMap.re_inner_apply_eq_norm_sq_sqrt`, `.traceAlong_eq_tsum_norm_sq_sqrt` | ✅ |
+| `Tr T ≥ 0` for `T ≥ 0` | `ContinuousLinearMap.traceAlong_nonneg` | ✅ |
+| The Hilbert–Schmidt sum is invariant under adjoints | `ContinuousLinearMap.tsum_ofReal_norm_sq_adjoint`, `.summable_norm_sq_adjoint_iff`, `.tsum_norm_sq_adjoint` | ✅ |
+| **Cyclicity** `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫` | `ContinuousLinearMap.tsum_inner_apply_comm` | ✅ |
+| **The crude bound** `T ≼ Tr(T) • 1` | `ContinuousLinearMap.le_traceAlong_smul_one` | ✅ |
+| `Tr (P Q) = Tr (√P Q √P)`, and its sign | `ContinuousLinearMap.traceAlong_mul`, `.traceAlong_mul_nonneg`, `.traceAlong_mul_pos` | ✅ |
+| A positive operator with vanishing trace is zero | `ContinuousLinearMap.eq_zero_of_traceAlong_eq_zero` | ✅ |
+| `Tr (T u u*) = Re ⟪u, T u⟫` | `ContinuousLinearMap.traceAlong_mul_rankOne` | ✅ |
+| Linearity, and existence of `Tr (P Q)` | `ContinuousLinearMap.traceAlong_add`, `.traceAlong_smul`, `.summable_re_inner_apply_mul` | ✅ |
 
 ### Rank-one updates of an operator (`BasicResults.OperatorShermanMorrison`)
 
 | Result | Lean name | Status |
 |---|---|---|
-| **Sherman–Morrison for operators** | `Discretization.inverse_add_smul_rankOne` | ✅ |
-| A rank-one update of a unit is a unit | `Discretization.isUnit_add_smul_rankOne` | ✅ |
-| The same with a real weight, added and subtracted | `Discretization.inverse_add_smul_rankOne_of_nonneg`, `.inverse_sub_smul_rankOne_of_nonneg` | ✅ |
-| Strict positivity under `A ± w u u*` | `Discretization.isStrictlyPositive_add_smul_rankOne`, `.isStrictlyPositive_sub_smul_rankOne` | ✅ |
-| `J S J ≽ 0` for positive `J`, `S` | `Discretization.nonneg_conj` | ✅ |
-| `B + ζ • J` stays strictly positive | `Discretization.isStrictlyPositive_add_smul` | ✅ |
-| The resolvent identity, and `(B + ζ • J)⁻¹ ≼ B⁻¹` | `Discretization.inverse_sub_inverse_add_smul`, `.inverse_add_smul_le` | ✅ |
+| **Sherman–Morrison for operators** | `ContinuousLinearMap.inverse_add_smul_rankOne` | ✅ |
+| A rank-one update of a unit is a unit | `ContinuousLinearMap.isUnit_add_smul_rankOne` | ✅ |
+| The same with a real weight, added and subtracted | `ContinuousLinearMap.inverse_add_smul_rankOne_of_nonneg`, `.inverse_sub_smul_rankOne_of_nonneg` | ✅ |
+| Strict positivity under `A ± w u u*` | `ContinuousLinearMap.isStrictlyPositive_add_smul_rankOne`, `.isStrictlyPositive_sub_smul_rankOne` | ✅ |
+| `J S J ≽ 0` for positive `J`, `S` | `ContinuousLinearMap.nonneg_conj` | ✅ |
+| `B + ζ • J` stays strictly positive | `ContinuousLinearMap.isStrictlyPositive_add_smul` | ✅ |
+| The resolvent identity, and `(B + ζ • J)⁻¹ ≼ B⁻¹` | `ContinuousLinearMap.inverse_sub_inverse_add_smul`, `.inverse_add_smul_le` | ✅ |
 
 ### Averages of operator quadratic forms (`BasicResults.OperatorQuadraticForm`)
 
 | Result | Lean name | Status |
 |---|---|---|
-| **`∫ Re ⟪b x, Q (b x)⟫ dμ = Tr (J Q)`** | `Discretization.integral_re_inner_apply` | ✅ |
-| `Tr (J Q) = ∑ₖ Re ⟪√Q eₖ, J (√Q eₖ)⟫` | `Discretization.traceAlong_mul_eq_tsum_sqrt` | ✅ |
-| `√Q √J` is Hilbert–Schmidt | `Discretization.summable_norm_sq_sqrt_mul_sqrt` | ✅ |
-| Integrability of the quadratic form | `Discretization.integrable_re_inner_apply` | ✅ |
+| **`∫ Re ⟪b x, Q (b x)⟫ dμ = Tr (J Q)`** | `ContinuousLinearMap.integral_re_inner_apply` | ✅ |
+| `Tr (J Q) = ∑ₖ Re ⟪√Q eₖ, J (√Q eₖ)⟫` | `ContinuousLinearMap.traceAlong_mul_eq_tsum_sqrt` | ✅ |
+| `√Q √J` is Hilbert–Schmidt | `ContinuousLinearMap.summable_norm_sq_sqrt_mul_sqrt` | ✅ |
+| Integrability of the quadratic form | `ContinuousLinearMap.integrable_re_inner_apply` | ✅ |
 
 ### The bridge to measure theory (`BasicResults.IntegralQuadraticForm`)
 
@@ -234,11 +234,11 @@ structure is not needed, and none of it is in Mathlib:
 * the whole of `BasicResults.OperatorTrace`: Mathlib has no trace of an operator, and the
   invariance of the Hilbert–Schmidt norm under adjoints, the cyclicity
   `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫` and the bound `T ≼ Tr(T) • 1` are general facts;
-* `Discretization.inverse_add_smul_rankOne`: Sherman–Morrison for operators, which Mathlib
+* `ContinuousLinearMap.inverse_add_smul_rankOne`: Sherman–Morrison for operators, which Mathlib
   has in no form;
-* `Discretization.integral_re_inner_apply`: the average of an operator quadratic form along
+* `ContinuousLinearMap.integral_re_inner_apply`: the average of an operator quadratic form along
   a square-integrable family is a trace against its Gram operator;
-* `Discretization.inverse_eq_of_mul_eq_one`: a two-sided inverse computes `Ring.inverse`,
+* `Ring.inverse_eq_of_mul_eq_one`: a two-sided inverse computes `Ring.inverse`,
   the converse of the two cancellation laws of Mathlib.
 
 ## Layout

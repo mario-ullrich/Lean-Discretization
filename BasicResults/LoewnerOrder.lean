@@ -25,7 +25,7 @@ potential-function argument uses over and over:
 * `Matrix.real_smul_eq_complex_smul`: real and complex scalars agree on complex matrices;
 * `Matrix.PosSemidef.mul_mul_same_of_isHermitian` and its positive definite counterpart:
   conjugating by a Hermitian matrix preserves positivity;
-* `Matrix.PosDef.of_le` and `Matrix.PosDef.add_smul_posDef`: anything above a positive
+* `Matrix.PosDef.of_le` and `Matrix.PosDef.add_smul`: anything above a positive
   definite matrix is positive definite, so in particular `B + ζ • J` is.
 
 Two sections follow.  `Resolvent` records how the inverse reacts to the two shifts
@@ -143,7 +143,7 @@ theorem PosDef.of_le {A B : Matrix n n 𝕜} (hA : A.PosDef) (h : A ≤ B) : B.P
 omit [Fintype n] in
 /-- Adding a positive multiple of a positive definite matrix keeps positive definiteness.
 This is the increment step `B ↦ B + ζ • J` of the construction. -/
-theorem PosDef.add_smul_posDef {B J : Matrix n n ℂ} (hB : B.PosDef) (hJ : J.PosDef) {ζ : ℝ}
+theorem PosDef.add_smul {B J : Matrix n n ℂ} (hB : B.PosDef) (hJ : J.PosDef) {ζ : ℝ}
     (hζ : 0 < ζ) : (B + ζ • J).PosDef :=
   hB.add (hJ.smul hζ)
 

@@ -31,6 +31,7 @@ invertibility, and the inverse is `Ring.inverse`.  How that inverse reacts to th
 -/
 
 open scoped InnerProductSpace ComplexOrder
+open ContinuousLinearMap
 
 namespace Discretization
 
@@ -127,7 +128,7 @@ theorem upperPotential_pos [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : H →L
     (hB : IsStrictlyPositive B) : 0 < upperPotential e J B := by
   obtain ⟨k⟩ := ‹Nonempty κ›
   have hJ0 : J ≠ 0 := fun h =>
-    basis_ne_zero e k (hJ.injective (e k) (by rw [h]; rfl))
+    e.ne_zero k (hJ.injective (e k) (by rw [h]; rfl))
   exact traceAlong_mul_pos e hJ.nonneg (hB.ringInverse).nonneg
     (hB.ringInverse).isUnit hJ.summableTrace hJ0
 
@@ -176,7 +177,7 @@ theorem upperPotential_add_smul_lt [Nonempty κ] (hJ : IsFiniteTracePos e J) {B 
     hJ.conj (hB.ringInverse)
   obtain ⟨k⟩ := ‹Nonempty κ›
   have hne : J * Ring.inverse B * J ≠ 0 := fun h =>
-    basis_ne_zero e k (hconj.injective (e k) (by rw [h]; rfl))
+    e.ne_zero k (hconj.injective (e k) (by rw [h]; rfl))
   have hpos : 0 < traceAlong e ((J * Ring.inverse B * J) * Ring.inverse (B + ζ • J)) :=
     traceAlong_mul_pos e hconj.nonneg (hM.ringInverse).nonneg
       (hM.ringInverse).isUnit hconj.summableTrace hne

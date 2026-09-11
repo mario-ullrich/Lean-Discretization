@@ -23,8 +23,8 @@ is invertible.  The formula itself is the same:
 and so is its proof, a direct verification that the right-hand side is a two-sided inverse.
 
 The formula is also recorded with a **real** weight, added
-(`Discretization.inverse_add_smul_rankOne_of_nonneg`) or subtracted
-(`Discretization.inverse_sub_smul_rankOne_of_nonneg`); then the quadratic form `⟪u, A⁻¹ u⟫`
+(`ContinuousLinearMap.inverse_add_smul_rankOne_of_nonneg`) or subtracted
+(`ContinuousLinearMap.inverse_sub_smul_rankOne_of_nonneg`); then the quadratic form `⟪u, A⁻¹ u⟫`
 in the denominator is real.  Both updates keep the operator positive and invertible, the
 second one as long as the Sherman–Morrison denominator stays positive.
 
@@ -41,9 +41,9 @@ in place of positive definiteness.
 open scoped InnerProductSpace ComplexOrder
 open InnerProductSpace
 
-namespace Discretization
-
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+
+namespace Ring
 
 /-- **A two-sided inverse computes `Ring.inverse`.**
 
@@ -53,6 +53,10 @@ unit with inverse `y`.  Mathlib has the two cancellation laws `Ring.mul_inverse_
 theorem inverse_eq_of_mul_eq_one {R : Type*} [Ring R] {x y : R} (h₁ : x * y = 1)
     (h₂ : y * x = 1) : Ring.inverse x = y := by
   simpa using Ring.inverse_unit (⟨x, y, h₁, h₂⟩ : Rˣ)
+
+end Ring
+
+namespace ContinuousLinearMap
 
 /-- The two products that identify the Sherman–Morrison candidate as a two-sided inverse.
 
@@ -128,7 +132,7 @@ theorem inverse_add_smul_rankOne {A : H →L[ℂ] H} (hA : IsUnit A) (hsa : IsSe
       = Ring.inverse A - (t / (1 + t * ⟪u, Ring.inverse A u⟫_ℂ))
           • rankOne ℂ (Ring.inverse A u) (Ring.inverse A u) :=
   let h := mul_eq_one_add_smul_rankOne hA hsa u t ht
-  inverse_eq_of_mul_eq_one h.1 h.2
+  Ring.inverse_eq_of_mul_eq_one h.1 h.2
 
 /-! ### Real weights, and positivity -/
 
@@ -293,4 +297,4 @@ theorem inverse_add_smul_le {J B : H →L[ℂ] H} (hJ : 0 ≤ J) (hB : IsStrictl
     simpa using add_le_add_left h B
   exact CStarAlgebra.ringInverse_le_ringInverse hle hB
 
-end Discretization
+end ContinuousLinearMap

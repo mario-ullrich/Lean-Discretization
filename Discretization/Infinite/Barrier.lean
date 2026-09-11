@@ -20,12 +20,13 @@ does not increase the upper potential.
 
 The real-number inequality behind it is shared with the finite-dimensional proof: it is
 `Discretization.upper_barrier_ineq`.  The operator-specific ingredients are the closed form
-of the potential after a rank-one downdate (`Discretization.inverse_sub_smul_rankOne_of_nonneg`)
+of the potential after a rank-one downdate (`ContinuousLinearMap.inverse_sub_smul_rankOne_of_nonneg`)
 and the positivity of the numerator, which rests on the injectivity of `J`.
 -/
 
 open scoped InnerProductSpace ComplexOrder
 open InnerProductSpace
+open ContinuousLinearMap
 
 namespace Discretization
 

@@ -19,11 +19,12 @@ final bound on the potential into the upper frame bound of the theorem.
 The proof conjugates by the square root `S = √B`.  The operator `S⁻¹ J S⁻¹` is positive, and
 its trace is again `Ψ_J(B)`: the square root of `B⁻¹` is `S⁻¹` (`CFC.sqrt_ringInverse`), so
 `Tr (J B⁻¹)` expands to `∑ₖ Re ⟪S⁻¹ eₖ, J (S⁻¹ eₖ)⟫`.  Hence the bound
-`Discretization.le_traceAlong_smul_one` gives `S⁻¹ J S⁻¹ ≼ Ψ_J(B) • 1`, and conjugating back
+`ContinuousLinearMap.le_traceAlong_smul_one` gives `S⁻¹ J S⁻¹ ≼ Ψ_J(B) • 1`, and conjugating back
 by `S` turns this into `J ≼ Ψ_J(B) • B`.
 -/
 
 open scoped InnerProductSpace ComplexOrder
+open ContinuousLinearMap
 
 namespace Discretization
 

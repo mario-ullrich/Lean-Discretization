@@ -148,7 +148,7 @@ theorem upperPotential_update_le [Nonempty κ] {J B : Matrix κ κ ℂ} (hJ : J.
     (hcond : upperVerifier J B ζ b ≤ 1 / w) :
     (B + ζ • J - w • vecMulVec b (star b)).PosDef ∧
       upperPotential J (B + ζ • J - w • vecMulVec b (star b)) ≤ upperPotential J B := by
-  have hM : (B + ζ • J).PosDef := hB.add_smul_posDef hJ hζ
+  have hM : (B + ζ • J).PosDef := hB.add_smul hJ hζ
   have hEpos : upperPotential J (B + ζ • J) < upperPotential J B :=
     upperPotential_add_smul_lt hJ hB hζ
   have hconjPD : ((B + ζ • J)⁻¹ * J * (B + ζ • J)⁻¹).PosDef :=
@@ -182,7 +182,7 @@ theorem upperPotential_update_le [Nonempty κ] {J B : Matrix κ κ ℂ} (hJ : J.
 `B` lowers the upper potential. -/
 theorem upperVerifier_nonneg [Nonempty κ] {J B : Matrix κ κ ℂ} (hJ : J.PosDef)
     (hB : B.PosDef) {ζ : ℝ} (hζ : 0 < ζ) (b : κ → ℂ) : 0 ≤ upperVerifier J B ζ b := by
-  have hM : (B + ζ • J).PosDef := hB.add_smul_posDef hJ hζ
+  have hM : (B + ζ • J).PosDef := hB.add_smul hJ hζ
   have hconj : ((B + ζ • J)⁻¹ * J * (B + ζ • J)⁻¹).PosSemidef :=
     hJ.posSemidef.mul_mul_same_of_isHermitian hM.inv.isHermitian
   have h1 : 0 ≤ RCLike.re (star b ⬝ᵥ (((B + ζ • J)⁻¹ * J * (B + ζ • J)⁻¹) *ᵥ b)) :=

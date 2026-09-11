@@ -36,6 +36,7 @@ quadratic form of a sum of rank-one matrices.
 open Matrix MeasureTheory
 open scoped InnerProductSpace ComplexOrder MatrixOrder
 open InnerProductSpace
+open ContinuousLinearMap
 
 namespace Discretization
 
