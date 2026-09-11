@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
 import BasicResults.OperatorQuadraticForm
+import BasicResults.SqrtConjugation
 import Discretization.Infinite.Potentials
 
 /-!
@@ -81,12 +82,7 @@ theorem inv_upperPotential_smul_le [Nonempty κ] (hJ : IsFiniteTracePos e J) {B 
     (hB : IsStrictlyPositive B) : (upperPotential e J B)⁻¹ • J ≤ B := by
   have hΨ : 0 < upperPotential e J B := upperPotential_pos hJ hB
   have hS0 : (0 : H →L[ℂ] H) ≤ CFC.sqrt B := CFC.sqrt_nonneg B
-  have hSS : CFC.sqrt B * CFC.sqrt B = B := CFC.sqrt_mul_sqrt_self B hB.nonneg
   have hSunit : IsUnit (CFC.sqrt B) := (CFC.isUnit_sqrt_iff B hB.nonneg).2 hB.isUnit
-  have hSinv : CFC.sqrt B * Ring.inverse (CFC.sqrt B) = 1 :=
-    Ring.mul_inverse_cancel _ hSunit
-  have hSinv' : Ring.inverse (CFC.sqrt B) * CFC.sqrt B = 1 :=
-    Ring.inverse_mul_cancel _ hSunit
   -- the conjugated operator is positive, with trace the potential
   have hPpos : (0 : H →L[ℂ] H)
       ≤ Ring.inverse (CFC.sqrt B) * J * Ring.inverse (CFC.sqrt B) :=
@@ -95,22 +91,8 @@ theorem inv_upperPotential_smul_le [Nonempty κ] (hJ : IsFiniteTracePos e J) {B 
       ≤ (upperPotential e J B) • (1 : H →L[ℂ] H) := by
     have h := le_traceAlong_smul_one e hPpos (summable_trace_conj_inv_sqrt hJ B)
     rwa [traceAlong_conj_inv_sqrt hJ hB] at h
-  -- conjugating back by `√B`
-  have hconj := conjugate_le_conjugate_of_nonneg hP hS0
-  have hlhs : CFC.sqrt B * (Ring.inverse (CFC.sqrt B) * J * Ring.inverse (CFC.sqrt B))
-      * CFC.sqrt B = J := by
-    calc CFC.sqrt B * (Ring.inverse (CFC.sqrt B) * J * Ring.inverse (CFC.sqrt B)) * CFC.sqrt B
-        = (CFC.sqrt B * Ring.inverse (CFC.sqrt B)) * J
-            * (Ring.inverse (CFC.sqrt B) * CFC.sqrt B) := by
-          simp only [mul_assoc]
-      _ = J := by rw [hSinv, hSinv', one_mul, mul_one]
-  have hrhs : CFC.sqrt B * ((upperPotential e J B) • (1 : H →L[ℂ] H)) * CFC.sqrt B
-      = (upperPotential e J B) • B := by
-    rw [mul_smul_comm, smul_mul_assoc, mul_one, hSS]
-  rw [hlhs, hrhs] at hconj
-  -- and dividing by the potential
-  have h := smul_le_smul_of_nonneg_left hconj (inv_nonneg.2 hΨ.le)
-  rwa [smul_smul, inv_mul_cancel₀ hΨ.ne', one_smul] at h
+  -- conjugating back by `√B` and dividing by the potential
+  exact CStarAlgebra.inv_smul_le_of_conj_inv_sqrt_le hB.nonneg hB.isUnit hΨ hP
 
 end Infinite
 

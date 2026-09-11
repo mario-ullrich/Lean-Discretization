@@ -3,6 +3,7 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
+import BasicResults.SqrtConjugation
 import BasicResults.TraceInequalities
 
 /-!
@@ -58,9 +59,6 @@ theorem PosDef.inv_re_trace_mul_smul_le [Nonempty n] {B J : Matrix n n ℂ} (hB 
   set S := CFC.sqrt B with hSdef
   have hS0 : (0 : Matrix n n ℂ) ≤ S := CFC.sqrt_nonneg B
   have hSS : S * S = B := CFC.sqrt_mul_sqrt_self B hB.posSemidef.nonneg
-  have hdet : IsUnit S.det := hB.isUnit_det_sqrt
-  have hSinv : S * S⁻¹ = 1 := mul_nonsing_inv _ hdet
-  have hSinv' : S⁻¹ * S = 1 := nonsing_inv_mul _ hdet
   have hBinv : B⁻¹ = S⁻¹ * S⁻¹ := by rw [← hSS, mul_inv_rev]
   -- the conjugated matrix `S⁻¹ J S⁻¹` is positive semidefinite with trace `Ψ(B)`
   have hSpsd : S.PosSemidef := Matrix.nonneg_iff_posSemidef.1 hS0
@@ -74,17 +72,8 @@ theorem PosDef.inv_re_trace_mul_smul_le [Nonempty n] {B J : Matrix n n ℂ} (hB 
     rw [RCLike.real_smul_eq_coe_smul (K := ℂ)]
     have h := hPpsd.le_trace_smul_one
     rwa [htrace, ← hreal] at h
-  -- conjugating back by `S` turns this into `J ≤ Ψ(B) • B`
-  have hconj := conjugate_le_conjugate_of_nonneg hP hS0
-  have hlhs : S * (S⁻¹ * J * S⁻¹) * S = J := by
-    calc S * (S⁻¹ * J * S⁻¹) * S = S * S⁻¹ * J * (S⁻¹ * S) := by simp [mul_assoc]
-      _ = J := by rw [hSinv, hSinv', one_mul, mul_one]
-  have hrhs : S * ((RCLike.re (J * B⁻¹).trace) • (1 : Matrix n n ℂ)) * S
-      = (RCLike.re (J * B⁻¹).trace) • B := by
-    rw [mul_smul_comm, smul_mul_assoc, mul_one, hSS]
-  rw [hlhs, hrhs] at hconj
-  -- and dividing by the (positive) potential gives the claim
-  have h := smul_le_smul_of_nonneg_left hconj (inv_nonneg.2 hΨpos.le)
-  rwa [smul_smul, inv_mul_cancel₀ hΨpos.ne', one_smul] at h
+  -- conjugating back by `S` and dividing by the potential
+  refine CStarAlgebra.inv_smul_le_of_conj_inv_sqrt_le hB.posSemidef.nonneg hB.isUnit hΨpos ?_
+  rwa [← Matrix.nonsing_inv_eq_ringInverse, ← hSdef]
 
 end Matrix

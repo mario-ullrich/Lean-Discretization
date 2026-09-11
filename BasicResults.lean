@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
 import BasicResults.LoewnerOrder
+import BasicResults.SqrtConjugation
 import BasicResults.TraceInequalities
 import BasicResults.PotentialBounds
 import BasicResults.ShermanMorrison
@@ -35,6 +36,9 @@ In Lean this order is switched on by the command `open scoped MatrixOrder`, and 
   matrices is nonnegative (positive for positive definite ones), the trace of a product of
   Hermitian matrices is real, and Cauchy–Schwarz for the semi-inner product
   `⟪P, Q⟫ = Tr (Q * Y * Pᴴ)`.
+* `BasicResults.SqrtConjugation`: a bound on the conjugate of `X` by the inverse square root
+  of `B` is a bound on `X` itself, in any C⋆-algebra.  This is the step that turns a bound on
+  a potential into a bound on the matrix, or the operator, that it measures.
 * `BasicResults.PotentialBounds`: a positive definite `B` dominates `Ψ(B)⁻¹ • J`, where
   `Ψ(B) = Re Tr (J B⁻¹)`.  This is the step that makes the upper frame bound depend on the
   effective dimension only.

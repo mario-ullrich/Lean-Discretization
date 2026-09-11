@@ -94,6 +94,7 @@ alike.
 | Conjugating by a Hermitian matrix preserves positivity | `Matrix.PosSemidef.mul_mul_same_of_isHermitian`, `Matrix.PosDef.mul_mul_same_of_isHermitian` | ✅ |
 | `A ≼ (Tr A) • 1` for `A ≽ 0` | `Matrix.PosSemidef.le_trace_smul_one` | ✅ |
 | The inverse is antitone | `Matrix.PosDef.inv_le_inv_of_le`, `Matrix.PosDef.smul_one_le_of_inv_le` | ✅ |
+| A bound on the conjugate by `B^{-1/2}` is a bound on the element | `CStarAlgebra.inv_smul_le_of_conj_inv_sqrt_le` | ✅ |
 | `Φ(A)⁻¹ • 1 ≼ A` | `Matrix.PosDef.inv_re_trace_smul_one_le` | ✅ |
 | `Ψ_J(B)⁻¹ • J ≼ B` | `Matrix.PosDef.inv_re_trace_mul_smul_le` | ✅ |
 | `A - δ • 1` stays positive definite for `δ < Φ(A)⁻¹` | `Matrix.PosDef.sub_smul_one` | ✅ |
@@ -235,6 +236,8 @@ structure is not needed, and none of it is in Mathlib:
 * `Matrix.PosSemidef.mul_mul_same_of_isHermitian` and `Matrix.PosDef.mul_mul_same_of_isHermitian`:
   conjugation by a Hermitian matrix, the form of
   `Matrix.PosSemidef.conjTranspose_mul_mul_same` that arises in practice;
+* `CStarAlgebra.inv_smul_le_of_conj_inv_sqrt_le`: a bound on the conjugate of `X` by the
+  inverse square root of `B` is a bound on `X` itself;
 * `Matrix.PosSemidef.norm_trace_mul_sq_le`: Cauchy–Schwarz for the trace semi-inner product
   (Mathlib's own construction of that inner product is `private`);
 * `Matrix.IsHermitian.ofReal_re_trace` and `RCLike.ofReal_re_of_nonneg`: the trace of a
@@ -259,6 +262,7 @@ BasicResults/
   OperatorTrace.lean                     ← the trace of an operator along a Hilbert basis
   OperatorShermanMorrison.lean           ← rank-one updates of an operator
   OperatorQuadraticForm.lean             ← averages of quadratic forms as traces
+  SqrtConjugation.lean                   ← conjugating a bound by the square root
   LoewnerOrder.lean                      ← comparisons with multiples of the identity
   TraceInequalities.lean                 ← traces of products, Cauchy–Schwarz
   PotentialBounds.lean                   ← Ψ(B)⁻¹ • J ≼ B, via the square root of B
