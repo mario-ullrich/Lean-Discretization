@@ -24,7 +24,8 @@ crude bound `b b* ≼ ‖b‖² • 1` (`Matrix.vecMulVec_le_norm_sq_smul_one`) 
 the last step because `M ≤ 1 + 1/n` forces `s ≤ 1/n` and hence `M = 1 + n s² ≤ 1 + s`.
 
 The lower half of the argument is that of the main theorem; only the induction is one-sided
-(`Discretization.exists_points_weights_of_small_dim`).  The result is
+(`Discretization.exists_points_weights_of_small_dim`).  The read-off is
+`Discretization.sum_smul_vecMulVec_le_smul_one`, and the result is
 `Discretization.bss_generalized_of_small_dim`.
 -/
 
@@ -112,9 +113,39 @@ theorem exists_points_weights_of_small_dim [Nonempty ι] [Nonempty κ] {A₀ : M
           _ ≤ lowerVerifier (lowerState A₀ δ a x w) δ (a y) := hy.le
       · intro j; simpa using hwk j
 
-/-! ### The theorem for a small effective dimension -/
+/-! ### The crude upper frame bound -/
 
 variable [DecidableEq κ]
+
+omit [MeasurableSpace Ω] in
+/-- **The upper frame bound from a bound on the weights.**  If every weight satisfies
+`wᵢ ‖b(xᵢ)‖² ≤ T / n`, then the `n` rank-one matrices add up to at most `T • 1`.
+
+Each summand is below `wᵢ ‖b(xᵢ)‖² • 1` by `Matrix.vecMulVec_le_norm_sq_smul_one`, and the
+`n` bounds add up to `T`. -/
+theorem sum_smul_vecMulVec_le_smul_one {T : ℝ} {n : ℕ} (hn0 : (0 : ℝ) < n) {b : Ω → κ → ℂ}
+    (x : Fin n → Ω) (w : Fin n → ℝ) (hw0 : ∀ i, 0 ≤ w i)
+    (hw : ∀ i, w i * (∑ p, ‖b (x i) p‖ ^ 2) ≤ T / n) :
+    ∑ i, w i • vecMulVec (b (x i)) (star (b (x i))) ≤ T • (1 : Matrix κ κ ℂ) := by
+  have hstep : ∀ i : Fin n, w i • vecMulVec (b (x i)) (star (b (x i)))
+      ≤ (w i * (∑ p, ‖b (x i) p‖ ^ 2)) • (1 : Matrix κ κ ℂ) := by
+    intro i
+    have h1 := smul_le_smul_of_nonneg_left
+      (Matrix.vecMulVec_le_norm_sq_smul_one (b (x i))) (hw0 i)
+    rwa [smul_smul] at h1
+  have hsum : ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
+      ≤ (∑ i, w i * (∑ p, ‖b (x i) p‖ ^ 2)) • (1 : Matrix κ κ ℂ) := by
+    rw [Finset.sum_smul]
+    exact Finset.sum_le_sum fun i _ => hstep i
+  have hTsum : ∑ i : Fin n, w i * (∑ p, ‖b (x i) p‖ ^ 2) ≤ T := by
+    calc ∑ i : Fin n, w i * (∑ p, ‖b (x i) p‖ ^ 2) ≤ ∑ _i : Fin n, T / n :=
+          Finset.sum_le_sum fun i _ => hw i
+      _ = T := by
+          simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+          field_simp
+  exact hsum.trans (smul_le_smul_of_nonneg_right hTsum Matrix.PosSemidef.one.nonneg)
+
+/-! ### The theorem for a small effective dimension -/
 
 /-- **Generalized sparsification theorem for a small effective dimension.**
 
@@ -180,50 +211,14 @@ theorem bss_generalized_of_small_dim [Nonempty ι] [Nonempty κ]
           = w i * (∑ p, ‖b (x i) p‖ ^ 2) := by
         field_simp
       rwa [h4, mul_one] at h3
-    have hstep : ∀ i : Fin n, w i • vecMulVec (b (x i)) (star (b (x i)))
-        ≤ (w i * (∑ p, ‖b (x i) p‖ ^ 2)) • (1 : Matrix κ κ ℂ) := by
-      intro i
-      have h1 := smul_le_smul_of_nonneg_left (Matrix.vecMulVec_le_norm_sq_smul_one
-        (b (x i))) (hwpos i).le
-      rwa [smul_smul] at h1
-    have hsum : ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
-        ≤ (∑ i, w i * (∑ p, ‖b (x i) p‖ ^ 2)) • (1 : Matrix κ κ ℂ) := by
-      rw [Finset.sum_smul]
-      exact Finset.sum_le_sum fun i _ => hstep i
-    have hTsum : ∑ i : Fin n, w i * (∑ p, ‖b (x i) p‖ ^ 2) ≤ T := by
-      calc ∑ i : Fin n, w i * (∑ p, ‖b (x i) p‖ ^ 2) ≤ ∑ _i : Fin n, T / n :=
-            Finset.sum_le_sum fun i _ => hweight i
-        _ = T := by
-            simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-            field_simp
-    -- and `T ≤ (1 + s)² Λ`
-    set s : ℝ := Real.sqrt ((T / Λ - 1) / n) with hsdef
-    have hs0 : 0 ≤ s := Real.sqrt_nonneg _
-    have hMs : T / Λ ≤ (1 + s) ^ 2 := by
-      by_cases hM1 : T / Λ ≤ 1
-      · nlinarith [hs0]
-      · replace hM1 := not_le.mp hM1
-        have harg : (0 : ℝ) ≤ (T / Λ - 1) / n := by
-          apply div_nonneg (by linarith) hn0.le
-        have hs2 : s ^ 2 = (T / Λ - 1) / n := sq_sqrt_div hn0 (by linarith)
-        have h1 : (n : ℝ) * s ^ 2 = T / Λ - 1 := by rw [hs2]; field_simp
-        have h2 : s ^ 2 ≤ (1 / (n : ℝ)) ^ 2 := by
-          rw [hs2]
-          have h3 : T / Λ - 1 ≤ 1 / (n : ℝ) := by
-            rw [hTdef]; linarith [hMlt]
-          calc (T / Λ - 1) / n ≤ (1 / (n : ℝ)) / n := by gcongr
-            _ = (1 / (n : ℝ)) ^ 2 := by field_simp
-        have h4 : s ≤ 1 / n := by nlinarith [hs0, h2, hn0]
-        have h5 : (n : ℝ) * s ≤ 1 := by
-          have h6 := mul_le_mul_of_nonneg_left h4 hn0.le
-          rwa [mul_one_div, div_self hn0.ne'] at h6
-        nlinarith [h1, h5, hs0]
-    have hTΛ : T ≤ (1 + s) ^ 2 * Λ := by
+    have hTΛ : T ≤ (1 + Real.sqrt ((T / Λ - 1) / n)) ^ 2 * Λ := by
+      have hMs := le_sq_one_add_sqrt_div hn0 hMlt
       rw [div_le_iff₀ hΛ] at hMs
       linarith
     calc ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
-        ≤ (∑ i, w i * (∑ p, ‖b (x i) p‖ ^ 2)) • (1 : Matrix κ κ ℂ) := hsum
-      _ ≤ ((1 + s) ^ 2 * Λ) • (1 : Matrix κ κ ℂ) :=
-          smul_le_smul_of_nonneg_right (le_trans hTsum hTΛ) Matrix.PosSemidef.one.nonneg
+        ≤ T • (1 : Matrix κ κ ℂ) :=
+          sum_smul_vecMulVec_le_smul_one hn0 x w (fun i => (hwpos i).le) hweight
+      _ ≤ ((1 + Real.sqrt ((T / Λ - 1) / n)) ^ 2 * Λ) • (1 : Matrix κ κ ℂ) :=
+          smul_le_smul_of_nonneg_right hTΛ Matrix.PosSemidef.one.nonneg
 
 end Discretization

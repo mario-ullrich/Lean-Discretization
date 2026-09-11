@@ -134,4 +134,42 @@ theorem exists_lt_of_integral_lt {f g : D → ℝ} (hf : Integrable f μ) (hg : 
   simp only [not_exists, not_lt] at hcon
   exact absurd h (not_lt.2 (integral_mono hf hg fun x => hcon x))
 
+/-- **One good point suffices when the two averages agree.**  For nonnegative `f` and `g`
+whose averages satisfy `∫ g ≤ ∫ f`, there is a point with `g x ≤ f x` at which `f` is
+moreover positive, provided the average of `f` is positive.
+
+The positivity of `f x` is what the weight of the new point is built from, and the strict
+inequality of `Discretization.exists_lt_of_integral_lt` is no longer available when the two
+averages are equal.  The proof is the observation that `f ≤ g` everywhere would force
+`f = g` almost everywhere, and then `f` to vanish almost everywhere. -/
+theorem exists_le_of_integral_le {f g : D → ℝ} (hf : Integrable f μ) (hg : Integrable g μ)
+    (hf0 : ∀ x, 0 ≤ f x) (hg0 : ∀ x, 0 ≤ g x) (hpos : 0 < ∫ x, f x ∂μ)
+    (h : ∫ x, g x ∂μ ≤ ∫ x, f x ∂μ) : ∃ x, g x ≤ f x ∧ 0 < f x := by
+  by_contra hcon
+  simp only [not_exists, not_and, not_lt] at hcon
+  -- at every point either `f` beats nothing, or it vanishes; in both cases `f x ≤ g x`
+  have hle : ∀ x, f x ≤ g x := fun x => by
+    by_cases hx : g x ≤ f x
+    · have h0 := hcon x hx
+      have h1 := hf0 x
+      have h2 := hg0 x
+      linarith
+    · exact (not_le.mp hx).le
+  -- so the two averages are equal, and `g - f` is a nonnegative function of average zero
+  have hint : ∫ x, (g x - f x) ∂μ = 0 := by
+    rw [integral_sub hg hf]
+    have := integral_mono hf hg hle
+    linarith
+  have hae : (fun x => g x - f x) =ᵐ[μ] 0 :=
+    (integral_eq_zero_iff_of_nonneg (fun x => sub_nonneg.2 (hle x)) (hg.sub hf)).1 hint
+  -- where `f` and `g` agree, `f` vanishes, so the average of `f` is zero
+  have hf_ae : ∀ᵐ x ∂μ, f x = 0 := by
+    filter_upwards [hae] with x hx
+    have hgf : g x ≤ f x := (sub_eq_zero.1 hx).le
+    have := hcon x hgf
+    have := hf0 x
+    linarith
+  rw [integral_eq_zero_of_ae hf_ae] at hpos
+  exact absurd hpos (lt_irrefl 0)
+
 end Discretization

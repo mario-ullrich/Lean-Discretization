@@ -13,6 +13,7 @@ import Discretization.MainTheorem
 import Discretization.GeneralGram
 import Discretization.CardOne
 import Discretization.SmallEffectiveDim
+import Discretization.BothEdgeCases
 import Discretization.NormDiscretization
 import Discretization.Infinite.Potentials
 import Discretization.Infinite.Barrier
@@ -62,6 +63,9 @@ potential gets worse.
 * `Discretization.SmallEffectiveDim`: the edge case of an effective dimension below
   `1 + 1/n`, where the upper verifier becomes a constant,
   `Discretization.bss_generalized_of_small_dim`.
+* `Discretization.BothEdgeCases`: the two edge cases at the same time, where both verifiers
+  are constants and a single point suffices,
+  `Discretization.bss_generalized_of_unique_of_small_dim`.
 * `Discretization.Infinite.Potentials`: the upper potential `Ψ_J(B) = Tr (J B⁻¹)` for a
   positive operator `J` of finite trace, where the second family is indexed by a countable
   set.

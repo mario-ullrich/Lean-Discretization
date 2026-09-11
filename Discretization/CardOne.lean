@@ -22,7 +22,8 @@ bound an identity:
 `∑ wᵢ |a(xᵢ)|² = ∑ 1/n = 1 = (1 - √((m-1)/n))²`.
 
 The upper half of the argument is that of the main theorem; only the induction is one-sided
-(`Discretization.exists_points_weights_of_unique`).  The result is
+(`Discretization.exists_points_weights_of_unique`).  That the weights make the lower bound an
+identity is `Discretization.sum_smul_vecMulVec_eq_one`, and the result is
 `Discretization.bss_generalized_of_unique`.
 
 Here `card ι = 1` is expressed by the typeclass assumption `[Unique ι]`, and `default : ι` is
@@ -45,6 +46,37 @@ theorem integral_norm_sq_eq_one [Unique ι] {a : Ω → ι → ℂ}
     ∫ x, ‖a x default‖ ^ 2 ∂μ = 1 := by
   rw [integral_norm_sq ha default, hgrama, Matrix.one_apply_eq]
   simp
+
+omit [MeasurableSpace Ω] in
+/-- **The lower frame bound of a one-element family is an identity.**  If every weight is
+the reciprocal of the constant lower verifier, `wᵢ · n |a(xᵢ)|² = 1`, then the `n` rank-one
+matrices add up to exactly the identity, each of them contributing `1/n`. -/
+theorem sum_smul_vecMulVec_eq_one [Unique ι] {n : ℕ} (hn0 : (0 : ℝ) < n) {a : Ω → ι → ℂ}
+    (x : Fin n → Ω) (w : Fin n → ℝ)
+    (hw : ∀ i, w i * ((n : ℝ) * ‖a (x i) default‖ ^ 2) = 1) :
+    ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) = (1 : Matrix ι ι ℂ) := by
+  have h1 : ∀ i : Fin n, (w i • vecMulVec (a (x i)) (star (a (x i)))) default default
+      = ((1 / (n : ℝ) : ℝ) : ℂ) := by
+    intro i
+    have h2 : w i * ‖a (x i) default‖ ^ 2 = 1 / n := by
+      rw [eq_div_iff hn0.ne']
+      calc w i * ‖a (x i) default‖ ^ 2 * n
+          = w i * ((n : ℝ) * ‖a (x i) default‖ ^ 2) := by ring
+        _ = 1 := hw i
+    calc (w i • vecMulVec (a (x i)) (star (a (x i)))) default default
+        = ((w i * ‖a (x i) default‖ ^ 2 : ℝ) : ℂ) := by
+          rw [Matrix.smul_apply, Matrix.vecMulVec_apply, Pi.star_apply, RCLike.star_def,
+            RCLike.mul_conj, Complex.real_smul]
+          norm_cast
+          exact (Complex.ofReal_mul _ _).symm
+      _ = ((1 / (n : ℝ) : ℝ) : ℂ) := by rw [h2]
+  have hnC : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.2 (by exact_mod_cast hn0.ne')
+  ext p q
+  rw [Subsingleton.elim p default, Subsingleton.elim q default, Matrix.one_apply_eq,
+    Matrix.sum_apply, Finset.sum_congr rfl fun i _ => h1 i]
+  simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+  push_cast
+  field_simp
 
 /-! ### The one-sided construction -/
 
@@ -146,29 +178,7 @@ theorem bss_generalized_of_unique [Unique ι] [Nonempty κ]
     exists_points_weights_of_unique hJ hB₀ hζ0 ha hb hgrama hgramb hgap n
   refine ⟨x, w, hwpos, ?_, ?_⟩
   · -- the lower frame bound is an identity: each point contributes exactly `1/n`
-    have hmat : ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) = (1 : Matrix ι ι ℂ) := by
-      have h1 : ∀ i : Fin n, (w i • vecMulVec (a (x i)) (star (a (x i)))) default default
-          = ((1 / (n : ℝ) : ℝ) : ℂ) := by
-        intro i
-        have h2 : w i * ‖a (x i) default‖ ^ 2 = 1 / n := by
-          rw [eq_div_iff hn0.ne']
-          calc w i * ‖a (x i) default‖ ^ 2 * n
-              = w i * ((n : ℝ) * ‖a (x i) default‖ ^ 2) := by ring
-            _ = 1 := hwk i
-        calc (w i • vecMulVec (a (x i)) (star (a (x i)))) default default
-            = ((w i * ‖a (x i) default‖ ^ 2 : ℝ) : ℂ) := by
-              rw [Matrix.smul_apply, Matrix.vecMulVec_apply, Pi.star_apply, RCLike.star_def,
-                RCLike.mul_conj, Complex.real_smul]
-              norm_cast
-              exact (Complex.ofReal_mul _ _).symm
-          _ = ((1 / (n : ℝ) : ℝ) : ℂ) := by rw [h2]
-      ext p q
-      rw [Subsingleton.elim p default, Subsingleton.elim q default, Matrix.one_apply_eq,
-        Matrix.sum_apply, Finset.sum_congr rfl fun i _ => h1 i]
-      simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-      push_cast
-      field_simp
-    rw [hmat]
+    rw [sum_smul_vecMulVec_eq_one hn0 x w hwk]
   · -- the upper frame bound, exactly as in the main theorem
     exact upper_frame_bound hJ hΛ hJΛ hn0 hs0 hζdef hd₀def hT hBn (hΨ₀ ▸ hΨn)
 

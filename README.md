@@ -150,13 +150,15 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | The Gram matrix of a square-integrable family | `Discretization.gram` | ✅ |
 | `∫ a(x)* Q a(x) dμ = Tr (Q · gram a μ)` | `Discretization.integral_quadForm`, `.integral_re_quadForm` | ✅ |
 | Integrability of the quadratic form | `Discretization.integrable_quadForm` | ✅ |
-| A point where `g ≤ f` exists if `∫ g < ∫ f` | `Discretization.exists_lt_of_integral_lt` | ✅ |
+| A point where `g < f` exists if `∫ g < ∫ f` | `Discretization.exists_lt_of_integral_lt` | ✅ |
+| A point where `g ≤ f` and `f > 0` exists if `∫ g ≤ ∫ f` | `Discretization.exists_le_of_integral_le` | ✅ |
 
 ### The construction (`Discretization`)
 
 | Result | Lean name | Status |
 |---|---|---|
 | The arithmetic of the parameters `r`, `s`, `δ`, `ζ` | `Discretization.one_div_le_sqrt_div`, `.eq_mul_sq_sqrt_div_add_one`, `.one_div_add_div_eq`, `.lt_inv_of_le_one_div_sub` | ✅ |
+| A small effective dimension is below `(1+s)²` | `Discretization.le_sq_one_add_sqrt_div` | ✅ |
 | The two potentials and their positivity | `Discretization.lowerPotential`, `.upperPotential` | ✅ |
 | Effect of the shifts on the potentials | `Discretization.lowerPotential_sub_eq`, `.upperPotential_sub_eq` | ✅ |
 | The potential of a rank-one update, in closed form | `Discretization.lowerPotential_add_smul_vecMulVec`, `.upperPotential_sub_smul_vecMulVec` | ✅ |
@@ -175,6 +177,8 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 | **The discretization inequality for the `L₂`-norm** | `Discretization.exists_discretization` | ✅ |
 | Edge case `m = 1`: constant lower verifier | `Discretization.bss_generalized_of_unique` | ✅ |
 | Edge case `M ≤ 1 + 1/n`: constant upper verifier | `Discretization.bss_generalized_of_small_dim` | ✅ |
+| **Both edge cases at once** | `Discretization.bss_generalized_of_unique_of_small_dim` | ✅ |
+| The two read-offs the edge cases use | `Discretization.sum_smul_vecMulVec_eq_one`, `.sum_smul_vecMulVec_le_smul_one` | ✅ |
 | A rank-one matrix is below `‖u‖² • 1` | `Matrix.vecMulVec_le_norm_sq_smul_one` | ✅ |
 
 ### A countably infinite second family (`Discretization.Infinite`)
@@ -199,8 +203,6 @@ is defined along a fixed Hilbert basis `e` as `Tr T = ∑ₖ Re ⟪eₖ, T eₖ�
 
 ## What is left to do
 
-* **The two edge cases together**, `m = 1` and `M ≤ 1 + 1/n` at the same time; each is
-  proved only under the assumption that the other side is regular.
 * **The application to a reproducing kernel Hilbert space.**  The theorem for a countable
   second family is proved; what is not formalised is the construction of the Gram operator
   from a kernel, that is the singular value decomposition of the embedding into `L₂` which
@@ -266,6 +268,7 @@ Discretization/
   NormDiscretization.lean                ← the discretization inequality for the L₂-norm
   CardOne.lean                           ← the edge case of a one-element first family
   SmallEffectiveDim.lean                 ← the edge case of a small effective dimension
+  BothEdgeCases.lean                     ← the two edge cases at the same time
   Infinite/
     Potentials.lean                      ← the upper potential of an operator
     Barrier.lean                         ← the upper verifier and the barrier lemma

@@ -30,7 +30,9 @@ the arithmetic of these four numbers, with no matrices in sight:
   which is the hypothesis `δ < Φ(A)⁻¹` of the barrier lemma;
 * `Discretization.nonneg_mul_sub_inv_div` and `Discretization.frame_constant_eq`: the
   coefficient of `J` in the upper read-off is nonnegative, and the constant it produces is
-  `(1+s)² Λ`.
+  `(1+s)² Λ`;
+* `Discretization.le_sq_one_add_sqrt_div`: an effective dimension below `1 + 1/n` is itself
+  below `(1+s)²`, which is what the edge case of a small effective dimension needs.
 
 Everything here is used twice, once for a finite second family and once for a countable one.
 
@@ -121,6 +123,32 @@ theorem frame_constant_eq {n s ζ d₀ T Λ : ℝ} (hn0 : 0 < n) (hs0 : 1 / n �
   rw [hd₀, hT, hζ, inv_div]
   field_simp
   ring
+
+/-- **A small effective dimension is below the upper frame constant:** `M ≤ (1 + s)²` for
+`s = √((M-1)/n)` and `M ≤ 1 + 1/n`.
+
+This is what lets the edge case of a small effective dimension read the frame bound of the
+theorem off the crude estimate alone.  For `M ≤ 1` it holds because `s` is nonnegative.
+Otherwise `M ≤ 1 + 1/n` forces `s ≤ 1/n`, hence `n s ≤ 1` and `M = 1 + n s² ≤ 1 + s`. -/
+theorem le_sq_one_add_sqrt_div {M n : ℝ} (hn0 : 0 < n) (hM : M ≤ 1 + 1 / n) :
+    M ≤ (1 + Real.sqrt ((M - 1) / n)) ^ 2 := by
+  have hs0 : 0 ≤ Real.sqrt ((M - 1) / n) := Real.sqrt_nonneg _
+  by_cases hM1 : M ≤ 1
+  · nlinarith [hs0]
+  · replace hM1 := not_le.mp hM1
+    set s : ℝ := Real.sqrt ((M - 1) / n) with hsdef
+    have hs2 : s ^ 2 = (M - 1) / n := sq_sqrt_div hn0 (by linarith)
+    have h1 : n * s ^ 2 = M - 1 := by rw [hs2]; field_simp
+    have h2 : s ^ 2 ≤ (1 / n) ^ 2 := by
+      rw [hs2]
+      have h3 : M - 1 ≤ 1 / n := by linarith
+      calc (M - 1) / n ≤ (1 / n) / n := by gcongr
+        _ = (1 / n) ^ 2 := by field_simp
+    have h4 : s ≤ 1 / n := by nlinarith [hs0, h2, hn0]
+    have h5 : n * s ≤ 1 := by
+      have h6 := mul_le_mul_of_nonneg_left h4 hn0.le
+      rwa [mul_one_div, div_self hn0.ne'] at h6
+    nlinarith [h1, h5, hs0]
 
 /-- **An open gap keeps the shift admissible.**  If `c ≤ 1/δ - Φ` for some positive `c`, then
 `δ < Φ⁻¹`.  That is the hypothesis under which `A - δ • 1` stays positive definite.
