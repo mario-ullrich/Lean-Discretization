@@ -1,0 +1,75 @@
+/* Show the per-result buttons -- permalink, jump-to-proof, "Uses", Lean
+   declarations -- at all times. The theme reveals them only while the pointer
+   rests on the heading (theme-white.css: div.thm_header_hidden_extras is
+   display:none, undone by div[class$=_thmheading]:hover), which leaves them
+   unreachable on a touch screen. This file is the last stylesheet the pages
+   load, so the rule wins. */
+div.thm_header_hidden_extras {
+	display: inline-block;
+}
+
+/* Vertical-line markers for theorem statements and proofs. */
+
+div.theorem_thmcontent {
+	border-left: .15rem solid black;
+}
+
+div.proposition_thmcontent {
+	border-left: .15rem solid black;
+}
+
+div.lemma_thmcontent {
+	border-left: .1rem solid black;
+}
+
+div.corollary_thmcontent {
+	border-left: .1rem solid black;
+}
+
+div.proof_content {
+	border-left: .08rem solid grey;
+}
+
+/* Smaller dependency-graph legend, with tighter colon spacing and a little
+   more separation between entries. */
+#Legend dl.legend {
+	line-height: 1.1;
+}
+
+#Legend dl.legend dt,
+#Legend dl.legend dd {
+	font-size: 0.72rem;
+}
+
+#Legend dl.legend dt {
+	margin-top: 0.35rem;
+}
+
+/* Less space after the ":" (overrides dep_graph.css's .5rem). */
+#Legend dl.legend dd {
+	margin-left: 0.15rem;
+}
+
+#legend_title {
+	font-size: 0.9rem;
+}
+
+/* Room to scroll past the end of both panes. They are the two overflow:auto
+   containers, and the theme drops div.content's bottom margin from 1024px up,
+   so the last line of a page and the last entry of the table of contents end up
+   flush against the window edge and can be clipped. Padding on the scroll
+   container extends the scrollable area; a margin on its last child would not. */
+div.content {
+	padding-bottom: 4rem;
+}
+
+nav.toc {
+	padding-bottom: 4rem;
+}
+
+/* Center the GitHub repository URL, which \github renders as a bare,
+   left-aligned paragraph immediately below the (centered) title block. The
+   adjacent-sibling selector touches only that one paragraph on the home page. */
+div.titlepage + p {
+	text-align: center;
+}

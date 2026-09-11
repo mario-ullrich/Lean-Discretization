@@ -1,0 +1,1266 @@
+% !TEX root = print.tex
+
+\chapter{The problem and the result}
+\label{ch:problem}
+
+Let $(\Omega, \mu)$ be a measure space, $\iota$ a finite nonempty index set with
+$m = \#\iota$ elements and $\kappa$ a second finite index set. Two families of
+square-integrable functions on $\Omega$ are given,
+\[
+  a = (a_k)_{k \in \iota}, \qquad b = (b_p)_{p \in \kappa},
+\]
+and we look for $n$ points $x_1, \dots, x_n \in \Omega$ and positive weights
+$w_1, \dots, w_n$ such that the weighted point evaluations
+$\sum_i w_i |f(x_i)|^2$ stay above $\int |f|^2 \, d\mu$ for every $f$ in the span of the
+first family and below the squared coefficient norm for every $f$ in the span of the
+second one. The two families enter asymmetrically: the first through its size $m$, the
+second only through the \emph{effective dimension} of its Gram matrix.
+
+A statement about the weighted sums is a statement about the two matrices
+\[
+  \sum_i w_i \, a(x_i) a(x_i)^*, \qquad \sum_i w_i \, b(x_i) b(x_i)^*,
+\]
+so the whole argument is carried out in the Loewner order: $A \preceq B$ means that
+$B - A$ is positive semidefinite. Traces of the matrices appearing below are real, and
+the formalisation takes real parts wherever a real number is needed; this is left
+silent in the statements.
+
+Each statement names the Lean declaration that formalises it. Every statement and every
+proof is formalised: the project compiles without \texttt{sorry}, so each result is
+verified by the Lean kernel.
+
+\begin{definition}[Gram matrix]
+\label{def:gram}
+\lean{Discretization.gram}
+\leanok
+For a family $a : \Omega \to \mathbb{C}^{\iota}$ of square-integrable functions, the
+\emph{Gram matrix} $G(a) \in \mathbb{C}^{\iota \times \iota}$ has entries
+\[
+  G(a)_{k l} = \int_\Omega a_k(x) \overline{a_l(x)} \, d\mu(x).
+\]
+\end{definition}
+
+\begin{definition}[Effective dimension]
+\label{def:effective-dimension}
+\leanok
+\uses{def:gram}
+Let $J$ be a positive definite matrix and $\Lambda > 0$ with $J \preceq \Lambda \cdot 1$.
+The \emph{effective dimension} of $J$ relative to $\Lambda$ is
+\[
+  M = \frac{\Tr J}{\Lambda}.
+\]
+\end{definition}
+
+The effective dimension is at most $\#\kappa$, and it is much smaller as soon as the
+eigenvalues of $J$ decay; this is the quantity the upper frame bound is stated in, and
+it is what makes the theorem applicable when the second family is infinite.
+
+\begin{theorem}[Generalized sparsification]
+\label{thm:main}
+\lean{Discretization.bss_generalized}
+\leanok
+\uses{def:gram, def:effective-dimension}
+Let $a : \Omega \to \mathbb{C}^{\iota}$ and $b : \Omega \to \mathbb{C}^{\kappa}$ be
+square-integrable in every coordinate, let $I = G(a)$ and $J = G(b)$ be positive
+definite, and let $\Lambda > 0$ satisfy $J \preceq \Lambda \cdot 1$. Put
+$m = \#\iota$ and $M = \Tr J / \Lambda$. Then for every $n \geq m$ there are points
+$x_1, \dots, x_n \in \Omega$ and weights $w_1, \dots, w_n > 0$ with
+\[
+  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot I
+    \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
+\]
+and
+\[
+  \sum_{i=1}^n w_i \, b(x_i) b(x_i)^*
+    \; \preceq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \cdot 1 .
+\]
+\end{theorem}
+
+\begin{proof}
+\leanok
+\uses{thm:main-normalized, lem:gram-mulvec}
+Replace $a$ by $I^{-1/2} a$. Its Gram matrix is $I^{-1/2} I \, I^{-1/2} = 1$ by
+\cref{lem:gram-mulvec}, so \cref{thm:main-normalized} applies to it and produces points
+and weights with $(1 - r)^2 \cdot 1$ on the left. Conjugating that inequality by
+$I^{1/2}$ preserves the Loewner order and turns it into the bound for $a$ with
+$(1 - r)^2 \cdot I$ on the left; the second bound does not involve the first family and
+is unchanged.
+\end{proof}
+
+This is Theorem 3 of Chkifa, Dolbeault, Krieg and
+Ullrich~\cite{CDKU}, and it generalizes the sparsification theorem of Batson,
+Spielman and Srivastava~\cite{BSS}, which is the case $a = b$ with $I = J = 1$ and
+$M = m$. In eigenvalue form the first bound is the factor
+$(1 - \sqrt{(m-1)/n})^2 \lambda_{\min}(I)$ of the paper. No side condition on $m$ or on
+$M$ is needed; the potential argument of \cref{ch:construction} does need two, and
+\cref{ch:edge} removes them.
+
+Read through quadratic forms, the theorem becomes a statement about norms.
+
+\begin{corollary}[Discretization of the $L_2$-norm]
+\label{cor:discretization}
+\lean{Discretization.exists_discretization}
+\leanok
+\uses{thm:main-normalized, lem:integral-quadform}
+In the situation of \cref{thm:main} with $I = 1$, the same points and weights satisfy,
+for every coefficient vector $c \in \mathbb{C}^{\iota}$,
+\[
+  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \int_\Omega
+    \Bigl| \sum_{k} \overline{c_k} \, a_k(x) \Bigr|^2 d\mu(x)
+  \; \leq \; \sum_{i=1}^n w_i \Bigl| \sum_{k} \overline{c_k} \, a_k(x_i) \Bigr|^2
+\]
+and, for every $c \in \mathbb{C}^{\kappa}$,
+\[
+  \sum_{i=1}^n w_i \Bigl| \sum_{p} \overline{c_p} \, b_p(x_i) \Bigr|^2
+  \; \leq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \sum_{p} |c_p|^2 .
+\]
+\end{corollary}
+
+\begin{proof}
+\leanok
+\uses{thm:main-normalized, lem:integral-quadform}
+A Loewner inequality between matrices is an inequality between quadratic forms, uniformly
+in the coefficient vector. For $f(x) = \sum_k \overline{c_k} a_k(x)$ one has
+$\sum_i w_i |f(x_i)|^2 = c^* G c$ with $G$ the accumulated matrix, and
+$\int_\Omega |f|^2 d\mu = c^* G(a) c = \|c\|^2$ by \cref{lem:integral-quadform} and
+$G(a) = 1$. Reading the second bound of \cref{thm:main-normalized} the same way turns its
+right-hand side into $(1 + s)^2 \Lambda \|c\|^2$.
+\end{proof}
+
+This is Corollary 4 of~\cite{CDKU}. If the second family is the singular basis of the
+embedding of a reproducing kernel Hilbert space $H$ into $L_2(\mu)$, that is, an
+orthonormal basis of $H$ which is orthogonal in $L_2$, then the right-hand side is the
+squared $H$-norm and $\Lambda$ is the squared norm of the embedding.
+
+\chapter{Matrices in the Loewner order}
+\label{ch:loewner}
+
+The construction keeps two matrices positive definite and controls them through two
+real numbers. This chapter collects what is needed about the Loewner order, the trace
+and rank-one updates. Nothing here mentions sampling; all of it is stated for a general
+field $\mathbb{C}$ or $\mathbb{R}$ where the C$^*$-algebra structure is not needed, and
+none of it is in Mathlib.
+
+\section{Comparison with multiples of the identity}
+
+\begin{lemma}[Crude bound]
+\label{lem:le-trace-smul-one}
+\lean{Matrix.PosSemidef.le_trace_smul_one}
+\leanok
+For every positive semidefinite $A$ we have $A \preceq (\Tr A) \cdot 1$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:le-smul-one}
+The trace is the sum of the eigenvalues of $A$, all of which are nonnegative, so every
+single eigenvalue is at most $\Tr A$. A Hermitian matrix whose eigenvalues are all at
+most $c$ satisfies $A \preceq c \cdot 1$ by \cref{lem:le-smul-one}.
+\end{proof}
+
+\begin{lemma}[Eigenvalue bound]
+\label{lem:le-smul-one}
+\lean{Matrix.IsHermitian.le_smul_one}
+\leanok
+Let $A$ be Hermitian and $c$ a real number with $\lambda_i(A) \leq c$ for every
+eigenvalue. Then $A \preceq c \cdot 1$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+By the spectral theorem $c \cdot 1 - A$ is unitarily conjugate to the diagonal matrix
+with entries $c - \lambda_i(A) \geq 0$, and conjugation by a unitary preserves positive
+semidefiniteness.
+\end{proof}
+
+\begin{lemma}[The inverse is antitone]
+\label{lem:inv-antitone}
+\lean{Matrix.PosDef.inv_le_inv_of_le, Matrix.PosDef.smul_one_le_of_inv_le}
+\leanok
+Let $A$ and $B$ be positive definite with $A \preceq B$. Then
+$B^{-1} \preceq A^{-1}$. In particular, if $A^{-1} \preceq c \cdot 1$ for some $c > 0$,
+then $c^{-1} \cdot 1 \preceq A$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Both are read off Mathlib's antitonicity of the inverse in a C$^*$-algebra with a star
+ordering, applied to the units of $\mathbb{C}^{n \times n}$ with the
+$\ell_2$-operator norm; the inverse of $c \cdot 1$ is $c^{-1} \cdot 1$.
+\end{proof}
+
+\begin{lemma}[Conjugation by the square root]
+\label{lem:sqrt-conjugation}
+\lean{CStarAlgebra.inv_smul_le_of_conj_inv_sqrt_le}
+\leanok
+Let $A$ be a C$^*$-algebra with a star ordering, let $B \in A$ be positive and
+invertible, let $X \in A$ and let $t > 0$. If
+$B^{-1/2} X B^{-1/2} \preceq t \cdot 1$, then $t^{-1} \cdot X \preceq B$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Conjugating the hypothesis by $B^{1/2}$ preserves the order. On the left the two
+inverse square roots cancel, on the right $t \cdot 1$ becomes $t \cdot B$; dividing by
+$t$ gives the claim.
+\end{proof}
+
+The next two lemmas are the reason the whole argument can be run on two real numbers.
+The first is the lower, the second the upper one.
+
+\begin{lemma}[A bound on the lower potential bounds the matrix]
+\label{lem:inv-trace-smul-one-le}
+\lean{Matrix.PosDef.inv_re_trace_smul_one_le}
+\leanok
+For every positive definite $A$,
+\[
+  \bigl( \Tr A^{-1} \bigr)^{-1} \cdot 1 \; \preceq \; A .
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:le-trace-smul-one, lem:inv-antitone}
+\cref{lem:le-trace-smul-one} applied to $A^{-1}$ gives
+$A^{-1} \preceq (\Tr A^{-1}) \cdot 1$, and \cref{lem:inv-antitone} turns that around.
+\end{proof}
+
+\begin{lemma}[A bound on the upper potential bounds the matrix]
+\label{lem:inv-trace-mul-smul-le}
+\lean{Matrix.PosDef.inv_re_trace_mul_smul_le}
+\leanok
+For all positive definite $B$ and $J$,
+\[
+  \bigl( \Tr (J B^{-1}) \bigr)^{-1} \cdot J \; \preceq \; B .
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:le-trace-smul-one, lem:sqrt-conjugation, lem:trace-mul-pos}
+Write $S = B^{1/2}$. The matrix $S^{-1} J S^{-1}$ is positive semidefinite and has
+trace $\Tr (J B^{-1})$, so \cref{lem:le-trace-smul-one} bounds it by
+$\Tr (J B^{-1}) \cdot 1$. That trace is positive by \cref{lem:trace-mul-pos}, so
+\cref{lem:sqrt-conjugation} applies and gives the claim.
+\end{proof}
+
+\begin{lemma}[The two shifts]
+\label{lem:shifts}
+\lean{Matrix.PosDef.sub_smul_one, Matrix.PosDef.add_smul}
+\leanok
+Let $A$ be positive definite and $0 < \delta < (\Tr A^{-1})^{-1}$. Then
+$A - \delta \cdot 1$ is positive definite. If $B$ and $J$ are positive definite and
+$\zeta > 0$, then $B + \zeta \cdot J$ is positive definite.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:inv-trace-smul-one-le}
+For the first, write
+$A - \delta \cdot 1 = \bigl( A - (\Tr A^{-1})^{-1} \cdot 1 \bigr)
+  + \bigl( (\Tr A^{-1})^{-1} - \delta \bigr) \cdot 1$, a positive semidefinite matrix
+by \cref{lem:inv-trace-smul-one-le} plus a positive definite one. The second is the sum
+of a positive definite matrix and a positive multiple of one.
+\end{proof}
+
+\section{Traces of products}
+
+\begin{lemma}[Sign of the trace of a product]
+\label{lem:trace-mul-pos}
+\lean{Matrix.PosSemidef.trace_mul_nonneg, Matrix.PosDef.re_trace_mul_pos}
+\leanok
+For positive semidefinite $P$ and $Q$ we have $\Tr (P Q) \geq 0$. If $P$ is positive
+definite, $Q$ is positive semidefinite and $Q \neq 0$, then $\Tr (P Q) > 0$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Write $Q$ as a sum of rank-one matrices $v v^*$. Then
+$\Tr (P v v^*) = v^* P v \geq 0$, with strict inequality for $v \neq 0$ when $P$ is
+positive definite, and at least one of the $v$ is nonzero when $Q \neq 0$.
+\end{proof}
+
+\begin{lemma}[Cauchy--Schwarz for the trace]
+\label{lem:trace-cauchy-schwarz}
+\lean{Matrix.PosSemidef.norm_trace_mul_sq_le, Matrix.PosSemidef.re_trace_mul_sq_le}
+\leanok
+Let $Y$ be positive semidefinite and $Z$ any matrix. Then
+\[
+  \bigl| \Tr (Z Y) \bigr|^2 \; \leq \; \Tr Y \cdot \Tr (Z Y Z^*) .
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+A positive semidefinite $Y$ makes $\langle P, Q \rangle = \Tr (Q Y P^*)$ a
+semi-inner product on matrices. Cauchy--Schwarz for the pair $1$, $Z$ is the
+inequality. No commutation of $Y$ and $Z$ is used.
+\end{proof}
+
+\section{Rank-one updates}
+
+\begin{lemma}[Sherman--Morrison]
+\label{lem:sherman-morrison}
+\lean{Matrix.inv_add_smul_vecMulVec}
+\leanok
+Let $A$ be Hermitian and invertible, $v$ a vector and $t$ a scalar with
+$1 + t \, v^* A^{-1} v \neq 0$. Then $A + t \, v v^*$ is invertible and
+\[
+  \bigl( A + t \, v v^* \bigr)^{-1}
+    = A^{-1} - \frac{t}{1 + t \, v^* A^{-1} v} \,
+      \bigl( A^{-1} v \bigr) \bigl( A^{-1} v \bigr)^* .
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+Multiplying the right-hand side by $A + t \, v v^*$ collapses, by Hermitian symmetry of
+$A^{-1}$, to $1$ plus a multiple of $v (A^{-1} v)^*$ whose scalar factor vanishes by
+the choice of the coefficient.
+\end{proof}
+
+\begin{lemma}[Trace of a rank-one update]
+\label{lem:trace-sherman-morrison}
+\lean{Matrix.trace_inv_add_smul_vecMulVec}
+\leanok
+In the situation of \cref{lem:sherman-morrison},
+\[
+  \Tr \bigl( A + t \, v v^* \bigr)^{-1}
+    = \Tr A^{-1} - \frac{t}{1 + t \, v^* A^{-1} v} \, v^* A^{-2} v .
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:sherman-morrison}
+Take traces in \cref{lem:sherman-morrison} and use
+$\Tr \bigl( (A^{-1} v)(A^{-1} v)^* \bigr) = v^* A^{-2} v$.
+\end{proof}
+
+\begin{lemma}[Positivity of an update]
+\label{lem:update-posdef}
+\lean{Matrix.PosDef.add_smul_vecMulVec, Matrix.PosDef.sub_smul_vecMulVec}
+\leanok
+Let $A$ be positive definite, $v$ a vector and $w \geq 0$. Then $A + w \, v v^*$ is
+positive definite. If moreover $w \, v^* A^{-1} v < 1$, then $A - w \, v v^*$ is
+positive definite.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:sherman-morrison}
+The first is a positive definite matrix plus a positive semidefinite one. For the
+second, \cref{lem:sherman-morrison} exhibits the inverse of $A - w \, v v^*$ as a
+positive definite matrix plus a positive semidefinite one, and a matrix whose inverse is
+positive definite is itself positive definite.
+\end{proof}
+
+\begin{lemma}[A rank-one matrix is bounded by its norm]
+\label{lem:rank-one-crude}
+\lean{Matrix.vecMulVec_le_norm_sq_smul_one}
+\leanok
+For every vector $v$ we have $v v^* \preceq \|v\|^2 \cdot 1$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:le-trace-smul-one}
+The trace of $v v^*$ is $\|v\|^2$, so this is \cref{lem:le-trace-smul-one}.
+\end{proof}
+
+\chapter{Averages of quadratic forms}
+\label{ch:averages-of-forms}
+
+The bridge between the analytic side of the problem and the matrix algebra is one
+identity: the average of a quadratic form along a family is a trace against its Gram
+matrix. Read from right to left it says that a trace is an average, which is how the
+construction finds a point.
+
+\begin{lemma}[Average of a quadratic form]
+\label{lem:integral-quadform}
+\lean{Discretization.integral_quadForm, Discretization.integral_re_quadForm}
+\leanok
+\uses{def:gram}
+Let $a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in every coordinate. Then
+for every matrix $Q \in \mathbb{C}^{\iota \times \iota}$,
+\[
+  \int_\Omega a(x)^* Q \, a(x) \, d\mu(x) = \Tr \bigl( Q \, G(a) \bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+Expand both sides as a double sum over $\iota$ and exchange the finite sum with the
+integral. The integrand is integrable by Cauchy--Schwarz for $L_2$-functions.
+\end{proof}
+
+\begin{lemma}[Gram matrix of a transformed family]
+\label{lem:gram-mulvec}
+\lean{Discretization.gram_mulVec}
+\leanok
+\uses{def:gram}
+For every matrix $S \in \mathbb{C}^{\iota \times \iota}$ and every family $a$ that is
+square-integrable in each coordinate,
+\[
+  G(S a) = S \, G(a) \, S^* .
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+Expand both sides entrywise and exchange the finite sums with the integral.
+\end{proof}
+
+\begin{lemma}[One good point suffices]
+\label{lem:exists-point}
+\lean{Discretization.exists_lt_of_integral_lt}
+\leanok
+Let $f, g : \Omega \to \mathbb{R}$ be integrable with
+$\int_\Omega g \, d\mu < \int_\Omega f \, d\mu$. Then $g(x) < f(x)$ for at least one
+$x \in \Omega$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+If $f \leq g$ everywhere then $\int f \leq \int g$.
+\end{proof}
+
+The paper states the same step as: the set of admissible points has positive measure.
+One point is all the construction uses. When the two averages are equal, which happens
+in the doubly degenerate case of \cref{ch:edge}, a strict inequality is no longer
+available and the following variant takes over.
+
+\begin{lemma}[One good point when the averages agree]
+\label{lem:exists-point-le}
+\lean{Discretization.exists_le_of_integral_le}
+\leanok
+Let $f, g : \Omega \to \mathbb{R}$ be integrable and nonnegative with
+$\int_\Omega g \, d\mu \leq \int_\Omega f \, d\mu$ and
+$\int_\Omega f \, d\mu > 0$. Then there is an $x \in \Omega$ with
+$g(x) \leq f(x)$ and $f(x) > 0$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+If $f \leq g$ everywhere then the two averages agree, so the nonnegative function
+$g - f$ has average zero and vanishes almost everywhere. At every point where $f$ and
+$g$ agree, the assumption forces $f$ to vanish, so $f$ vanishes almost everywhere,
+contradicting $\int f > 0$.
+\end{proof}
+
+Both the nonnegativity of $g$ and the conclusion $f(x) > 0$ are needed: for
+$f = (1, 0)$ and $g = (2, -1)$ on two points with the counting measure both averages
+are $1$, and the only point with $g \leq f$ has $f = 0$.
+
+\chapter{Potentials, verifiers and the barrier lemma}
+\label{ch:barrier}
+
+Two matrices are carried through the construction: a small one $A$, which must stay
+above a multiple of the identity, and a large one $B$, which must stay below one. Each
+is controlled by a single real number.
+
+\begin{definition}[The two potentials]
+\label{def:potentials}
+\lean{Discretization.lowerPotential, Discretization.upperPotential}
+\leanok
+For a positive definite $A$ and positive definite $B$, $J$, put
+\[
+  \Phi(A) = \Tr A^{-1}, \qquad \Psi_J(B) = \Tr \bigl( J B^{-1} \bigr).
+\]
+\end{definition}
+
+The lower potential is large when $A$ has a small eigenvalue, the upper one when $B$ is
+small in the directions where $J$ is large. Before each step $A$ is shrunk by
+$\delta \cdot 1$ and $B$ is grown by $\zeta \cdot J$; both shifts move the potentials in
+the unfavourable direction by an amount that is computed exactly, and that amount is the
+budget one new sampling point is allowed to consume.
+
+\begin{lemma}[Effect of the shifts]
+\label{lem:shift-effect}
+\lean{Discretization.lowerPotential_sub_eq, Discretization.upperPotential_sub_eq}
+\leanok
+\uses{def:potentials}
+Let $A$, $B$ and $J$ be positive definite, let $\delta > 0$ with
+$A - \delta \cdot 1$ positive definite and let $\zeta \geq 0$. Then
+\[
+  \Phi(A - \delta \cdot 1) - \Phi(A)
+    = \delta \, \Tr \bigl( (A - \delta \cdot 1)^{-1} A^{-1} \bigr)
+\]
+and
+\[
+  \Psi_J(B) - \Psi_J(B + \zeta \cdot J)
+    = \zeta \, \Tr \bigl( J B^{-1} J (B + \zeta \cdot J)^{-1} \bigr).
+\]
+Both right-hand sides are positive for $\delta, \zeta > 0$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:trace-mul-pos, lem:shifts}
+Both identities follow from the resolvent identity
+$X^{-1} - Y^{-1} = X^{-1} (Y - X) Y^{-1}$ with the difference of the two matrices being
+$\delta \cdot 1$ and $\zeta \cdot J$ respectively. The signs are \cref{lem:trace-mul-pos}
+applied to the products of positive definite matrices on the right.
+\end{proof}
+
+Whether a candidate point may be used is decided pointwise, without recomputing any
+inverse, by the two verifiers.
+
+\begin{definition}[The two verifiers]
+\label{def:verifiers}
+\lean{Discretization.lowerVerifier, Discretization.upperVerifier}
+\leanok
+\uses{def:potentials}
+Write $Z = (A - \delta \cdot 1)^{-1}$ and $X = (B + \zeta \cdot J)^{-1}$. For a vector
+$v$ put
+\[
+  L_A^{\delta}(v)
+    = \frac{v^* Z^2 v}{\Phi(A - \delta \cdot 1) - \Phi(A)} - v^* Z v,
+\]
+\[
+  U_{B}^{\zeta}(v)
+    = \frac{v^* X J X v}{\Psi_J(B) - \Psi_J(B + \zeta \cdot J)} + v^* X v .
+\]
+\end{definition}
+
+\begin{lemma}[Potential of a rank-one update]
+\label{lem:update-potential}
+\lean{Discretization.lowerPotential_add_smul_vecMulVec,
+      Discretization.upperPotential_sub_smul_vecMulVec}
+\leanok
+\uses{def:potentials}
+Let $N$ be positive definite, $v$ a vector and $w \geq 0$. Then
+\[
+  \Phi \bigl( N + w \, v v^* \bigr)
+    = \Phi(N) - \frac{w}{1 + w \, v^* N^{-1} v} \, v^* N^{-2} v .
+\]
+If $M$ is positive definite and $w \, v^* M^{-1} v < 1$, then
+\[
+  \Psi_J \bigl( M - w \, v v^* \bigr)
+    = \Psi_J(M) + \frac{w}{1 - w \, v^* M^{-1} v} \, v^* M^{-1} J M^{-1} v .
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:sherman-morrison, lem:trace-sherman-morrison}
+Insert the Sherman--Morrison formula of \cref{lem:sherman-morrison} and take traces as
+in \cref{lem:trace-sherman-morrison}.
+\end{proof}
+
+\begin{lemma}[Barrier lemma]
+\label{lem:barrier}
+\lean{Discretization.lowerPotential_update_le, Discretization.upperPotential_update_le}
+\leanok
+\uses{def:verifiers}
+Let $A$ be positive definite, $0 < \delta < \Phi(A)^{-1}$, and let $w > 0$ satisfy
+$1/w \leq L_A^{\delta}(v)$. Then $A - \delta \cdot 1 + w \, v v^*$ is positive definite
+and
+\[
+  \Phi \bigl( A - \delta \cdot 1 + w \, v v^* \bigr) \leq \Phi(A).
+\]
+Let $B$ and $J$ be positive definite, $\zeta > 0$, and let $w > 0$ satisfy
+$U_B^{\zeta}(v) \leq 1/w$. Then $B + \zeta \cdot J - w \, v v^*$ is positive definite
+and
+\[
+  \Psi_J \bigl( B + \zeta \cdot J - w \, v v^* \bigr) \leq \Psi_J(B).
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:update-potential, lem:update-posdef, lem:shifts}
+Both halves are the closed form of \cref{lem:update-potential} combined with one
+inequality between real numbers, and positive definiteness is \cref{lem:update-posdef}.
+In the upper half the hypothesis on $w$ first has to be turned into positivity of the
+Sherman--Morrison denominator $1 - w \, v^* X v$, which is where positive definiteness of
+$J$ enters.
+\end{proof}
+
+\chapter{The verifiers pass on average}
+\label{ch:averages}
+
+A point may be used if the upper verifier stays below the lower one. Such a point exists
+because the inequality holds on average.
+
+\begin{lemma}[Average of the lower verifier]
+\label{lem:average-lower}
+\lean{Discretization.integral_lowerVerifier_gt}
+\leanok
+\uses{def:verifiers, def:gram}
+Let $a$ be square-integrable in every coordinate with $G(a) = 1$, let $A$ be positive
+definite and $0 < \delta < \Phi(A)^{-1}$. Then
+\[
+  \int_\Omega L_A^{\delta}\bigl( a(x) \bigr) d\mu(x)
+    \; > \; \frac{1}{\delta} - \Phi(A).
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:integral-quadform, lem:trace-cauchy-schwarz, lem:shift-effect}
+With $Y = A^{-1}$ and $Z = (A - \delta \cdot 1)^{-1}$, \cref{lem:integral-quadform}
+turns the average into $\Tr (Z^2) / (\delta \Tr (Y Z)) - \Tr Z$. Writing
+$t = \Tr (Y Z)$ and $u = \Tr (Y Z^2)$, the claim reduces to $\delta t^2 < u$, which is
+what \cref{lem:trace-cauchy-schwarz} gives together with $\delta \Phi(A) < 1$.
+\end{proof}
+
+\begin{lemma}[Average of the upper verifier]
+\label{lem:average-upper}
+\lean{Discretization.integral_upperVerifier_lt}
+\leanok
+\uses{def:verifiers, def:gram}
+Let $b$ be square-integrable in every coordinate with $G(b) = J$ positive definite, let
+$B$ be positive definite and $\zeta > 0$. Then
+\[
+  \int_\Omega U_B^{\zeta}\bigl( b(x) \bigr) d\mu(x)
+    \; < \; \frac{1}{\zeta} + \Psi_J(B).
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:integral-quadform, lem:inv-antitone, lem:shift-effect, lem:trace-mul-pos}
+Write $W = B^{-1}$ and $X = (B + \zeta \cdot J)^{-1}$ and let
+$E = \Psi_J(B) - \Psi_J(B + \zeta \cdot J)$ be the gain of \cref{lem:shift-effect}. By
+\cref{lem:integral-quadform} the average equals
+$\Tr (J X J X) / E + \Psi_J(B + \zeta \cdot J)$. Since $X \preceq W$ by
+\cref{lem:inv-antitone}, the numerator is at most $\Tr (J W J X) = E / \zeta$, so the
+first summand is at most $1/\zeta$, and the second is strictly smaller than $\Psi_J(B)$.
+\end{proof}
+
+\begin{lemma}[An admissible point exists]
+\label{lem:admissible-point}
+\lean{Discretization.exists_admissible_point}
+\leanok
+\uses{lem:average-lower, lem:average-upper}
+In the situation of \cref{lem:average-lower} and \cref{lem:average-upper}, assume
+\[
+  \frac{1}{\zeta} + \Psi_J(B) \; \leq \; \frac{1}{\delta} - \Phi(A).
+\]
+Then there is an $x \in \Omega$ with
+$U_B^{\zeta}\bigl( b(x) \bigr) < L_A^{\delta}\bigl( a(x) \bigr)$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:exists-point}
+The average of the lower verifier exceeds $1/\delta - \Phi(A)$, which by assumption is
+at least $1/\zeta + \Psi_J(B)$, which exceeds the average of the upper verifier. Now
+apply \cref{lem:exists-point}.
+\end{proof}
+
+Any weight $w$ between the two reciprocals is then admissible for both halves of
+\cref{lem:barrier}. The construction always takes the largest one, $w = 1/L_A^{\delta}$.
+
+\chapter{The construction and the frame bounds}
+\label{ch:construction}
+
+\begin{definition}[The two states]
+\label{def:states}
+\lean{Discretization.lowerState, Discretization.upperState}
+\leanok
+For initial matrices $A_0$, $B_0$, shifts $\delta, \zeta$, points
+$x_1, \dots, x_k$ and weights $w_1, \dots, w_k$, put
+\[
+  A_k = A_0 - k \delta \cdot 1 + \sum_{i=1}^k w_i \, a(x_i) a(x_i)^*,
+  \qquad
+  B_k = B_0 + k \zeta \cdot J - \sum_{i=1}^k w_i \, b(x_i) b(x_i)^* .
+\]
+\end{definition}
+
+\begin{proposition}[The construction]
+\label{prop:construction}
+\lean{Discretization.exists_points_weights}
+\leanok
+\uses{def:states}
+Let $A_0$, $B_0$ and $J$ be positive definite, let $\delta, \zeta > 0$, let $G(a) = 1$
+and $G(b) = J$, and assume the initial gap condition
+\[
+  \frac{1}{\zeta} + \Psi_J(B_0) \; \leq \; \frac{1}{\delta} - \Phi(A_0).
+\]
+Then for every $k$ there are points $x_1, \dots, x_k \in \Omega$ and weights
+$w_1, \dots, w_k > 0$ such that $A_k$ and $B_k$ are positive definite and
+\[
+  \Phi(A_k) \leq \Phi(A_0), \qquad \Psi_J(B_k) \leq \Psi_J(B_0).
+\]
+\end{proposition}
+
+\begin{proof}
+\leanok
+\uses{lem:admissible-point, lem:barrier}
+Induction on $k$. The invariant keeps the gap open, so \cref{lem:admissible-point}
+produces a point $x_{k+1}$; the weight is the reciprocal of its lower verifier value,
+and \cref{lem:barrier} restores the invariant.
+\end{proof}
+
+The number of steps is arbitrary in \cref{prop:construction}: only the initial gap
+condition drives it. It is the choice of the four parameters that ties the number of
+points to the frame bounds. With $m$ the size of the first family, $M$ the effective
+dimension of the second one and $n$ the number of points to be produced, put
+\[
+  r = \sqrt{\tfrac{m-1}{n}}, \quad s = \sqrt{\tfrac{M-1}{n}}, \quad
+  \delta = \tfrac{1-r}{n}, \quad \zeta = \tfrac{1+s}{n},
+\]
+\[
+  A_0 = \tfrac{\delta m}{r} \cdot 1, \qquad
+  B_0 = \tfrac{\zeta \Tr J}{s} \cdot 1 .
+\]
+These are chosen so that the initial gap closes exactly,
+$1/\delta - \Phi(A_0) = n = 1/\zeta + \Psi_J(B_0)$, which needs $m \geq 2$ for $r > 0$
+and $M \geq 1 + 1/n$ for $s \geq 1/n$.
+
+\begin{lemma}[Reading off the frame bounds]
+\label{lem:read-off}
+\lean{Discretization.lower_bound_of_state, Discretization.upper_bound_of_state}
+\leanok
+\uses{def:states}
+Let $A_k$ be positive definite with $\Phi(A_k) \leq c$ and $A_0 = c_0 \cdot 1$. Then
+\[
+  \Bigl( c^{-1} - c_0 + k \delta \Bigr) \cdot 1
+    \; \preceq \; \sum_{i=1}^k w_i \, a(x_i) a(x_i)^* .
+\]
+Let $B_k$ be positive definite with $\Psi_J(B_k) \leq c$ and $B_0 = d_0 \cdot 1$. Then
+\[
+  \sum_{i=1}^k w_i \, b(x_i) b(x_i)^*
+    \; \preceq \; d_0 \cdot 1 + \bigl( k \zeta - c^{-1} \bigr) \cdot J .
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:inv-trace-smul-one-le, lem:inv-trace-mul-smul-le}
+A bound on a potential is a bound on the matrix by
+\cref{lem:inv-trace-smul-one-le} and \cref{lem:inv-trace-mul-smul-le}. Substituting the
+definition of the state and rearranging gives the two inequalities.
+\end{proof}
+
+\begin{theorem}[Generalized sparsification, normalized first family]
+\label{thm:main-normalized}
+\lean{Discretization.bss_generalized_of_gram_eq_one',
+      Discretization.bss_generalized_of_gram_eq_one}
+\leanok
+\uses{def:effective-dimension}
+Let $a$ and $b$ be square-integrable in every coordinate with $G(a) = 1$ and
+$G(b) = J$ positive definite, and let $\Lambda > 0$ with $J \preceq \Lambda \cdot 1$.
+Put $m = \#\iota$ and $M = \Tr J / \Lambda$. Then for every $n \geq m$ there are points
+$x_1, \dots, x_n \in \Omega$ and weights $w_1, \dots, w_n > 0$ with
+\[
+  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot 1
+    \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
+\]
+and
+\[
+  \sum_{i=1}^n w_i \, b(x_i) b(x_i)^*
+    \; \preceq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \cdot 1 .
+\]
+\end{theorem}
+
+\begin{proof}
+\leanok
+\uses{prop:construction, lem:read-off, lem:frame-constants, thm:card-one, thm:small-dim,
+      thm:both-edge-cases}
+For $m \geq 2$ and $M \geq 1 + 1/n$, the parameters above satisfy the gap condition of
+\cref{prop:construction} with equality, so $n$ steps produce points and weights with
+$\Phi(A_n) \leq r/\delta$ and $\Psi_J(B_n) \leq s/\zeta$. Feeding these into
+\cref{lem:read-off} and inserting the parameters through
+\cref{lem:frame-constants} gives the two bounds. The cases $m = 1$ and
+$M \leq 1 + 1/n$ are \cref{thm:card-one}, \cref{thm:small-dim} and
+\cref{thm:both-edge-cases}, and a case distinction on the two conditions assembles the
+four into the statement above.
+\end{proof}
+
+\begin{lemma}[The frame constants]
+\label{lem:frame-constants}
+\lean{Discretization.lower_frame_bound, Discretization.upper_frame_bound}
+\leanok
+With the parameters above, $c_0 = \delta m / r$, $d_0 = \zeta \Tr J / s$ and
+$\Tr J = \Lambda (n s^2 + 1)$,
+\[
+  \frac{\delta}{r} + n \delta - c_0 = (1 - r)^2,
+  \qquad
+  d_0 + \Bigl( n \zeta - \frac{\zeta}{s} \Bigr) \Lambda = (1 + s)^2 \Lambda ,
+\]
+and the coefficient $n \zeta - \zeta/s$ of $J$ is nonnegative.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Arithmetic with the four parameters; the square roots are never unfolded. The
+nonnegativity of the coefficient is where $M \geq 1 + 1/n$, in the form $s \geq 1/n$,
+is used, and it is what allows $J \preceq \Lambda \cdot 1$ to be applied to it.
+\end{proof}
+
+\chapter{The two edge cases}
+\label{ch:edge}
+
+The parameters of \cref{ch:construction} need $m \geq 2$ and $M \geq 1 + 1/n$. Where one
+of them fails, the corresponding potential is not needed at all: the verifier on that
+side is replaced by a constant, whose average is again $n$.
+
+\begin{theorem}[A one-element first family]
+\label{thm:card-one}
+\lean{Discretization.bss_generalized_of_unique}
+\leanok
+Let $\#\iota = 1$, let $a$ and $b$ be square-integrable in every coordinate with
+$G(a) = 1$ and $G(b) = J$ positive definite, let $\Lambda > 0$ with
+$J \preceq \Lambda \cdot 1$ and let $n \geq 1$ with $M = \Tr J / \Lambda \geq 1 + 1/n$.
+Then there are $n$ points and weights $w_i > 0$ with
+\[
+  1 \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
+  \qquad\text{and}\qquad
+  \sum_{i=1}^n w_i \, b(x_i) b(x_i)^*
+    \; \preceq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \cdot 1 .
+\]
+\end{theorem}
+
+\begin{proof}
+\leanok
+\uses{lem:barrier, lem:average-upper, lem:exists-point, lem:read-off}
+The lower verifier is replaced by $L(x) = n |a(x)|^2$, whose average is $n$ because the
+single function is normalized. The induction then tracks only the upper matrix, using
+the upper half of \cref{lem:barrier}, and takes the largest weight the constant allows,
+$1/w_i = L(x_i)$. Each point therefore contributes exactly $1/n$ to the lower bound, which
+becomes the identity $\sum_i w_i |a(x_i)|^2 = 1 = (1 - \sqrt{(m-1)/n})^2$.
+\end{proof}
+
+\begin{theorem}[A small effective dimension]
+\label{thm:small-dim}
+\lean{Discretization.bss_generalized_of_small_dim}
+\leanok
+Let $a$ and $b$ be square-integrable in every coordinate with $G(a) = 1$ and
+$G(b) = J$ positive definite, let $\Lambda > 0$, let $m = \#\iota \geq 2$ and
+$n \geq m$, and assume $M = \Tr J / \Lambda \leq 1 + 1/n$. Then there are $n$ points and
+weights $w_i > 0$ with
+\[
+  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot 1
+    \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
+\]
+and
+\[
+  \sum_{i=1}^n w_i \, b(x_i) b(x_i)^*
+    \; \preceq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \cdot 1 .
+\]
+\end{theorem}
+
+\begin{proof}
+\leanok
+\uses{lem:barrier, lem:average-lower, lem:exists-point, lem:read-off, lem:rank-one-crude}
+The upper verifier is replaced by $U(x) = n \|b(x)\|^2 / \Tr J$, whose average is $n$.
+The induction tracks only the lower matrix, and the weights it produces satisfy
+$w_i U(x_i) \leq 1$, that is $w_i \|b(x_i)\|^2 \leq \Tr J / n$. Summing over the $n$
+points and using \cref{lem:rank-one-crude} gives
+$\sum_i w_i \, b(x_i) b(x_i)^* \preceq \Tr J \cdot 1 = M \Lambda \cdot 1$, and
+$M \leq 1 + 1/n$ forces $s \leq 1/n$ and hence $M = 1 + n s^2 \leq 1 + s \leq (1+s)^2$.
+\end{proof}
+
+\begin{theorem}[Both edge cases at once]
+\label{thm:both-edge-cases}
+\lean{Discretization.bss_generalized_of_unique_of_small_dim}
+\leanok
+Let $\#\iota = 1$, let $a$ and $b$ be square-integrable in every coordinate with
+$G(a) = 1$ and $G(b) = J$ positive definite, let $\Lambda > 0$ and $n \geq 1$, and
+assume $M = \Tr J / \Lambda \leq 1 + 1/n$. Then there are $n$ points and weights
+$w_i > 0$ with
+\[
+  1 \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
+  \qquad\text{and}\qquad
+  \sum_{i=1}^n w_i \, b(x_i) b(x_i)^*
+    \; \preceq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \cdot 1 .
+\]
+\end{theorem}
+
+\begin{proof}
+\leanok
+\uses{lem:exists-point-le, lem:rank-one-crude}
+Both verifiers are now the constants $L(x) = n |a(x)|^2$ and
+$U(x) = n \|b(x)\|^2 / \Tr J$, of equal average $n$, and neither depends on the state of
+the construction. \cref{lem:exists-point-le} produces a single point $y$ with
+$U(y) \leq L(y)$ and $L(y) > 0$; using it $n$ times with the weight $w = 1/L(y)$ makes
+the lower bound the identity $\sum_i w_i |a(x_i)|^2 = 1$, while
+$w \, U(y) \leq 1$ and \cref{lem:rank-one-crude} give the upper bound as in
+\cref{thm:small-dim}. No induction is needed.
+\end{proof}
+
+\chapter{A countably infinite second family}
+\label{ch:infinite}
+
+Nothing in \cref{thm:main-normalized} ties the number of points to the size of the
+second family: it is governed by the effective dimension alone. The second family may
+therefore be infinite. In this chapter it is a single square-integrable map
+$b : \Omega \to H$ into a separable Hilbert space, and the Gram matrix becomes the
+positive operator $J$ on $H$ determined by
+\[
+  \langle u, J u \rangle = \int_\Omega \bigl| \langle u, b(x) \rangle \bigr|^2 d\mu(x),
+  \qquad u \in H .
+\]
+The first family stays finite, so the lower half of the argument is unchanged, and only
+the upper half has to be redone. Mathlib has no trace-class theory, so the trace is
+built along a fixed Hilbert basis.
+
+\section{The trace of an operator along a basis}
+
+\begin{definition}[Trace along a Hilbert basis]
+\label{def:trace-along}
+\lean{ContinuousLinearMap.traceAlong}
+\leanok
+Let $e = (e_k)_{k \in K}$ be a Hilbert basis of $H$ and $T$ a bounded operator on $H$.
+Put
+\[
+  \Tr_e T = \sum_{k \in K} \re \langle e_k, T e_k \rangle,
+\]
+with the convention that the sum is zero when the family is not summable.
+\end{definition}
+
+No basis independence is proved and none is needed: every statement below fixes one
+basis, and in the application the basis is the singular basis of the embedding. For a
+positive $T$ the terms are nonnegative, because
+$\re \langle x, T x \rangle = \|T^{1/2} x\|^2$, so $\Tr_e T$ is the squared
+Hilbert--Schmidt norm of $T^{1/2}$ and every statement about its value assumes the
+family summable.
+
+\begin{lemma}[Parseval's identity along a basis]
+\label{lem:parseval}
+\lean{HilbertBasis.hasSum_norm_sq_inner}
+\leanok
+For every Hilbert basis $e$ of $H$ and every $x \in H$, the family
+$\bigl( |\langle e_k, x \rangle|^2 \bigr)_k$ has sum $\|x\|^2$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+Take real parts in Mathlib's Parseval identity
+$\sum_k \langle x, e_k \rangle \langle e_k, x \rangle = \langle x, x \rangle$.
+\end{proof}
+
+\begin{lemma}[Invariance under adjoints]
+\label{lem:hs-adjoint}
+\lean{ContinuousLinearMap.tsum_norm_sq_adjoint,
+      ContinuousLinearMap.summable_norm_sq_adjoint_iff}
+\leanok
+\uses{def:trace-along}
+For every bounded operator $T$ on $H$ and every Hilbert basis $e$,
+\[
+  \sum_k \| T e_k \|^2 = \sum_k \| T^* e_k \|^2 ,
+\]
+and the family on the left is summable if and only if the one on the right is.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:parseval}
+Expanding both sides by \cref{lem:parseval} gives the same double series
+$\sum_{j,k} |\langle e_j, T e_k \rangle|^2$ with the two indices exchanged. The
+rearrangement is carried out in $[0, \infty]$, where every sum is defined and the
+interchange needs no hypothesis; summability is then read off the value being finite.
+\end{proof}
+
+This is the hinge of the whole trace layer: it is what supplies the summability of
+$P^{1/2} Q$, whose adjoint $Q P^{1/2}$ is visibly Hilbert--Schmidt.
+
+\begin{lemma}[Crude bound for operators]
+\label{lem:le-trace-along-smul-one}
+\lean{ContinuousLinearMap.le_traceAlong_smul_one}
+\leanok
+\uses{def:trace-along}
+Let $T$ be a positive operator on $H$ whose trace along $e$ is summable. Then
+$T \preceq \Tr_e T \cdot 1$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:parseval}
+For $x \in H$, writing $x$ in the basis and applying the Cauchy--Schwarz inequality to
+each term gives $\re \langle x, T x \rangle \leq \Tr_e T \cdot \|x\|^2$. This is the
+operator analogue of \cref{lem:le-trace-smul-one}, and unlike the matrix proof it uses
+no diagonalisation, which is also why no basis independence is required.
+\end{proof}
+
+\begin{lemma}[Trace of a product]
+\label{lem:trace-along-mul}
+\lean{ContinuousLinearMap.traceAlong_mul, ContinuousLinearMap.traceAlong_mul_pos}
+\leanok
+\uses{def:trace-along}
+Let $P$ be positive with summable trace along $e$ and let $Q$ be positive. Then
+\[
+  \Tr_e (P Q) = \sum_k \re \bigl\langle P^{1/2} e_k, \, Q \, P^{1/2} e_k \bigr\rangle
+  \; \geq \; 0 ,
+\]
+and the value is positive as soon as $Q$ is invertible and $P \neq 0$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:hs-adjoint}
+The identity is the cyclicity $\Tr (PQ) = \Tr (P^{1/2} Q P^{1/2})$, read as a symmetry
+of the pairing $\sum_k \langle S e_k, T e_k \rangle$ under passing to adjoints; the
+required summability is \cref{lem:hs-adjoint}. Every term on the right is nonnegative.
+For the strict inequality, invertibility of $Q$ makes $Q^{1/2}$ injective, so a
+vanishing trace would force $P^{1/2}$ to annihilate the whole basis.
+\end{proof}
+
+Invertibility of $Q$ here is what replaces positive definiteness. A positive operator of
+finite trace on an infinite-dimensional space is compact, hence never bounded away from
+zero, so positive definiteness is unavailable and the hypotheses on the two operators
+have to be chosen differently.
+
+\begin{definition}[Positive, injective, of finite trace]
+\label{def:finite-trace-pos}
+\lean{Discretization.Infinite.IsFiniteTracePos}
+\leanok
+\uses{def:trace-along}
+An operator $J$ on $H$ is \emph{of finite trace and positive} relative to a Hilbert
+basis $e$ if $J$ is positive, its trace along $e$ is summable, and $J$ is injective.
+\end{definition}
+
+For the second operator, the one the construction moves, the right notion is positivity
+together with invertibility; it is Mathlib's \texttt{IsStrictlyPositive}, and the inverse
+is \texttt{Ring.inverse}, defined on all operators and equal to the inverse on the
+invertible ones.
+
+\begin{lemma}[Sherman--Morrison for operators]
+\label{lem:sherman-morrison-op}
+\lean{ContinuousLinearMap.inverse_add_smul_rankOne}
+\leanok
+Let $A$ be a self-adjoint invertible operator on $H$, let $u \in H$ and let $t$ be a
+scalar with $1 + t \langle u, A^{-1} u \rangle \neq 0$. Then $A + t \, u u^*$ is
+invertible and
+\[
+  \bigl( A + t \, u u^* \bigr)^{-1}
+    = A^{-1} - \frac{t}{1 + t \langle u, A^{-1} u \rangle} \,
+      \bigl( A^{-1} u \bigr) \bigl( A^{-1} u \bigr)^* ,
+\]
+where $u u^*$ is the rank-one operator $z \mapsto \langle u, z \rangle u$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+The candidate is verified to be a two-sided inverse, exactly as in
+\cref{lem:sherman-morrison}. In a noncommutative ring one product does not suffice, but
+two do: they exhibit $A + t \, u u^*$ as a unit.
+\end{proof}
+
+\section{The upper potential of an operator}
+
+\begin{definition}[The upper potential of an operator]
+\label{def:upper-potential-op}
+\lean{Discretization.Infinite.upperPotential}
+\leanok
+\uses{def:trace-along, def:finite-trace-pos}
+For $J$ of finite trace and positive, and $B$ strictly positive,
+$\Psi_J(B) = \Tr_e \bigl( J B^{-1} \bigr)$.
+\end{definition}
+
+\begin{lemma}[Effect of the shift]
+\label{lem:shift-effect-op}
+\lean{Discretization.Infinite.upperPotential_sub_eq,
+      Discretization.Infinite.upperPotential_add_smul_lt}
+\leanok
+\uses{def:upper-potential-op}
+Let $J$ be of finite trace and positive, let $B$ be strictly positive and
+$\zeta \geq 0$. Then
+\[
+  \Psi_J(B) - \Psi_J(B + \zeta \cdot J)
+    = \zeta \, \Tr_e \bigl( (J B^{-1} J) (B + \zeta \cdot J)^{-1} \bigr),
+\]
+and for $\zeta > 0$ the right-hand side is positive.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:trace-along-mul}
+The resolvent identity holds in any ring. The right-hand side is the trace of a product
+of two positive operators, the first of them $J B^{-1} J$, which is again of finite
+trace and positive; \cref{lem:trace-along-mul} gives the sign, and injectivity of $J$
+makes it strict.
+\end{proof}
+
+\begin{lemma}[Average of an operator quadratic form]
+\label{lem:integral-inner-op}
+\lean{ContinuousLinearMap.integral_re_inner_apply}
+\leanok
+\uses{def:trace-along}
+Let $b : \Omega \to H$ be square-integrable with Gram operator $J$ of finite trace, and
+let $Q$ be a positive bounded operator. Then
+\[
+  \int_\Omega \re \bigl\langle b(x), Q \, b(x) \bigr\rangle \, d\mu(x)
+    = \Tr_e (J Q).
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:parseval, lem:hs-adjoint, lem:trace-along-mul}
+Pointwise $\re \langle b, Q b \rangle = \|Q^{1/2} b\|^2$, which \cref{lem:parseval}
+turns into $\sum_k |\langle Q^{1/2} e_k, b \rangle|^2$. Sum and integral may be
+exchanged because all terms are nonnegative and their integrals sum to a finite value,
+and the Gram identity turns the result into
+$\sum_k \re \langle Q^{1/2} e_k, J \, Q^{1/2} e_k \rangle$. That equals $\Tr_e (J Q)$
+because both are the squared Hilbert--Schmidt norm of $Q^{1/2} J^{1/2}$, once read
+through the operator and once through its adjoint, by \cref{lem:hs-adjoint} and
+\cref{lem:trace-along-mul}. Countability of the index set of the basis enters here, in
+the interchange.
+\end{proof}
+
+\section{The barrier lemma, the bound and the theorem}
+
+\begin{lemma}[Barrier lemma for operators]
+\label{lem:barrier-op}
+\lean{Discretization.Infinite.upperVerifier,
+      Discretization.Infinite.upperPotential_update_le}
+\leanok
+\uses{def:upper-potential-op}
+Write $X = (B + \zeta \cdot J)^{-1}$ and
+\[
+  U_B^{\zeta}(u)
+    = \frac{\re \langle u, X J X u \rangle}
+           {\Psi_J(B) - \Psi_J(B + \zeta \cdot J)} + \re \langle u, X u \rangle .
+\]
+Let $J$ be of finite trace and positive, let $B$ be strictly positive, $\zeta > 0$ and
+let $w > 0$ satisfy $U_B^{\zeta}(u) \leq 1/w$. Then
+$B + \zeta \cdot J - w \, u u^*$ is strictly positive and
+$\Psi_J \bigl( B + \zeta \cdot J - w \, u u^* \bigr) \leq \Psi_J(B)$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:sherman-morrison-op, lem:shift-effect-op, lem:barrier}
+The inequality between real numbers is the one of \cref{lem:barrier}; what has to be
+redone is the closed form of the potential after a rank-one downdate, which rests on
+\cref{lem:sherman-morrison-op}, and the positivity of the numerator, which rests on the
+injectivity of $J$.
+\end{proof}
+
+\begin{lemma}[The verifier passes on average]
+\label{lem:average-upper-op}
+\lean{Discretization.Infinite.integral_upperVerifier_lt,
+      Discretization.Infinite.exists_admissible_point}
+\leanok
+\uses{lem:barrier-op}
+In the situation of \cref{lem:barrier-op}, with $b$ square-integrable and $J$ its Gram
+operator,
+\[
+  \int_\Omega U_B^{\zeta} \bigl( b(x) \bigr) d\mu(x) < \frac{1}{\zeta} + \Psi_J(B).
+\]
+Consequently, if the gap condition
+$1/\zeta + \Psi_J(B) \leq 1/\delta - \Phi(A)$ holds for a positive definite matrix $A$
+and the first family, then some point passes the test of both verifiers.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:integral-inner-op, lem:average-lower, lem:exists-point}
+\cref{lem:integral-inner-op} turns the average into
+$\Tr_e (J X J X) / E + \Psi_J(B + \zeta \cdot J)$ with $E$ the gain of
+\cref{lem:shift-effect-op}, and $X \preceq B^{-1}$ bounds the numerator by $E/\zeta$.
+The comparison with the lower verifier of \cref{lem:average-lower} is a comparison of
+two averages of real functions, one coming from a matrix and one from an operator, so
+\cref{lem:exists-point} applies unchanged.
+\end{proof}
+
+\begin{lemma}[A bound on the potential bounds the operator]
+\label{lem:inv-potential-op}
+\lean{Discretization.Infinite.inv_upperPotential_smul_le}
+\leanok
+\uses{def:upper-potential-op}
+Let $J$ be of finite trace and positive and let $B$ be strictly positive. Then
+$\Psi_J(B)^{-1} \cdot J \preceq B$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:le-trace-along-smul-one, lem:sqrt-conjugation}
+The operator $B^{-1/2} J B^{-1/2}$ is positive and its trace along $e$ is again
+$\Psi_J(B)$, so \cref{lem:le-trace-along-smul-one} bounds it by $\Psi_J(B) \cdot 1$, and
+\cref{lem:sqrt-conjugation} carries that back to $J \preceq \Psi_J(B) \cdot B$.
+\end{proof}
+
+\begin{theorem}[Sparsification with a countable second family]
+\label{thm:main-infinite}
+\lean{Discretization.Infinite.bss_generalized_of_gram_eq_one}
+\leanok
+\uses{def:finite-trace-pos}
+Let $a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in every coordinate with
+$G(a) = 1$ and $m = \#\iota \geq 2$, and let $b : \Omega \to H$ be square-integrable
+with Gram operator $J$ of finite trace, positive and injective, and
+$J \preceq \Lambda \cdot 1$ for some $\Lambda > 0$. Put $M = \Tr_e J / \Lambda$ and
+assume $M \geq 1 + 1/n$. Then for every $n \geq m$ there are points
+$x_1, \dots, x_n \in \Omega$ and weights $w_1, \dots, w_n > 0$ with
+\[
+  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot 1
+    \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
+\]
+in the matrix order and
+\[
+  \sum_{i=1}^n w_i \, b(x_i) b(x_i)^*
+    \; \preceq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \cdot 1
+\]
+in the order of operators.
+\end{theorem}
+
+\begin{proof}
+\leanok
+\uses{lem:barrier-op, lem:average-upper-op, lem:inv-potential-op, prop:construction,
+      lem:frame-constants, lem:read-off}
+The construction is that of \cref{prop:construction} with the upper state the operator
+$B_k = B_0 + k \zeta \cdot J - \sum_i w_i \, b(x_i) b(x_i)^*$: the step is
+\cref{lem:average-upper-op} followed by the two barrier lemmas, the lower one for
+matrices and \cref{lem:barrier-op} for operators. The initial data, the parameters and
+the lower read-off are those of \cref{ch:construction} verbatim; the upper read-off is
+\cref{lem:inv-potential-op} in place of \cref{lem:inv-trace-mul-smul-le}, and the
+constants come out the same by \cref{lem:frame-constants}.
+\end{proof}
+
+\begin{corollary}[Discretization with a countable second family]
+\label{cor:discretization-infinite}
+\lean{Discretization.Infinite.exists_discretization}
+\leanok
+\uses{thm:main-infinite}
+In the situation of \cref{thm:main-infinite}, the same points and weights satisfy, for
+every $c \in \mathbb{C}^{\iota}$,
+\[
+  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \int_\Omega
+    \Bigl| \sum_k \overline{c_k} \, a_k(x) \Bigr|^2 d\mu(x)
+  \; \leq \; \sum_{i=1}^n w_i \Bigl| \sum_k \overline{c_k} \, a_k(x_i) \Bigr|^2
+\]
+and, for every $u \in H$,
+\[
+  \sum_{i=1}^n w_i \bigl| \langle u, b(x_i) \rangle \bigr|^2
+  \; \leq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \, \|u\|^2 .
+\]
+\end{corollary}
+
+\begin{proof}
+\leanok
+\uses{lem:integral-quadform}
+A Loewner inequality between operators is an inequality between quadratic forms,
+uniformly in the vector; for the first family this is \cref{lem:integral-quadform} read
+backwards, and for the second the quadratic form of a weighted sum of rank-one operators
+is the weighted sum of the squared moduli.
+\end{proof}
+
+\begin{remark}[What is left]
+\label{rem:left}
+\leanok
+The number of points in \cref{thm:main-infinite} is governed by the effective dimension
+$M = \Tr_e J / \Lambda$ and not by the size of the second family. What is not formalised
+is the construction of the Gram operator from a reproducing kernel: the singular value
+decomposition of the embedding $H \hookrightarrow L_2(\mu)$, which supplies the family
+$b$ and makes $J$ diagonal, with $\Tr_e J$ the trace of the kernel and $\Lambda$ the
+squared norm of the embedding.
+\end{remark}
+
+\bpbibheading
+\begin{thebibliography}{9}
+
+\bibitem{BSS}
+J.~Batson, D.~A.~Spielman, N.~Srivastava,
+\emph{Twice-Ramanujan sparsifiers},
+SIAM Review \textbf{56} (2014), 315--334.
+
+\bibitem{CDKU}
+A.~Chkifa, M.~Dolbeault, D.~Krieg, M.~Ullrich,
+\emph{Constructive discretization and approximation in reproducing kernel Hilbert
+spaces}.
+
+\end{thebibliography}
