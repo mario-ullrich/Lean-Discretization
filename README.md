@@ -1,10 +1,12 @@
 # Constructive discretization in Lean 4 / Mathlib
 
+**Repository**: <https://github.com/mario-ullrich/Lean-Discretization> (private).
+
 **Blueprint**: a human-readable account of the mathematics, with the Lean declaration named
 at every statement and a dependency graph, is built from `blueprint/` by GitHub Actions on
-every push.  Once this repository has a remote, the rendered site and the PDF are published
-to GitHub Pages, and every run also leaves them as a downloadable artifact under
-*Actions -> latest run -> blueprint-YYYYMMDD*.
+every push.  The rendered site and the PDF are downloadable from every run under
+*Actions -> latest run -> blueprint-YYYYMMDD*.  Publishing them to GitHub Pages needs a public
+repository, which the free plan requires for Pages; the deploy job skips itself until then.
 
 ## The question
 
