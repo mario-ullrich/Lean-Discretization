@@ -1,13 +1,17 @@
 # Constructive discretization in Lean 4 / Mathlib
 
-A Lean 4 / Mathlib formalisation of the **generalized Batson–Spielman–Srivastava
-sparsification theorem** of Chkifa, Dolbeault, Krieg and Ullrich, and of the
-`L₂`-norm discretization inequality it yields. What the generalisation adds: the two
-frame bounds may refer to two different families of functions, and the upper bound
+A Lean 4 / Mathlib formalisation of two theorems that replace a norm by finitely many
+point evaluations. The first is the **generalized Batson–Spielman–Srivastava
+sparsification theorem** of Chkifa, Dolbeault, Krieg and Ullrich, with the `L₂`-norm
+discretization inequality it yields; what the generalisation adds is that the two frame
+bounds may refer to two different families of functions, and that the upper bound
 depends on the *effective dimension* of the second family rather than on how many
-functions it contains. The project builds without `sorry`, and every theorem uses only
-the three axioms Mathlib relies on throughout (`propext`, `Classical.choice`,
-`Quot.sound`).
+functions it contains. The second is the **Kiefer–Wolfowitz theorem** in the form used
+by Krieg, Pozharska, Ullrich and Ullrich for sampling projections: on an
+`n`-dimensional space of bounded functions the uniform norm is dominated by the `L₂`
+norm of a finitely supported probability measure, with the constant `√(n+ε)`. The
+project builds without `sorry`, and every theorem uses only the three axioms Mathlib
+relies on throughout (`propext`, `Classical.choice`, `Quot.sound`).
 
 * **Blueprint** (the mathematics, with the Lean name at every statement):
   <https://mario-ullrich.github.io/Lean-Discretization/>
@@ -32,7 +36,15 @@ its size, is what makes the theorem applicable to infinite-dimensional reproduci
 kernel Hilbert spaces, and it is the reason its constants beat those obtainable from
 the Kadison–Singer theorem.
 
-## The theorem
+The second question is which measure to discretize in the first place. On an
+`n`-dimensional space of functions one may ask for a measure for which the uniform norm
+is already controlled by the `L₂` norm, and the answer of Kiefer and Wolfowitz is that a
+measure maximising the determinant of the Gram matrix does this with the constant `√n`,
+up to an arbitrarily small loss on a general domain. Applying the sparsification theorem
+to such a measure is how one arrives at sampling projections with few points and small
+norm.
+
+## Main results
 
 Let `(Ω, μ)` be a measure space, `ι` a finite nonempty index set with `m = card ι`
 elements, and `κ` a second finite index set. Let
@@ -49,12 +61,10 @@ with
 ∑ wᵢ b(xᵢ) b(xᵢ)*      ≤  (1 + √((M-1)/n))² Λ • 1  (upper frame bound)
 ```
 
-in the Loewner order, with no side condition. This is
-`Discretization.bss_generalized_of_gram_eq_one'`.
+in the Loewner order, with no side condition
+(`Discretization.bss_generalized_of_gram_eq_one'`). Four statements go with it:
 
-## Main results
-
-* **The potential argument** proves the theorem under the two side conditions `m ≥ 2`
+* **The potential argument** gives the theorem under the two side conditions `m ≥ 2`
   and `M ≥ 1 + 1/n` (`Discretization.bss_generalized_of_gram_eq_one`). Three further
   theorems cover the cases where one or both of them fail
   (`.bss_generalized_of_unique`, `.bss_generalized_of_small_dim`,
@@ -76,6 +86,67 @@ in the Loewner order, with no side condition. This is
   `.Infinite.exists_discretization`). This is Corollary 4 of the paper; with `b` the
   singular basis of the embedding of a reproducing kernel Hilbert space into `L₂`, the
   coefficient norm is the norm of that space.
+
+For the second theorem, let `D` be any set, `ι` a finite nonempty index set with
+`n = card ι` elements, and `a : D → ι → ℂ` a bounded family whose coordinate functions
+are linearly independent. Then for every `ε > 0` there are points `x₁, …, x_N ∈ D` and
+weights `w₁, …, w_N ≥ 0` summing to one such that
+
+```
+|f(y)|²  ≤  (n + ε) · ∑ wₖ |f(xₖ)|²
+```
+
+for every point `y ∈ D` and every `f` in the span of the family
+(`Discretization.KieferWolfowitz.exists_design_kieferWolfowitz`). This is Proposition 9
+of Krieg, Pozharska, Ullrich and Ullrich. Three variants of it are proved:
+
+* **As a measure.** The points and weights are a finitely supported probability measure
+  `ϱ = ∑ wₖ δ(xₖ)` with invertible Gram matrix, and the inequality reads
+  `|f(y)|² ≤ (n + ε) ∫ |f|² dϱ`
+  (`Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz`). The Gram
+  matrix of `ϱ` in the sense of `Discretization.gram` is the one of the points and
+  weights (`.gram_designMeasure`), which is what lets the measure be handed to the
+  sparsification theorem.
+* **The sharp constant on a compact domain.** For continuous functions on a compact
+  space the maximum of the determinant is attained, the `ε` disappears, and the constant
+  is `√n` (`Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`).
+* **At most `2n² + 1` points.** Every design can be replaced by one with at most
+  `2n² + 1` points and the same Gram matrix, so both statements hold with that many
+  points (`Discretization.KieferWolfowitz.exists_design_card_le`,
+  `.exists_design_kieferWolfowitz_card_le`,
+  `.exists_design_kieferWolfowitz_of_compact_card_le`).
+
+## The proofs
+
+The first proof is the potential-function argument of BSS, with the second potential
+weighted by `J`. Two matrices `A` and `B` are carried along, and two real numbers
+measure how close each is to failure: the **lower potential** `Φ(A) = Tr A⁻¹`, which is
+large when `A` has a small eigenvalue, and the **upper potential** `Ψ_J(B) = Tr (J B⁻¹)`,
+which is large when `B` is small where `J` is large. Each of the `n` steps first shifts
+`A` to `A - δ • 1` and `B` to `B + ζ • J`, which costs an exactly computable amount of
+both potentials, and the barrier lemma then says which weights at which point spend no
+more than that. Averaging the verifiers over `μ` turns them into traces against the Gram
+matrices, so such a point exists. After `n` steps both potentials are still below their
+initial values, and reading a bound on a potential back as a bound on the matrix gives
+the two frame bounds. For a countably infinite second family, `B` is a positive
+invertible operator and the traces are sums along a fixed Hilbert basis; only the upper
+side is redone, in `Discretization/Infinite/`.
+
+The second proof maximises a determinant. Among all finitely supported probability
+measures one is chosen whose Gram matrix `G = ∑ wₖ a(xₖ) a(xₖ)*` has an almost maximal
+determinant: the determinants are bounded above because the entries of `G` are, and one
+of them is positive because the functions are linearly independent. Giving a further
+point `y` the weight `α` yields such a measure again, and the matrix determinant lemma
+says exactly what that does to the determinant, namely multiply it by
+`(1-α)^(n-1) (1 + α (t - 1))` with `t = a(y)* G⁻¹ a(y)`. Almost maximality bounds that
+factor, and Bernoulli's inequality with the explicit weight `α = (t-n)/(2n(t-1))` turns
+the bound into `t ≤ n + ε`, uniformly in `y`. Subtracting `(n+ε)⁻¹ a(y) a(y)*` from `G`
+then leaves a positive definite matrix, which read as an inequality between quadratic
+forms is the theorem. On a compact domain the maximum is attained and the same argument
+gives `t ≤ n`.
+
+The steps the two arguments are built from:
+
 * **Barrier lemma.** A weight between the values of the two verifier functions keeps
   both matrices positive definite and lets neither potential increase
   (`Discretization.lowerPotential_update_le`, `.upperPotential_update_le`,
@@ -91,7 +162,20 @@ in the Loewner order, with no side condition. This is
   with the cyclicity and the bound `T ≼ Tr(T) • 1` the argument needs
   (`ContinuousLinearMap.traceAlong`, `.tsum_inner_apply_comm`,
   `.le_traceAlong_smul_one`). Mathlib has no trace outside finite dimension.
-* Three tools from `BasicResults` carry the steps above: Sherman–Morrison for a
+* **The determinant of a rank-one mixture**,
+  `det (β A + α u u*) = β^(n-1) det A (β + α u* A⁻¹ u)`, affine in `α` and so the
+  substitute for the derivative of the determinant
+  (`Matrix.det_smul_add_smul_vecMulVec`), together with the real estimate it feeds
+  (`Discretization.KieferWolfowitz.exists_mix_ge`) and the uniform bound on the
+  quadratic form that comes out (`.exists_design_quadForm_inv_le`). Mathlib has no
+  Jacobi formula, and none is needed.
+* **A design with an invertible Gram matrix** exists for linearly independent functions,
+  which is what makes the determinant somewhere positive
+  (`Discretization.KieferWolfowitz.exists_design_posDef`), and the Gram matrices of
+  designs are the convex hull of the rank-one matrices `a(y) a(y)*`, which is where
+  Carathéodory's theorem enters (`.designGram_mem_convexHull`,
+  `.exists_design_of_mem_convexHull`).
+* Three more tools from `BasicResults` recur throughout: Sherman–Morrison for a
   rank-one update, for matrices and for operators (`Matrix.inv_add_smul_vecMulVec`,
   `ContinuousLinearMap.inverse_add_smul_rankOne`), Cauchy–Schwarz for the trace
   (`Matrix.PosSemidef.norm_trace_mul_sq_le`), and `∫ a(x)* Q a(x) dμ = Tr (Q · gram a μ)`
@@ -99,32 +183,19 @@ in the Loewner order, with no side condition. This is
 
 Everything else is in the blueprint, with its Lean name at every statement.
 
-## The proof
-
-The proof is the potential-function argument of BSS, with the second potential weighted
-by `J`. Two matrices `A` and `B` are carried along, and two real numbers measure how
-close each is to failure: the **lower potential** `Φ(A) = Tr A⁻¹`, which is large when
-`A` has a small eigenvalue, and the **upper potential** `Ψ_J(B) = Tr (J B⁻¹)`, which is
-large when `B` is small where `J` is large. Each of the `n` steps first shifts `A` to
-`A - δ • 1` and `B` to `B + ζ • J`, which costs an exactly computable amount of both
-potentials, and the barrier lemma then says which weights at which point spend no more
-than that. Averaging the verifiers over `μ` turns them into traces against the Gram
-matrices, so such a point exists. After `n` steps both potentials are still below their
-initial values, and reading a bound on a potential back as a bound on the matrix gives
-the two frame bounds. For a countably infinite second family, `B` is a positive
-invertible operator and the traces are sums along a fixed Hilbert basis; only the upper
-side is redone, in `Discretization/Infinite/`.
-
 ## Organisation
 
-Two libraries. `Discretization` holds the argument: the arithmetic of the parameters,
+Two libraries. `Discretization` holds the arguments: the arithmetic of the parameters,
 the two potentials and the verifiers, the barrier lemma, the averaging step, the
 `n`-step iteration, the main theorem with its edge cases, the discretization
-inequality, and under `Discretization/Infinite/` the same for a countably infinite
-second family. `BasicResults` holds what the argument needs and Mathlib lacks:
-comparisons in the Loewner order, traces of products and Cauchy–Schwarz for them,
-Sherman–Morrison for rank-one updates of a matrix and of an operator, the trace of an
-operator along a Hilbert basis, and the bridge from Bochner integrals to Gram matrices;
+inequality, under `Discretization/Infinite/` the same for a countably infinite second
+family, and under `Discretization/KieferWolfowitz/` the maximisation of the determinant
+of a Gram matrix and the theorem it yields. `BasicResults` holds what the arguments need
+and Mathlib lacks: comparisons in the Loewner order, traces of products and
+Cauchy–Schwarz for them, Sherman–Morrison for rank-one updates of a matrix and of an
+operator, the trace of an operator along a Hilbert basis, the matrix determinant lemma,
+the compactness of the convex hull of a compact set, and the bridge from Bochner
+integrals to Gram matrices;
 [MathlibCandidates.md](MathlibCandidates.md) lists what could be upstreamed.
 `blueprint/` holds the LaTeX source of the blueprint and the script that points its
 `\lean` links at this repository.
@@ -135,8 +206,10 @@ operator along a Hilbert basis, and the bridge from Bochner integrals to Gram ma
   countable second family is proved; what is not formalised is the construction of the
   Gram operator from a kernel, that is the singular value decomposition of the
   embedding into `L₂` which supplies the family `b` and makes `J` diagonal.
-* **The applications of the paper**: least-squares recovery, sampling numbers, and the
-  discretization with equal weights via Kiefer–Wolfowitz.
+* **Sampling projections in the uniform norm**: handing the Kiefer–Wolfowitz measure to
+  the sparsification theorem, which is what yields a projection using `2n` points with
+  norm of order `√n`.
+* **The applications of the paper**: least-squares recovery and sampling numbers.
 
 ## Building
 
@@ -180,8 +253,18 @@ Apache 2.0, the same as Mathlib. See [LICENSE](LICENSE).
 ## References
 
 * A. Chkifa, M. Dolbeault, D. Krieg, M. Ullrich, *Constructive discretization and
-  approximation in reproducing kernel Hilbert spaces*. Theorem 3 is the result
-  formalised here, Corollary 4 the discretization inequality, and Section 4 the proof
-  followed in `Discretization/`.
+  approximation in reproducing kernel Hilbert spaces*, preprint, 2026,
+  [arxiv](https://arxiv.org/abs/2602.18719). Theorem 3 is the result formalised here,
+  Corollary 4 the discretization inequality, and Section 4 the proof followed in
+  `Discretization/`.
 * J. Batson, D. A. Spielman, N. Srivastava, *Twice-Ramanujan sparsifiers*, SIAM Review
-  **56** (2014), 315–334. The original potential-function argument.
+  **56** (2014), no. 2, 315–334, [doi](https://doi.org/10.1137/130949117),
+  [arxiv](https://arxiv.org/abs/0808.0163). The original potential-function argument.
+* D. Krieg, K. Pozharska, M. Ullrich, T. Ullrich, *Sampling projections in the uniform
+  norm*, J. Math. Anal. Appl. **553** (2026), no. 2, Paper No. 129873,
+  [arxiv](https://arxiv.org/abs/2401.02220). Proposition 9 is the Kiefer–Wolfowitz
+  theorem formalised here, and its proof the one followed in
+  `Discretization/KieferWolfowitz/`.
+* J. Kiefer, J. Wolfowitz, *The equivalence of two extremum problems*, Canad. J. Math.
+  **12** (1960), 363–366, [doi](https://doi.org/10.4153/CJM-1960-030-4). The original
+  equivalence theorem for optimal designs.

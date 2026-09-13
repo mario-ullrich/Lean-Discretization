@@ -25,6 +25,11 @@ $B - A$ is positive semidefinite. Traces of the matrices appearing below are rea
 the formalisation takes real parts wherever a real number is needed; this is left
 silent in the statements.
 
+The last chapter stands apart from the rest. It answers the question which measure to
+discretize in the first place: on an $n$-dimensional space of functions, a measure
+maximising the determinant of the Gram matrix already controls the uniform norm by the
+$L_2$ norm.
+
 Each statement names the Lean declaration that formalises it. Every statement and every
 proof is formalised: the project compiles without \texttt{sorry}, so each result is
 verified by the Lean kernel.
@@ -1250,17 +1255,276 @@ $b$ and makes $J$ diagonal, with $\Tr_e J$ the trace of the kernel and $\Lambda$
 squared norm of the embedding.
 \end{remark}
 
+\chapter{Discretizing the uniform norm}
+\label{ch:design}
+
+The sparsification theorem starts from a measure; this chapter produces one. Let $D$ be
+an arbitrary set, $\iota$ a finite nonempty index set with $n = \#\iota$ elements, and
+$a = (a_k)_{k \in \iota}$ a family of bounded functions $D \to \mathbb{C}$ whose
+coordinate functions are linearly independent. Writing $f(y) = \langle c, a(y) \rangle$
+for the function with coefficient vector $c \in \mathbb{C}^{\iota}$, we look for finitely
+many points with weights for which
+\[
+  |f(y)|^2 \; \leq \; (n + \varepsilon) \sum_k w_k |f(x_k)|^2
+  \qquad \text{for all } y \in D \text{ and all } c,
+\]
+which is the statement that the uniform norm on an $n$-dimensional space of functions is
+dominated by the $L_2$ norm of that measure, with the constant $\sqrt{n + \varepsilon}$.
+The answer of Kiefer and Wolfowitz is that a measure whose Gram matrix has an almost
+maximal determinant does this.
+
+No topology and no measurable structure on $D$ are used: a finitely supported measure is
+a finite list of points with weights, and it is kept in that form until
+\cref{cor:design-measure}.
+
+\begin{definition}[Design and its Gram matrix]
+\label{def:design-gram}
+\lean{Discretization.KieferWolfowitz.designGram}
+\leanok
+A \emph{design} consists of finitely many points $x_1, \dots, x_N \in D$ and weights
+$w_1, \dots, w_N \geq 0$ with $\sum_k w_k = 1$. Its \emph{Gram matrix} is
+\[
+  G = \sum_{k=1}^N w_k \, a(x_k) a(x_k)^* \in \mathbb{C}^{\iota \times \iota},
+\]
+the Gram matrix of the family $a$ in $L_2$ of the measure $\sum_k w_k \delta_{x_k}$.
+\end{definition}
+
+\begin{lemma}[Quadratic form of a Gram matrix]
+\label{lem:design-quadform}
+\lean{Discretization.KieferWolfowitz.re_quadForm_designGram}
+\leanok
+For every design and every $c \in \mathbb{C}^{\iota}$,
+$c^* G c = \sum_k w_k |\langle c, a(x_k) \rangle|^2$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+The quadratic form of a rank-one matrix $u u^*$ at $c$ is $|\langle c, u \rangle|^2$,
+and both sides are additive in the summands.
+\end{proof}
+
+\begin{lemma}[A design with an invertible Gram matrix]
+\label{lem:nondegenerate}
+\lean{Discretization.KieferWolfowitz.exists_design_posDef}
+\leanok
+If $c = 0$ is the only coefficient vector with $\langle c, a(y) \rangle = 0$ for all
+$y \in D$, then some design has a positive definite Gram matrix.
+\end{lemma}
+
+\begin{proof}
+\leanok
+It suffices to find points $x_1, \dots, x_N$ such that a coefficient vector annihilated
+by all of them is zero, for then the uniform distribution on those points has
+$c^* G c > 0$ for every $c \neq 0$ by \cref{lem:design-quadform}. Such points are found
+by descending induction on dimension: if some nonzero vector of the subspace still
+surviving is annihilated by the points chosen so far, the hypothesis supplies a point at
+which it does not vanish, and adding that point lowers the dimension of the surviving
+subspace by at least one.
+\end{proof}
+
+\begin{lemma}[Determinant of a rank-one mixture]
+\label{lem:det-rank-one}
+\lean{Matrix.det_smul_add_smul_vecMulVec}
+\leanok
+Let $A \in \mathbb{C}^{\iota \times \iota}$ be invertible, $\beta \neq 0$ a scalar,
+$\alpha$ a scalar and $u \in \mathbb{C}^{\iota}$. Then
+\[
+  \det(\beta A + \alpha \, u u^*)
+    = \beta^{\,n-1} \det A \, \bigl( \beta + \alpha \, u^* A^{-1} u \bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+Factor $\beta A$ out and apply the matrix determinant lemma
+$\det(A + v w^*) = \det A \, (1 + w^* A^{-1} v)$, which holds because the added matrix
+has rank one. The dependence on $\alpha$ is affine; this identity is what replaces the
+derivative of the determinant.
+\end{proof}
+
+\begin{lemma}[Gain from mixing in one point]
+\label{lem:mix}
+\lean{Discretization.KieferWolfowitz.exists_mix_ge}
+\leanok
+Let $n \geq 1$ and $t > n$ be real. Then $\alpha = (t-n) / (2n(t-1))$ lies in $[0,1)$ and
+\[
+  1 + \frac{(t-n)^2}{4n(t-1)}
+    \; \leq \; (1-\alpha)^{n-1} \bigl( 1 + \alpha (t-1) \bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+By Bernoulli's inequality $(1-\alpha)^{n-1} \geq 1 - (n-1)\alpha$, and the difference of
+the two sides of the claim is then the explicit nonnegative quantity
+$(t-n)^2 / (4n^2(t-1))$. The weight $\alpha$ is the one for which the linear gain
+$\alpha(t-n)$ is twice the quadratic loss $(n-1)(t-1)\alpha^2$, so half of the gain
+survives.
+\end{proof}
+
+\begin{proposition}[Almost maximal determinant]
+\label{prop:det-max}
+\lean{Discretization.KieferWolfowitz.exists_design_quadForm_inv_le}
+\leanok
+\uses{def:design-gram, lem:nondegenerate, lem:det-rank-one, lem:mix}
+Assume the functions $a_k$ are bounded and their coordinate functions linearly
+independent, and let $\varepsilon > 0$. Then there is a design whose Gram matrix $G$ is
+positive definite and satisfies
+\[
+  a(y)^* G^{-1} a(y) \; \leq \; n + \varepsilon \qquad \text{for all } y \in D .
+\]
+\end{proposition}
+
+\begin{proof}
+\leanok
+The determinants of the Gram matrices of designs form a set of real numbers which is
+bounded above, since the entries of every Gram matrix are bounded by $C^2$ and the
+Leibniz formula bounds a determinant by its entries, and which contains a positive
+number by \cref{lem:nondegenerate}. Let $S$ be its supremum and take a design whose
+determinant exceeds $S / (1 + \kappa)$, where
+$\kappa = \varepsilon^2 / (4n(n + \varepsilon - 1))$; its Gram matrix $G$ is positive
+definite because its determinant is positive.
+
+Appending a point $y$ with weight $\alpha \in [0,1)$ and scaling the old weights by
+$1 - \alpha$ is again a design, with Gram matrix $(1-\alpha) G + \alpha \, a(y) a(y)^*$.
+By \cref{lem:det-rank-one} its determinant is $\det G$ multiplied by
+$(1-\alpha)^{n-1}(1 + \alpha(t-1))$ with $t = a(y)^* G^{-1} a(y)$, and that multiple
+cannot exceed $S / \det G < 1 + \kappa$. If $t$ were larger than $n + \varepsilon$, the
+weight of \cref{lem:mix} would make it at least $1 + \kappa$.
+\end{proof}
+
+\begin{theorem}[Discretization of the uniform norm]
+\label{thm:uniform-discretization}
+\lean{Discretization.KieferWolfowitz.exists_design_kieferWolfowitz}
+\leanok
+\uses{prop:det-max, lem:design-quadform, lem:update-posdef}
+Let $a$ be bounded with linearly independent coordinate functions and let
+$\varepsilon > 0$. Then there are points $x_1, \dots, x_N \in D$ and weights
+$w_1, \dots, w_N \geq 0$ with $\sum_k w_k = 1$ such that
+\[
+  \Bigl| \sum_k \overline{c_k} \, a_k(y) \Bigr|^2
+    \; \leq \; (n + \varepsilon) \sum_{k=1}^N w_k
+      \Bigl| \sum_l \overline{c_l} \, a_l(x_k) \Bigr|^2
+\]
+for every $y \in D$ and every $c \in \mathbb{C}^{\iota}$.
+\end{theorem}
+
+\begin{proof}
+\leanok
+Take the design of \cref{prop:det-max} for $\varepsilon/2$. For $s = n + \varepsilon$
+the bound $s^{-1} a(y)^* G^{-1} a(y) < 1$ is strict, so subtracting $s^{-1} a(y) a(y)^*$
+from $G$ leaves a positive definite matrix by \cref{lem:update-posdef}, that is
+$a(y) a(y)^* \preceq s \cdot G$. Evaluating this at $c$ and using
+\cref{lem:design-quadform} gives the claim.
+\end{proof}
+
+\begin{theorem}[The sharp constant on a compact domain]
+\label{thm:uniform-discretization-compact}
+\lean{Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact}
+\leanok
+\uses{prop:det-max, lem:mix, lem:design-quadform}
+Let $D$ be a compact space and let the functions $a_k$ be continuous with linearly
+independent coordinate functions. Then there are points $x_1, \dots, x_N \in D$ and
+weights $w_1, \dots, w_N \geq 0$ with $\sum_k w_k = 1$ such that
+\[
+  \Bigl| \sum_k \overline{c_k} \, a_k(y) \Bigr|^2
+    \; \leq \; n \sum_{k=1}^N w_k \Bigl| \sum_l \overline{c_l} \, a_l(x_k) \Bigr|^2
+\]
+for every $y \in D$ and every $c \in \mathbb{C}^{\iota}$.
+\end{theorem}
+
+\begin{proof}
+\leanok
+The matrices $a(y) a(y)^*$ form a compact set, whose convex hull is compact as well and
+consists exactly of the Gram matrices of designs. The determinant is continuous, so it
+attains its maximum at a design. No mixture can then increase the determinant at all,
+and \cref{lem:mix} applied with the factor $1$ gives $a(y)^* G^{-1} a(y) \leq n$ without
+slack. The passage to the norm inequality is that of
+\cref{thm:uniform-discretization} for every constant $s > n$, followed by the limit
+$s \to n$, which is a limit of real numbers.
+\end{proof}
+
+Both theorems produce a list of points with weights. Read as a measure, that list is
+the object the sparsification theorem asks for.
+
+\begin{corollary}[The measure]
+\label{cor:design-measure}
+\lean{Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz}
+\leanok
+\uses{thm:uniform-discretization, def:gram}
+Let $D$ carry a measurable structure and let the functions $a_k$ be measurable in
+addition. Then the measure $\varrho = \sum_k w_k \delta_{x_k}$ of
+\cref{thm:uniform-discretization} is a probability measure whose Gram matrix $G(a)$ in
+the sense of \cref{def:gram} is positive definite and equal to the Gram matrix of the
+design, and
+\[
+  |f(y)|^2 \; \leq \; (n + \varepsilon) \int_D |f|^2 \, d\varrho
+\]
+for every $y \in D$ and every $f$ in the span of the family.
+\end{corollary}
+
+\begin{proof}
+\leanok
+Integration against $\sum_k w_k \delta_{x_k}$ is the weighted sum over the points, for
+every strongly measurable integrand.
+\end{proof}
+
+\begin{lemma}[Few points suffice]
+\label{lem:point-count}
+\lean{Discretization.KieferWolfowitz.exists_design_card_le}
+\leanok
+\uses{def:design-gram}
+Every design can be replaced by one with at most $2n^2 + 1$ points and the same Gram
+matrix.
+\end{lemma}
+
+\begin{proof}
+\leanok
+The Gram matrix lies in the convex hull of the matrices $a(y) a(y)^*$, so by
+Carath\'eodory's theorem it is a convex combination of affinely independent ones, and an
+affinely independent family in the real vector space $\mathbb{C}^{\iota \times \iota}$,
+whose real dimension is $2n^2$, has at most $2n^2 + 1$ members.
+\end{proof}
+
+\begin{remark}[What the count is good for]
+\label{rem:point-count}
+\leanok
+\uses{lem:point-count, thm:uniform-discretization}
+Both \cref{thm:uniform-discretization} and \cref{thm:uniform-discretization-compact}
+depend on the design only through its Gram matrix, by \cref{lem:design-quadform}, so
+\cref{lem:point-count} gives them with at most $2n^2 + 1$ points. The sharper count
+$r + 1$, with $r$ the dimension of the span of the products $a_k \overline{a_l}$, is not
+formalised; nothing needs it, because the sparsification theorem accepts any finite, and
+indeed any countable, family of points.
+\end{remark}
+
 \bpbibheading
-\begin{thebibliography}{9}
+\begin{thebibliography}{99}
 
 \bibitem{BSS}
 J.~Batson, D.~A.~Spielman, N.~Srivastava,
 \emph{Twice-Ramanujan sparsifiers},
-SIAM Review \textbf{56} (2014), 315--334.
+SIAM Review \textbf{56} (2014), no.~2, 315--334,
+\href{https://doi.org/10.1137/130949117}{doi},
+\href{https://arxiv.org/abs/0808.0163}{arxiv}.
 
 \bibitem{CDKU}
 A.~Chkifa, M.~Dolbeault, D.~Krieg, M.~Ullrich,
 \emph{Constructive discretization and approximation in reproducing kernel Hilbert
-spaces}.
+spaces},
+preprint, 2026,
+\href{https://arxiv.org/abs/2602.18719}{arxiv}.
+
+\bibitem{KW}
+J.~Kiefer, J.~Wolfowitz,
+\emph{The equivalence of two extremum problems},
+Canad. J. Math. \textbf{12} (1960), 363--366,
+\href{https://doi.org/10.4153/CJM-1960-030-4}{doi}.
+
+\bibitem{KPUU}
+D.~Krieg, K.~Pozharska, M.~Ullrich, T.~Ullrich,
+\emph{Sampling projections in the uniform norm},
+J. Math. Anal. Appl. \textbf{553} (2026), no.~2, Paper No.~129873,
+\href{https://arxiv.org/abs/2401.02220}{arxiv}.
 
 \end{thebibliography}

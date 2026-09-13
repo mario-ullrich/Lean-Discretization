@@ -13,6 +13,8 @@ import BasicResults.OperatorTrace
 import BasicResults.OperatorShermanMorrison
 import BasicResults.OperatorQuadraticForm
 import BasicResults.QuadraticForm
+import BasicResults.RankOneDeterminant
+import BasicResults.CompactConvexHull
 
 /-!
 # General ingredients
@@ -60,4 +62,9 @@ In Lean this order is switched on by the command `open scoped MatrixOrder`, and 
 * `BasicResults.QuadraticForm`: the dictionary between matrices and functions.  The
   quadratic form of `∑ wᵢ a(xᵢ) a(xᵢ)*` at a coefficient vector is `∑ wᵢ |f(xᵢ)|²`, and the
   quadratic form is monotone for the Loewner order.
+* `BasicResults.RankOneDeterminant`: the **matrix determinant lemma**, the exact value of
+  `det (β A + α u u*)`, which is affine in `α` because `u u*` has rank one, and the crude
+  bound `|det A| ≤ n! Cⁿ` by the size of the entries.
+* `BasicResults.CompactConvexHull`: in finite dimension the convex hull of a compact set is
+  compact, by Carathéodory's theorem.
 -/

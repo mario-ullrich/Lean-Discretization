@@ -44,3 +44,23 @@ Grouped by topic, with the main declarations:
   square-integrable family is a trace against its Gram matrix
   (`Discretization.integral_quadForm`), and against its Gram operator in infinite
   dimension (`ContinuousLinearMap.integral_re_inner_apply`).
+* **Rank-one updates of a determinant** (`BasicResults/RankOneDeterminant.lean`): the
+  matrix determinant lemma in terms of `Matrix.vecMulVec`
+  (`Matrix.det_add_vecMulVec`), where Mathlib has it only for a product of a column
+  and a row (`Matrix.det_add_replicateCol_mul_replicateRow`); the exact value of
+  `det (β A + α u u*)`, affine in `α` because `u u*` has rank one
+  (`Matrix.det_smul_add_smul_vecMulVec`, with the real form
+  `Matrix.PosDef.re_det_smul_add_smul_vecMulVec`); and the Leibniz bound
+  `|det A| ≤ n! Cⁿ` by the size of the entries
+  (`Matrix.norm_det_le_of_norm_apply_le`).
+* **The convex hull of a compact set is compact**
+  (`BasicResults/CompactConvexHull.lean`): in finite dimension the hull of a compact
+  set is compact (`IsCompact.convexHull`). Mathlib has the finite-set case
+  (`Set.Finite.isCompact_convexHull`) and `TotallyBounded.convexHull`, which gives
+  compactness only of the closure. The proof needs no norm, only continuity of the
+  vector space operations, which is what lets it apply to spaces such as
+  `Matrix ι ι ℂ`, whose norms are all scoped.
+* **Quadratic forms and sums of squares** (`BasicResults/QuadraticForm.lean`): the
+  quadratic form of a weighted sum of rank-one matrices is the corresponding weighted
+  sum of squared moduli (`Discretization.re_dotProduct_sum_mulVec`), and the quadratic
+  form is monotone for the Loewner order (`Discretization.re_quadForm_le_of_le`).

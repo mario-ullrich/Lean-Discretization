@@ -22,23 +22,43 @@ import Discretization.Infinite.Bounds
 import Discretization.Infinite.Iteration
 import Discretization.Infinite.MainTheorem
 import Discretization.Infinite.NormDiscretization
+import Discretization.KieferWolfowitz.MixEstimate
+import Discretization.KieferWolfowitz.Design
+import Discretization.KieferWolfowitz.NonDegenerate
+import Discretization.KieferWolfowitz.DetMax
+import Discretization.KieferWolfowitz.MainTheorem
+import Discretization.KieferWolfowitz.Measure
+import Discretization.KieferWolfowitz.ConvexHull
+import Discretization.KieferWolfowitz.Compact
+import Discretization.KieferWolfowitz.PointCount
 
 /-!
 # Constructive discretization
 
-A generalization of the sparsification theorem of Batson, Spielman and Srivastava.  Given two
-families of square-integrable functions on a measure space, one can select `n` points and
-positive weights so that the first family stays a frame from below and the second stays a
-frame from above, with bounds `(1 - √((m-1)/n))²` and `(1 + √((M-1)/n))² Λ`.  Here `m` is
-the size of the first family, `Λ` bounds the Gram matrix `J` of the second one, and
-`M = Tr J / Λ` is its **effective dimension**, not its cardinality.  This is what makes the
-upper bound dimension-free, and it allows the second family to be countably infinite.
+Two theorems on discretizing a norm by finitely many point evaluations.
+
+The first is a generalization of the sparsification theorem of Batson, Spielman and
+Srivastava.  Given two families of square-integrable functions on a measure space, one can
+select `n` points and positive weights so that the first family stays a frame from below and
+the second stays a frame from above, with bounds `(1 - √((m-1)/n))²` and
+`(1 + √((M-1)/n))² Λ`.  Here `m` is the size of the first family, `Λ` bounds the Gram matrix
+`J` of the second one, and `M = Tr J / Λ` is its **effective dimension**, not its
+cardinality.  This is what makes the upper bound dimension-free, and it allows the second
+family to be countably infinite.
 
 The argument is the potential-function argument of Batson–Spielman–Srivastava in the form
 given by Chkifa, Dolbeault, Krieg and Ullrich.  Two matrices are carried along, a small one
 for the lower bound and a large one for the upper bound.  Two real numbers, the potentials,
 measure how close they are to failure.  Each new sampling point is chosen so that neither
 potential gets worse.
+
+The second is the theorem of Kiefer and Wolfowitz in the form needed for sampling
+projections: on an `n`-dimensional space of bounded functions on an arbitrary set, and for
+every `ε > 0`, the uniform norm is dominated by the `L₂` norm of a finitely supported
+probability measure with the constant `√(n+ε)`, and by `√n` if the functions are continuous
+on a compact domain.  The measure is one whose Gram matrix has an almost maximal
+determinant, and the whole argument consists of comparing that determinant with the
+determinants obtained by giving one further point a small weight.
 
 ## Layout
 
@@ -81,4 +101,26 @@ potential gets worse.
   `Discretization.Infinite.bss_generalized_of_gram_eq_one`.
 * `Discretization.Infinite.NormDiscretization`: the same statement read as a discretization
   inequality, `Discretization.Infinite.exists_discretization`.
+* `Discretization.KieferWolfowitz.MixEstimate`: the one real inequality behind the
+  Kiefer–Wolfowitz argument, describing how the determinant reacts to giving a new point the
+  weight `α`.  No matrices occur in it.
+* `Discretization.KieferWolfowitz.Design`: designs, that is finitely supported probability
+  measures, and their Gram matrices `G = ∑ₖ wₖ a(xₖ) a(xₖ)*`.
+* `Discretization.KieferWolfowitz.NonDegenerate`: for linearly independent functions some
+  design has an invertible Gram matrix, so the determinant is somewhere positive.
+* `Discretization.KieferWolfowitz.DetMax`: the maximisation of the determinant and its
+  consequence `a(y)* G⁻¹ a(y) ≤ n + ε`, uniformly in `y`.
+* `Discretization.KieferWolfowitz.MainTheorem`: the Kiefer–Wolfowitz theorem in terms of the
+  points and weights, `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz`.
+* `Discretization.KieferWolfowitz.Measure`: the same statement for the measure
+  `ϱ = ∑ₖ wₖ δ(xₖ)`, `Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz`,
+  together with the identity `gram a ϱ = G` that hands it to the sparsification theorem.
+* `Discretization.KieferWolfowitz.ConvexHull`: the Gram matrices of designs are the convex
+  hull of the rank-one matrices `a(y) a(y)*`, and Carathéodory's theorem bounds the number
+  of points by `2n² + 1`.
+* `Discretization.KieferWolfowitz.Compact`: on a compact domain the maximum is attained and
+  the constant is the sharp `√n`,
+  `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`.
+* `Discretization.KieferWolfowitz.PointCount`: the two theorems with the number of points
+  bounded.
 -/
