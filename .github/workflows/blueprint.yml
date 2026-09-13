@@ -127,9 +127,12 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --rev "$GITHUB_SHA"
 
+      # Fatal on purpose: a blueprint that cites a declaration the project no
+      # longer has is wrong, and a step that only reports can itself break
+      # unnoticed. `lake exe checkdecls` comes from the `checkdecls` package
+      # required in lakefile.toml.
       - name: Verify Lean declaration references
         run: leanblueprint checkdecls
-        continue-on-error: true   # Reported, but not treated as a build failure.
 
       # Bundle the PDF with the web artifact, so one download has both.
       - name: Include the PDF in the web bundle

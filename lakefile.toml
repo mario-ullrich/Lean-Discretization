@@ -8,6 +8,12 @@ name = "mathlib"
 scope = "leanprover-community"
 version = "git#v4.33.1"
 
+# Supplies `lake exe checkdecls`, which the blueprint build runs to verify that every
+# `\lean{Decl}` tag names a declaration that really exists in the compiled project.
+[[require]]
+name = "checkdecls"
+git = "https://github.com/PatrickMassot/checkdecls.git"
+
 # The general matrix and integration facts the theory consumes: the Loewner order, trace
 # inequalities, the Sherman-Morrison formula, and the bridge between integrals of quadratic
 # forms and Gram matrices. Nothing here mentions discretization.
