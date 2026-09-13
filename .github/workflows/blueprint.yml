@@ -43,9 +43,6 @@ jobs:
           sudo docker image prune --all --force || true
           df -h /
 
-      # This project keeps its Lake dependencies outside the repository, in
-      # `../lake-packages/v4.33.1` (the `packagesDir` line of lakefile.toml), so
-      # that folder is what has to be cached rather than `.lake/packages`.
       # Exact key only, no `restore-keys`: on a Mathlib bump the fallback would
       # restore the *previous* toolchain and olean set, and the new ones would
       # then have to fit alongside them.
@@ -54,7 +51,7 @@ jobs:
         with:
           path: |
             ~/.elan
-            ../lake-packages
+            .lake/packages
             .lake/build
           key: ${{ runner.os }}-lean-${{ hashFiles('lake-manifest.json') }}
 

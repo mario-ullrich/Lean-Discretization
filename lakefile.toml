@@ -1,12 +1,6 @@
 name = "discretization"
 defaultTargets = ["Discretization", "BasicResults"]
 
-# All Lake dependencies live in one folder outside the repository, shared with the other
-# projects of this workspace that pin the same toolchain, so a single built Mathlib serves
-# all of them. The folder is named after the version it holds, which lets several Mathlib
-# versions coexist. A fresh clone creates `lake-packages/v4.33.1` next to this folder.
-packagesDir = "../lake-packages/v4.33.1"
-
 # Mathlib pinned to the v4.33.1 tag, matching lean-toolchain: a release tag has a
 # fully-published build cache, so `lake exe cache get` finds every olean.
 [[require]]
