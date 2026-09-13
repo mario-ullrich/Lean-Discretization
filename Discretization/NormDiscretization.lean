@@ -3,6 +3,7 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
+import BasicResults.QuadraticForm
 import Discretization.BothEdgeCases
 
 /-!
@@ -18,9 +19,12 @@ The dictionary is elementary.  A coefficient vector `c` gives the function
 
 * `∑ wᵢ |f(xᵢ)|² = c* G c` for the accumulated matrix `G = ∑ wᵢ a(xᵢ) a(xᵢ)*`
   (`Discretization.re_dotProduct_sum_mulVec`),
-* `∫ |f|² dμ = c* (gram a μ) c` (`Discretization.integral_norm_sq_combination`),
 * `c* A c ≤ c* B c` whenever `A ≤ B` in the Loewner order
-  (`Discretization.re_quadForm_le_of_le`).
+  (`Discretization.re_quadForm_le_of_le`),
+
+both from `BasicResults.QuadraticForm`, together with the one fact of this kind that does
+involve the measure, `∫ |f|² dμ = c* (gram a μ) c`
+(`Discretization.integral_norm_sq_combination`, proved below).
 
 So a Loewner inequality between matrices is exactly an inequality between quadratic forms,
 uniformly in the coefficient vector.  The result is
@@ -35,32 +39,7 @@ namespace Discretization
 variable {ι κ Ω : Type*} [Fintype ι] [Fintype κ] [DecidableEq κ]
   [MeasurableSpace Ω] {μ : Measure Ω}
 
-/-! ### Quadratic forms and sums of squares -/
-
-/-- The quadratic form of a rank-one matrix is a squared modulus:
-`c* (u u*) c = |⟪c, u⟫|²`. -/
-theorem re_dotProduct_vecMulVec_mulVec (u c : ι → ℂ) :
-    RCLike.re (star c ⬝ᵥ ((vecMulVec u (star u)) *ᵥ c)) = ‖star c ⬝ᵥ u‖ ^ 2 := by
-  rw [Matrix.vecMulVec_mulVec, dotProduct_smul, op_smul_eq_mul, Matrix.star_dotProduct u c,
-    RCLike.star_def, RCLike.mul_conj]
-  norm_cast
-
-omit [MeasurableSpace Ω] in
-/-- The quadratic form of a weighted sum of rank-one matrices is the corresponding weighted
-sum of squared moduli. -/
-theorem re_dotProduct_sum_mulVec {k : ℕ} (x : Fin k → Ω) (w : Fin k → ℝ) (c : ι → ℂ)
-    (a : Ω → ι → ℂ) :
-    RCLike.re (star c ⬝ᵥ ((∑ i, w i • vecMulVec (a (x i)) (star (a (x i)))) *ᵥ c))
-      = ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2 := by
-  simp only [Matrix.sum_mulVec, dotProduct_sum, map_sum, Matrix.smul_mulVec,
-    dotProduct_smul, RCLike.smul_re, re_dotProduct_vecMulVec_mulVec]
-
-/-- The quadratic form is monotone for the Loewner order. -/
-theorem re_quadForm_le_of_le {A B : Matrix ι ι ℂ} (h : A ≤ B) (c : ι → ℂ) :
-    RCLike.re (star c ⬝ᵥ (A *ᵥ c)) ≤ RCLike.re (star c ⬝ᵥ (B *ᵥ c)) := by
-  have hd := (Matrix.le_iff.1 h).re_dotProduct_nonneg c
-  rw [Matrix.sub_mulVec, dotProduct_sub, map_sub] at hd
-  linarith
+/-! ### The average and the coefficient norm -/
 
 /-- The quadratic form of a multiple of the identity is the squared norm of the coefficient
 vector. -/

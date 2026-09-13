@@ -12,6 +12,7 @@ import BasicResults.IntegralQuadraticForm
 import BasicResults.OperatorTrace
 import BasicResults.OperatorShermanMorrison
 import BasicResults.OperatorQuadraticForm
+import BasicResults.QuadraticForm
 
 /-!
 # General ingredients
@@ -56,4 +57,7 @@ In Lean this order is switched on by the command `open scoped MatrixOrder`, and 
   `B ↦ B + ζ • J`.
 * `BasicResults.OperatorQuadraticForm`: the average of a quadratic form along a
   square-integrable family is a trace against the Gram operator.
+* `BasicResults.QuadraticForm`: the dictionary between matrices and functions.  The
+  quadratic form of `∑ wᵢ a(xᵢ) a(xᵢ)*` at a coefficient vector is `∑ wᵢ |f(xᵢ)|²`, and the
+  quadratic form is monotone for the Loewner order.
 -/
