@@ -328,7 +328,8 @@ the choice of the coefficient.
 \label{lem:trace-sherman-morrison}
 \lean{Matrix.trace_inv_add_smul_vecMulVec}
 \leanok
-In the situation of \cref{lem:sherman-morrison},
+Let $A$ be Hermitian and invertible, $v$ a vector and $t$ a scalar with
+$1 + t \, v^* A^{-1} v \neq 0$. Then
 \[
   \Tr \bigl( A + t \, v v^* \bigr)^{-1}
     = \Tr A^{-1} - \frac{t}{1 + t \, v^* A^{-1} v} \, v^* A^{-2} v .
@@ -340,6 +341,26 @@ In the situation of \cref{lem:sherman-morrison},
 \uses{lem:sherman-morrison}
 Take traces in \cref{lem:sherman-morrison} and use
 $\Tr \bigl( (A^{-1} v)(A^{-1} v)^* \bigr) = v^* A^{-2} v$.
+\end{proof}
+
+\begin{lemma}[Determinant of a rank-one mixture]
+\label{lem:det-rank-one}
+\lean{Matrix.det_smul_add_smul_vecMulVec}
+\leanok
+Let $A$ be an invertible $m \times m$ matrix, $\beta \neq 0$ a scalar, $\alpha$ a scalar
+and $u$ a vector. Then
+\[
+  \det(\beta A + \alpha \, u u^*)
+    = \beta^{\,m-1} \det A \, \bigl( \beta + \alpha \, u^* A^{-1} u \bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+Factor $\beta A$ out and apply the matrix determinant lemma
+$\det(A + v w^*) = \det A \, (1 + w^* A^{-1} v)$, which holds because the added matrix
+has rank one. The dependence on $\alpha$ is affine; this identity is what replaces the
+derivative of the determinant.
 \end{proof}
 
 \begin{lemma}[Positivity of an update]
@@ -1268,10 +1289,9 @@ many points with weights for which
   |f(y)|^2 \; \leq \; (n + \varepsilon) \sum_k w_k |f(x_k)|^2
   \qquad \text{for all } y \in D \text{ and all } c,
 \]
-which is the statement that the uniform norm on an $n$-dimensional space of functions is
-dominated by the $L_2$ norm of that measure, with the constant $\sqrt{n + \varepsilon}$.
-The answer of Kiefer and Wolfowitz is that a measure whose Gram matrix has an almost
-maximal determinant does this.
+that is, the uniform norm is dominated by the $L_2$ norm of that measure with the
+constant $\sqrt{n + \varepsilon}$. The answer of Kiefer and Wolfowitz is that a measure
+whose Gram matrix has an almost maximal determinant does this.
 
 No topology and no measurable structure on $D$ are used: a finitely supported measure is
 a finite list of points with weights, and it is kept in that form until
@@ -1313,33 +1333,11 @@ $y \in D$, then some design has a positive definite Gram matrix.
 
 \begin{proof}
 \leanok
-It suffices to find points $x_1, \dots, x_N$ such that a coefficient vector annihilated
-by all of them is zero, for then the uniform distribution on those points has
-$c^* G c > 0$ for every $c \neq 0$ by \cref{lem:design-quadform}. Such points are found
-by descending induction on dimension: if some nonzero vector of the subspace still
-surviving is annihilated by the points chosen so far, the hypothesis supplies a point at
-which it does not vanish, and adding that point lowers the dimension of the surviving
-subspace by at least one.
-\end{proof}
-
-\begin{lemma}[Determinant of a rank-one mixture]
-\label{lem:det-rank-one}
-\lean{Matrix.det_smul_add_smul_vecMulVec}
-\leanok
-Let $A \in \mathbb{C}^{\iota \times \iota}$ be invertible, $\beta \neq 0$ a scalar,
-$\alpha$ a scalar and $u \in \mathbb{C}^{\iota}$. Then
-\[
-  \det(\beta A + \alpha \, u u^*)
-    = \beta^{\,n-1} \det A \, \bigl( \beta + \alpha \, u^* A^{-1} u \bigr).
-\]
-\end{lemma}
-
-\begin{proof}
-\leanok
-Factor $\beta A$ out and apply the matrix determinant lemma
-$\det(A + v w^*) = \det A \, (1 + w^* A^{-1} v)$, which holds because the added matrix
-has rank one. The dependence on $\alpha$ is affine; this identity is what replaces the
-derivative of the determinant.
+It suffices to find points annihilating no nonzero coefficient vector, for then the
+uniform distribution on them has $c^* G c > 0$ for every $c \neq 0$ by
+\cref{lem:design-quadform}. Descending induction on dimension supplies them: while some
+nonzero vector survives the points chosen so far, the hypothesis gives a point at which
+it does not vanish, and adding that point lowers the dimension.
 \end{proof}
 
 \begin{lemma}[Gain from mixing in one point]
@@ -1452,11 +1450,11 @@ the object the sparsification theorem asks for.
 \lean{Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz}
 \leanok
 \uses{thm:uniform-discretization, def:gram}
-Let $D$ carry a measurable structure and let the functions $a_k$ be measurable in
-addition. Then the measure $\varrho = \sum_k w_k \delta_{x_k}$ of
-\cref{thm:uniform-discretization} is a probability measure whose Gram matrix $G(a)$ in
-the sense of \cref{def:gram} is positive definite and equal to the Gram matrix of the
-design, and
+Let $D$ carry a measurable structure, let the functions $a_k$ be bounded and measurable
+with linearly independent coordinate functions, and let $\varepsilon > 0$. Then the
+points and weights of \cref{thm:uniform-discretization} give a probability measure
+$\varrho = \sum_k w_k \delta_{x_k}$ whose Gram matrix $G(a)$ in the sense of
+\cref{def:gram} is positive definite and equal to the Gram matrix of the design, and
 \[
   |f(y)|^2 \; \leq \; (n + \varepsilon) \int_D |f|^2 \, d\varrho
 \]
@@ -1494,8 +1492,7 @@ Both \cref{thm:uniform-discretization} and \cref{thm:uniform-discretization-comp
 depend on the design only through its Gram matrix, by \cref{lem:design-quadform}, so
 \cref{lem:point-count} gives them with at most $2n^2 + 1$ points. The sharper count
 $r + 1$, with $r$ the dimension of the span of the products $a_k \overline{a_l}$, is not
-formalised; nothing needs it, because the sparsification theorem accepts any finite, and
-indeed any countable, family of points.
+formalised, and nothing needs it.
 \end{remark}
 
 \begin{remark}[The identity decomposed over the design]
@@ -1509,18 +1506,14 @@ For every design whose Gram matrix $G$ is invertible,
   \qquad \text{and} \qquad
   \sum_{k=1}^N w_k \bigl( a(x_k)^* G^{-1} z \bigr) a(x_k) = z
 \]
-for every $z \in \mathbb{C}^{\iota}$: the first because its left-hand side is
-$\Tr(G^{-1} G)$, the second because it is $G G^{-1} z = z$ written out. With
-$c_k = w_k \, a(x_k)^* G^{-1} a(x_k)$ the two say that the $c_k$ are nonnegative, sum to
-$n$, and decompose the identity over the points of the design in the inner product
-$\langle u, z \rangle = u^* G^{-1} z$ that the ellipsoid of $G$ defines. This is John's
-decomposition of the identity, the condition dual to the bound
-$a(y)^* G^{-1} a(y) \leq n + \varepsilon$ of \cref{prop:det-max}. Under
-\cref{thm:uniform-discretization-compact} that bound holds with $\varepsilon = 0$, and
-together with the average $n$ it forces $a(x_k)^* G^{-1} a(x_k) = n$ at every point of
-the design, so that the points are contact points; in general the bound carries its
-$\varepsilon$, which is John position up to $\varepsilon$. For an arbitrary convex body
-the theorem is proved in the companion project
+for every $z \in \mathbb{C}^{\iota}$, the first being $\Tr(G^{-1} G)$ and the second
+$G G^{-1} z = z$ written out. With $c_k = w_k \, a(x_k)^* G^{-1} a(x_k)$ this is John's
+decomposition of the identity over the design points, in the inner product
+$\langle u, z \rangle = u^* G^{-1} z$ of the ellipsoid of $G$, and it is the condition
+dual to the bound of \cref{prop:det-max}. Under
+\cref{thm:uniform-discretization-compact} the average forces
+$a(x_k)^* G^{-1} a(x_k) = n$ at every design point, which makes the points contact
+points. For an arbitrary convex body the theorem is proved in the companion project
 \href{https://mario-ullrich.github.io/Lean-SNumbers/}{Lean-SNumbers}
 (\href{https://mario-ullrich.github.io/Lean-SNumbers/blueprint.pdf}{PDF}).
 \end{remark}
