@@ -116,6 +116,18 @@ of Krieg, Pozharska, Ullrich and Ullrich. Three variants of it are proved:
   `.exists_design_kieferWolfowitz_card_le`,
   `.exists_design_kieferWolfowitz_of_compact_card_le`).
 
+Alongside these, a design decomposes the identity. Writing `t(y) = a(y)* G⁻¹ a(y)` for
+the variance function, the weights `wₖ t(xₖ)` are nonnegative and sum to `n`
+(`Discretization.KieferWolfowitz.sum_weight_quadForm_inv_eq_card`), and
+`∑ₖ wₖ ⟪a(xₖ), z⟫ a(xₖ) = z` for every vector `z` in the inner product
+`⟪u, z⟫ = u* G⁻¹ z` of the ellipsoid of `G`
+(`.sum_weight_smul_quadForm_inv_eq_self`). This is John's decomposition of the identity,
+the condition dual to the Kiefer–Wolfowitz bound: on a compact domain the bound
+`t(y) ≤ n` and the average `n` together force `t(xₖ) = n` at every design point, making
+the points contact points. The theorem for a general convex body is proved in the
+companion project [Lean-SNumbers](https://github.com/mario-ullrich/Lean-SNumbers) as
+`John.john_decomposition`.
+
 ## The proofs
 
 The first proof is the potential-function argument of BSS, with the second potential
@@ -190,7 +202,8 @@ the two potentials and the verifiers, the barrier lemma, the averaging step, the
 `n`-step iteration, the main theorem with its edge cases, the discretization
 inequality, under `Discretization/Infinite/` the same for a countably infinite second
 family, and under `Discretization/KieferWolfowitz/` the maximisation of the determinant
-of a Gram matrix and the theorem it yields. `BasicResults` holds what the arguments need
+of a Gram matrix, the theorem it yields and John's decomposition of the identity beside
+it. `BasicResults` holds what the arguments need
 and Mathlib lacks: comparisons in the Loewner order, traces of products and
 Cauchy–Schwarz for them, Sherman–Morrison for rank-one updates of a matrix and of an
 operator, the trace of an operator along a Hilbert basis, the matrix determinant lemma,

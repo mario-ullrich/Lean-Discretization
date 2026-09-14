@@ -30,6 +30,7 @@ import Discretization.KieferWolfowitz.MainTheorem
 import Discretization.KieferWolfowitz.Measure
 import Discretization.KieferWolfowitz.ConvexHull
 import Discretization.KieferWolfowitz.Compact
+import Discretization.KieferWolfowitz.JohnDecomposition
 import Discretization.KieferWolfowitz.PointCount
 
 /-!
@@ -121,6 +122,9 @@ determinants obtained by giving one further point a small weight.
 * `Discretization.KieferWolfowitz.Compact`: on a compact domain the maximum is attained and
   the constant is the sharp `√n`,
   `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`.
+* `Discretization.KieferWolfowitz.JohnDecomposition`: the Gram matrix of a design decomposes
+  the identity over the design points, with weights summing to `n`.  This is John's
+  decomposition of the identity, the condition dual to the Kiefer–Wolfowitz bound.
 * `Discretization.KieferWolfowitz.PointCount`: the two theorems with the number of points
   bounded.
 -/
