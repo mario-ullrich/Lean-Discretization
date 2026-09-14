@@ -1498,6 +1498,32 @@ formalised; nothing needs it, because the sparsification theorem accepts any fin
 indeed any countable, family of points.
 \end{remark}
 
+\begin{remark}[The identity decomposed over the design]
+\label{rem:identity-decomposition}
+\lean{Discretization.KieferWolfowitz.sum_weight_quadForm_inv_eq_card, Discretization.KieferWolfowitz.sum_weight_smul_quadForm_inv_eq_self}
+\leanok
+\uses{def:design-gram, prop:det-max, thm:uniform-discretization-compact}
+For every design whose Gram matrix $G$ is invertible,
+\[
+  \sum_{k=1}^N w_k \, a(x_k)^* G^{-1} a(x_k) = n
+  \qquad \text{and} \qquad
+  \sum_{k=1}^N w_k \bigl( a(x_k)^* G^{-1} z \bigr) a(x_k) = z
+\]
+for every $z \in \mathbb{C}^{\iota}$: the first because its left-hand side is
+$\Tr(G^{-1} G)$, the second because it is $G G^{-1} z = z$ written out. With
+$c_k = w_k \, a(x_k)^* G^{-1} a(x_k)$ the two say that the $c_k$ are nonnegative, sum to
+$n$, and decompose the identity over the points of the design in the inner product
+$\langle u, z \rangle = u^* G^{-1} z$ that the ellipsoid of $G$ defines. This is John's
+decomposition of the identity, the condition dual to the bound
+$a(y)^* G^{-1} a(y) \leq n + \varepsilon$ of \cref{prop:det-max}. Under
+\cref{thm:uniform-discretization-compact} that bound holds with $\varepsilon = 0$, and
+together with the average $n$ it forces $a(x_k)^* G^{-1} a(x_k) = n$ at every point of
+the design, so that the points are contact points; in general the bound carries its
+$\varepsilon$, which is John position up to $\varepsilon$. For an arbitrary convex body
+the theorem is proved in the companion project
+\href{https://github.com/mario-ullrich/Lean-SNumbers}{Lean-SNumbers}.
+\end{remark}
+
 \bpbibheading
 \begin{thebibliography}{99}
 
