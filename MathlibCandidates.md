@@ -43,7 +43,14 @@ Grouped by topic, with the main declarations:
   `BasicResults/OperatorQuadraticForm.lean`): the average of a quadratic form along a
   square-integrable family is a trace against its Gram matrix
   (`Discretization.integral_quadForm`), and against its Gram operator in infinite
-  dimension (`ContinuousLinearMap.integral_re_inner_apply`).
+  dimension (`ContinuousLinearMap.integral_re_inner_apply`). The operator file also
+  carries the dictionary between an operator and the function it defines: the quadratic
+  form of a rank-one operator and of a weighted sum of them
+  (`ContinuousLinearMap.re_inner_rankOne`, `.re_inner_sum_rankOne`) and its monotonicity for
+  the operator order (`.re_inner_le_of_le`), which Mathlib has in no form. The crude bound
+  `u u* ≼ ‖u‖² • 1` (`.rankOne_le_norm_sq_smul_one`) follows over `ℂ` from
+  `IsSelfAdjoint.le_algebraMap_norm_self`; what Mathlib lacks is the version over a general
+  `RCLike` field, where the C⋆-algebra instance is unavailable.
 * **Rank-one updates of a determinant** (`BasicResults/RankOneDeterminant.lean`): the
   matrix determinant lemma in terms of `Matrix.vecMulVec`
   (`Matrix.det_add_vecMulVec`), where Mathlib has it only for a product of a column

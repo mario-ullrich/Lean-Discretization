@@ -61,18 +61,24 @@ theorem integrable_upperVerifierConst {b : Ω → κ → ℂ}
 
 /-! ### The one-sided construction -/
 
-/-- **The construction for a small effective dimension.**  Only the lower matrix is tracked;
-the weights are chosen as large as the lower verifier allows, which forces
-`wᵢ · U(xᵢ) ≤ 1` for the constant upper verifier `U`. -/
-theorem exists_points_weights_of_small_dim [Nonempty ι] [Nonempty κ] {A₀ : Matrix ι ι ℂ}
-    (hA₀ : A₀.PosDef) {δ : ℝ} (hδ : 0 < δ) {a : Ω → ι → ℂ} {b : Ω → κ → ℂ}
-    (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
-    (hgrama : gram a μ = 1) (hT : 0 < RCLike.re (gram b μ).trace) {n : ℕ} (hn : 0 < n)
-    (hgap : (n : ℝ) ≤ 1 / δ - lowerPotential A₀) (k : ℕ) :
+/-- **The construction for a small effective dimension.**  Only the lower matrix is tracked.
+
+The second family enters through a single nonnegative integrable function `U` of average
+`n`, which is the constant upper verifier; nothing else about it is used.  The weights are
+chosen as large as the lower verifier allows, which forces `wᵢ · U(xᵢ) ≤ 1`.
+
+Stating it for an abstract `U` is what lets the same induction serve the finite second
+family here and the countable one in
+`Discretization.Infinite.bss_generalized_of_small_dim`. -/
+theorem exists_points_weights_of_small_dim [Nonempty ι] {A₀ : Matrix ι ι ℂ}
+    (hA₀ : A₀.PosDef) {δ : ℝ} (hδ : 0 < δ) {a : Ω → ι → ℂ}
+    (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hgrama : gram a μ = 1) {U : Ω → ℝ}
+    (hU0 : ∀ y, 0 ≤ U y) (hUint : Integrable U μ) {n : ℕ} (hn : 0 < n)
+    (hUavg : ∫ y, U y ∂μ = n) (hgap : (n : ℝ) ≤ 1 / δ - lowerPotential A₀) (k : ℕ) :
     ∃ (x : Fin k → Ω) (w : Fin k → ℝ), (∀ i, 0 < w i) ∧
       (lowerState A₀ δ a x w).PosDef ∧
       lowerPotential (lowerState A₀ δ a x w) ≤ lowerPotential A₀ ∧
-      ∀ i, w i * ((n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b (x i) p‖ ^ 2) ≤ 1 := by
+      ∀ i, w i * U (x i) ≤ 1 := by
   have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
   induction k with
   | zero => exact ⟨Fin.elim0, Fin.elim0, fun i => i.elim0, by simpa using hA₀, by simp,
@@ -85,20 +91,17 @@ theorem exists_points_weights_of_small_dim [Nonempty ι] [Nonempty κ] {A₀ : M
     have hδ' : δ < (lowerPotential (lowerState A₀ δ a x w))⁻¹ :=
       lt_inv_of_le_one_div_sub hδ hΦpos hn0 hgapk
     -- the average of the lower verifier beats that of the constant upper one
-    have hlt : ∫ y, (n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b y p‖ ^ 2 ∂μ
-        < ∫ y, lowerVerifier (lowerState A₀ δ a x w) δ (a y) ∂μ := by
-      rw [integral_upperVerifierConst hb hT n]
+    have hlt : ∫ y, U y ∂μ < ∫ y, lowerVerifier (lowerState A₀ δ a x w) δ (a y) ∂μ := by
+      rw [hUavg]
       have h1 := integral_lowerVerifier_gt hAk hδ hδ' ha hgrama
       linarith
     obtain ⟨y, hy⟩ := exists_lt_of_integral_lt (μ := μ)
-      (f := fun y => lowerVerifier (lowerState A₀ δ a x w) δ (a y))
-      (g := fun y => (n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b y p‖ ^ 2)
-      (integrable_lowerVerifier ha) (integrable_upperVerifierConst hb _) hlt
+      (f := fun y => lowerVerifier (lowerState A₀ δ a x w) δ (a y)) (g := U)
+      (integrable_lowerVerifier ha) hUint hlt
     -- the weight allowed by the lower verifier
-    have hU0 : 0 ≤ (n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b y p‖ ^ 2 :=
-      upperVerifierConst_nonneg (by positivity) y
-    have hLpos : 0 < lowerVerifier (lowerState A₀ δ a x w) δ (a y) := lt_of_le_of_lt hU0 hy
-    obtain ⟨hwnew, hcondL, -⟩ := weight_of_verifier_lt hU0 hy
+    have hLpos : 0 < lowerVerifier (lowerState A₀ δ a x w) δ (a y) :=
+      lt_of_le_of_lt (hU0 y) hy
+    obtain ⟨hwnew, hcondL, -⟩ := weight_of_verifier_lt (hU0 y) hy
     obtain ⟨hAnew, hΦnew⟩ := lowerPotential_update_le hAk hδ hδ' (a y) hwnew hcondL
     refine ⟨Fin.snoc x y, Fin.snoc w (1 / lowerVerifier (lowerState A₀ δ a x w) δ (a y)),
       ?_, ?_, ?_, ?_⟩
@@ -107,10 +110,8 @@ theorem exists_points_weights_of_small_dim [Nonempty ι] [Nonempty κ] {A₀ : M
     · rw [lowerState_snoc]; exact hΦnew.trans hΦ
     · refine Fin.lastCases ?_ ?_
       · simp only [Fin.snoc_last]
-        rw [div_mul_eq_mul_div, div_le_one hLpos]
-        calc 1 * ((n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b y p‖ ^ 2)
-            = (n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b y p‖ ^ 2 := one_mul _
-          _ ≤ lowerVerifier (lowerState A₀ δ a x w) δ (a y) := hy.le
+        rw [div_mul_eq_mul_div, div_le_one hLpos, one_mul]
+        exact hy.le
       · intro j; simpa using hwk j
 
 /-! ### The crude upper frame bound -/
@@ -196,7 +197,10 @@ theorem bss_generalized_of_small_dim [Nonempty ι] [Nonempty κ]
   have hT : 0 < RCLike.re (gram b μ).trace := by rw [hgramb]; exact hT0
   -- run the one-sided construction
   obtain ⟨x, w, hwpos, hAn, hΦn, hwk⟩ :=
-    exists_points_weights_of_small_dim hA₀ hδ0 ha hb hgrama hT hn hgap n
+    exists_points_weights_of_small_dim hA₀ hδ0 ha hgrama
+      (U := fun y => (n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b y p‖ ^ 2)
+      (fun y => upperVerifierConst_nonneg (by positivity) y)
+      (integrable_upperVerifierConst hb _) hn (integral_upperVerifierConst hb hT n) hgap n
   refine ⟨x, w, hwpos, ?_, ?_⟩
   · -- the lower frame bound, exactly as in the main theorem
     exact lower_frame_bound hn0 hr0 h1r hm_eq hδdef hc₀def hAn (hΦ₀ ▸ hΦn)

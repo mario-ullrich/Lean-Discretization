@@ -26,6 +26,19 @@ dimension of the second family, and
 `r = √((m-1)/n)`,  `s = √((M-1)/n)`,  `δ = (1-r)/n`,  `ζ = (1+s)/n`,
 
 the two frame bounds come out as `(1-r)²` and `(1+s)² Λ`.
+
+## Why the matrix argument runs in full
+
+A finite second family is the case `H = ℂ^κ` of the operator argument in
+`Discretization.Infinite`, and Mathlib's `Matrix.toEuclideanCLM` transports statements
+between the two.  Reaching the finite case that way needs bridges for the Loewner order, for
+the trace and for the rank-one matrices, and it makes an elementary statement rest on the
+continuous functional calculus, on the order of a C⋆-algebra and on sums along a Hilbert
+basis.  Run on its own, this half stays with `Matrix.inv`, `Matrix.trace` and
+Sherman–Morrison for matrices, which is the argument of the paper and what `BasicResults`
+offers to Mathlib.  What the two halves do share is the whole lower side, the arithmetic of
+`Discretization.Parameters`, the real inequalities behind the barrier lemma, and the removal
+of the normalisation (`Discretization.bss_of_gram_eq_one`).
 -/
 
 open Matrix MeasureTheory

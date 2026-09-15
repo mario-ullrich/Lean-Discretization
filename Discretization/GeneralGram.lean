@@ -20,6 +20,12 @@ The two ingredients are the behaviour of the Gram matrix under a linear change o
 and the fact that conjugation by a positive matrix preserves the Loewner order, which is
 Mathlib's `conjugate_le_conjugate_of_nonneg`.
 
+The reduction never looks at the second family, so it is stated once for an arbitrary
+conclusion about it, as `Discretization.bss_of_gram_eq_one`.  Both
+`Discretization.bss_generalized` and `Discretization.Infinite.bss_generalized` are instances
+of it, the first with an upper frame bound between matrices and the second with one between
+operators.
+
 The result is `Discretization.bss_generalized`, with lower frame bound
 `(1 - √((m-1)/n))² • I`.  In eigenvalue form this is the factor `λ_min(I)` of the paper.
 -/
@@ -87,6 +93,54 @@ theorem sum_smul_conj (S : Matrix ι ι ℂ) {k : ℕ} (w : Fin k → ℝ)
 
 variable [DecidableEq ι]
 
+/-- **Removing the normalisation of the first family.**  Let `I = ∫ a a* dμ` be positive
+definite.  If every orthonormal family `a'` admits `n` points and positive weights whose
+lower frame bound is `C • 1`, then `a` itself admits `n` points and positive weights whose
+lower frame bound is `C • I`.
+
+The second family enters only through the conclusion `P`, which is carried along untouched:
+the reduction replaces `a` by `I^{-1/2} a` and conjugates the resulting bound back by
+`I^{1/2}`, and neither step involves `P`.  That is why one statement serves both a finite
+and a countable second family. -/
+theorem bss_of_gram_eq_one {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ)
+    (hI : (gram a μ).PosDef) {n : ℕ} {C : ℝ} {P : (Fin n → Ω) → (Fin n → ℝ) → Prop}
+    (key : ∀ a' : Ω → ι → ℂ, (∀ k, MemLp (fun x => a' x k) 2 μ) → gram a' μ = 1 →
+      ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
+        C • (1 : Matrix ι ι ℂ) ≤ ∑ i, w i • vecMulVec (a' (x i)) (star (a' (x i))) ∧ P x w) :
+    ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
+      C • gram a μ ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) ∧ P x w := by
+  -- the square root of the Gram matrix and its inverse
+  set T := CFC.sqrt (gram a μ) with hTdef
+  have hT0 : (0 : Matrix ι ι ℂ) ≤ T := CFC.sqrt_nonneg _
+  have hTpsd : T.PosSemidef := Matrix.nonneg_iff_posSemidef.1 hT0
+  have hTT : T * T = gram a μ := CFC.sqrt_mul_sqrt_self _ hI.posSemidef.nonneg
+  have hTdet : IsUnit T.det := hI.isUnit_det_sqrt
+  have hTS : T * T⁻¹ = 1 := mul_nonsing_inv _ hTdet
+  have hST : T⁻¹ * T = 1 := nonsing_inv_mul _ hTdet
+  have hSherm : (T⁻¹)ᴴ = T⁻¹ := hTpsd.inv.isHermitian.eq
+  -- the normalized family
+  have hgram' : gram (fun x => T⁻¹ *ᵥ a x) μ = 1 := by
+    rw [gram_mulVec _ ha, hSherm, ← hTT, ← mul_assoc, hST, one_mul, hTS]
+  obtain ⟨x, w, hwpos, hlow, hup⟩ := key _ (memLp_mulVec T⁻¹ ha) hgram'
+  refine ⟨x, w, hwpos, ?_, hup⟩
+  -- conjugate the lower bound back by `T`
+  have hsum : ∑ i, w i • vecMulVec (T⁻¹ *ᵥ a (x i)) (star (T⁻¹ *ᵥ a (x i)))
+      = T⁻¹ * (∑ i, w i • vecMulVec (a (x i)) (star (a (x i)))) * (T⁻¹)ᴴ := by
+    rw [← sum_smul_conj]
+    exact Finset.sum_congr rfl fun i _ => by rw [vecMulVec_mulVec_self_star]
+  rw [hsum, hSherm] at hlow
+  have hconj := conjugate_le_conjugate_of_nonneg hlow hT0
+  have hleft : T * (C • (1 : Matrix ι ι ℂ)) * T = C • gram a μ := by
+    rw [mul_smul_comm, smul_mul_assoc, mul_one, hTT]
+  have hright : T * (T⁻¹ * (∑ i, w i • vecMulVec (a (x i)) (star (a (x i)))) * T⁻¹) * T
+      = ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) := by
+    calc T * (T⁻¹ * (∑ i, w i • vecMulVec (a (x i)) (star (a (x i)))) * T⁻¹) * T
+        = (T * T⁻¹) * (∑ i, w i • vecMulVec (a (x i)) (star (a (x i)))) * (T⁻¹ * T) := by
+          simp [mul_assoc]
+      _ = ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) := by
+          rw [hTS, hST, one_mul, mul_one]
+  rwa [hleft, hright] at hconj
+
 /-- **Generalized sparsification theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
 finite families.
 
@@ -113,39 +167,10 @@ theorem bss_generalized [Nonempty ι] [Nonempty κ]
         ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) ∧
       ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
         ≤ ((1 + Real.sqrt ((RCLike.re J.trace / Λ - 1) / n)) ^ 2 * Λ)
-            • (1 : Matrix κ κ ℂ) := by
-  -- the square root of the Gram matrix and its inverse
-  set T := CFC.sqrt (gram a μ) with hTdef
-  have hT0 : (0 : Matrix ι ι ℂ) ≤ T := CFC.sqrt_nonneg _
-  have hTpsd : T.PosSemidef := Matrix.nonneg_iff_posSemidef.1 hT0
-  have hTT : T * T = gram a μ := CFC.sqrt_mul_sqrt_self _ hI.posSemidef.nonneg
-  have hTdet : IsUnit T.det := hI.isUnit_det_sqrt
-  have hTS : T * T⁻¹ = 1 := mul_nonsing_inv _ hTdet
-  have hST : T⁻¹ * T = 1 := nonsing_inv_mul _ hTdet
-  have hSherm : (T⁻¹)ᴴ = T⁻¹ := hTpsd.inv.isHermitian.eq
-  -- the normalized family
-  have hgram' : gram (fun x => T⁻¹ *ᵥ a x) μ = 1 := by
-    rw [gram_mulVec _ ha, hSherm, ← hTT, ← mul_assoc, hST, one_mul, hTS]
-  obtain ⟨x, w, hwpos, hlow, hup⟩ :=
-    bss_generalized_of_gram_eq_one' hJ hΛ hJΛ (memLp_mulVec T⁻¹ ha) hb hgram' hgramb hmn
-  refine ⟨x, w, hwpos, ?_, hup⟩
-  -- conjugate the lower bound back by `T`
-  have hsum : ∑ i, w i • vecMulVec (T⁻¹ *ᵥ a (x i)) (star (T⁻¹ *ᵥ a (x i)))
-      = T⁻¹ * (∑ i, w i • vecMulVec (a (x i)) (star (a (x i)))) * (T⁻¹)ᴴ := by
-    rw [← sum_smul_conj]
-    exact Finset.sum_congr rfl fun i _ => by rw [vecMulVec_mulVec_self_star]
-  rw [hsum, hSherm] at hlow
-  have hconj := conjugate_le_conjugate_of_nonneg hlow hT0
-  have hleft : T * ((1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 • (1 : Matrix ι ι ℂ)) * T
-      = (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 • gram a μ := by
-    rw [mul_smul_comm, smul_mul_assoc, mul_one, hTT]
-  have hright : T * (T⁻¹ * (∑ i, w i • vecMulVec (a (x i)) (star (a (x i)))) * T⁻¹) * T
-      = ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) := by
-    calc T * (T⁻¹ * (∑ i, w i • vecMulVec (a (x i)) (star (a (x i)))) * T⁻¹) * T
-        = (T * T⁻¹) * (∑ i, w i • vecMulVec (a (x i)) (star (a (x i)))) * (T⁻¹ * T) := by
-          simp [mul_assoc]
-      _ = ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) := by
-          rw [hTS, hST, one_mul, mul_one]
-  rwa [hleft, hright] at hconj
+            • (1 : Matrix κ κ ℂ) :=
+  bss_of_gram_eq_one ha hI
+    (P := fun x w => ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
+      ≤ ((1 + Real.sqrt ((RCLike.re J.trace / Λ - 1) / n)) ^ 2 * Λ) • (1 : Matrix κ κ ℂ))
+    fun _ ha' hgram' => bss_generalized_of_gram_eq_one' hJ hΛ hJΛ ha' hb hgram' hgramb hmn
 
 end Discretization

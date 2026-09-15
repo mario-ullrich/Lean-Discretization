@@ -39,28 +39,25 @@ variable {ι κ Ω : Type*} [DecidableEq ι] [Fintype κ] [DecidableEq κ]
 
 /-! ### One point serves for all -/
 
-omit [DecidableEq κ] in
-/-- **An admissible point for the two constant verifiers.**  The averages of
-`L(x) = n |a(x)|²` and of `U(x) = n ‖b(x)‖² / Tr J` are both `n`, so there is a point at
-which `U ≤ L` and `L` is positive.
+/-- **An admissible point for the two constant verifiers.**  The lower verifier
+`L(x) = n |a(x)|²` has average `n`, and so does the given upper verifier `U`, so there is a
+point at which `U ≤ L` and `L` is positive.
 
 Positivity of `L(y)` is what makes the weight `1 / L(y)` finite, and it is the reason the
-comparison of the averages has to carry it along. -/
+comparison of the averages has to carry it along.  As in
+`Discretization.exists_points_weights_of_small_dim`, the second family enters only through
+`U`, so the same lemma serves a finite and a countable one. -/
 theorem exists_admissible_point_of_unique_of_small_dim [Unique ι] {a : Ω → ι → ℂ}
-    {b : Ω → κ → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ)
-    (hb : ∀ k, MemLp (fun x => b x k) 2 μ) (hgrama : gram a μ = 1)
-    (hT : 0 < RCLike.re (gram b μ).trace) {n : ℕ} (hn0 : (0 : ℝ) < n) :
-    ∃ y, (n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b y p‖ ^ 2
-        ≤ (n : ℝ) * ‖a y default‖ ^ 2 ∧ 0 < (n : ℝ) * ‖a y default‖ ^ 2 := by
+    (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hgrama : gram a μ = 1) {U : Ω → ℝ}
+    (hU0 : ∀ y, 0 ≤ U y) (hUint : Integrable U μ) {n : ℕ} (hn0 : (0 : ℝ) < n)
+    (hUavg : ∫ y, U y ∂μ = n) :
+    ∃ y, U y ≤ (n : ℝ) * ‖a y default‖ ^ 2 ∧ 0 < (n : ℝ) * ‖a y default‖ ^ 2 := by
   have hfint : ∫ y, (n : ℝ) * ‖a y default‖ ^ 2 ∂μ = n := by
     rw [integral_const_mul, integral_norm_sq_eq_one ha hgrama, mul_one]
-  have hgint : ∫ y, (n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b y p‖ ^ 2 ∂μ = n :=
-    integral_upperVerifierConst hb hT n
   refine exists_le_of_integral_le ((integrable_norm_sq ha default).const_mul _)
-    (integrable_upperVerifierConst hb _) (fun y => by positivity) (fun y => ?_) ?_ ?_
-  · exact upperVerifierConst_nonneg (by positivity) y
+    hUint (fun y => by positivity) hU0 ?_ ?_
   · rw [hfint]; exact hn0
-  · rw [hfint, hgint]
+  · rw [hfint, hUavg]
 
 /-! ### The theorem for a single function and a small effective dimension -/
 
@@ -89,7 +86,10 @@ theorem bss_generalized_of_unique_of_small_dim [Unique ι] [Nonempty κ]
   have hT : 0 < RCLike.re (gram b μ).trace := by rw [hgramb]; exact hT0
   -- one point, admissible for both constant verifiers
   obtain ⟨y, hUL, hLpos⟩ :=
-    exists_admissible_point_of_unique_of_small_dim ha hb hgrama hT hn0
+    exists_admissible_point_of_unique_of_small_dim ha hgrama
+      (U := fun y => (n : ℝ) / RCLike.re (gram b μ).trace * ∑ p, ‖b y p‖ ^ 2)
+      (fun y => upperVerifierConst_nonneg (by positivity) y)
+      (integrable_upperVerifierConst hb _) hn0 (integral_upperVerifierConst hb hT n)
   rw [hgramb] at hUL
   refine ⟨fun _ => y, fun _ => 1 / ((n : ℝ) * ‖a y default‖ ^ 2),
     fun _ => one_div_pos.2 hLpos, ?_, ?_⟩

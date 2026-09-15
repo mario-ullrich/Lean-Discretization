@@ -21,6 +21,10 @@ import Discretization.Infinite.Averages
 import Discretization.Infinite.Bounds
 import Discretization.Infinite.Iteration
 import Discretization.Infinite.MainTheorem
+import Discretization.Infinite.CardOne
+import Discretization.Infinite.SmallEffectiveDim
+import Discretization.Infinite.BothEdgeCases
+import Discretization.Infinite.GeneralGram
 import Discretization.Infinite.NormDiscretization
 import Discretization.KieferWolfowitz.MixEstimate
 import Discretization.KieferWolfowitz.Design
@@ -98,8 +102,15 @@ determinants obtained by giving one further point a small weight.
   operator, `Ψ_J(B)⁻¹ • J ≼ B`.
 * `Discretization.Infinite.Iteration`: the construction, with a matrix on the lower side and
   an operator on the upper one.
-* `Discretization.Infinite.MainTheorem`: the theorem for a countable second family,
-  `Discretization.Infinite.bss_generalized_of_gram_eq_one`.
+* `Discretization.Infinite.MainTheorem`: the potential argument for a countable second
+  family, `Discretization.Infinite.bss_generalized_of_gram_eq_one`.
+* `Discretization.Infinite.CardOne`, `Discretization.Infinite.SmallEffectiveDim` and
+  `Discretization.Infinite.BothEdgeCases`: the same three edge cases as in finite
+  dimension, and the theorem without side conditions,
+  `Discretization.Infinite.bss_generalized_of_gram_eq_one'`.
+* `Discretization.Infinite.GeneralGram`: removing the normalisation of the first family,
+  which gives the theorem in the form of the paper,
+  `Discretization.Infinite.bss_generalized`.
 * `Discretization.Infinite.NormDiscretization`: the same statement read as a discretization
   inequality, `Discretization.Infinite.exists_discretization`.
 * `Discretization.KieferWolfowitz.MixEstimate`: the one real inequality behind the

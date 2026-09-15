@@ -922,7 +922,10 @@ positive operator $J$ on $H$ determined by
 \]
 The first family stays finite, so the lower half of the argument is unchanged, and only
 the upper half has to be redone. Mathlib has no trace-class theory, so the trace is
-built along a fixed Hilbert basis.
+built along a fixed Hilbert basis. The two side conditions of the potential argument are
+then removed as in \cref{ch:edge}, and the normalisation of the first family as in
+\cref{thm:main}, so the theorem holds here in the same generality as for a finite second
+family.
 
 \section{The trace of an operator along a basis}
 
@@ -1237,13 +1240,166 @@ the lower read-off are those of \cref{ch:construction} verbatim; the upper read-
 constants come out the same by \cref{lem:frame-constants}.
 \end{proof}
 
+\section{The edge cases and the general form}
+
+The two side conditions $m \geq 2$ and $M \geq 1 + 1/n$ of \cref{thm:main-infinite} are
+removed exactly as in \cref{ch:edge}: where one of them fails, the corresponding potential
+is replaced by a constant verifier of average $n$. On the upper side that constant is
+$U(x) = n \|b(x)\|^2 / \Tr_e J$, and its average is $n$ because
+$\int_\Omega \|b\|^2 \, d\mu = \Tr_e J$, which is \cref{lem:integral-inner-op} with
+$Q = 1$. The lower side is the finite argument verbatim, since the first family is finite
+in both cases, and the read-off needs only the operator form of \cref{lem:rank-one-crude}.
+
+\begin{lemma}[Crude bound for a rank-one operator]
+\label{lem:rank-one-crude-op}
+\lean{ContinuousLinearMap.rankOne_le_norm_sq_smul_one}
+\leanok
+For every $u \in H$,
+\[
+  u u^* \; \preceq \; \|u\|^2 \cdot 1 .
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+A self-adjoint element $a$ of a C$^*$-algebra satisfies $a \preceq \|a\| \cdot 1$, and
+$u u^*$ is self-adjoint with $\|u u^*\| = \|u\|^2$.
+\end{proof}
+
+\begin{theorem}[A one-element first family, with a countable second family]
+\label{thm:card-one-infinite}
+\lean{Discretization.Infinite.bss_generalized_of_unique}
+\leanok
+\uses{def:finite-trace-pos}
+Let $\#\iota = 1$, let $a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable with
+$G(a) = 1$, let $b : \Omega \to H$ be square-integrable with Gram operator $J$ positive,
+injective and of finite trace, let $\Lambda > 0$ with $J \preceq \Lambda \cdot 1$, and let
+$n \geq 1$ satisfy $M = \Tr_e J / \Lambda \geq 1 + 1/n$. Then there are points
+$x_1, \dots, x_n \in \Omega$ and weights $w_1, \dots, w_n > 0$ with
+\[
+  1 \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
+  \qquad\text{and}\qquad
+  \sum_{i=1}^n w_i \, b(x_i) b(x_i)^*
+    \; \preceq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \cdot 1 .
+\]
+\end{theorem}
+
+\begin{proof}
+\leanok
+\uses{thm:card-one, lem:barrier-op, lem:average-upper-op, lem:exists-point, lem:read-off}
+The proof of \cref{thm:card-one}, with \cref{lem:barrier-op} and
+\cref{lem:average-upper-op} on the upper side. The lower verifier is again the constant
+$L(x) = n |a(x)|^2$, of average $n$, so the induction tracks the operator alone and the
+largest admissible weight $1/w_i = L(x_i)$ makes the lower bound the identity
+$\sum_i w_i |a(x_i)|^2 = 1$.
+\end{proof}
+
+\begin{theorem}[A small effective dimension, with a countable second family]
+\label{thm:small-dim-infinite}
+\lean{Discretization.Infinite.bss_generalized_of_small_dim}
+\leanok
+\uses{def:finite-trace-pos}
+Let $a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable with $G(a) = 1$, let
+$b : \Omega \to H$ be square-integrable with Gram operator $J$ positive, injective and of
+finite trace, let $\Lambda > 0$, let $m = \#\iota \geq 2$ and $n \geq m$, and assume
+$M = \Tr_e J / \Lambda \leq 1 + 1/n$. Then there are points $x_1, \dots, x_n \in \Omega$
+and weights $w_1, \dots, w_n > 0$ with
+\[
+  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot 1
+    \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
+\]
+and
+\[
+  \sum_{i=1}^n w_i \, b(x_i) b(x_i)^*
+    \; \preceq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \cdot 1 .
+\]
+\end{theorem}
+
+\begin{proof}
+\leanok
+\uses{thm:small-dim, lem:rank-one-crude-op, lem:integral-inner-op, lem:exists-point}
+The induction of \cref{thm:small-dim} verbatim: it consumes the second family only through
+the constant upper verifier $U$, here $U(x) = n \|b(x)\|^2 / \Tr_e J$, whose average is
+$n$ by \cref{lem:integral-inner-op} with $Q = 1$. The weights it produces satisfy
+$w_i \|b(x_i)\|^2 \leq \Tr_e J / n$, so \cref{lem:rank-one-crude-op} gives
+$\sum_i w_i \, b(x_i) b(x_i)^* \preceq \Tr_e J \cdot 1 = M \Lambda \cdot 1$, and
+$M \leq 1 + 1/n$ forces $M \leq (1 + \sqrt{(M-1)/n})^2$.
+\end{proof}
+
+\begin{theorem}[Both edge cases at once, with a countable second family]
+\label{thm:both-edge-cases-infinite}
+\lean{Discretization.Infinite.bss_generalized_of_unique_of_small_dim}
+\leanok
+\uses{def:finite-trace-pos}
+Let $\#\iota = 1$, let $a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable with
+$G(a) = 1$, let $b : \Omega \to H$ be square-integrable with Gram operator $J$ positive,
+injective and of finite trace, let $\Lambda > 0$ and $n \geq 1$, and assume
+$M = \Tr_e J / \Lambda \leq 1 + 1/n$. Then there are points $x_1, \dots, x_n \in \Omega$
+and weights $w_1, \dots, w_n > 0$ with
+\[
+  1 \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
+  \qquad\text{and}\qquad
+  \sum_{i=1}^n w_i \, b(x_i) b(x_i)^*
+    \; \preceq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \cdot 1 .
+\]
+\end{theorem}
+
+\begin{proof}
+\leanok
+\uses{thm:both-edge-cases, lem:exists-point-le, lem:rank-one-crude-op,
+      lem:integral-inner-op}
+The proof of \cref{thm:both-edge-cases}. Both verifiers are the constants
+$L(x) = n |a(x)|^2$ and $U(x) = n \|b(x)\|^2 / \Tr_e J$, of equal average $n$, so
+\cref{lem:exists-point-le} produces a single point $y$ with $U(y) \leq L(y)$ and
+$L(y) > 0$; using it $n$ times with the weight $w = 1/L(y)$ makes the lower bound the
+identity, and $w \, U(y) \leq 1$ with \cref{lem:rank-one-crude-op} gives the upper bound.
+No induction is needed.
+\end{proof}
+
+\begin{theorem}[Sparsification with a countable second family, general form]
+\label{thm:main-infinite-general}
+\lean{Discretization.Infinite.bss_generalized}
+\leanok
+\uses{def:gram, def:effective-dimension, def:finite-trace-pos}
+Let $a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in every coordinate with
+$I = G(a)$ positive definite, let $b : \Omega \to H$ be square-integrable with Gram
+operator $J$ positive, injective and of finite trace, and let $\Lambda > 0$ satisfy
+$J \preceq \Lambda \cdot 1$. Put $m = \#\iota$ and $M = \Tr_e J / \Lambda$. Then for every
+$n \geq m$ there are points $x_1, \dots, x_n \in \Omega$ and weights
+$w_1, \dots, w_n > 0$ with
+\[
+  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot I
+    \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
+\]
+in the matrix order and
+\[
+  \sum_{i=1}^n w_i \, b(x_i) b(x_i)^*
+    \; \preceq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \cdot 1
+\]
+in the order of operators.
+\end{theorem}
+
+\begin{proof}
+\leanok
+\uses{thm:main-infinite, thm:card-one-infinite, thm:small-dim-infinite,
+      thm:both-edge-cases-infinite, lem:gram-mulvec}
+A case distinction on $m \geq 2$ and on $M \geq 1 + 1/n$ reduces the case $I = 1$ to
+\cref{thm:main-infinite} and to the three theorems above; for $m = 1$ the lower frame
+constant $(1 - \sqrt{(m-1)/n})^2$ equals $1$, which is what those two state. That case is
+\texttt{Discretization.Infinite.bss\_generalized\_of\_gram\_eq\_one'}. The normalisation is
+then removed as in \cref{thm:main}: replace $a$ by $I^{-1/2} a$, whose Gram matrix is $1$
+by \cref{lem:gram-mulvec}, and conjugate the resulting lower bound by $I^{1/2}$, which
+preserves the Loewner order; the upper bound does not involve the first family and is
+unchanged.
+\end{proof}
+
 \begin{corollary}[Discretization with a countable second family]
 \label{cor:discretization-infinite}
 \lean{Discretization.Infinite.exists_discretization}
 \leanok
-\uses{thm:main-infinite}
-In the situation of \cref{thm:main-infinite}, the same points and weights satisfy, for
-every $c \in \mathbb{C}^{\iota}$,
+\uses{thm:main-infinite-general}
+In the situation of \cref{thm:main-infinite-general} with $I = 1$, the same points and
+weights satisfy, for every $c \in \mathbb{C}^{\iota}$,
 \[
   \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \int_\Omega
     \Bigl| \sum_k \overline{c_k} \, a_k(x) \Bigr|^2 d\mu(x)
@@ -1268,8 +1424,8 @@ is the weighted sum of the squared moduli.
 \begin{remark}[What is left]
 \label{rem:left}
 \leanok
-The number of points in \cref{thm:main-infinite} is governed by the effective dimension
-$M = \Tr_e J / \Lambda$ and not by the size of the second family. What is not formalised
+The number of points in \cref{thm:main-infinite-general} is governed by the effective
+dimension $M = \Tr_e J / \Lambda$ and not by the size of the second family. What is not formalised
 is the construction of the Gram operator from a reproducing kernel: the singular value
 decomposition of the embedding $H \hookrightarrow L_2(\mu)$, which supplies the family
 $b$ and makes $J$ diagonal, with $\Tr_e J$ the trace of the kernel and $\Lambda$ the

@@ -152,7 +152,11 @@ are `n` points and positive weights such that
 
 Compared with `Discretization.bss_generalized_of_gram_eq_one`, the second family may be
 infinite: what bounds the number of points is its **effective dimension**, and that is
-finite as soon as `J` has finite trace. -/
+finite as soon as `J` has finite trace.
+
+The two side conditions are removed in
+`Discretization.Infinite.bss_generalized_of_gram_eq_one'`, and the normalisation of the
+first family in `Discretization.Infinite.bss_generalized`. -/
 theorem bss_generalized_of_gram_eq_one [Nonempty ι] [Nonempty κ] [Countable κ]
     (hJ : IsFiniteTracePos e J) {Λ : ℝ} (hΛ : 0 < Λ)
     (hJΛ : J ≤ Λ • (1 : H →L[ℂ] H)) {a : Ω → ι → ℂ} {b : Ω → H}
@@ -194,7 +198,7 @@ theorem bss_generalized_of_gram_eq_one [Nonempty ι] [Nonempty κ] [Countable κ
   have hζ0 : 0 < ζ := div_pos (by linarith) hn0
   clear_value m M r s
   -- the initial data
-  have hT0 : 0 < traceAlong e J := by nlinarith [hT, hΛ, hspos, hn0]
+  have hT0 : 0 < traceAlong e J := hJ.traceAlong_pos
   set c₀ : ℝ := δ * m / r with hc₀def
   set d₀ : ℝ := ζ * traceAlong e J / s with hd₀def
   have hc₀0 : 0 < c₀ := div_pos (by positivity) hr0

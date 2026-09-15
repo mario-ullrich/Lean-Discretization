@@ -110,6 +110,15 @@ theorem IsFiniteTracePos.conj (hJ : IsFiniteTracePos e J) {S : H →L[ℂ] H}
       exact norm_eq_zero.1 this
     exact hJ.injective v (hinjS _ this)
 
+/-- **The trace of a positive injective operator of finite trace is positive** on a nonzero
+space.  A vanishing trace would force `J` itself to vanish, which injectivity forbids. -/
+theorem IsFiniteTracePos.traceAlong_pos [Nonempty κ] (hJ : IsFiniteTracePos e J) :
+    0 < traceAlong e J := by
+  obtain ⟨k⟩ := ‹Nonempty κ›
+  have hJ0 : J ≠ 0 := fun h => e.ne_zero k (hJ.injective (e k) (by rw [h]; rfl))
+  refine lt_of_le_of_ne (traceAlong_nonneg e hJ.nonneg) fun h => hJ0 ?_
+  exact eq_zero_of_traceAlong_eq_zero e hJ.nonneg hJ.summableTrace h.symm
+
 /-! ### The upper potential -/
 
 /-- The **upper potential** `Ψ_J(B) = Tr (J B⁻¹)` of a strictly positive operator `B`

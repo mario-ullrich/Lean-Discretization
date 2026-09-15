@@ -75,17 +75,21 @@ in the Loewner order, with no side condition
   eigenvalue form that is the factor `λ_min(I)` of the paper.
 * **A countably infinite second family.** Then `b` maps into a Hilbert space, its Gram
   operator `J` is positive, injective and of finite trace, and the same two bounds hold
-  with the second one in the order of operators
-  (`Discretization.Infinite.bss_generalized_of_gram_eq_one`). The number of points does
-  not change, because it is governed by `M = Tr J / Λ` and not by the size of the
-  family.
+  with the second one in the order of operators, again with no side condition
+  (`Discretization.Infinite.bss_generalized`). Underneath it are the same four cases as in
+  finite dimension: the potential argument
+  (`.Infinite.bss_generalized_of_gram_eq_one`) and the three edge cases
+  (`.Infinite.bss_generalized_of_unique`, `.Infinite.bss_generalized_of_small_dim`,
+  `.Infinite.bss_generalized_of_unique_of_small_dim`). The number of points does not
+  change, because it is governed by `M = Tr J / Λ` and not by the size of the family.
 * **The discretization inequality.** For every `f` in the span of the first family,
   `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²`, and the weighted sum of every `g` in
   the span of the second family is at most `(1 + √((M-1)/n))² Λ ‖c‖²` in its
   coefficients `c` (`Discretization.exists_discretization`,
-  `.Infinite.exists_discretization`). This is Corollary 4 of the paper; with `b` the
-  singular basis of the embedding of a reproducing kernel Hilbert space into `L₂`, the
-  coefficient norm is the norm of that space.
+  `.Infinite.exists_discretization`, the second with a vector of the Hilbert space in
+  place of `c`). This is Corollary 4 of the paper, in both cases without a side condition;
+  with `b` the singular basis of the embedding of a reproducing kernel Hilbert space into
+  `L₂`, the coefficient norm is the norm of that space.
 
 For the second theorem, let `D` be any set, `ι` a finite nonempty index set with
 `n = card ι` elements, and `a : D → ι → ℂ` a bounded family whose coordinate functions
@@ -142,7 +146,10 @@ matrices, so such a point exists. After `n` steps both potentials are still belo
 initial values, and reading a bound on a potential back as a bound on the matrix gives
 the two frame bounds. For a countably infinite second family, `B` is a positive
 invertible operator and the traces are sums along a fixed Hilbert basis; only the upper
-side is redone, in `Discretization/Infinite/`.
+side is redone, in `Discretization/Infinite/`. The edge cases and the removal of the
+normalisation follow the finite argument there as well: both inductions consume the second
+family only through a constant verifier of average `n`, so the lower half is the finite
+lemma itself, and the crude bound `b b* ≼ ‖b‖² • 1` is all the upper half needs.
 
 The second proof maximises a determinant. Among all finitely supported probability
 measures one is chosen whose Gram matrix `G = ∑ wₖ a(xₖ) a(xₖ)*` has an almost maximal
@@ -200,8 +207,9 @@ Everything else is in the blueprint, with its Lean name at every statement.
 Two libraries. `Discretization` holds the arguments: the arithmetic of the parameters,
 the two potentials and the verifiers, the barrier lemma, the averaging step, the
 `n`-step iteration, the main theorem with its edge cases, the discretization
-inequality, under `Discretization/Infinite/` the same for a countably infinite second
-family, and under `Discretization/KieferWolfowitz/` the maximisation of the determinant
+inequality, under `Discretization/Infinite/` the same chain for a countably infinite
+second family, and under `Discretization/KieferWolfowitz/` the maximisation of the
+determinant
 of a Gram matrix, the theorem it yields and John's decomposition of the identity beside
 it. `BasicResults` holds what the arguments need
 and Mathlib lacks: comparisons in the Loewner order, traces of products and

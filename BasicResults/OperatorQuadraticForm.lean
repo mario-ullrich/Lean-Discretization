@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
 import BasicResults.OperatorTrace
+import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 import Mathlib.MeasureTheory.Function.L2Space
 
 /-!
@@ -32,17 +33,63 @@ adjoint (`ContinuousLinearMap.tsum_norm_sq_adjoint`).
 Countability of the index set of the basis enters here for the first time: the interchange of
 sum and integral is `MeasureTheory.integral_tsum_of_summable_integral_norm`, which needs a
 countable index.
+
+A first section collects the dictionary between an operator and the function it defines on
+`H`, with no measure in sight: the quadratic form of a rank-one operator, of a weighted sum
+of them, its monotonicity for the operator order, and the crude bound `u u* ≼ ‖u‖² • 1`.
+This is the operator counterpart of `BasicResults.QuadraticForm`.
 -/
 
 open MeasureTheory
 open scoped InnerProductSpace ComplexOrder
+open InnerProductSpace
 
 namespace ContinuousLinearMap
 
-variable {κ Ω H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-  [MeasurableSpace Ω] {μ : Measure Ω}
+variable {κ Ω H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+
+/-! ### Quadratic forms of operators -/
+
+/-- The quadratic form of a rank-one operator is a squared modulus. -/
+theorem re_inner_rankOne (v u : H) :
+    RCLike.re ⟪u, (rankOne ℂ v v) u⟫_ℂ = ‖⟪u, v⟫_ℂ‖ ^ 2 := by
+  rw [rankOne_apply, inner_smul_right, ← inner_conj_symm v u, RCLike.conj_mul]
+  norm_cast
+
+/-- **The quadratic form of a weighted sum of rank-one operators** is the corresponding
+weighted sum of squared moduli. -/
+theorem re_inner_sum_rankOne {k : ℕ} (x : Fin k → Ω) (w : Fin k → ℝ) (b : Ω → H) (u : H) :
+    RCLike.re ⟪u, (∑ i, w i • rankOne ℂ (b (x i)) (b (x i))) u⟫_ℂ
+      = ∑ i, w i * ‖⟪u, b (x i)⟫_ℂ‖ ^ 2 := by
+  rw [_root_.sum_apply, inner_sum, map_sum]
+  refine Finset.sum_congr rfl fun i _ => ?_
+  rw [_root_.smul_apply, RCLike.real_smul_eq_coe_smul (K := ℂ),
+    inner_smul_real_right, RCLike.smul_re, re_inner_rankOne]
+
+/-- The quadratic form is monotone for the operator order. -/
+theorem re_inner_le_of_le [CompleteSpace H] {S T : H →L[ℂ] H} (h : S ≤ T) (u : H) :
+    RCLike.re ⟪u, S u⟫_ℂ ≤ RCLike.re ⟪u, T u⟫_ℂ := by
+  have hd := ((ContinuousLinearMap.nonneg_iff_isPositive _).1
+    (sub_nonneg.2 h)).re_inner_nonneg_right u
+  rw [show (T - S) u = T u - S u from rfl, inner_sub_right, map_sub] at hd
+  linarith
+
+/-- **The crude bound for a rank-one operator:** `u u* ≼ ‖u‖² • 1`.
+
+This is the operator counterpart of `Matrix.vecMulVec_le_norm_sq_smul_one`, and the only
+estimate the edge case of a small effective dimension needs on the upper side.  It is the
+bound `a ≼ ‖a‖ • 1` on a self-adjoint element of a C⋆-algebra
+(`IsSelfAdjoint.le_algebraMap_norm_self`), applied to `u u*`, whose norm is `‖u‖ ‖u‖`. -/
+theorem rankOne_le_norm_sq_smul_one [CompleteSpace H] (u : H) :
+    rankOne ℂ u u ≤ ‖u‖ ^ 2 • (1 : H →L[ℂ] H) := by
+  have hsa : IsSelfAdjoint (rankOne ℂ u u) :=
+    (InnerProductSpace.isPositive_rankOne_self (𝕜 := ℂ) u).isSelfAdjoint
+  have h := hsa.le_algebraMap_norm_self
+  rwa [Algebra.algebraMap_eq_smul_one, norm_rankOne, ← sq] at h
 
 /-! ### The two symmetrizations of `Tr (J Q)` -/
+
+variable [CompleteSpace H] [MeasurableSpace Ω] {μ : Measure Ω}
 
 /-- The adjoint of `√Q √J` is `√J √Q`; the square root of any operator is self-adjoint,
 because `CFC.sqrt` is nonnegative by construction. -/
