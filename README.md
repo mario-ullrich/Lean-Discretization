@@ -20,10 +20,6 @@ relies on throughout (`propext`, `Classical.choice`, `Quot.sound`).
 * **Dependency graph**:
   <https://mario-ullrich.github.io/Lean-Discretization/dep_graph_document.html>
 
-GitHub Pages serves these three once the repository is public. Until then the same site
-and PDF are downloadable from every run under *Actions* as the artifact
-`blueprint-YYYYMMDD`.
-
 ## The question
 
 Given a family of functions on a measure space, can one replace the integral
@@ -257,9 +253,8 @@ leanblueprint web          # blueprint/web/index.html and the dependency graph
 leanblueprint checkdecls   # checks that every \lean{Decl} resolves
 ```
 
-GitHub Actions builds the project and the blueprint on every push to `main`, and
-deploys the blueprint to GitHub Pages once the repository is public. Neither output is
-committed.
+GitHub Actions builds the project and the blueprint on every push to `main`, and deploys
+the blueprint to GitHub Pages. Neither output is committed.
 
 ## AI assistance
 
