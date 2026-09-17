@@ -1,0 +1,191 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# formalization.yaml v0.4
+version: "v0.4"
+
+project:
+  name: "A generalized sparsification theorem of Batson, Spielman and Srivastava type"
+  description: >-
+    Given two families of square-integrable functions on a measure space, a finite
+    one a = (a_k) with m elements and a second one b, one can select n points and
+    positive weights, for every n >= m, so that the first family stays a frame from
+    below and the second stays a frame from above, with the constants
+    (1 - sqrt((m-1)/n))^2 and (1 + sqrt((M-1)/n))^2 * Lambda. Here Lambda bounds the
+    Gram matrix J of the second family and M = Tr J / Lambda is its effective
+    dimension. What the number of points depends on is M, not the number of functions
+    in the second family, which is what makes the theorem applicable to infinite
+    families and to reproducing kernel Hilbert spaces, and why its constants beat
+    those obtainable from the theorem of Kadison and Singer. For a = b with both Gram
+    matrices the identity, M equals m and the statement is the sparsification theorem
+    of Batson, Spielman and Srivastava. Formalized in two forms, as an inequality
+    between matrices in the Loewner order and as a discretization inequality for the
+    L_2 norm, and each for a finite and for a countably infinite second family. There
+    is no side condition beyond n >= m.
+  authors:
+    - "Mario Ullrich"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Mario Ullrich"
+
+classification:
+  arxiv: ["math.NA", "math.FA"]
+  msc2020: ["41A05", "65D32", "15A45", "46E22"]
+
+sources:
+  - title: "Constructive discretization and approximation in reproducing kernel Hilbert spaces"
+    authors:
+      - "Abdellah Chkifa"
+      - "Matthieu Dolbeault"
+      - "David Krieg"
+      - "Mario Ullrich"
+    id: "arXiv:2602.18719"
+    type: "preprint"
+    location: "https://arxiv.org/abs/2602.18719"
+    relationship: "formalizes"
+    note: >-
+      Theorem 3 is the sparsification theorem formalized here and Corollary 4 the
+      discretization inequality; Section 4 is the proof followed. The source states
+      Theorem 3 for an at most countable second index set, and both cases are
+      formalized: a finite one with a Gram matrix, and a countable one with a Gram
+      operator of finite trace on a Hilbert space. The applications of the paper to
+      reproducing kernel Hilbert spaces, least-squares recovery and sampling numbers
+      are not formalized.
+    author_endorsement: "participated"
+  - title: "Twice-Ramanujan sparsifiers"
+    authors:
+      - "Joshua Batson"
+      - "Daniel A. Spielman"
+      - "Nikhil Srivastava"
+    id: "arXiv:0808.0163"
+    type: "article"
+    location: "https://doi.org/10.1137/130949117"
+    relationship: "background"
+    note: >-
+      SIAM Review 56 (2014), no. 2, 315-334. The original potential-function
+      argument, which is the case a = b with both Gram matrices the identity and
+      M = m.
+
+related_formalizations: []
+
+status:
+  scope: >-
+    Formalized and advertised: Discretization.bss_generalized and
+    Discretization.Infinite.bss_generalized, the frame bounds for a finite and for a
+    countably infinite second family, together with the discretization inequalities
+    Discretization.exists_discretization and
+    Discretization.Infinite.exists_discretization. None of the four carries a side
+    condition beyond n >= m.
+
+    Proved in the repository but not advertised here: the potential argument under
+    the two side conditions m >= 2 and M >= 1 + 1/n
+    (bss_generalized_of_gram_eq_one), the three edge cases that remove them
+    (bss_generalized_of_unique, bss_generalized_of_small_dim,
+    bss_generalized_of_unique_of_small_dim), each in a finite and in a countable
+    version; the theorem of Kiefer and Wolfowitz for sampling projections, which
+    produces the measure the sparsification theorem starts from; and John's
+    decomposition of the identity over the design points.
+
+    Not formalized: the construction of the Gram operator from a reproducing kernel,
+    that is the singular value decomposition of the embedding into L_2; sampling
+    projections in the uniform norm; least-squares recovery and sampling numbers.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models:
+        - "Claude Opus 5 (Anthropic)"
+        - "Claude Fable 5.1 (Anthropic)"
+      framework: "Claude Code"
+      tool_setup: >-
+        VS Code with the Lean 4 extension, and Claude Code driving an agentic loop
+        that edits Lean files and runs `lake build` until the affected files compile.
+        No proof search beyond the tactics of Lean and Mathlib.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: >-
+        Standing instructions for this discretization project, kept in a CLAUDE.md
+        file alongside the project and outside this repository, and applied to every
+        session: prefer many small, self-contained, reusable lemmas over long proofs;
+        search Mathlib first and reuse existing lemmas and canonical spellings;
+        rebuild the affected files after every change and never leave a `sorry`
+        unannounced.
+  spend_usd: "subscription-based"
+  notes: >-
+    Most of the Lean proofs were produced with AI assistance. Throughout, the author
+    designed the structure of the development and checked and revised the statements
+    of all definitions and results. The proofs themselves are guaranteed by the Lean
+    kernel.
+
+fidelity:
+  divergences: >-
+    The lower frame bound of the source is stated with the factor lambda_min(I) for
+    the Gram matrix I of the first family; the formalization states the equivalent
+    Loewner inequality (1 - sqrt((m-1)/n))^2 * I <= sum_i w_i a(x_i) a(x_i)^*, from
+    which the eigenvalue form follows.
+
+    Traces of the matrices involved are real, and the formalization takes real parts
+    explicitly with RCLike.re wherever a real number is needed.
+
+    For a countably infinite second family the source works with a family (b_k)
+    indexed by a countable set. The formalization instead takes a single
+    square-integrable map b into a Hilbert space H together with a given operator J
+    tied to it by the Gram identity Re <u, J u> = integral |<u, b x>|^2 dmu, which is
+    what the averaging step consumes and which avoids constructing J as a Bochner
+    integral in the operator algebra. Since Mathlib has no trace-class theory, the
+    trace is taken along a fixed Hilbert basis e of H (ContinuousLinearMap.traceAlong),
+    and the finite-trace hypothesis is the summability of that series. Positive
+    definiteness of the Gram matrix is replaced by injectivity of J, which is the
+    correct hypothesis in infinite dimension because a positive operator of finite
+    trace is compact and hence never bounded away from zero.
+
+review:
+  status: "self-assessed"
+  reviewers:
+    - "none"
+  notes: >-
+    The statements of all definitions and results were checked and revised by the
+    author; the proof scripts were largely produced with AI assistance and rest on
+    the Lean kernel.
+
+alignment:
+  namespace: "Discretization"
+  statements:
+    - source: "Constructive discretization and approximation in RKHS, Theorem 3, finite second family"
+      lean: "Discretization.bss_generalized"
+      module: "Discretization.GeneralGram"
+      status: "proved"
+      note: >-
+        The frame bounds with the lower one against the Gram matrix of the first
+        family, for a finite second family, with no side condition beyond n >= m.
+    - source: "Constructive discretization and approximation in RKHS, Corollary 4, finite second family"
+      lean: "Discretization.exists_discretization"
+      module: "Discretization.NormDiscretization"
+      status: "proved"
+      note: >-
+        The same statement read through quadratic forms, for a normalized first
+        family.
+    - source: "Constructive discretization and approximation in RKHS, Theorem 3, countable second family"
+      lean: "Discretization.Infinite.bss_generalized"
+      module: "Discretization.Infinite.GeneralGram"
+      status: "proved"
+      note: >-
+        The upper frame bound is an inequality between operators; the number of points
+        is unchanged, being governed by the effective dimension.
+    - source: "Constructive discretization and approximation in RKHS, Corollary 4, countable second family"
+      lean: "Discretization.Infinite.exists_discretization"
+      module: "Discretization.Infinite.NormDiscretization"
+      status: "proved"
+      note: >-
+        A vector of the Hilbert space plays the role of the coefficient vector of the
+        second family.
+
+acknowledgements: >-
+  Built on Mathlib. The Challenge module reproduces the definitions Discretization.gram,
+  ContinuousLinearMap.traceAlong and Discretization.Infinite.IsFiniteTracePos from the
+  development in BasicResults/IntegralQuadraticForm.lean, BasicResults/OperatorTrace.lean
+  and Discretization/Infinite/Potentials.lean, so that the advertised statements can be
+  read against Mathlib alone.

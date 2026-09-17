@@ -1,0 +1,17 @@
+{
+  "challenge_module": "Palomar.Sparsification.Challenge",
+  "solution_module": "Palomar.Sparsification.Solution",
+  "theorem_names": [
+    "Discretization.bss_generalized",
+    "Discretization.exists_discretization",
+    "Discretization.Infinite.bss_generalized",
+    "Discretization.Infinite.exists_discretization"
+  ],
+  "definition_names": [
+    "Discretization.gram",
+    "ContinuousLinearMap.traceAlong",
+    "Discretization.Infinite.IsFiniteTracePos"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}

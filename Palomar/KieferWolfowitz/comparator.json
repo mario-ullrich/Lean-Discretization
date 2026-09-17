@@ -1,0 +1,13 @@
+{
+  "challenge_module": "Palomar.KieferWolfowitz.Challenge",
+  "solution_module": "Palomar.KieferWolfowitz.Solution",
+  "theorem_names": [
+    "Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le",
+    "Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le"
+  ],
+  "definition_names": [
+    "Discretization.KieferWolfowitz.designGram"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}

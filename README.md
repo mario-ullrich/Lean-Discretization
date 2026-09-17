@@ -215,7 +215,13 @@ the compactness of the convex hull of a compact set, and the bridge from Bochner
 integrals to Gram matrices;
 [MathlibCandidates.md](MathlibCandidates.md) lists what could be upstreamed.
 `blueprint/` holds the LaTeX source of the blueprint and the script that points its
-`\lean` links at this repository.
+`\lean` links at this repository. `Palomar/` holds the submission surfaces for the
+[Palomar registry](https://palomar-registry.org), one directory per registered result,
+each with a `Challenge` module stating the advertised theorems and a `Solution` module
+supplying their proofs from the development. The placeholder `sorry`s in the `Challenge`
+modules are required by that format: a Challenge advertises statements and imports only
+Mathlib, so a reader can audit what is claimed without reading the development. This
+library sits outside `defaultTargets`; build it with `lake build Palomar`.
 
 ## What is left to do
 

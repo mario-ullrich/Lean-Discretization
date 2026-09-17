@@ -1,0 +1,165 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# formalization.yaml v0.4
+version: "v0.4"
+
+project:
+  name: "The theorem of Kiefer and Wolfowitz for sampling projections"
+  description: >-
+    On an n-dimensional space V of bounded functions on an arbitrary set D, and for
+    every epsilon > 0, there is a finitely supported probability measure
+    rho = sum_k w_k delta(x_k) for which the uniform norm on V is dominated by the
+    L_2(rho) norm with the constant sqrt(n + epsilon):
+    |f(y)|^2 <= (n + epsilon) * sum_k w_k |f(x_k)|^2 for every y in D and every f in V.
+    For continuous functions on a compact domain the loss disappears and the constant
+    is the sharp sqrt(n). In both cases at most 2n^2 + 1 points are needed. The measure
+    is one whose Gram matrix has an almost maximal determinant; applying a
+    sparsification theorem to such a measure is how one arrives at sampling projections
+    with few points and small norm.
+  authors:
+    - "Mario Ullrich"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Mario Ullrich"
+
+classification:
+  arxiv: ["math.NA", "math.ST"]
+  msc2020: ["62K05", "41A05", "41A65", "65D15"]
+
+sources:
+  - title: "Sampling projections in the uniform norm"
+    authors:
+      - "David Krieg"
+      - "Kateryna Pozharska"
+      - "Mario Ullrich"
+      - "Tino Ullrich"
+    id: "arXiv:2401.02220"
+    type: "article"
+    location: "https://doi.org/10.1016/j.jmaa.2025.129873"
+    relationship: "formalizes"
+    note: >-
+      J. Math. Anal. Appl. 553 (2026), no. 2, Paper No. 129873. Proposition 9 is the
+      statement formalized here, in the form the paper uses it for sampling
+      projections, and its proof is the one followed. The sampling projections built
+      from it are not formalized.
+    author_endorsement: "participated"
+  - title: "The equivalence of two extremum problems"
+    authors:
+      - "Jack Kiefer"
+      - "Jacob Wolfowitz"
+    type: "article"
+    location: "https://doi.org/10.4153/CJM-1960-030-4"
+    relationship: "background"
+    note: >-
+      Canad. J. Math. 12 (1960), 363-366. The original equivalence theorem for
+      optimal designs, of which the advertised bound is the half used here.
+
+related_formalizations: []
+
+status:
+  scope: >-
+    Formalized and advertised:
+    Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le, the bound
+    with the constant n + epsilon on an arbitrary set, and
+    Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le,
+    the sharp constant n for continuous functions on a compact domain. Both give a
+    design of at most 2n^2 + 1 points whose Gram matrix is positive definite.
+
+    Proved in the repository but not advertised here: the same two theorems without
+    the bound on the number of points (exists_design_kieferWolfowitz,
+    exists_design_kieferWolfowitz_of_compact); the statement for the measure
+    rho = sum_k w_k delta(x_k) itself
+    (exists_probabilityMeasure_kieferWolfowitz), together with the identity
+    gram a rho = designGram a x w that hands it to the sparsification theorem; the
+    reduction of any design to one with at most 2n^2 + 1 points and the same Gram
+    matrix (exists_design_card_le), by Caratheodory's theorem; and John's
+    decomposition of the identity over the design points
+    (sum_weight_quadForm_inv_eq_card, sum_weight_smul_quadForm_inv_eq_self).
+
+    Not formalized: the sampling projections the source builds from this theorem.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models:
+        - "Claude Opus 5 (Anthropic)"
+        - "Claude Fable 5.1 (Anthropic)"
+      framework: "Claude Code"
+      tool_setup: >-
+        VS Code with the Lean 4 extension, and Claude Code driving an agentic loop
+        that edits Lean files and runs `lake build` until the affected files compile.
+        No proof search beyond the tactics of Lean and Mathlib.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: >-
+        Standing instructions for this discretization project, kept in a CLAUDE.md
+        file alongside the project and outside this repository, and applied to every
+        session: prefer many small, self-contained, reusable lemmas over long proofs;
+        search Mathlib first and reuse existing lemmas and canonical spellings;
+        rebuild the affected files after every change and never leave a `sorry`
+        unannounced.
+  spend_usd: "subscription-based"
+  notes: >-
+    Most of the Lean proofs were produced with AI assistance. Throughout, the author
+    designed the structure of the development and checked and revised the statements
+    of all definitions and results. The proofs themselves are guaranteed by the Lean
+    kernel.
+
+fidelity:
+  divergences: >-
+    Linear independence of the functions is stated as the separating condition
+    "for every coefficient vector c, if <c, a(y)> vanishes for every y then c = 0",
+    which the development identifies with LinearIndependent over the complex numbers
+    (linearIndependent_iff_forall). Boundedness is stated as one constant C bounding
+    every value |a_i(y)|.
+
+    The design is given as points x_1, ..., x_N with weights w_1, ..., w_N rather
+    than as a measure. The measure form is proved in the repository as
+    exists_probabilityMeasure_kieferWolfowitz, with the identity relating its Gram
+    matrix to the Gram matrix of the points and weights.
+
+    On a general domain the proof does not use a maximiser. Instead of maximising the
+    determinant over the compact convex hull of the rank-one matrices, it takes a
+    near-maximiser of the supremum of the determinants; the perturbation is computed
+    exactly by the matrix determinant lemma, and the first-order condition is replaced
+    by Bernoulli's inequality with the explicit weight alpha = (t-n)/(2n(t-1)). This
+    avoids both a Jacobi formula and the compactness of a convex hull, neither of
+    which Mathlib has. On a compact domain the maximum is attained and the same
+    computation gives the sharp constant.
+
+review:
+  status: "self-assessed"
+  reviewers:
+    - "none"
+  notes: >-
+    The statements of all definitions and results were checked and revised by the
+    author; the proof scripts were largely produced with AI assistance and rest on
+    the Lean kernel.
+
+alignment:
+  namespace: "Discretization.KieferWolfowitz"
+  statements:
+    - source: "Sampling projections in the uniform norm, Proposition 9"
+      lean: "Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le"
+      module: "Discretization.KieferWolfowitz.PointCount"
+      status: "proved"
+      note: >-
+        The bound with the constant n + epsilon on an arbitrary set, with at most
+        2n^2 + 1 points.
+    - source: "Sampling projections in the uniform norm, Proposition 9, compact case"
+      lean: "Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le"
+      module: "Discretization.KieferWolfowitz.PointCount"
+      status: "proved"
+      note: >-
+        The sharp constant n for continuous functions on a compact domain, with at
+        most 2n^2 + 1 points.
+
+acknowledgements: >-
+  Built on Mathlib. The Challenge module reproduces the definition
+  Discretization.KieferWolfowitz.designGram from the development in
+  Discretization/KieferWolfowitz/Design.lean, so that the advertised statements can be
+  read against Mathlib alone.
