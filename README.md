@@ -13,7 +13,7 @@ norm of a finitely supported probability measure, with the constant `√(n+ε)`.
 project builds without `sorry`, and every theorem uses only the three axioms Mathlib
 relies on throughout (`propext`, `Classical.choice`, `Quot.sound`).
 
-* **Blueprint** (the mathematics, with the Lean name at every statement):
+* **Blueprint** (a webpage explaining the mathematics):
   <https://mario-ullrich.github.io/Lean-Discretization/>
 * **Blueprint as PDF**:
   <https://mario-ullrich.github.io/Lean-Discretization/blueprint.pdf>
