@@ -18,8 +18,11 @@ Linear independence is used in the form
 `∀ c, (∀ y, ⟪c, a(y)⟫ = 0) → c = 0`,
 
 that is, a function of the span that vanishes everywhere has coefficient vector zero.  This
-is what is actually needed, and `Discretization.KieferWolfowitz.linearIndependent_iff_forall`
-identifies it with `LinearIndependent ℂ` applied to the coordinate functions.
+is what is actually needed, and
+`Discretization.KieferWolfowitz.linearIndependent_iff_forall_star` identifies it with
+`LinearIndependent ℂ` applied to the coordinate functions.  Its unconjugated companion
+`Discretization.KieferWolfowitz.linearIndependent_iff_forall` is the same condition for the
+linear parametrisation `c ⬝ᵥ a y`, which the induction below runs on.
 
 The separating points are found by a descending induction on dimension, in
 `Discretization.KieferWolfowitz.exists_points_separating`: as long as some nonzero
@@ -50,6 +53,20 @@ theorem linearIndependent_iff_forall (a : Ω → ι → ℂ) :
     have : c = 0 := h c fun y => by
       simpa [dotProduct, mul_comm] using congrFun hc y
     simp [this]
+
+/-- **Linear independence in the form the theorems use.**  The functions of the span are
+written `f(y) = ⟪c, a(y)⟫ = star c ⬝ᵥ a y`, conjugate-linearly in the coefficient vector, so
+the separating condition carries a `star`.  Conjugation is a bijection of the coefficient
+vectors with `star c = 0` exactly when `c = 0`, so this is the same condition as
+`Discretization.KieferWolfowitz.linearIndependent_iff_forall`. -/
+theorem linearIndependent_iff_forall_star (a : Ω → ι → ℂ) :
+    LinearIndependent ℂ (fun i => fun y => a y i) ↔
+      ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0 := by
+  rw [linearIndependent_iff_forall]
+  constructor
+  · exact fun h c hc => star_eq_zero.mp (h (star c) hc)
+  · exact fun h c hc =>
+      star_eq_zero.mp (h (star c) fun y => by rw [star_star]; exact hc y)
 
 /-- The functional `c ↦ ⟪c, a(y)⟫` on coefficient vectors, as a linear map. -/
 @[simps] def evalAt (a : Ω → ι → ℂ) (y : Ω) : (ι → ℂ) →ₗ[ℂ] ℂ where

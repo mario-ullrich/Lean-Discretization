@@ -36,12 +36,6 @@ The measure is one whose Gram matrix has an almost maximal determinant. Applying
 sparsification theorem to such a measure is how one arrives at sampling projections with few
 points and small norm.
 
-Two hypotheses are stated in the form the argument consumes. Linear independence appears as
-the separating condition `∀ c, (∀ y, ⟪c, a(y)⟫ = 0) → c = 0`, which the development
-identifies with `LinearIndependent ℂ`; boundedness appears as one constant `C` bounding all
-the values. The design is given as points and weights rather than as a measure; the measure
-form is proved in the development as well.
-
 ## The definition restated here
 
 * `Discretization.KieferWolfowitz.designGram` — the Gram matrix

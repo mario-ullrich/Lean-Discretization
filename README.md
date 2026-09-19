@@ -205,14 +205,12 @@ the two potentials and the verifiers, the barrier lemma, the averaging step, the
 `n`-step iteration, the main theorem with its edge cases, the discretization
 inequality, under `Discretization/Infinite/` the same chain for a countably infinite
 second family, and under `Discretization/KieferWolfowitz/` the maximisation of the
-determinant
-of a Gram matrix, the theorem it yields and John's decomposition of the identity beside
-it. `BasicResults` holds what the arguments need
-and Mathlib lacks: comparisons in the Loewner order, traces of products and
-Cauchy–Schwarz for them, Sherman–Morrison for rank-one updates of a matrix and of an
-operator, the trace of an operator along a Hilbert basis, the matrix determinant lemma,
-the compactness of the convex hull of a compact set, and the bridge from Bochner
-integrals to Gram matrices;
+determinant of a Gram matrix, the theorem it yields and John's decomposition of the
+identity beside it. `BasicResults` holds what the arguments need and Mathlib lacks:
+comparisons in the Loewner order, traces of products and Cauchy–Schwarz for them,
+Sherman–Morrison for rank-one updates of a matrix and of an operator, the trace of an
+operator along a Hilbert basis, the matrix determinant lemma, the compactness of the
+convex hull of a compact set, and the bridge from Bochner integrals to Gram matrices;
 [MathlibCandidates.md](MathlibCandidates.md) lists what could be upstreamed.
 `blueprint/` holds the LaTeX source of the blueprint and the script that points its
 `\lean` links at this repository. `Palomar/` holds the submission surfaces for the

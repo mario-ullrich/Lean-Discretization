@@ -25,9 +25,15 @@ The question is whether the integral `∫ |f|² dμ` can be replaced by a finite
 `∑ᵢ wᵢ |f(xᵢ)|²` of point evaluations, with a controlled loss in both directions: the first
 family should stay a frame from below and the second a frame from above.
 
-The answer below is that `n` points suffice for every `n ≥ m`, with the frame constants
-`(1 - √((m-1)/n))²` and `(1 + √((M-1)/n))² Λ`. Here `Λ` bounds the Gram matrix `J` of the
-second family, `J ≼ Λ · 1`, and
+The answer below is that for every `n ≥ m` there are `n` points `x₁, …, xₙ` and positive
+weights `w₁, …, wₙ` with
+
+  `(1 - √((m-1)/n))² · I ≼ ∑ᵢ wᵢ a(xᵢ) a(xᵢ)*`   and
+  `∑ᵢ wᵢ b(xᵢ) b(xᵢ)* ≼ (1 + √((M-1)/n))² Λ · 1`
+
+in the **Loewner order** `A ≼ B ↔ (B - A)` positive semidefinite. Here `I` is the Gram
+matrix of the first family, `Λ` bounds the Gram matrix `J` of the second one, `J ≼ Λ · 1`,
+and
 
   `M = Tr J / Λ`
 
@@ -37,13 +43,20 @@ family is infinite, and it is why the constants beat those obtainable from the
 Kadison–Singer theorem. For `a = b` with both Gram matrices the identity, `M` is `m` and the
 statement is the sparsification theorem of Batson, Spielman and Srivastava.
 
-Two forms are advertised. In the first the conclusion is an inequality between matrices, in
-the **Loewner order** `A ≼ B ↔ (B - A)` positive semidefinite; in the second it is read
-through quadratic forms as an inequality between norms, which is the discretization
-inequality for the `L₂` norm. Each comes in a version for a finite second family and one for
-a countably infinite second family, where the Gram matrix `J` becomes a positive, injective
-operator of finite trace on a Hilbert space `H` and the upper bound is an inequality between
-operators.
+Read through quadratic forms, the same two bounds become the discretization inequality for
+the `L₂` norm. For `I = 1` they say
+
+  `(1 - √((m-1)/n))² · ∫ |f|² dμ ≤ ∑ᵢ wᵢ |f(xᵢ)|²`
+
+for every `f` in the span of the first family, and
+
+  `∑ᵢ wᵢ |g(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ · ‖c‖²`
+
+for every `g` in the span of the second family with coefficient vector `c`.
+
+Both forms come in a version for a finite second family and one for a countably infinite
+second family, where the Gram matrix `J` becomes a positive, injective operator of finite
+trace on a Hilbert space `H` and the upper bound is an inequality between operators.
 
 Traces of the matrices appearing here are real, and real parts are taken with `RCLike.re`
 wherever a real number is needed. Mathlib has no trace outside finite dimension, so the

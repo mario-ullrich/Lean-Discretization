@@ -62,7 +62,7 @@ For linearly independent bounded functions `a₁, …, a_n` on an arbitrary set 
 
 for every point `y` and every function `f(y) = ⟪c, a(y)⟫` in the span.  Linear independence
 is used in the form `∀ c, (∀ y, ⟪c, a(y)⟫ = 0) → c = 0`, which
-`Discretization.KieferWolfowitz.linearIndependent_iff_forall` identifies with
+`Discretization.KieferWolfowitz.linearIndependent_iff_forall_star` identifies with
 `LinearIndependent ℂ`, and boundedness in the form of one constant `C` bounding all the
 values. -/
 theorem exists_design_kieferWolfowitz [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}

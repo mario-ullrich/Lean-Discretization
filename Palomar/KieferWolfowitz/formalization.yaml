@@ -34,7 +34,7 @@ sources:
       - "Tino Ullrich"
     id: "arXiv:2401.02220"
     type: "article"
-    location: "https://doi.org/10.1016/j.jmaa.2025.129873"
+    location: "https://arxiv.org/abs/2401.02220"
     relationship: "formalizes"
     note: >-
       J. Math. Anal. Appl. 553 (2026), no. 2, Paper No. 129873. Proposition 9 is the
@@ -114,7 +114,7 @@ fidelity:
     Linear independence of the functions is stated as the separating condition
     "for every coefficient vector c, if <c, a(y)> vanishes for every y then c = 0",
     which the development identifies with LinearIndependent over the complex numbers
-    (linearIndependent_iff_forall). Boundedness is stated as one constant C bounding
+    (linearIndependent_iff_forall_star). Boundedness is stated as one constant C bounding
     every value |a_i(y)|.
 
     The design is given as points x_1, ..., x_N with weights w_1, ..., w_N rather
