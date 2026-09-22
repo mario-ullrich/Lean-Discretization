@@ -38,7 +38,7 @@ import Discretization.KieferWolfowitz.JohnDecomposition
 import Discretization.KieferWolfowitz.PointCount
 
 /-!
-# Constructive discretization
+# Norm discretization
 
 Two theorems on discretizing a norm by finitely many point evaluations.
 

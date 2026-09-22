@@ -1,4 +1,4 @@
-# Constructive discretization in Lean 4 / Mathlib
+# Norm discretization in Lean 4 / Mathlib
 
 A Lean 4 / Mathlib formalisation of two theorems that replace a norm by finitely many
 point evaluations. The first is the **generalized Batson–Spielman–Srivastava
