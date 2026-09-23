@@ -28,7 +28,7 @@ project:
 
 classification:
   arxiv: ["math.NA", "math.FA"]
-  msc2020: ["41A05", "65D32", "15A45", "46E22"]
+  msc2020: ["41A17", "42C15", "15A45", "46E22"]
 
 sources:
   - title: "Constructive discretization and approximation in reproducing kernel Hilbert spaces"

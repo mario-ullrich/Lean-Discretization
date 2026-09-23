@@ -23,7 +23,7 @@ project:
 
 classification:
   arxiv: ["math.NA", "math.ST"]
-  msc2020: ["62K05", "41A05", "41A65", "65D15"]
+  msc2020: ["62K05", "41A17", "15A15"]
 
 sources:
   - title: "Sampling projections in the uniform norm"
@@ -34,7 +34,7 @@ sources:
       - "Tino Ullrich"
     id: "arXiv:2401.02220"
     type: "article"
-    location: "https://arxiv.org/abs/2401.02220"
+    location: "https://doi.org/10.1016/j.jmaa.2025.129873"
     relationship: "formalizes"
     note: >-
       J. Math. Anal. Appl. 553 (2026), no. 2, Paper No. 129873. Proposition 9 is the
