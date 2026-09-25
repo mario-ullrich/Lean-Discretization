@@ -35,7 +35,8 @@ exactly as it does without it. Build these modules with `lake build Palomar`.
   `Discretization.exists_discretization`, `Discretization.Infinite.bss_generalized` and
   `Discretization.Infinite.exists_discretization`.
 * `Palomar/KieferWolfowitz/` — the Kiefer–Wolfowitz theorem for sampling projections, with
-  at most `2n² + 1` points, on an arbitrary set and on a compact domain, advertising
+  at most `2m² + 1` points for an `m`-dimensional space, on an arbitrary set and on a
+  compact domain, advertising
   `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le` and
   `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le`.
 -/

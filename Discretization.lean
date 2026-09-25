@@ -58,9 +58,9 @@ measure how close they are to failure.  Each new sampling point is chosen so tha
 potential gets worse.
 
 The second is the theorem of Kiefer and Wolfowitz in the form needed for sampling
-projections: on an `n`-dimensional space of bounded functions on an arbitrary set, and for
+projections: on an `m`-dimensional space of bounded functions on an arbitrary set, and for
 every `ε > 0`, the uniform norm is dominated by the `L₂` norm of a finitely supported
-probability measure with the constant `√(n+ε)`, and by `√n` if the functions are continuous
+probability measure with the constant `√(m+ε)`, and by `√m` if the functions are continuous
 on a compact domain.  The measure is one whose Gram matrix has an almost maximal
 determinant, and the whole argument consists of comparing that determinant with the
 determinants obtained by giving one further point a small weight.
@@ -129,9 +129,9 @@ determinants obtained by giving one further point a small weight.
   together with the identity `gram a ϱ = G` that hands it to the sparsification theorem.
 * `Discretization.KieferWolfowitz.ConvexHull`: the Gram matrices of designs are the convex
   hull of the rank-one matrices `a(y) a(y)*`, and Carathéodory's theorem bounds the number
-  of points by `2n² + 1`.
+  of points by `2m² + 1`.
 * `Discretization.KieferWolfowitz.Compact`: on a compact domain the maximum is attained and
-  the constant is the sharp `√n`,
+  the constant is the sharp `√m`,
   `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`.
 * `Discretization.KieferWolfowitz.JohnDecomposition`: the Gram matrix of a design decomposes
   the identity over the design points, with weights summing to `n`.  This is John's

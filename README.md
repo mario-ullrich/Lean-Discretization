@@ -8,8 +8,8 @@ bounds may refer to two different families of functions, and that the upper boun
 depends on the *effective dimension* of the second family rather than on how many
 functions it contains. The second is the **Kiefer–Wolfowitz theorem** in the form used
 by Krieg, Pozharska, Ullrich and Ullrich for sampling projections: on an
-`n`-dimensional space of bounded functions the uniform norm is dominated by the `L₂`
-norm of a finitely supported probability measure, with the constant `√(n+ε)`. The
+`m`-dimensional space of bounded functions the uniform norm is dominated by the `L₂`
+norm of a finitely supported probability measure, with the constant `√(m+ε)`. The
 project builds without `sorry`, and every theorem uses only the three axioms Mathlib
 relies on throughout (`propext`, `Classical.choice`, `Quot.sound`).
 
@@ -33,9 +33,9 @@ kernel Hilbert spaces, and it is the reason its constants beat those obtainable 
 the Kadison–Singer theorem.
 
 The second question is which measure to discretize in the first place. On an
-`n`-dimensional space of functions one may ask for a measure for which the uniform norm
+`m`-dimensional space of functions one may ask for a measure for which the uniform norm
 is already controlled by the `L₂` norm, and the answer of Kiefer and Wolfowitz is that a
-measure maximising the determinant of the Gram matrix does this with the constant `√n`,
+measure maximising the determinant of the Gram matrix does this with the constant `√m`,
 up to an arbitrarily small loss on a general domain. Applying the sparsification theorem
 to such a measure is how one arrives at sampling projections with few points and small
 norm.
@@ -88,12 +88,12 @@ in the Loewner order, with no side condition
   `L₂`, the coefficient norm is the norm of that space.
 
 For the second theorem, let `D` be any set, `ι` a finite nonempty index set with
-`n = card ι` elements, and `a : D → ι → ℂ` a bounded family whose coordinate functions
+`m = card ι` elements, and `a : D → ι → ℂ` a bounded family whose coordinate functions
 are linearly independent. Then for every `ε > 0` there are points `x₁, …, x_N ∈ D` and
 weights `w₁, …, w_N ≥ 0` summing to one such that
 
 ```
-|f(y)|²  ≤  (n + ε) · ∑ wₖ |f(xₖ)|²
+|f(y)|²  ≤  (m + ε) · ∑ wₖ |f(xₖ)|²
 ```
 
 for every point `y ∈ D` and every `f` in the span of the family
@@ -102,28 +102,28 @@ of Krieg, Pozharska, Ullrich and Ullrich. Three variants of it are proved:
 
 * **As a measure.** The points and weights are a finitely supported probability measure
   `ϱ = ∑ wₖ δ(xₖ)` with invertible Gram matrix, and the inequality reads
-  `|f(y)|² ≤ (n + ε) ∫ |f|² dϱ`
+  `|f(y)|² ≤ (m + ε) ∫ |f|² dϱ`
   (`Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz`). The Gram
   matrix of `ϱ` in the sense of `Discretization.gram` is the one of the points and
   weights (`.gram_designMeasure`), which is what lets the measure be handed to the
   sparsification theorem.
 * **The sharp constant on a compact domain.** For continuous functions on a compact
   space the maximum of the determinant is attained, the `ε` disappears, and the constant
-  is `√n` (`Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`).
-* **At most `2n² + 1` points.** Every design can be replaced by one with at most
-  `2n² + 1` points and the same Gram matrix, so both statements hold with that many
+  is `√m` (`Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`).
+* **At most `2m² + 1` points.** Every design can be replaced by one with at most
+  `2m² + 1` points and the same Gram matrix, so both statements hold with that many
   points (`Discretization.KieferWolfowitz.exists_design_card_le`,
   `.exists_design_kieferWolfowitz_card_le`,
   `.exists_design_kieferWolfowitz_of_compact_card_le`).
 
 Alongside these, a design decomposes the identity. Writing `t(y) = a(y)* G⁻¹ a(y)` for
-the variance function, the weights `wₖ t(xₖ)` are nonnegative and sum to `n`
+the variance function, the weights `wₖ t(xₖ)` are nonnegative and sum to `m`
 (`Discretization.KieferWolfowitz.sum_weight_quadForm_inv_eq_card`), and
 `∑ₖ wₖ ⟪a(xₖ), z⟫ a(xₖ) = z` for every vector `z` in the inner product
 `⟪u, z⟫ = u* G⁻¹ z` of the ellipsoid of `G`
 (`.sum_weight_smul_quadForm_inv_eq_self`). This is John's decomposition of the identity,
 the condition dual to the Kiefer–Wolfowitz bound: on a compact domain the bound
-`t(y) ≤ n` and the average `n` together force `t(xₖ) = n` at every design point, making
+`t(y) ≤ m` and the average `m` together force `t(xₖ) = m` at every design point, making
 the points contact points. The theorem for a general convex body is proved in the
 companion project [Lean-SNumbers](https://github.com/mario-ullrich/Lean-SNumbers) as
 `John.john_decomposition`.
@@ -228,8 +228,8 @@ library sits outside `defaultTargets`; build it with `lake build Palomar`.
   Gram operator from a kernel, that is the singular value decomposition of the
   embedding into `L₂` which supplies the family `b` and makes `J` diagonal.
 * **Sampling projections in the uniform norm**: handing the Kiefer–Wolfowitz measure to
-  the sparsification theorem, which is what yields a projection using `2n` points with
-  norm of order `√n`.
+  the sparsification theorem, which is what yields a projection using `2m` points with
+  norm of order `√m`.
 * **The applications of the paper**: least-squares recovery and sampling numbers.
 
 ## Building
