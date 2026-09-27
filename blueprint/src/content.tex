@@ -29,7 +29,7 @@ This is \Cref{thm:main} and \Cref{cor:discretization}. The two families enter
 asymmetrically: the first through its size $m$, the second only through $M$, which is at
 most $\#\kappa$ and much smaller as soon as the eigenvalues of $J$ decay. Taking $a = b$
 with both Gram matrices the identity gives $M = m$ and the sparsification theorem of
-Batson, Spielman and Srivastava~\cite{BSS}.
+Batson, Spielman and Srivastava~\cite{BSS}, which is \Cref{cor:bss}.
 
 The last chapter answers which measure to discretize in the first place. There $D$ is an
 arbitrary set carrying $m$ bounded, linearly independent functions, and Kiefer and
@@ -111,6 +111,33 @@ This is Theorem 3 of Chkifa, Dolbeault, Krieg and Ullrich~\cite{CDKU}. In eigenv
 the first bound is the factor $(1 - \sqrt{(m-1)/n})^2 \lambda_{\min}(I)$ of the paper. No
 side condition on $m$ or on $M$ is needed; the potential argument of
 \Cref{ch:construction} does need two, and \Cref{ch:edge} removes them.
+
+\begin{corollary}[Sparsification]
+\label{cor:bss}
+\lean{Discretization.bss}
+\leanok
+\uses{thm:main-normalized}
+Let $a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in every coordinate with
+$G(a) = 1$, and put $m = \#\iota$. Then for every $n \geq m$ there are points
+$x_1, \dots, x_n \in \Omega$ and weights $w_1, \dots, w_n > 0$ with
+\[
+  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot 1
+    \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
+    \; \preceq \; \Bigl(1 + \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot 1 .
+\]
+\end{corollary}
+
+\begin{proof}
+\leanok
+\uses{thm:main-normalized}
+This is \Cref{thm:main-normalized} for $b = a$: the Gram matrix of the second family is
+then the identity, $\Lambda = 1$ bounds it, and its effective dimension is
+$\Tr 1 / 1 = m$, so both frame constants are built from the same $r = \sqrt{(m-1)/n}$.
+\end{proof}
+
+This is the theorem of Batson, Spielman and Srivastava~\cite{BSS}. For $n = d\,m$ the
+ratio of the two constants is $\bigl((\sqrt{d}+1)/(\sqrt{d}-1)\bigr)^2$, and the counting
+measure on a finite set turns it into their statement for finitely many vectors.
 
 Read through quadratic forms, the theorem becomes a statement about norms.
 

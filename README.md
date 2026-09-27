@@ -58,7 +58,12 @@ with
 ```
 
 in the Loewner order, with no side condition
-(`Discretization.bss_generalized_of_gram_eq_one'`). Four statements go with it:
+(`Discretization.bss_generalized_of_gram_eq_one'`). Five statements go with it:
+
+* **The special case `a = b`** is the sparsification theorem of Batson, Spielman and
+  Srivastava itself (`Discretization.bss`): one family with Gram matrix the identity,
+  squeezed between `(1 - √((m-1)/n))² • 1` and `(1 + √((m-1)/n))² • 1`. For `n = d·m`
+  the ratio of the two constants is `((√d + 1)/(√d - 1))²`.
 
 * **The potential argument** gives the theorem under the two side conditions `m ≥ 2`
   and `M ≥ 1 + 1/n` (`Discretization.bss_generalized_of_gram_eq_one`). Three further

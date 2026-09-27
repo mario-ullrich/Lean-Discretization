@@ -18,18 +18,18 @@ format.
 
 ## The mathematics
 
-Let `D` be an arbitrary set and let `a₁, …, aₙ` be linearly independent bounded functions on
-it, spanning an `n`-dimensional space `V`. The question is which measure to discretize: is
+Let `D` be an arbitrary set and let `a₁, …, a_m` be linearly independent bounded functions
+on it, spanning an `m`-dimensional space `V`. The question is which measure to discretize: is
 there a finitely supported probability measure `ϱ = ∑ₖ wₖ δ(xₖ)` for which the uniform norm
 on `V` is already controlled by the `L₂(ϱ)` norm?
 
-The answer of Kiefer and Wolfowitz is yes, with the constant `√n`, up to an arbitrarily
+The answer of Kiefer and Wolfowitz is yes, with the constant `√m`, up to an arbitrarily
 small loss on a general domain:
 
-  `|f(y)|² ≤ (n + ε) · ∑ₖ wₖ |f(xₖ)|²`
+  `|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²`
 
 for every point `y ∈ D` and every `f ∈ V`. On a compact domain and for continuous functions
-the loss disappears and the constant is the sharp `√n`. In both cases at most `2n² + 1`
+the loss disappears and the constant is the sharp `√m`. In both cases at most `2m² + 1`
 points are needed, by Carathéodory's theorem applied to the Gram matrices of designs.
 
 The measure is one whose Gram matrix has an almost maximal determinant. Applying the
@@ -76,11 +76,11 @@ variable {Ω ι : Type*} [Fintype ι] [DecidableEq ι]
 
 /-- **The Kiefer–Wolfowitz theorem, with the number of points bounded.**
 
-For linearly independent bounded functions `a₁, …, a_n` on an arbitrary set and every
-`ε > 0` there is a design of at most `2n² + 1` points, that is a finitely supported
+For linearly independent bounded functions `a₁, …, a_m` on an arbitrary set and every
+`ε > 0` there is a design of at most `2m² + 1` points, that is a finitely supported
 probability measure `∑ₖ wₖ δ(xₖ)` with invertible Gram matrix, such that
 
-`|f(y)|² ≤ (n + ε) · ∑ₖ wₖ |f(xₖ)|²`
+`|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²`
 
 for every point `y` and every function `f(y) = ⟪c, a(y)⟫` in the span.  This is
 Proposition 9 of Krieg, Pozharska, Ullrich and Ullrich. -/
@@ -96,13 +96,13 @@ theorem exists_design_kieferWolfowitz_card_le [Nonempty ι] (a : Ω → ι → �
 /-- **The Kiefer–Wolfowitz theorem on a compact domain**, with the sharp constant and the
 number of points bounded.
 
-For linearly independent continuous functions `a₁, …, a_n` on a compact space there is a
-design of at most `2n² + 1` points with
+For linearly independent continuous functions `a₁, …, a_m` on a compact space there is a
+design of at most `2m² + 1` points with
 
-`|f(y)|² ≤ n · ∑ₖ wₖ |f(xₖ)|²`
+`|f(y)|² ≤ m · ∑ₖ wₖ |f(xₖ)|²`
 
 for every point `y` and every `f` in the span: the uniform norm is dominated by the `L₂`
-norm of the design with the constant `√n`, and no `ε` is lost. -/
+norm of the design with the constant `√m`, and no `ε` is lost. -/
 theorem exists_design_kieferWolfowitz_of_compact_card_le [Nonempty ι] [TopologicalSpace Ω]
     [CompactSpace Ω] (a : Ω → ι → ℂ) (hcont : ∀ i, Continuous fun y => a y i)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) :

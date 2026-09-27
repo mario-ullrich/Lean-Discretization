@@ -15,6 +15,7 @@ import Discretization.CardOne
 import Discretization.SmallEffectiveDim
 import Discretization.BothEdgeCases
 import Discretization.NormDiscretization
+import Discretization.BSS
 import Discretization.Infinite.Potentials
 import Discretization.Infinite.Barrier
 import Discretization.Infinite.Averages
@@ -83,6 +84,8 @@ determinants obtained by giving one further point a small weight.
   the theorem in the form of the paper, `Discretization.bss_generalized`.
 * `Discretization.NormDiscretization`: the same statement read as a discretization
   inequality for the `L₂`-norm, `Discretization.exists_discretization`.
+* `Discretization.BSS`: the case of a single family, which is the sparsification theorem
+  of Batson, Spielman and Srivastava, `Discretization.bss`.
 * `Discretization.CardOne`: the edge case of a one-element first family, where the lower
   verifier becomes a constant, `Discretization.bss_generalized_of_unique`.
 * `Discretization.SmallEffectiveDim`: the edge case of an effective dimension below

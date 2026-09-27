@@ -16,9 +16,9 @@ axioms beyond `propext`, `Classical.choice` and `Quot.sound`.
 Nothing is declared here. The advertised statements
 
 * `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le` —
-  `|f(y)|² ≤ (n + ε) · ∑ₖ wₖ |f(xₖ)|²` for a design of at most `2n² + 1` points,
+  `|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²` for a design of at most `2m² + 1` points,
 * `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le` — the
-  same with the sharp constant `n` for continuous functions on a compact domain,
+  same with the sharp constant `m` for continuous functions on a compact domain,
 
 and the definition they rest on, `Discretization.KieferWolfowitz.designGram`, arrive through
 the import above, under their own names in the development: from
@@ -32,8 +32,8 @@ The mathematics is the maximisation of a determinant. Among all finitely support
 probability measures one is chosen whose Gram matrix has an almost maximal determinant;
 giving a further point `y` the weight `α` yields such a measure again, and the matrix
 determinant lemma says exactly what that does to the determinant. Almost maximality bounds
-that factor, and Bernoulli's inequality with the explicit weight `α = (t-n)/(2n(t-1))` turns
-the bound into `t ≤ n + ε` for `t = a(y)* G⁻¹ a(y)`, uniformly in `y`. On a compact domain
-the maximum is attained and the same argument gives `t ≤ n`. Carathéodory's theorem then
-replaces any design by one with at most `2n² + 1` points and the same Gram matrix.
+that factor, and Bernoulli's inequality with the explicit weight `α = (t-m)/(2m(t-1))` turns
+the bound into `t ≤ m + ε` for `t = a(y)* G⁻¹ a(y)`, uniformly in `y`. On a compact domain
+the maximum is attained and the same argument gives `t ≤ m`. Carathéodory's theorem then
+replaces any design by one with at most `2m² + 1` points and the same Gram matrix.
 -/

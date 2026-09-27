@@ -1,0 +1,159 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# formalization.yaml v0.4
+version: "v0.4"
+
+project:
+  name: "The sparsification theorem of Batson, Spielman and Srivastava"
+  description: >-
+    Let a = (a_k) be m square-integrable functions on a measure space (Omega, mu)
+    whose Gram matrix is the identity. Then for every n >= m there are n points
+    x_1, ..., x_n and positive weights w_1, ..., w_n with
+    (1 - sqrt((m-1)/n))^2 * 1 <= sum_i w_i a(x_i) a(x_i)^*
+    <= (1 + sqrt((m-1)/n))^2 * 1
+    in the Loewner order. Read through quadratic forms, the weighted sum
+    sum_i w_i |f(x_i)|^2 stays within those two factors of the integral of |f|^2 for
+    every f in the span. For n = d*m the ratio of the two constants is
+    ((sqrt(d) + 1)/(sqrt(d) - 1))^2, the condition number of the original theorem, and
+    the counting measure on a finite set gives the statement for finitely many vectors:
+    a reweighted subset of n of them is a spectral sparsifier of their sum.
+  authors:
+    - "Mario Ullrich"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Mario Ullrich"
+
+classification:
+  arxiv: ["math.FA", "cs.DS"]
+  msc2020: ["42C15", "15A45", "65F55", "05C50"]
+
+sources:
+  - title: "Twice-Ramanujan sparsifiers"
+    authors:
+      - "Joshua Batson"
+      - "Daniel A. Spielman"
+      - "Nikhil Srivastava"
+    id: "arXiv:0808.0163"
+    type: "article"
+    location: "https://doi.org/10.1137/130949117"
+    relationship: "formalizes"
+    note: >-
+      SIAM Review 56 (2014), no. 2, 315-334. The source states the theorem for a finite
+      list of vectors summing to the identity and produces a reweighting supported on
+      at most d*m of them, with condition number ((sqrt(d)+1)/(sqrt(d)-1))^2. The
+      formalized statement is the same bound over an arbitrary measure space, written
+      with the two frame constants (1 -/+ sqrt((m-1)/n))^2; see fidelity.divergences.
+  - title: "Constructive discretization and approximation in reproducing kernel Hilbert spaces"
+    authors:
+      - "Abdellah Chkifa"
+      - "Matthieu Dolbeault"
+      - "David Krieg"
+      - "Mario Ullrich"
+    id: "arXiv:2602.18719"
+    type: "preprint"
+    location: "https://arxiv.org/abs/2602.18719"
+    relationship: "background"
+    note: >-
+      The proof that is formalized. Its Theorem 3 allows two different families and
+      replaces the size of the second one by the effective dimension of its Gram
+      matrix; the statement advertised here is the case of a single family, where that
+      effective dimension is m. The generalization is registered separately.
+    author_endorsement: "participated"
+
+related_formalizations: []
+
+status:
+  scope: >-
+    Formalized and advertised: Discretization.bss, the two-sided frame bound for a
+    single family with Gram matrix the identity, for every n >= m and with no further
+    hypothesis.
+
+    Proved in the repository but not advertised here: the generalization of
+    Chkifa, Dolbeault, Krieg and Ullrich, which allows a second family and depends on
+    its effective dimension rather than its size, both for a finite and for a countably
+    infinite second family, together with the corresponding discretization inequalities
+    for the L_2 norm; the potential argument and the three edge cases it rests on; and
+    the theorem of Kiefer and Wolfowitz for sampling projections.
+
+    Not formalized: the graph-sparsification application of the source, and the
+    algorithmic content, that is the running time of the construction. The proof is
+    constructive in the sense that it selects the points one at a time, but no
+    complexity statement is made.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models:
+        - "Claude Opus 5 (Anthropic)"
+        - "Claude Fable 5.1 (Anthropic)"
+      framework: "Claude Code"
+      tool_setup: >-
+        VS Code with the Lean 4 extension, and Claude Code driving an agentic loop
+        that edits Lean files and runs `lake build` until the affected files compile.
+        No proof search beyond the tactics of Lean and Mathlib.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: >-
+        Standing instructions for this discretization project, kept in a CLAUDE.md
+        file alongside the project and outside this repository, and applied to every
+        session: prefer many small, self-contained, reusable lemmas over long proofs;
+        search Mathlib first and reuse existing lemmas and canonical spellings;
+        rebuild the affected files after every change and never leave a `sorry`
+        unannounced.
+  spend_usd: "subscription-based"
+  notes: >-
+    Most of the Lean proofs were produced with AI assistance. Throughout, the author
+    designed the structure of the development and checked and revised the statements
+    of all definitions and results. The proofs themselves are guaranteed by the Lean
+    kernel.
+
+fidelity:
+  divergences: >-
+    The source fixes finitely many vectors v_1, ..., v_M in C^m with sum of
+    v_i v_i^* the identity and reweights them. The formalized statement instead takes
+    a square-integrable family a on an arbitrary measure space (Omega, mu) with Gram
+    matrix the identity, and selects n points of Omega with positive weights. The
+    counting measure on a finite set recovers the source: the points are then indices,
+    repetitions allowed, so the conclusion is a reweighting supported on at most n of
+    the vectors.
+
+    The constants are written as (1 - sqrt((m-1)/n))^2 and (1 + sqrt((m-1)/n))^2
+    rather than as the condition number ((sqrt(d)+1)/(sqrt(d)-1))^2 for n = d*m. The
+    two agree up to replacing (m-1) by m, which the source does as well.
+
+    The formalized proof is the one of Chkifa, Dolbeault, Krieg and Ullrich, of which
+    this statement is the case of a single family. It is the potential-function
+    argument of the source, with the second potential weighted by the Gram matrix of
+    the second family.
+
+    Traces of the matrices involved are real, and the formalization takes real parts
+    explicitly with RCLike.re wherever a real number is needed.
+
+review:
+  status: "self-assessed"
+  reviewers:
+    - "none"
+  notes: >-
+    The statements of all definitions and results were checked and revised by the
+    author; the proof scripts were largely produced with AI assistance and rest on
+    the Lean kernel.
+
+alignment:
+  namespace: "Discretization"
+  statements:
+    - source: "Twice-Ramanujan sparsifiers, the sparsification theorem"
+      lean: "Discretization.bss"
+      module: "Discretization.BSS"
+      status: "proved"
+      note: >-
+        The two-sided frame bound for a single family whose Gram matrix is the
+        identity, over an arbitrary measure space; see fidelity.divergences.
+
+acknowledgements: >-
+  Built on Mathlib. The Challenge module reproduces the definition Discretization.gram
+  from the development in BasicResults/IntegralQuadraticForm.lean, so that the
+  advertised statement can be read against Mathlib alone.

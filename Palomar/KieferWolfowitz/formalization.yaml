@@ -5,13 +5,13 @@ version: "v0.4"
 project:
   name: "The theorem of Kiefer and Wolfowitz for sampling projections"
   description: >-
-    On an n-dimensional space V of bounded functions on an arbitrary set D, and for
+    On an m-dimensional space V of bounded functions on an arbitrary set D, and for
     every epsilon > 0, there is a finitely supported probability measure
     rho = sum_k w_k delta(x_k) for which the uniform norm on V is dominated by the
-    L_2(rho) norm with the constant sqrt(n + epsilon):
-    |f(y)|^2 <= (n + epsilon) * sum_k w_k |f(x_k)|^2 for every y in D and every f in V.
+    L_2(rho) norm with the constant sqrt(m + epsilon):
+    |f(y)|^2 <= (m + epsilon) * sum_k w_k |f(x_k)|^2 for every y in D and every f in V.
     For continuous functions on a compact domain the loss disappears and the constant
-    is the sharp sqrt(n). In both cases at most 2n^2 + 1 points are needed. The measure
+    is the sharp sqrt(m). In both cases at most 2m^2 + 1 points are needed. The measure
     is one whose Gram matrix has an almost maximal determinant; applying a
     sparsification theorem to such a measure is how one arrives at sampling projections
     with few points and small norm.
@@ -62,7 +62,7 @@ status:
     with the constant n + epsilon on an arbitrary set, and
     Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le,
     the sharp constant n for continuous functions on a compact domain. Both give a
-    design of at most 2n^2 + 1 points whose Gram matrix is positive definite.
+    design of at most 2m^2 + 1 points whose Gram matrix is positive definite.
 
     Proved in the repository but not advertised here: the same two theorems without
     the bound on the number of points (exists_design_kieferWolfowitz,
@@ -70,7 +70,7 @@ status:
     rho = sum_k w_k delta(x_k) itself
     (exists_probabilityMeasure_kieferWolfowitz), together with the identity
     gram a rho = designGram a x w that hands it to the sparsification theorem; the
-    reduction of any design to one with at most 2n^2 + 1 points and the same Gram
+    reduction of any design to one with at most 2m^2 + 1 points and the same Gram
     matrix (exists_design_card_le), by Caratheodory's theorem; and John's
     decomposition of the identity over the design points
     (sum_weight_quadForm_inv_eq_card, sum_weight_smul_quadForm_inv_eq_self).
@@ -149,14 +149,14 @@ alignment:
       status: "proved"
       note: >-
         The bound with the constant n + epsilon on an arbitrary set, with at most
-        2n^2 + 1 points.
+        2m^2 + 1 points.
     - source: "Sampling projections in the uniform norm, Proposition 9, compact case"
       lean: "Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le"
       module: "Discretization.KieferWolfowitz.PointCount"
       status: "proved"
       note: >-
         The sharp constant n for continuous functions on a compact domain, with at
-        most 2n^2 + 1 points.
+        most 2m^2 + 1 points.
 
 acknowledgements: >-
   Built on Mathlib. The Challenge module reproduces the definition

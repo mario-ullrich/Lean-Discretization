@@ -1,0 +1,12 @@
+{
+  "challenge_module": "Palomar.BSS.Challenge",
+  "solution_module": "Palomar.BSS.Solution",
+  "theorem_names": [
+    "Discretization.bss"
+  ],
+  "definition_names": [
+    "Discretization.gram"
+  ],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}
