@@ -1507,10 +1507,10 @@ a finite list of points with weights, and it is kept in that form until
 \label{def:design-gram}
 \lean{Discretization.KieferWolfowitz.designGram}
 \leanok
-A \emph{design} consists of finitely many points $x_1, \dots, x_N \in D$ and weights
-$w_1, \dots, w_N \geq 0$ with $\sum_k w_k = 1$. Its \emph{Gram matrix} is
+A \emph{design} consists of finitely many points $x_1, \dots, x_n \in D$ and weights
+$w_1, \dots, w_n \geq 0$ with $\sum_k w_k = 1$. Its \emph{Gram matrix} is
 \[
-  G = \sum_{k=1}^N w_k \, a(x_k) a(x_k)^* \in \mathbb{C}^{\iota \times \iota},
+  G = \sum_{k=1}^n w_k \, a(x_k) a(x_k)^* \in \mathbb{C}^{\iota \times \iota},
 \]
 the Gram matrix of the family $a$ in $L_2$ of the measure $\sum_k w_k \delta_{x_k}$.
 \end{definition}
@@ -1609,10 +1609,10 @@ weight of \Cref{lem:mix} would make it at least $1 + \eta$.
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
 $a = (a_k)_{k \in \iota}$ be bounded functions on a set $D$ with linearly independent
 coordinate functions, and let $\varepsilon > 0$. Then there are points
-$x_1, \dots, x_N \in D$ and weights $w_1, \dots, w_N \geq 0$ with $\sum_k w_k = 1$ such
+$x_1, \dots, x_n \in D$ and weights $w_1, \dots, w_n \geq 0$ with $\sum_k w_k = 1$ such
 that
 \[
-  |f(y)|^2 \; \leq \; (m + \varepsilon) \sum_{k=1}^N w_k \, |f(x_k)|^2
+  |f(y)|^2 \; \leq \; (m + \varepsilon) \sum_{k=1}^n w_k \, |f(x_k)|^2
 \]
 for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$.
 \end{theorem}
@@ -1634,10 +1634,10 @@ using \Cref{lem:design-quadform} gives the claim.
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let $D$ be a
 compact space and let $a = (a_k)_{k \in \iota}$ be continuous functions on it with
 linearly independent coordinate functions. Then there are points
-$x_1, \dots, x_N \in D$ and weights $w_1, \dots, w_N \geq 0$ with $\sum_k w_k = 1$ such
+$x_1, \dots, x_n \in D$ and weights $w_1, \dots, w_n \geq 0$ with $\sum_k w_k = 1$ such
 that
 \[
-  |f(y)|^2 \; \leq \; m \sum_{k=1}^N w_k \, |f(x_k)|^2
+  |f(y)|^2 \; \leq \; m \sum_{k=1}^n w_k \, |f(x_k)|^2
 \]
 for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$.
 \end{theorem}
@@ -1713,12 +1713,12 @@ formalised, and nothing needs it.
 \lean{Discretization.KieferWolfowitz.sum_weight_quadForm_inv_eq_card, Discretization.KieferWolfowitz.sum_weight_smul_quadForm_inv_eq_self}
 \leanok
 \uses{def:design-gram, prop:det-max, thm:uniform-discretization-compact}
-For a design with points $x_1, \dots, x_N$, weights $w_1, \dots, w_N$ and invertible Gram
+For a design with points $x_1, \dots, x_n$, weights $w_1, \dots, w_n$ and invertible Gram
 matrix $G$, and with $m = \#\iota$,
 \[
-  \sum_{k=1}^N w_k \, a(x_k)^* G^{-1} a(x_k) = m
+  \sum_{k=1}^n w_k \, a(x_k)^* G^{-1} a(x_k) = m
   \qquad \text{and} \qquad
-  \sum_{k=1}^N w_k \bigl( a(x_k)^* G^{-1} z \bigr) a(x_k) = z
+  \sum_{k=1}^n w_k \bigl( a(x_k)^* G^{-1} z \bigr) a(x_k) = z
 \]
 for every $z \in \mathbb{C}^{\iota}$, the first being $\Tr(G^{-1} G)$ and the second
 $G G^{-1} z = z$ written out. With $c_k = w_k \, a(x_k)^* G^{-1} a(x_k)$ this is John's

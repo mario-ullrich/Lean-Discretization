@@ -124,7 +124,7 @@ determinants obtained by giving one further point a small weight.
 * `Discretization.KieferWolfowitz.NonDegenerate`: for linearly independent functions some
   design has an invertible Gram matrix, so the determinant is somewhere positive.
 * `Discretization.KieferWolfowitz.DetMax`: the maximisation of the determinant and its
-  consequence `a(y)* G⁻¹ a(y) ≤ n + ε`, uniformly in `y`.
+  consequence `a(y)* G⁻¹ a(y) ≤ m + ε`, uniformly in `y`.
 * `Discretization.KieferWolfowitz.MainTheorem`: the Kiefer–Wolfowitz theorem in terms of the
   points and weights, `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz`.
 * `Discretization.KieferWolfowitz.Measure`: the same statement for the measure
@@ -137,7 +137,7 @@ determinants obtained by giving one further point a small weight.
   the constant is the sharp `√m`,
   `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`.
 * `Discretization.KieferWolfowitz.JohnDecomposition`: the Gram matrix of a design decomposes
-  the identity over the design points, with weights summing to `n`.  This is John's
+  the identity over the design points, with weights summing to `m`.  This is John's
   decomposition of the identity, the condition dual to the Kiefer–Wolfowitz bound.
 * `Discretization.KieferWolfowitz.PointCount`: the two theorems with the number of points
   bounded.

@@ -94,8 +94,8 @@ in the Loewner order, with no side condition
 
 For the second theorem, let `D` be any set, `ι` a finite nonempty index set with
 `m = card ι` elements, and `a : D → ι → ℂ` a bounded family whose coordinate functions
-are linearly independent. Then for every `ε > 0` there are points `x₁, …, x_N ∈ D` and
-weights `w₁, …, w_N ≥ 0` summing to one such that
+are linearly independent. Then for every `ε > 0` there are points `x₁, …, xₙ ∈ D` and
+weights `w₁, …, wₙ ≥ 0` summing to one such that
 
 ```
 |f(y)|²  ≤  (m + ε) · ∑ wₖ |f(xₖ)|²
@@ -158,12 +158,12 @@ determinant: the determinants are bounded above because the entries of `G` are, 
 of them is positive because the functions are linearly independent. Giving a further
 point `y` the weight `α` yields such a measure again, and the matrix determinant lemma
 says exactly what that does to the determinant, namely multiply it by
-`(1-α)^(n-1) (1 + α (t - 1))` with `t = a(y)* G⁻¹ a(y)`. Almost maximality bounds that
-factor, and Bernoulli's inequality with the explicit weight `α = (t-n)/(2n(t-1))` turns
-the bound into `t ≤ n + ε`, uniformly in `y`. Subtracting `(n+ε)⁻¹ a(y) a(y)*` from `G`
+`(1-α)^(m-1) (1 + α (t - 1))` with `t = a(y)* G⁻¹ a(y)`. Almost maximality bounds that
+factor, and Bernoulli's inequality with the explicit weight `α = (t-m)/(2m(t-1))` turns
+the bound into `t ≤ m + ε`, uniformly in `y`. Subtracting `(m+ε)⁻¹ a(y) a(y)*` from `G`
 then leaves a positive definite matrix, which read as an inequality between quadratic
 forms is the theorem. On a compact domain the maximum is attained and the same argument
-gives `t ≤ n`.
+gives `t ≤ m`.
 
 The steps the two arguments are built from:
 

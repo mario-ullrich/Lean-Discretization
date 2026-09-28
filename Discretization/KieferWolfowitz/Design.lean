@@ -10,7 +10,7 @@ import BasicResults.RankOneDeterminant
 # Designs and their Gram matrices
 
 A **design** is a finitely supported probability measure on the domain: finitely many points
-`x₁, …, x_N` with nonnegative weights `w₁, …, w_N` summing to one.  Its **Gram matrix** with
+`x₁, …, xₙ` with nonnegative weights `w₁, …, wₙ` summing to one.  Its **Gram matrix** with
 respect to a family `a₁, …, a_n` of functions is
 
 `G = ∑ₖ wₖ · a(xₖ) a(xₖ)*`,   that is   `Gᵢⱼ = ∑ₖ wₖ aᵢ(xₖ) conj (aⱼ(xₖ))`,
@@ -43,19 +43,19 @@ namespace Discretization.KieferWolfowitz
 
 variable {Ω ι : Type*} [Fintype ι]
 
-/-- **The Gram matrix of a design.**  For points `x₁, …, x_N` with weights `w₁, …, w_N`,
+/-- **The Gram matrix of a design.**  For points `x₁, …, xₙ` with weights `w₁, …, wₙ`,
 
 `designGram a x w = ∑ₖ wₖ · a(xₖ) a(xₖ)*`.
 
 If the weights are nonnegative and sum to one this is the matrix of the inner products
 `⟪aᵢ, aⱼ⟫` in `L₂` of the measure `∑ₖ wₖ δ(xₖ)`. -/
-noncomputable def designGram (a : Ω → ι → ℂ) {N : ℕ} (x : Fin N → Ω) (w : Fin N → ℝ) :
+noncomputable def designGram (a : Ω → ι → ℂ) {n : ℕ} (x : Fin n → Ω) (w : Fin n → ℝ) :
     Matrix ι ι ℂ :=
   ∑ k, w k • vecMulVec (a (x k)) (star (a (x k)))
 
 /-- A Gram matrix with nonnegative weights is positive semidefinite, being a nonnegative
 combination of the positive semidefinite rank-one matrices `a(xₖ) a(xₖ)*`. -/
-theorem designGram_posSemidef (a : Ω → ι → ℂ) {N : ℕ} (x : Fin N → Ω) {w : Fin N → ℝ}
+theorem designGram_posSemidef (a : Ω → ι → ℂ) {n : ℕ} (x : Fin n → Ω) {w : Fin n → ℝ}
     (hw : ∀ k, 0 ≤ w k) : (designGram a x w).PosSemidef :=
   posSemidef_sum _ fun k _ => (posSemidef_vecMulVec_self_star _).smul (hw k)
 
@@ -63,7 +63,7 @@ theorem designGram_posSemidef (a : Ω → ι → ℂ) {N : ℕ} (x : Fin N → �
 function `f(y) = ⟪c, a(y)⟫` with coefficient vector `c`,
 
 `c* G c = ∑ₖ wₖ |f(xₖ)|²`. -/
-theorem re_quadForm_designGram (a : Ω → ι → ℂ) {N : ℕ} (x : Fin N → Ω) (w : Fin N → ℝ)
+theorem re_quadForm_designGram (a : Ω → ι → ℂ) {n : ℕ} (x : Fin n → Ω) (w : Fin n → ℝ)
     (c : ι → ℂ) :
     RCLike.re (star c ⬝ᵥ (designGram a x w *ᵥ c)) = ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2 :=
   re_dotProduct_sum_mulVec x w c a
@@ -72,13 +72,13 @@ theorem re_quadForm_designGram (a : Ω → ι → ℂ) {N : ℕ} (x : Fin N → 
 
 /-- The weights of the mixture that gives a new point the weight `α`: the old weights are
 scaled by `1-α`, and `α` is appended. -/
-def snocWeights {N : ℕ} (w : Fin N → ℝ) (α : ℝ) : Fin (N + 1) → ℝ :=
+def snocWeights {n : ℕ} (w : Fin n → ℝ) (α : ℝ) : Fin (n + 1) → ℝ :=
   Fin.snoc (fun k => (1 - α) * w k) α
 
 omit [Fintype ι] in
 /-- **The Gram matrix of a mixture.**  Appending the point `y` with weight `α` and scaling the
 old weights by `1-α` turns the Gram matrix `G` into `(1-α) G + α a(y) a(y)*`. -/
-theorem designGram_snoc (a : Ω → ι → ℂ) {N : ℕ} (x : Fin N → Ω) (w : Fin N → ℝ) (y : Ω)
+theorem designGram_snoc (a : Ω → ι → ℂ) {n : ℕ} (x : Fin n → Ω) (w : Fin n → ℝ) (y : Ω)
     (α : ℝ) :
     designGram a (Fin.snoc x y) (snocWeights w α)
       = (1 - α) • designGram a x w + α • vecMulVec (a y) (star (a y)) := by
@@ -89,14 +89,14 @@ theorem designGram_snoc (a : Ω → ι → ℂ) {N : ℕ} (x : Fin N → Ω) (w 
   exact Finset.sum_congr rfl fun k _ => by rw [← smul_smul]
 
 /-- The weights of a mixture are again nonnegative. -/
-theorem snocWeights_nonneg {N : ℕ} {w : Fin N → ℝ} (hw : ∀ k, 0 ≤ w k) {α : ℝ} (hα0 : 0 ≤ α)
-    (hα1 : α ≤ 1) (k : Fin (N + 1)) : 0 ≤ snocWeights w α k := by
+theorem snocWeights_nonneg {n : ℕ} {w : Fin n → ℝ} (hw : ∀ k, 0 ≤ w k) {α : ℝ} (hα0 : 0 ≤ α)
+    (hα1 : α ≤ 1) (k : Fin (n + 1)) : 0 ≤ snocWeights w α k := by
   induction k using Fin.lastCases with
   | last => simpa [snocWeights] using hα0
   | cast k => simpa [snocWeights] using mul_nonneg (by linarith) (hw k)
 
 /-- The weights of a mixture again sum to one. -/
-theorem sum_snocWeights {N : ℕ} {w : Fin N → ℝ} (hw1 : ∑ k, w k = 1) (α : ℝ) :
+theorem sum_snocWeights {n : ℕ} {w : Fin n → ℝ} (hw1 : ∑ k, w k = 1) (α : ℝ) :
     ∑ k, snocWeights w α k = 1 := by
   rw [Fin.sum_univ_castSucc, snocWeights]
   simp only [Fin.snoc_castSucc, Fin.snoc_last]
@@ -110,7 +110,7 @@ omit [Fintype ι] in
 in the design.  The weights are a probability vector, so no growth in the number of points
 occurs. -/
 theorem norm_designGram_apply_le {a : Ω → ι → ℂ} {C : ℝ} (h0 : 0 ≤ C)
-    (hC : ∀ y i, ‖a y i‖ ≤ C) {N : ℕ} {x : Fin N → Ω} {w : Fin N → ℝ} (hw : ∀ k, 0 ≤ w k)
+    (hC : ∀ y i, ‖a y i‖ ≤ C) {n : ℕ} {x : Fin n → Ω} {w : Fin n → ℝ} (hw : ∀ k, 0 ≤ w k)
     (hw1 : ∑ k, w k = 1) (i j : ι) : ‖designGram a x w i j‖ ≤ C ^ 2 := by
   have hstep : ‖designGram a x w i j‖ ≤ ∑ k, w k * C ^ 2 := by
     rw [designGram, Matrix.sum_apply]

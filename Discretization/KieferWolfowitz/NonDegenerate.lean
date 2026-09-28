@@ -29,7 +29,7 @@ The separating points are found by a descending induction on dimension, in
 coefficient vector is annihilated by all the points chosen so far, the hypothesis produces a
 point at which that vector does not vanish, and adding it cuts the dimension down by at
 least one.  The induction is on the dimension of the subspace that survives, so it stops
-after at most `n` steps.
+after at most `m` steps, for `m` functions.
 -/
 
 open Matrix
@@ -75,17 +75,17 @@ theorem linearIndependent_iff_forall_star (a : Ω → ι → ℂ) :
   map_smul' r v := by simp [smul_dotProduct]
 
 /-- Auxiliary form of `Discretization.KieferWolfowitz.exists_points_separating`, with the
-induction hypothesis exposed: for every subspace `W` of dimension at most `n` there are
+induction hypothesis exposed: for every subspace `W` of dimension at most `d` there are
 finitely many points separating the elements of `W`. -/
 theorem exists_points_separating_aux (a : Ω → ι → ℂ)
-    (hli : ∀ c : ι → ℂ, (∀ y, c ⬝ᵥ a y = 0) → c = 0) (n : ℕ) (W : Submodule ℂ (ι → ℂ))
-    (hW : Module.finrank ℂ W ≤ n) :
-    ∃ (N : ℕ) (x : Fin N → Ω), ∀ c ∈ W, (∀ k, c ⬝ᵥ a (x k) = 0) → c = 0 := by
-  induction n generalizing W with
+    (hli : ∀ c : ι → ℂ, (∀ y, c ⬝ᵥ a y = 0) → c = 0) (d : ℕ) (W : Submodule ℂ (ι → ℂ))
+    (hW : Module.finrank ℂ W ≤ d) :
+    ∃ (n : ℕ) (x : Fin n → Ω), ∀ c ∈ W, (∀ k, c ⬝ᵥ a (x k) = 0) → c = 0 := by
+  induction d generalizing W with
   | zero =>
     have hbot : W = ⊥ := Submodule.finrank_eq_zero.mp (Nat.le_zero.mp hW)
     exact ⟨0, fun k => k.elim0, fun c hc _ => by rw [hbot] at hc; simpa using hc⟩
-  | succ n ih =>
+  | succ d ih =>
     by_cases hbot : W = ⊥
     · exact ⟨0, fun k => k.elim0, fun c hc _ => by rw [hbot] at hc; simpa using hc⟩
     -- a nonzero vector of `W` is detected at some point `y₀`
@@ -98,22 +98,22 @@ theorem exists_points_separating_aux (a : Ω → ι → ℂ)
       refine lt_of_le_of_ne inf_le_left fun heq => hy₀ ?_
       have hmem : c₀ ∈ W ⊓ LinearMap.ker (evalAt a y₀) := by rw [heq]; exact hc₀W
       simpa [evalAt] using hmem.2
-    obtain ⟨N, x, hx⟩ := ih (W ⊓ LinearMap.ker (evalAt a y₀)) (by
+    obtain ⟨n, x, hx⟩ := ih (W ⊓ LinearMap.ker (evalAt a y₀)) (by
       have := Submodule.finrank_lt_finrank_of_lt hlt
       omega)
-    refine ⟨N + 1, Fin.snoc x y₀, fun c hcW hzero => ?_⟩
-    have h0 : c ⬝ᵥ a y₀ = 0 := by simpa using hzero (Fin.last N)
+    refine ⟨n + 1, Fin.snoc x y₀, fun c hcW hzero => ?_⟩
+    have h0 : c ⬝ᵥ a y₀ = 0 := by simpa using hzero (Fin.last n)
     exact hx c ⟨hcW, by simpa [evalAt] using h0⟩ fun k => by simpa using hzero k.castSucc
 
 /-- **Finitely many points separate the coefficient vectors.**  If the coordinate functions
-are linearly independent, there are points `x₁, …, x_N` such that a coefficient vector
+are linearly independent, there are points `x₁, …, xₙ` such that a coefficient vector
 annihilated by all of them is zero. -/
 theorem exists_points_separating (a : Ω → ι → ℂ)
     (hli : ∀ c : ι → ℂ, (∀ y, c ⬝ᵥ a y = 0) → c = 0) :
-    ∃ (N : ℕ) (x : Fin N → Ω), ∀ c : ι → ℂ, (∀ k, c ⬝ᵥ a (x k) = 0) → c = 0 := by
-  obtain ⟨N, x, hx⟩ :=
+    ∃ (n : ℕ) (x : Fin n → Ω), ∀ c : ι → ℂ, (∀ k, c ⬝ᵥ a (x k) = 0) → c = 0 := by
+  obtain ⟨n, x, hx⟩ :=
     exists_points_separating_aux a hli (Module.finrank ℂ (ι → ℂ)) ⊤ (by simp)
-  exact ⟨N, x, fun c => hx c Submodule.mem_top⟩
+  exact ⟨n, x, fun c => hx c Submodule.mem_top⟩
 
 /-- Linearly independent functions live on a nonempty domain: a nonzero coefficient vector
 has to be detected somewhere. -/
@@ -131,21 +131,21 @@ points already has an invertible Gram matrix, so the determinant to be maximised
 somewhere positive. -/
 theorem exists_design_posDef [Nonempty ι] (a : Ω → ι → ℂ)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) :
-    ∃ (N : ℕ) (x : Fin N → Ω) (w : Fin N → ℝ), (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧
+    ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧
       (designGram a x w).PosDef := by
-  obtain ⟨N, x, hx⟩ := exists_points_separating a fun c hc => by
+  obtain ⟨n, x, hx⟩ := exists_points_separating a fun c hc => by
     have := hli (star c) (by simpa using hc)
     simpa using congrArg star this
   -- the points are nonempty, since a nonzero coefficient vector exists
-  have hN : N ≠ 0 := by
+  have hn : n ≠ 0 := by
     rintro rfl
     have h1 := hx (fun _ => (1 : ℂ)) fun k => k.elim0
     have h2 := congrFun h1 (Classical.arbitrary ι)
     simp at h2
-  have hNpos : (0 : ℝ) < (N : ℝ) := by positivity
-  refine ⟨N, x, fun _ => (N : ℝ)⁻¹, fun _ => by positivity, by
-    simp [Finset.sum_const, Finset.card_univ, mul_inv_cancel₀ hNpos.ne'], ?_⟩
-  have hpsd := designGram_posSemidef a x (w := fun _ => (N : ℝ)⁻¹) fun _ => by positivity
+  have hnpos : (0 : ℝ) < (n : ℝ) := by positivity
+  refine ⟨n, x, fun _ => (n : ℝ)⁻¹, fun _ => by positivity, by
+    simp [Finset.sum_const, Finset.card_univ, mul_inv_cancel₀ hnpos.ne'], ?_⟩
+  have hpsd := designGram_posSemidef a x (w := fun _ => (n : ℝ)⁻¹) fun _ => by positivity
   refine Matrix.posDef_iff_dotProduct_mulVec.mpr ⟨hpsd.1, fun c hc => ?_⟩
   -- the quadratic form is a positive multiple of a sum of squares, one of which is nonzero
   obtain ⟨k, hk⟩ : ∃ k, star c ⬝ᵥ a (x k) ≠ 0 := by
@@ -153,10 +153,10 @@ theorem exists_design_posDef [Nonempty ι] (a : Ω → ι → ℂ)
     exact hc (by
       have := hx (star c) fun k => by simpa using not_not.mp (not_exists.mp h k)
       simpa using congrArg star this)
-  have hre : 0 < RCLike.re (star c ⬝ᵥ (designGram a x (fun _ => (N : ℝ)⁻¹) *ᵥ c)) := by
+  have hre : 0 < RCLike.re (star c ⬝ᵥ (designGram a x (fun _ => (n : ℝ)⁻¹) *ᵥ c)) := by
     rw [re_quadForm_designGram]
     refine Finset.sum_pos' (fun i _ => by positivity) ⟨k, Finset.mem_univ k, ?_⟩
-    exact mul_pos (inv_pos.mpr hNpos) (pow_pos (norm_pos_iff.mpr hk) 2)
+    exact mul_pos (inv_pos.mpr hnpos) (pow_pos (norm_pos_iff.mpr hk) 2)
   refine lt_of_le_of_ne (hpsd.dotProduct_mulVec_nonneg c) fun h => ?_
   rw [← h] at hre
   simp at hre

@@ -58,13 +58,13 @@ section Design
 
 variable {Ω ι : Type*}
 
-/-- **The Gram matrix of a design.**  For points `x₁, …, x_N` with weights `w₁, …, w_N`,
+/-- **The Gram matrix of a design.**  For points `x₁, …, xₙ` with weights `w₁, …, wₙ`,
 
 `designGram a x w = ∑ₖ wₖ · a(xₖ) a(xₖ)*`.
 
 If the weights are nonnegative and sum to one this is the matrix of the inner products
 `⟪aᵢ, aⱼ⟫` in `L₂` of the measure `∑ₖ wₖ δ(xₖ)`. -/
-noncomputable def designGram (a : Ω → ι → ℂ) {N : ℕ} (x : Fin N → Ω) (w : Fin N → ℝ) :
+noncomputable def designGram (a : Ω → ι → ℂ) {n : ℕ} (x : Fin n → Ω) (w : Fin n → ℝ) :
     Matrix ι ι ℂ :=
   ∑ k, w k • vecMulVec (a (x k)) (star (a (x k)))
 
@@ -87,7 +87,7 @@ Proposition 9 of Krieg, Pozharska, Ullrich and Ullrich. -/
 theorem exists_design_kieferWolfowitz_card_le [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
     (hC : ∀ y i, ‖a y i‖ ≤ C) (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0)
     {ε : ℝ} (hε : 0 < ε) :
-    ∃ (N : ℕ) (x : Fin N → Ω) (w : Fin N → ℝ), N ≤ 2 * Fintype.card ι ^ 2 + 1 ∧
+    ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ 2 * Fintype.card ι ^ 2 + 1 ∧
       (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧ (designGram a x w).PosDef ∧
       ∀ (c : ι → ℂ) (y : Ω),
         ‖star c ⬝ᵥ a y‖ ^ 2 ≤ (Fintype.card ι + ε) * ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2 :=
@@ -106,7 +106,7 @@ norm of the design with the constant `√m`, and no `ε` is lost. -/
 theorem exists_design_kieferWolfowitz_of_compact_card_le [Nonempty ι] [TopologicalSpace Ω]
     [CompactSpace Ω] (a : Ω → ι → ℂ) (hcont : ∀ i, Continuous fun y => a y i)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) :
-    ∃ (N : ℕ) (x : Fin N → Ω) (w : Fin N → ℝ), N ≤ 2 * Fintype.card ι ^ 2 + 1 ∧
+    ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ 2 * Fintype.card ι ^ 2 + 1 ∧
       (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧ (designGram a x w).PosDef ∧
       ∀ (c : ι → ℂ) (y : Ω),
         ‖star c ⬝ᵥ a y‖ ^ 2 ≤ Fintype.card ι * ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2 :=

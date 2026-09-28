@@ -17,9 +17,9 @@ The Gram matrices of designs are exactly the convex combinations of the rank-one
 This dictionary is what brings convexity to bear on designs, and it is used twice:
 
 * `Discretization.KieferWolfowitz.exists_design_card_le`: **every design can be replaced by
-  one with at most `2n² + 1` points and the same Gram matrix.**  This is Carathéodory's
+  one with at most `2m² + 1` points and the same Gram matrix.**  This is Carathéodory's
   theorem, in the form `eq_pos_convex_span_of_mem_convexHull`, applied in the real vector
-  space of complex `n × n` matrices, whose real dimension is `2n²`.  Since every conclusion
+  space of complex `m × m` matrices, whose real dimension is `2m²`.  Since every conclusion
   of the Kiefer–Wolfowitz theorem depends on the design only through its Gram matrix, the
   bound on the number of points transfers to all of them.
 * the compact case, where the convex hull is compact and the determinant therefore attains
@@ -45,7 +45,7 @@ def rankOneSet (a : Ω → ι → ℂ) : Set (Matrix ι ι ℂ) :=
 
 omit [Fintype ι] [DecidableEq ι] in
 /-- The Gram matrix of a design lies in the convex hull of the rank-one matrices. -/
-theorem designGram_mem_convexHull (a : Ω → ι → ℂ) {N : ℕ} (x : Fin N → Ω) {w : Fin N → ℝ}
+theorem designGram_mem_convexHull (a : Ω → ι → ℂ) {n : ℕ} (x : Fin n → Ω) {w : Fin n → ℝ}
     (hw : ∀ k, 0 ≤ w k) (hw1 : ∑ k, w k = 1) :
     designGram a x w ∈ convexHull ℝ (rankOneSet a) :=
   mem_convexHull_of_exists_fintype w _ hw hw1 (fun _ => Set.mem_range_self _) rfl
@@ -55,7 +55,7 @@ omit [Fintype ι] [DecidableEq ι] in
 of a design. -/
 theorem exists_design_of_mem_convexHull {a : Ω → ι → ℂ} {A : Matrix ι ι ℂ}
     (hA : A ∈ convexHull ℝ (rankOneSet a)) :
-    ∃ (N : ℕ) (x : Fin N → Ω) (w : Fin N → ℝ), (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧
+    ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧
       designGram a x w = A := by
   classical
   obtain ⟨κ, _, v, z, hv0, hv1, hz, hsum⟩ := mem_convexHull_iff_exists_fintype.1 hA
@@ -69,14 +69,14 @@ theorem exists_design_of_mem_convexHull {a : Ω → ι → ℂ} {A : Matrix ι �
       by rw [show vecMulVec (a (y i)) (star (a (y i))) = z i from hy i]
 
 omit [DecidableEq ι] in
-/-- **Every design can be replaced by one with at most `2n² + 1` points and the same Gram
+/-- **Every design can be replaced by one with at most `2m² + 1` points and the same Gram
 matrix.**
 
 By Carathéodory's theorem the Gram matrix, a point of the convex hull of the rank-one
 matrices, is already a convex combination of affinely independent ones, and an affinely
-independent family in the real vector space of complex `n × n` matrices has at most
-`2n² + 1` members. -/
-theorem exists_design_card_le (a : Ω → ι → ℂ) {N : ℕ} (x : Fin N → Ω) {w : Fin N → ℝ}
+independent family in the real vector space of complex `m × m` matrices has at most
+`2m² + 1` members. -/
+theorem exists_design_card_le (a : Ω → ι → ℂ) {n : ℕ} (x : Fin n → Ω) {w : Fin n → ℝ}
     (hw : ∀ k, 0 ≤ w k) (hw1 : ∑ k, w k = 1) :
     ∃ (M : ℕ) (x' : Fin M → Ω) (w' : Fin M → ℝ), M ≤ 2 * Fintype.card ι ^ 2 + 1 ∧
       (∀ k, 0 ≤ w' k) ∧ ∑ k, w' k = 1 ∧ designGram a x' w' = designGram a x w := by

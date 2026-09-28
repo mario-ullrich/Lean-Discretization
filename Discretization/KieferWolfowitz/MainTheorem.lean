@@ -8,21 +8,21 @@ import Discretization.KieferWolfowitz.DetMax
 /-!
 # The Kiefer–Wolfowitz theorem
 
-For an `n`-dimensional space of bounded functions on an arbitrary set and every `ε > 0`
-there are finitely many points `x₁, …, x_N` with nonnegative weights summing to one such
+For an `m`-dimensional space of bounded functions on an arbitrary set and every `ε > 0`
+there are finitely many points `x₁, …, xₙ` with nonnegative weights summing to one such
 that
 
-`|f(y)|² ≤ (n + ε) · ∑ₖ wₖ |f(xₖ)|²`   for every `f` in the space and every point `y`,
+`|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²`   for every `f` in the space and every point `y`,
 
 that is, the uniform norm on the space is dominated by the `L₂` norm of the finitely
-supported measure `∑ₖ wₖ δ(xₖ)`, with the constant `√(n+ε)`.  This is Proposition 9 of
+supported measure `∑ₖ wₖ δ(xₖ)`, with the constant `√(m+ε)`.  This is Proposition 9 of
 *Sampling projections in the uniform norm* by Krieg, Pozharska, Ullrich and Ullrich.
 
 The bound on the quadratic form of the inverse Gram matrix,
 `Discretization.KieferWolfowitz.exists_design_quadForm_inv_le`, does all the work.  What is
 left is to turn
 
-`a(y)* G⁻¹ a(y) ≤ n + ε`   into   `a(y) a(y)* ≤ (n+ε) · G`,
+`a(y)* G⁻¹ a(y) ≤ m + ε`   into   `a(y) a(y)* ≤ (m+ε) · G`,
 
 and the project already has that step: subtracting a rank-one matrix with a weight small
 enough to keep the Sherman–Morrison denominator positive preserves positive definiteness
@@ -55,10 +55,10 @@ theorem vecMulVec_le_smul_of_quadForm_inv_le {G : Matrix ι ι ℂ} (hG : G.PosD
 
 /-- **The Kiefer–Wolfowitz theorem.**
 
-For linearly independent bounded functions `a₁, …, a_n` on an arbitrary set and every
+For linearly independent bounded functions `a₁, …, a_m` on an arbitrary set and every
 `ε > 0` there is a finitely supported probability measure `∑ₖ wₖ δ(xₖ)` with
 
-`|f(y)|² ≤ (n + ε) · ∑ₖ wₖ |f(xₖ)|²`
+`|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²`
 
 for every point `y` and every function `f(y) = ⟪c, a(y)⟫` in the span.  Linear independence
 is used in the form `∀ c, (∀ y, ⟪c, a(y)⟫ = 0) → c = 0`, which
@@ -68,17 +68,17 @@ values. -/
 theorem exists_design_kieferWolfowitz [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
     (hC : ∀ y i, ‖a y i‖ ≤ C) (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0)
     {ε : ℝ} (hε : 0 < ε) :
-    ∃ (N : ℕ) (x : Fin N → Ω) (w : Fin N → ℝ), (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧
+    ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧
       (designGram a x w).PosDef ∧
       ∀ (c : ι → ℂ) (y : Ω),
         ‖star c ⬝ᵥ a y‖ ^ 2 ≤ (Fintype.card ι + ε) * ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2 := by
   have : Nonempty Ω := nonempty_of_separating hli
   have h0 : 0 ≤ C := le_trans (norm_nonneg _) (hC (Classical.arbitrary Ω) (Classical.arbitrary ι))
-  obtain ⟨N, x, w, hw, hw1, hpd, hq⟩ :=
+  obtain ⟨n, x, w, hw, hw1, hpd, hq⟩ :=
     exists_design_quadForm_inv_le a h0 hC hli (half_pos hε)
-  refine ⟨N, x, w, hw, hw1, hpd, fun c y => ?_⟩
+  refine ⟨n, x, w, hw, hw1, hpd, fun c y => ?_⟩
   have hs : (0 : ℝ) < Fintype.card ι + ε := by positivity
-  -- the Loewner bound `a(y) a(y)* ≤ (n+ε) G`, evaluated at the coefficient vector `c`
+  -- the Loewner bound `a(y) a(y)* ≤ (m+ε) G`, evaluated at the coefficient vector `c`
   have hle := vecMulVec_le_smul_of_quadForm_inv_le hpd (a y) (by linarith) hs (hq y)
   have hquad := re_quadForm_le_of_le hle c
   rw [re_quadForm_designGram, Matrix.smul_mulVec, dotProduct_smul, RCLike.smul_re,
