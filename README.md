@@ -277,19 +277,20 @@ Apache 2.0, the same as Mathlib. See [LICENSE](LICENSE).
 
 ## References
 
+* J. Batson, D. A. Spielman, N. Srivastava, *Twice-Ramanujan sparsifiers*, SIAM Review
+  **56** (2014), no. 2, 315–334, [doi](https://doi.org/10.1137/130949117),
+  [arxiv](https://arxiv.org/abs/0808.0163). The original potential-function argument.
 * A. Chkifa, M. Dolbeault, D. Krieg, M. Ullrich, *Constructive discretization and
   approximation in reproducing kernel Hilbert spaces*, preprint, 2026,
   [arxiv](https://arxiv.org/abs/2602.18719). Theorem 3 is the result formalised here,
   Corollary 4 the discretization inequality, and its proof the one followed in
   `Discretization/`.
-* J. Batson, D. A. Spielman, N. Srivastava, *Twice-Ramanujan sparsifiers*, SIAM Review
-  **56** (2014), no. 2, 315–334, [doi](https://doi.org/10.1137/130949117),
-  [arxiv](https://arxiv.org/abs/0808.0163). The original potential-function argument.
-* D. Krieg, K. Pozharska, M. Ullrich, T. Ullrich, *Sampling projections in the uniform
-  norm*, J. Math. Anal. Appl. **553** (2026), no. 2, Paper No. 129873,
-  [arxiv](https://arxiv.org/abs/2401.02220). Proposition 9 is the Kiefer–Wolfowitz
-  theorem formalised here, and its proof the one followed in
-  `Discretization/KieferWolfowitz/`.
 * J. Kiefer, J. Wolfowitz, *The equivalence of two extremum problems*, Canad. J. Math.
   **12** (1960), 363–366, [doi](https://doi.org/10.4153/CJM-1960-030-4). The original
   equivalence theorem for optimal designs.
+* D. Krieg, K. Pozharska, M. Ullrich, T. Ullrich, *Sampling projections in the uniform
+  norm*, J. Math. Anal. Appl. **553** (2026), no. 2, Paper No. 129873,
+  [doi](https://doi.org/10.1016/j.jmaa.2025.129873),
+  [arxiv](https://arxiv.org/abs/2401.02220). Proposition 9 is the Kiefer–Wolfowitz
+  theorem formalised here, and its proof the one followed in
+  `Discretization/KieferWolfowitz/`.
