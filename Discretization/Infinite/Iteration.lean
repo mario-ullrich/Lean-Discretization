@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.Infinite.Averages
-import Discretization.Iteration
+module
+
+public import Discretization.Infinite.Averages
+public import Discretization.Iteration
 
 /-!
 # The construction with an operator on the upper side
@@ -26,6 +28,8 @@ two barrier lemmas, the lower one for matrices and the upper one for operators.
 
 The result is `Discretization.Infinite.exists_points_weights`.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped InnerProductSpace ComplexOrder

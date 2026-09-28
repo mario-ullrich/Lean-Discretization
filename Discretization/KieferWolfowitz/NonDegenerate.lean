@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.KieferWolfowitz.Design
+module
+
+public import Discretization.KieferWolfowitz.Design
 
 /-!
 # A design with an invertible Gram matrix
@@ -31,6 +33,8 @@ point at which that vector does not vanish, and adding it cuts the dimension dow
 least one.  The induction is on the dimension of the subspace that survives, so it stops
 after at most `m` steps, for `m` functions.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexOrder MatrixOrder

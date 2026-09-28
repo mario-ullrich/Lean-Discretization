@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.BothEdgeCases
+module
+
+public import Discretization.BothEdgeCases
 
 /-!
 # Removing the normalisation of the first family
@@ -29,6 +31,8 @@ operators.
 The result is `Discretization.bss_generalized`, with lower frame bound
 `(1 - √((m-1)/n))² • I`.  In eigenvalue form this is the factor `λ_min(I)` of the paper.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator

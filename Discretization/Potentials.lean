@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.TraceInequalities
+module
+
+public import BasicResults.TraceInequalities
 
 /-!
 # Potentials
@@ -30,6 +32,8 @@ consume.  Both identities come from the resolvent identities of
 `BasicResults.LoewnerOrder`, and the sign from the positivity of the trace of a product of
 positive definite matrices (`Matrix.PosDef.re_trace_mul_pos`).
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexOrder MatrixOrder

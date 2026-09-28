@@ -3,8 +3,11 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Mathlib.Analysis.InnerProductSpace.l2Space
-import Mathlib.Analysis.InnerProductSpace.StarOrder
+module
+
+public import Mathlib.Analysis.InnerProductSpace.l2Space
+public import Mathlib.Analysis.InnerProductSpace.StarOrder
+public import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.Rpow.Basic
 
 /-!
 # The trace of an operator along a Hilbert basis
@@ -40,6 +43,8 @@ Mathlib supplies `HilbertBasis` with Parseval's identity
 (`HilbertBasis.hasSum_inner_mul_inner`), the order on `H →L[ℂ] H` and the square root
 `CFC.sqrt`.
 -/
+
+@[expose] public section
 
 open scoped InnerProductSpace ComplexOrder
 
@@ -146,7 +151,7 @@ omit [CompleteSpace H] in
 theorem traceAlong_nonneg (e : HilbertBasis κ ℂ H) {T : H →L[ℂ] H} (hT : 0 ≤ T) :
     0 ≤ traceAlong e T :=
   tsum_nonneg fun k =>
-    (ContinuousLinearMap.nonneg_iff_isPositive T |>.1 hT).re_inner_nonneg_right (e k)
+    (ContinuousLinearMap.nonneg_iff_isPositive (f := T) |>.1 hT).re_inner_nonneg_right (e k)
 
 /-! ### The Hilbert–Schmidt sum and adjoints
 
@@ -375,7 +380,7 @@ theorem le_traceAlong_smul_one (e : HilbertBasis κ ℂ H) {T : H →L[ℂ] H} (
   rw [ContinuousLinearMap.le_def, ContinuousLinearMap.isPositive_def']
   refine ⟨?_, fun x => ?_⟩
   · exact (IsSelfAdjoint.smul (star_trivial _) (IsSelfAdjoint.one _)).sub
-      ((ContinuousLinearMap.nonneg_iff_isPositive T |>.1 hT).isSelfAdjoint)
+      ((ContinuousLinearMap.nonneg_iff_isPositive (f := T) |>.1 hT).isSelfAdjoint)
   · have h := re_inner_apply_le_traceAlong_mul e hT hsum x
     have hsymm : RCLike.re ⟪T x, x⟫_ℂ = RCLike.re ⟪x, T x⟫_ℂ :=
       inner_re_symm (𝕜 := ℂ) (T x) x
@@ -401,7 +406,7 @@ theorem traceAlong_mul (e : HilbertBasis κ ℂ H) {P Q : H →L[ℂ] H} (hP : 0
   have hstarP : ContinuousLinearMap.adjoint (CFC.sqrt P) = CFC.sqrt P :=
     (IsSelfAdjoint.of_nonneg (CFC.sqrt_nonneg P)).star_eq
   have hstarQ : ContinuousLinearMap.adjoint Q = Q :=
-    ((ContinuousLinearMap.nonneg_iff_isPositive Q).1 hQ).isSelfAdjoint.star_eq
+    ((ContinuousLinearMap.nonneg_iff_isPositive (f := Q)).1 hQ).isSelfAdjoint.star_eq
   have hS : Summable fun k => ‖CFC.sqrt P (e k)‖ ^ 2 := (summable_norm_sq_sqrt_iff e hP).2 hsum
   have hSadj : Summable fun k => ‖ContinuousLinearMap.adjoint (CFC.sqrt P) (e k)‖ ^ 2 :=
     (summable_norm_sq_adjoint_iff e (CFC.sqrt P)).2 hS
@@ -450,7 +455,7 @@ theorem traceAlong_mul_nonneg (e : HilbertBasis κ ℂ H) {P Q : H →L[ℂ] H} 
     0 ≤ traceAlong e (P * Q) := by
   rw [traceAlong_mul e hP hQ hsum]
   exact tsum_nonneg fun k =>
-    ((ContinuousLinearMap.nonneg_iff_isPositive Q).1 hQ).re_inner_nonneg_right _
+    ((ContinuousLinearMap.nonneg_iff_isPositive (f := Q)).1 hQ).re_inner_nonneg_right _
 
 /-- **The trace of a product is strictly positive** when the factor of finite trace is
 nonzero and the bounded factor is positive and invertible, the operator analogue of
@@ -525,7 +530,7 @@ theorem summable_inner_apply_mul (e : HilbertBasis κ ℂ H) {P Q : H →L[ℂ] 
   have hstarP : ContinuousLinearMap.adjoint (CFC.sqrt P) = CFC.sqrt P :=
     (IsSelfAdjoint.of_nonneg (CFC.sqrt_nonneg P)).star_eq
   have hstarQ : ContinuousLinearMap.adjoint Q = Q :=
-    ((ContinuousLinearMap.nonneg_iff_isPositive Q).1 hQ).isSelfAdjoint.star_eq
+    ((ContinuousLinearMap.nonneg_iff_isPositive (f := Q)).1 hQ).isSelfAdjoint.star_eq
   have hS : Summable fun k => ‖CFC.sqrt P (e k)‖ ^ 2 := (summable_norm_sq_sqrt_iff e hP).2 hsum
   have hadjT : ContinuousLinearMap.adjoint (CFC.sqrt P * Q) = Q * CFC.sqrt P := by
     rw [← ContinuousLinearMap.star_eq_adjoint, star_mul, ContinuousLinearMap.star_eq_adjoint,

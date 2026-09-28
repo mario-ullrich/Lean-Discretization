@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.PotentialBounds
-import Discretization.Iteration
+module
+
+public import BasicResults.PotentialBounds
+public import Discretization.Iteration
 
 /-!
 # The generalized sparsification theorem
@@ -40,6 +42,8 @@ offers to Mathlib.  What the two halves do share is the whole lower side, the ar
 `Discretization.Parameters`, the real inequalities behind the barrier lemma, and the removal
 of the normalisation (`Discretization.bss_of_gram_eq_one`).
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped ComplexOrder MatrixOrder

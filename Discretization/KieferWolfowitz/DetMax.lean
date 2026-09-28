@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.KieferWolfowitz.MixEstimate
-import Discretization.KieferWolfowitz.NonDegenerate
+module
+
+public import Discretization.KieferWolfowitz.MixEstimate
+public import Discretization.KieferWolfowitz.NonDegenerate
 
 /-!
 # Maximising the determinant of the Gram matrix
@@ -34,6 +36,8 @@ turns this into `t ≤ m + ε`, uniformly in `y`.  That uniform bound,
 `Discretization.KieferWolfowitz.exists_design_quadForm_inv_le`, is the whole content of the
 maximisation; everything after it is linear algebra.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexOrder MatrixOrder

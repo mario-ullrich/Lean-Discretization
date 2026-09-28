@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.QuadraticForm
-import Discretization.BothEdgeCases
+module
+
+public import BasicResults.QuadraticForm
+public import Discretization.BothEdgeCases
 
 /-!
 # The discretization inequality
@@ -30,6 +32,8 @@ So a Loewner inequality between matrices is exactly an inequality between quadra
 uniformly in the coefficient vector.  The result is
 `Discretization.exists_discretization`.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped ComplexOrder MatrixOrder

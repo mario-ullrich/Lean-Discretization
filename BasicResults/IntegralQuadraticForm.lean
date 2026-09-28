@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Mathlib.LinearAlgebra.Matrix.Hermitian
-import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Hermitian
+public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 
 /-!
 # From integrals of quadratic forms to Gram matrices
@@ -29,6 +31,8 @@ average of `g` is smaller than the average of `f`, then `g x < f x` at some poin
 (`Discretization.exists_lt_of_integral_lt`).  The paper phrases this as a set of positive
 measure; one good point is all that is needed here.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 

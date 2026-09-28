@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Mathlib.Analysis.Matrix.Order
-import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
+module
+
+public import Mathlib.Analysis.Matrix.Order
+public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 
 /-!
 # Comparing matrices with multiples of the identity
@@ -39,6 +41,8 @@ those that invert a matrix are stated for `ℂ`, whose matrices carry the C⋆-a
 the proofs use.  Multiplying an inequality by a nonnegative real is Mathlib's
 `smul_le_smul_of_nonneg_left` and `smul_le_smul_of_nonneg_right`.
 -/
+
+@[expose] public section
 
 open scoped ComplexOrder MatrixOrder
 open Unitary

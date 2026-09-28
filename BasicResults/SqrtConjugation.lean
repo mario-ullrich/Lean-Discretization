@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
+module
+
+public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 
 /-!
 # Conjugating a bound by the square root
@@ -22,6 +24,8 @@ made once and serves `Matrix.PosDef.inv_re_trace_mul_smul_le` in finite dimensio
 `Discretization.Infinite.inv_upperPotential_smul_le` for operators.  It is the step that
 turns a bound on a potential into a bound on the object the potential measures.
 -/
+
+@[expose] public section
 
 namespace CStarAlgebra
 

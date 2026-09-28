@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.LoewnerOrder
-import Mathlib.Analysis.InnerProductSpace.Positive
+module
+
+public import BasicResults.LoewnerOrder
+public import Mathlib.Analysis.InnerProductSpace.Positive
 
 /-!
 # Traces of products of positive semidefinite matrices
@@ -30,6 +32,8 @@ a sum of rank-one matrices `v v*` (`Matrix.posSemidef_iff_eq_sum_vecMulVec`), fo
 Mathlib's `InnerProductSpace.Core.inner_mul_inner_self_le` for the semi-inner product above,
 which is set up on the spot.
 -/
+
+@[expose] public section
 
 open scoped ComplexOrder MatrixOrder
 

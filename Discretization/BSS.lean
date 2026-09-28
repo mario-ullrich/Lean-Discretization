@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.BothEdgeCases
+module
+
+public import Discretization.BothEdgeCases
 
 /-!
 # The sparsification theorem of Batson, Spielman and Srivastava
@@ -25,6 +27,8 @@ gives the statement for finitely many vectors that Batson, Spielman and Srivasta
 
 The result is `Discretization.bss`.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped ComplexOrder MatrixOrder

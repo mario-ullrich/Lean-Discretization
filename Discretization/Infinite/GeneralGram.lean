@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.GeneralGram
-import Discretization.Infinite.BothEdgeCases
+module
+
+public import Discretization.GeneralGram
+public import Discretization.Infinite.BothEdgeCases
 
 /-!
 # Removing the normalisation of the first family, with a countable second family
@@ -19,6 +21,8 @@ lower frame bound back by `I^{1/2}`.
 The result is `Discretization.Infinite.bss_generalized`, which is Theorem 3 of the paper for
 a countable second family, with no side condition beyond `n ≥ m`.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped InnerProductSpace ComplexOrder MatrixOrder

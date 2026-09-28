@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.IntegralQuadraticForm
-import Discretization.Barrier
+module
+
+public import BasicResults.IntegralQuadraticForm
+public import Discretization.Barrier
 
 /-!
 # Averages of the verifiers
@@ -28,6 +30,8 @@ average then rests on the Cauchy–Schwarz inequality for the trace
 (`Matrix.PosSemidef.re_trace_mul_sq_le`), and the estimate of the upper average on the
 antitonicity of the matrix inverse (`Matrix.PosDef.inv_le_inv_of_le`).
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped ComplexOrder MatrixOrder

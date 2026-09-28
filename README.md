@@ -241,7 +241,7 @@ library sits outside `defaultTargets`; build it with `lake build Palomar`.
 
 Requires [`elan`](https://github.com/leanprover/elan). The Lean version is pinned in
 `lean-toolchain` and Mathlib in `lake-manifest.json`, so a clone builds against Lean /
-Mathlib `v4.33.1`:
+Mathlib `v4.35.0-rc2`:
 
 ```bash
 lake exe cache get   # downloads the prebuilt Mathlib oleans
@@ -259,7 +259,7 @@ TeX installation, `graphviz` for the dependency graph, and the `leanblueprint` p
 ```bash
 leanblueprint pdf          # blueprint/print/print.pdf
 leanblueprint web          # blueprint/web/index.html and the dependency graph
-leanblueprint checkdecls   # checks that every \lean{Decl} resolves
+python blueprint/scripts/check_lean_decls.py   # checks that every \lean{Decl} resolves
 ```
 
 GitHub Actions builds the project and the blueprint on every push to `main`, and deploys

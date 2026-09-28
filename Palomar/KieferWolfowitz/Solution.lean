@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.KieferWolfowitz.PointCount
+module
+
+public import Discretization.KieferWolfowitz.PointCount
 
 /-!
 # The Kiefer–Wolfowitz theorem for sampling projections — proofs
@@ -37,3 +39,5 @@ the bound into `t ≤ m + ε` for `t = a(y)* G⁻¹ a(y)`, uniformly in `y`. On 
 the maximum is attained and the same argument gives `t ≤ m`. Carathéodory's theorem then
 replaces any design by one with at most `2m² + 1` points and the same Gram matrix.
 -/
+
+@[expose] public section

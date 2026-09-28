@@ -3,8 +3,11 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.CompactConvexHull
-import Discretization.KieferWolfowitz.Design
+module
+
+public import BasicResults.CompactConvexHull
+public import Discretization.KieferWolfowitz.Design
+public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 
 /-!
 # Designs and the convex hull of the rank-one matrices
@@ -30,6 +33,8 @@ The sharper count `r + 1` of the paper, with `r` the dimension of the span of th
 rank-one matrices.  Nothing downstream depends on it: the sparsification theorem accepts any
 finite, indeed any countable, family of points.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexOrder MatrixOrder

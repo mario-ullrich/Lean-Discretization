@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.CardOne
-import Discretization.SmallEffectiveDim
+module
+
+public import Discretization.CardOne
+public import Discretization.SmallEffectiveDim
 
 /-!
 # A single function and a small effective dimension
@@ -28,6 +30,8 @@ With it the four cases are complete, and a case distinction on `m ≥ 2` and on
 `M ≥ 1 + 1/n` assembles them into `Discretization.bss_generalized_of_gram_eq_one'`, the
 theorem with no side condition beyond `n ≥ m`.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped ComplexOrder MatrixOrder

@@ -3,10 +3,12 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Mathlib.Analysis.InnerProductSpace.l2Space
-import Mathlib.Analysis.InnerProductSpace.StarOrder
-import Mathlib.Analysis.Matrix.Order
-import Mathlib.MeasureTheory.Function.L2Space
+module
+
+public import Mathlib.Analysis.InnerProductSpace.l2Space
+public import Mathlib.Analysis.InnerProductSpace.StarOrder
+public import Mathlib.Analysis.Matrix.Order
+public import Mathlib.MeasureTheory.Function.L2Space
 
 /-!
 # The generalized sparsification theorem — statement surface
@@ -74,6 +76,8 @@ can match it against its counterpart there. The four theorems likewise carry the
 have in the development, so the names Palomar records are the ones a reader will find in the
 proof files.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped InnerProductSpace ComplexOrder MatrixOrder

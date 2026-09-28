@@ -3,9 +3,11 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.BothEdgeCases
-import Discretization.Infinite.CardOne
-import Discretization.Infinite.SmallEffectiveDim
+module
+
+public import Discretization.BothEdgeCases
+public import Discretization.Infinite.CardOne
+public import Discretization.Infinite.SmallEffectiveDim
 
 /-!
 # A single function and a small effective dimension, with a countable second family
@@ -26,6 +28,8 @@ With it the four cases are complete, and a case distinction on `m ≥ 2` and on 
 assembles them into `Discretization.Infinite.bss_generalized_of_gram_eq_one'`, the theorem
 for a countable second family with no side condition beyond `n ≥ m`.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped InnerProductSpace ComplexOrder MatrixOrder

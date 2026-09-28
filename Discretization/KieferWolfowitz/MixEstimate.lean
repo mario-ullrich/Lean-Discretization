@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Mathlib.Algebra.Order.Ring.Pow
-import Mathlib.Analysis.Real.Sqrt
+module
+
+public import Mathlib.Algebra.Order.Ring.Pow
+public import Mathlib.Analysis.Real.Sqrt
 
 /-!
 # The gain from mixing in one more point
@@ -35,6 +37,8 @@ the behaviour of this one real function, so this file has no matrices in it:
 The two conclusions are the source of the two constants `√m` and `√(m+ε)` in the
 Kiefer–Wolfowitz theorem.
 -/
+
+@[expose] public section
 
 namespace Discretization.KieferWolfowitz
 

@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.Averages
-import Discretization.Parameters
+module
+
+public import Discretization.Averages
+public import Discretization.Parameters
 
 /-!
 # The construction, step by step
@@ -26,6 +28,8 @@ arbitrary: the initial gap condition alone drives the whole construction, and it
 choice of `A₀`, `B₀`, `δ` and `ζ` in `Discretization.MainTheorem` that ties `n` to the frame
 bounds.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped ComplexOrder MatrixOrder

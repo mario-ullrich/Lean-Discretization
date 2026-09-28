@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Mathlib.Analysis.Matrix.Order
-import Mathlib.Topology.Compactness.Compact
+module
+
+public import Mathlib.Analysis.Matrix.Order
+public import Mathlib.Topology.Compactness.Compact
 
 /-!
 # The Kiefer–Wolfowitz theorem for sampling projections — statement surface
@@ -46,6 +48,8 @@ match it against its counterpart there. The two theorems likewise carry the name
 in the development, so the names Palomar records are the ones a reader will find in the
 proof files.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexOrder

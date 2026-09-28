@@ -3,9 +3,11 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.OperatorQuadraticForm
-import Discretization.Averages
-import Discretization.Infinite.Barrier
+module
+
+public import BasicResults.OperatorQuadraticForm
+public import Discretization.Averages
+public import Discretization.Infinite.Barrier
 
 /-!
 # The upper verifier passes the test on average
@@ -26,6 +28,8 @@ the average of the verifier into `Tr (J X J X) / E + Ψ_J(B + ζ • J)`, where
 `E = ζ Tr (J W J X)` is the gain of the potential.  Then `X ≤ W` bounds the numerator by
 `E/ζ`.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped InnerProductSpace ComplexOrder

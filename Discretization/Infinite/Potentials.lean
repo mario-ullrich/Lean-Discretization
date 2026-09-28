@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.OperatorShermanMorrison
-import BasicResults.OperatorTrace
+module
+
+public import BasicResults.OperatorShermanMorrison
+public import BasicResults.OperatorTrace
 
 /-!
 # The upper potential of an operator
@@ -29,6 +31,8 @@ For `B` the right notion is Mathlib's `IsStrictlyPositive`, positivity together 
 invertibility, and the inverse is `Ring.inverse`.  How that inverse reacts to the shift is
 `BasicResults.OperatorShermanMorrison`.
 -/
+
+@[expose] public section
 
 open scoped InnerProductSpace ComplexOrder
 open ContinuousLinearMap
@@ -84,7 +88,7 @@ theorem IsFiniteTracePos.conj (hJ : IsFiniteTracePos e J) {S : H →L[ℂ] H}
     refine Summable.of_nonneg_of_le (fun k => ?_) (fun k => ?_)
       (hJ.summable_norm_sq_apply.mul_left (‖S‖))
     · rw [hterm k]
-      exact ((ContinuousLinearMap.nonneg_iff_isPositive S).1 hS.nonneg).re_inner_nonneg_right _
+      exact ((ContinuousLinearMap.nonneg_iff_isPositive (f := S)).1 hS.nonneg).re_inner_nonneg_right _
     · rw [hterm k]
       have h1 : ‖RCLike.re ⟪J (e k), S (J (e k))⟫_ℂ‖ ≤ ‖⟪J (e k), S (J (e k))⟫_ℂ‖ :=
         RCLike.abs_re_le_norm _

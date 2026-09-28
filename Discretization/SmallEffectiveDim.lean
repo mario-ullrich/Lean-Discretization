@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.MainTheorem
+module
+
+public import Discretization.MainTheorem
 
 /-!
 # The case of a small effective dimension
@@ -28,6 +30,8 @@ The lower half of the argument is that of the main theorem; only the induction i
 `Discretization.sum_smul_vecMulVec_le_smul_one`, and the result is
 `Discretization.bss_generalized_of_small_dim`.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped ComplexOrder MatrixOrder

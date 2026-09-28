@@ -3,9 +3,11 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.OperatorQuadraticForm
-import BasicResults.SqrtConjugation
-import Discretization.Infinite.Potentials
+module
+
+public import BasicResults.OperatorQuadraticForm
+public import BasicResults.SqrtConjugation
+public import Discretization.Infinite.Potentials
 
 /-!
 # A bound on the upper potential is a bound on the operator
@@ -23,6 +25,8 @@ its trace is again `Ψ_J(B)`: the square root of `B⁻¹` is `S⁻¹` (`CFC.sqrt
 `ContinuousLinearMap.le_traceAlong_smul_one` gives `S⁻¹ J S⁻¹ ≼ Ψ_J(B) • 1`, and conjugating back
 by `S` turns this into `J ≼ Ψ_J(B) • B`.
 -/
+
+@[expose] public section
 
 open scoped InnerProductSpace ComplexOrder
 open ContinuousLinearMap

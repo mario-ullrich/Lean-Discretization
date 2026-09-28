@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.BSS
+module
+
+public import Discretization.BSS
 
 /-!
 # The sparsification theorem of Batson, Spielman and Srivastava — proof
@@ -29,3 +31,5 @@ development in `Discretization/` runs this argument in the form of Chkifa, Dolbe
 and Ullrich, which allows a second family; `Discretization/BSS.lean` reads off the statement
 for a single family.
 -/
+
+@[expose] public section

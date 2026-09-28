@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.KieferWolfowitz.ConvexHull
-import Discretization.KieferWolfowitz.MainTheorem
+module
+
+public import Discretization.KieferWolfowitz.ConvexHull
+public import Discretization.KieferWolfowitz.MainTheorem
 
 /-!
 # The sharp constant on a compact domain
@@ -24,6 +26,8 @@ inequality, since `Matrix.PosDef.sub_smul_vecMulVec` asks for one.  So the bound
 with every constant `s > m` and the limit `s → m` is taken at the level of real numbers,
 where it is harmless.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexOrder MatrixOrder

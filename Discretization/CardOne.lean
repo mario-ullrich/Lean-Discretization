@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.MainTheorem
+module
+
+public import Discretization.MainTheorem
 
 /-!
 # The case of a single function
@@ -29,6 +31,8 @@ identity is `Discretization.sum_smul_vecMulVec_eq_one`, and the result is
 Here `card ι = 1` is expressed by the typeclass assumption `[Unique ι]`, and `default : ι` is
 the single index.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped ComplexOrder MatrixOrder

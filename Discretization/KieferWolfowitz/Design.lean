@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.QuadraticForm
-import BasicResults.RankOneDeterminant
+module
+
+public import BasicResults.QuadraticForm
+public import BasicResults.RankOneDeterminant
 
 /-!
 # Designs and their Gram matrices
@@ -35,6 +37,8 @@ The file collects what the maximisation of the determinant needs:
   matrix are bounded by the same constant, whatever the design.  This is what bounds the set
   of determinants and so gives it a supremum.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexOrder MatrixOrder

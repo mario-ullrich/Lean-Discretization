@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Mathlib.Analysis.Real.Sqrt
+module
+
+public import Mathlib.Analysis.Real.Sqrt
 
 /-!
 # The parameters of the construction
@@ -40,6 +42,8 @@ Everything here is used twice, once for a finite second family and once for a co
 The square roots are never unfolded: only `Real.sq_sqrt`, `Real.sqrt_pos`, `Real.le_sqrt`
 and `Real.sqrt_lt'` are used.
 -/
+
+@[expose] public section
 
 namespace Discretization
 

@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.SqrtConjugation
-import BasicResults.TraceInequalities
+module
+
+public import BasicResults.SqrtConjugation
+public import BasicResults.TraceInequalities
 
 /-!
 # Lower bounds by the reciprocal of a potential
@@ -28,6 +30,8 @@ Square roots of matrices are Mathlib's `CFC.sqrt`, from the continuous functiona
 they require the C⋆-algebra structure of `Matrix n n ℂ`, whose norm is scoped in
 `Matrix.Norms.L2Operator`.
 -/
+
+@[expose] public section
 
 open scoped ComplexOrder MatrixOrder Matrix.Norms.L2Operator
 

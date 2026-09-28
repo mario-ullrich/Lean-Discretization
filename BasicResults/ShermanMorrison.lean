@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.LoewnerOrder
+module
+
+public import BasicResults.LoewnerOrder
 
 /-!
 # Rank-one updates: the Sherman–Morrison formula
@@ -31,6 +33,8 @@ direct verification: with `q = a* A⁻¹ a` and `c = t / (1 + t q)`, the product
 with the claimed inverse collapses to `1 + (t - c - t c q) · a (A⁻¹ a)*`, and the scalar
 factor vanishes by the choice of `c`.
 -/
+
+@[expose] public section
 
 open scoped ComplexOrder MatrixOrder
 

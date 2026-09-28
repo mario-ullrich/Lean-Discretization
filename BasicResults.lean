@@ -3,18 +3,20 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.LoewnerOrder
-import BasicResults.SqrtConjugation
-import BasicResults.TraceInequalities
-import BasicResults.PotentialBounds
-import BasicResults.ShermanMorrison
-import BasicResults.IntegralQuadraticForm
-import BasicResults.OperatorTrace
-import BasicResults.OperatorShermanMorrison
-import BasicResults.OperatorQuadraticForm
-import BasicResults.QuadraticForm
-import BasicResults.RankOneDeterminant
-import BasicResults.CompactConvexHull
+module
+
+public import BasicResults.LoewnerOrder
+public import BasicResults.SqrtConjugation
+public import BasicResults.TraceInequalities
+public import BasicResults.PotentialBounds
+public import BasicResults.ShermanMorrison
+public import BasicResults.IntegralQuadraticForm
+public import BasicResults.OperatorTrace
+public import BasicResults.OperatorShermanMorrison
+public import BasicResults.OperatorQuadraticForm
+public import BasicResults.QuadraticForm
+public import BasicResults.RankOneDeterminant
+public import BasicResults.CompactConvexHull
 
 /-!
 # General ingredients

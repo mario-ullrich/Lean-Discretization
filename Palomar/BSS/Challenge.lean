@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Mathlib.Analysis.Matrix.Order
-import Mathlib.MeasureTheory.Function.L2Space
+module
+
+public import Mathlib.Analysis.Matrix.Order
+public import Mathlib.MeasureTheory.Function.L2Space
 
 /-!
 # The sparsification theorem of Batson, Spielman and Srivastava — statement surface
@@ -44,6 +46,8 @@ It is reproduced verbatim from the development, under the same name, so that Com
 match it against its counterpart there. The theorem likewise carries the name it has in the
 development, so the name Palomar records is the one a reader will find in the proof files.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped ComplexOrder MatrixOrder

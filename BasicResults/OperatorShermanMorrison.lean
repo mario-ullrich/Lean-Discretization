@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Mathlib.Analysis.InnerProductSpace.StarOrder
-import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
+module
+
+public import Mathlib.Analysis.InnerProductSpace.StarOrder
+public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 
 /-!
 # Rank-one updates of an operator
@@ -37,6 +39,8 @@ invertibility.  That is the right notion in infinite dimension: a positive opera
 be bounded away from zero, and it is exactly invertibility that the potential argument uses
 in place of positive definiteness.
 -/
+
+@[expose] public section
 
 open scoped InnerProductSpace ComplexOrder
 open InnerProductSpace
@@ -151,7 +155,7 @@ theorem nonneg_rankOne_self (u : H) : (0 : H →L[ℂ] H) ≤ rankOne ℂ u u :=
 /-- The quadratic form of the inverse of a strictly positive operator is nonnegative. -/
 theorem re_inner_inverse_nonneg {A : H →L[ℂ] H} (hA : IsStrictlyPositive A) (u : H) :
     0 ≤ RCLike.re ⟪u, Ring.inverse A u⟫_ℂ :=
-  ((ContinuousLinearMap.nonneg_iff_isPositive _).1
+  (ContinuousLinearMap.nonneg_iff_isPositive.1
     hA.ringInverse.nonneg).re_inner_nonneg_right u
 
 /-- The quadratic form of the inverse of a strictly positive operator is real, being
@@ -159,7 +163,7 @@ nonnegative. -/
 theorem ofReal_re_inner_inverse {A : H →L[ℂ] H} (hA : IsStrictlyPositive A) (u : H) :
     ((RCLike.re ⟪u, Ring.inverse A u⟫_ℂ : ℝ) : ℂ) = ⟪u, Ring.inverse A u⟫_ℂ := by
   have h0 : (0 : ℂ) ≤ ⟪u, Ring.inverse A u⟫_ℂ :=
-    ((ContinuousLinearMap.nonneg_iff_isPositive _).1
+    (ContinuousLinearMap.nonneg_iff_isPositive.1
       hA.ringInverse.nonneg).inner_nonneg_right u
   have h : ⟪u, Ring.inverse A u⟫_ℂ = (⟪u, Ring.inverse A u⟫_ℂ).re :=
     Complex.eq_re_of_ofReal_le (r := 0) (by rw [Complex.ofReal_zero]; exact h0)
@@ -262,7 +266,7 @@ sight. -/
 theorem nonneg_conj {J S : H →L[ℂ] H} (hJ : 0 ≤ J) (hS : 0 ≤ S) :
     (0 : H →L[ℂ] H) ≤ J * S * J := by
   have hJadj : ContinuousLinearMap.adjoint J = J := hJ.isSelfAdjoint.star_eq
-  have h := ((ContinuousLinearMap.nonneg_iff_isPositive S).1 hS).adjoint_conj J
+  have h := ((ContinuousLinearMap.nonneg_iff_isPositive (f := S)).1 hS).adjoint_conj J
   rw [hJadj] at h
   rw [ContinuousLinearMap.nonneg_iff_isPositive]
   simpa [ContinuousLinearMap.mul_def, ContinuousLinearMap.comp_assoc] using h

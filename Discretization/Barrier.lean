@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.ShermanMorrison
-import Discretization.Potentials
+module
+
+public import BasicResults.ShermanMorrison
+public import Discretization.Potentials
 
 /-!
 # Verifiers and the barrier lemma
@@ -32,6 +34,8 @@ The effect of an update on the potentials is computed exactly
 inequalities between real numbers (`Discretization.lower_barrier_ineq`,
 `Discretization.upper_barrier_ineq`).
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexOrder MatrixOrder

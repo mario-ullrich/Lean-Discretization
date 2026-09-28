@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.Barrier
-import Discretization.Infinite.Potentials
+module
+
+public import Discretization.Barrier
+public import Discretization.Infinite.Potentials
 
 /-!
 # The upper verifier and the barrier lemma for operators
@@ -23,6 +25,8 @@ The real-number inequality behind it is shared with the finite-dimensional proof
 of the potential after a rank-one downdate (`ContinuousLinearMap.inverse_sub_smul_rankOne_of_nonneg`)
 and the positivity of the numerator, which rests on the injectivity of `J`.
 -/
+
+@[expose] public section
 
 open scoped InnerProductSpace ComplexOrder
 open InnerProductSpace
@@ -121,10 +125,10 @@ theorem upperVerifier_nonneg [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : H �
   have hMinv : IsStrictlyPositive (Ring.inverse (B + ζ • J)) := hM.ringInverse
   have h₁ : 0 ≤ RCLike.re ⟪u,
       (Ring.inverse (B + ζ • J) * J * Ring.inverse (B + ζ • J)) u⟫_ℂ :=
-    ((ContinuousLinearMap.nonneg_iff_isPositive _).1
+    (ContinuousLinearMap.nonneg_iff_isPositive.1
       (nonneg_conj hMinv.nonneg hJ.nonneg)).re_inner_nonneg_right u
   have h₂ : 0 ≤ RCLike.re ⟪u, Ring.inverse (B + ζ • J) u⟫_ℂ :=
-    ((ContinuousLinearMap.nonneg_iff_isPositive _).1 hMinv.nonneg).re_inner_nonneg_right u
+    (ContinuousLinearMap.nonneg_iff_isPositive.1 hMinv.nonneg).re_inner_nonneg_right u
   have h₃ : 0 < upperPotential e J B - upperPotential e J (B + ζ • J) := by
     have := upperPotential_add_smul_lt hJ hB hζ
     linarith
@@ -151,7 +155,7 @@ theorem upperPotential_update_le [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : 
   set r := RCLike.re ⟪u,
     (Ring.inverse (B + ζ • J) * J * Ring.inverse (B + ζ • J)) u⟫_ℂ with hrdef
   have hE : 0 < E := by simp only [hEdef]; linarith
-  have hp0 : 0 ≤ p := ((ContinuousLinearMap.nonneg_iff_isPositive _).1
+  have hp0 : 0 ≤ p := (ContinuousLinearMap.nonneg_iff_isPositive.1
     hMinv.nonneg).re_inner_nonneg_right u
   -- the Sherman–Morrison denominator is positive
   have hstrict : 0 < 1 - w * p := by

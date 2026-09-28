@@ -3,9 +3,11 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.Infinite.Bounds
-import Discretization.Infinite.Iteration
-import Discretization.MainTheorem
+module
+
+public import Discretization.Infinite.Bounds
+public import Discretization.Infinite.Iteration
+public import Discretization.MainTheorem
 
 /-!
 # The generalized sparsification theorem with a countable second family
@@ -29,6 +31,8 @@ The lower half and the arithmetic of the four parameters are those of the finite
 (`Discretization.lower_frame_bound`, `Discretization.Parameters`).  This file proves the
 operator counterpart of the upper read-off and assembles the theorem.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped InnerProductSpace ComplexOrder MatrixOrder

@@ -3,40 +3,42 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults
-import Discretization.Parameters
-import Discretization.Potentials
-import Discretization.Barrier
-import Discretization.Averages
-import Discretization.Iteration
-import Discretization.MainTheorem
-import Discretization.GeneralGram
-import Discretization.CardOne
-import Discretization.SmallEffectiveDim
-import Discretization.BothEdgeCases
-import Discretization.NormDiscretization
-import Discretization.BSS
-import Discretization.Infinite.Potentials
-import Discretization.Infinite.Barrier
-import Discretization.Infinite.Averages
-import Discretization.Infinite.Bounds
-import Discretization.Infinite.Iteration
-import Discretization.Infinite.MainTheorem
-import Discretization.Infinite.CardOne
-import Discretization.Infinite.SmallEffectiveDim
-import Discretization.Infinite.BothEdgeCases
-import Discretization.Infinite.GeneralGram
-import Discretization.Infinite.NormDiscretization
-import Discretization.KieferWolfowitz.MixEstimate
-import Discretization.KieferWolfowitz.Design
-import Discretization.KieferWolfowitz.NonDegenerate
-import Discretization.KieferWolfowitz.DetMax
-import Discretization.KieferWolfowitz.MainTheorem
-import Discretization.KieferWolfowitz.Measure
-import Discretization.KieferWolfowitz.ConvexHull
-import Discretization.KieferWolfowitz.Compact
-import Discretization.KieferWolfowitz.JohnDecomposition
-import Discretization.KieferWolfowitz.PointCount
+module
+
+public import BasicResults
+public import Discretization.Parameters
+public import Discretization.Potentials
+public import Discretization.Barrier
+public import Discretization.Averages
+public import Discretization.Iteration
+public import Discretization.MainTheorem
+public import Discretization.GeneralGram
+public import Discretization.CardOne
+public import Discretization.SmallEffectiveDim
+public import Discretization.BothEdgeCases
+public import Discretization.NormDiscretization
+public import Discretization.BSS
+public import Discretization.Infinite.Potentials
+public import Discretization.Infinite.Barrier
+public import Discretization.Infinite.Averages
+public import Discretization.Infinite.Bounds
+public import Discretization.Infinite.Iteration
+public import Discretization.Infinite.MainTheorem
+public import Discretization.Infinite.CardOne
+public import Discretization.Infinite.SmallEffectiveDim
+public import Discretization.Infinite.BothEdgeCases
+public import Discretization.Infinite.GeneralGram
+public import Discretization.Infinite.NormDiscretization
+public import Discretization.KieferWolfowitz.MixEstimate
+public import Discretization.KieferWolfowitz.Design
+public import Discretization.KieferWolfowitz.NonDegenerate
+public import Discretization.KieferWolfowitz.DetMax
+public import Discretization.KieferWolfowitz.MainTheorem
+public import Discretization.KieferWolfowitz.Measure
+public import Discretization.KieferWolfowitz.ConvexHull
+public import Discretization.KieferWolfowitz.Compact
+public import Discretization.KieferWolfowitz.JohnDecomposition
+public import Discretization.KieferWolfowitz.PointCount
 
 /-!
 # Norm discretization

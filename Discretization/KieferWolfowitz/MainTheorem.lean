@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.KieferWolfowitz.DetMax
+module
+
+public import Discretization.KieferWolfowitz.DetMax
 
 /-!
 # The Kiefer–Wolfowitz theorem
@@ -31,6 +33,8 @@ design is taken with `ε/2` in place of `ε`, which costs nothing since `ε` is 
 Evaluating the resulting Loewner inequality at a coefficient vector
 (`Discretization.re_quadForm_le_of_le`) gives the theorem.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexOrder MatrixOrder

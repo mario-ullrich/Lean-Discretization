@@ -3,9 +3,12 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.OperatorTrace
-import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
-import Mathlib.MeasureTheory.Function.L2Space
+module
+
+public import BasicResults.OperatorTrace
+public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
+public import Mathlib.MeasureTheory.Function.L2Space
+public import Mathlib.MeasureTheory.Integral.DominatedConvergence
 
 /-!
 # From averages of quadratic forms to traces
@@ -40,6 +43,8 @@ of them, its monotonicity for the operator order, and the crude bound `u u* ≼ 
 This is the operator counterpart of `BasicResults.QuadraticForm`.
 -/
 
+@[expose] public section
+
 open MeasureTheory
 open scoped InnerProductSpace ComplexOrder
 open InnerProductSpace
@@ -69,7 +74,7 @@ theorem re_inner_sum_rankOne {k : ℕ} (x : Fin k → Ω) (w : Fin k → ℝ) (b
 /-- The quadratic form is monotone for the operator order. -/
 theorem re_inner_le_of_le [CompleteSpace H] {S T : H →L[ℂ] H} (h : S ≤ T) (u : H) :
     RCLike.re ⟪u, S u⟫_ℂ ≤ RCLike.re ⟪u, T u⟫_ℂ := by
-  have hd := ((ContinuousLinearMap.nonneg_iff_isPositive _).1
+  have hd := (ContinuousLinearMap.nonneg_iff_isPositive.1
     (sub_nonneg.2 h)).re_inner_nonneg_right u
   rw [show (T - S) u = T u - S u from rfl, inner_sub_right, map_sub] at hd
   linarith

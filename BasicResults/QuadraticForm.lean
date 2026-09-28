@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.LoewnerOrder
+module
+
+public import BasicResults.LoewnerOrder
 
 /-!
 # Quadratic forms and sums of squares
@@ -24,6 +26,8 @@ matrices `a(x) a(x)*` into statements about the numbers `|f(x)|²`:
 Nothing here mentions integrals, and the points `xᵢ` are drawn from a bare type, so the
 three facts serve both the sparsification theorem and the Kiefer–Wolfowitz theorem.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexOrder MatrixOrder

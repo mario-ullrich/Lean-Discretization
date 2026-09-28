@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.ShermanMorrison
-import Mathlib.LinearAlgebra.Matrix.SchurComplement
+module
+
+public import BasicResults.ShermanMorrison
+public import Mathlib.LinearAlgebra.Matrix.SchurComplement
 
 /-!
 # Determinants of rank-one mixtures
@@ -34,6 +36,8 @@ matrices of a finitely supported measure:
   whose entries are bounded by `C`, read off from the Leibniz formula.  It is what makes
   the set of determinants of Gram matrices bounded above, so that its supremum exists.
 -/
+
+@[expose] public section
 
 open scoped ComplexOrder MatrixOrder
 
@@ -109,7 +113,7 @@ theorem norm_det_le_of_norm_apply_le {A : Matrix n n 𝕜} {C : ℝ} (hC : ∀ i
       rcases Int.units_eq_one_or (Equiv.Perm.sign σ) with h | h <;> rw [h] <;> simp
     rw [norm_mul, hsign, one_mul, norm_prod]
     calc ∏ i, ‖A (σ i) i‖ ≤ ∏ _i : n, C :=
-          Finset.prod_le_prod (fun i _ => norm_nonneg _) fun i _ => hC _ _
+          Finset.prod_le_prod₀ (fun i _ => norm_nonneg _) fun i _ => hC _ _
       _ = C ^ Fintype.card n := by rw [Finset.prod_const, Finset.card_univ]
   calc ‖A.det‖ = ‖∑ σ : Equiv.Perm n, ((Equiv.Perm.sign σ : ℤ) : 𝕜) * ∏ i, A (σ i) i‖ := by
         rw [det_apply']

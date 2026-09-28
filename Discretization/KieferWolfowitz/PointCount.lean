@@ -3,7 +3,9 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.KieferWolfowitz.Compact
+module
+
+public import Discretization.KieferWolfowitz.Compact
 
 /-!
 # Bounding the number of points
@@ -22,6 +24,8 @@ with the number of points bounded.
 Nothing later needs the bound: the sparsification theorem, which is what the measure is
 handed to next, accepts any finite and indeed any countable family of points.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexOrder MatrixOrder

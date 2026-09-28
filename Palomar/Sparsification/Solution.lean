@@ -3,10 +3,12 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.GeneralGram
-import Discretization.NormDiscretization
-import Discretization.Infinite.GeneralGram
-import Discretization.Infinite.NormDiscretization
+module
+
+public import Discretization.GeneralGram
+public import Discretization.NormDiscretization
+public import Discretization.Infinite.GeneralGram
+public import Discretization.Infinite.NormDiscretization
 
 /-!
 # The generalized sparsification theorem — proofs
@@ -45,3 +47,5 @@ of the `n` steps shifts both matrices, which costs an exactly computable amount 
 potentials, and the barrier lemma names the weights that spend no more than that. Averaging
 the verifiers over `μ` shows that such a point exists.
 -/
+
+@[expose] public section

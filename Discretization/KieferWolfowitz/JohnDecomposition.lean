@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.TraceInequalities
-import Discretization.KieferWolfowitz.Compact
+module
+
+public import BasicResults.TraceInequalities
+public import Discretization.KieferWolfowitz.Compact
 
 /-!
 # John's decomposition of the identity, read off a design
@@ -46,6 +48,8 @@ proved directly in the companion project Lean-SNumbers as `John.john_decompositi
 (`BasicResults/John.lean`, `github.com/mario-ullrich/Lean-SNumbers`), by a separation
 argument in the space of self-adjoint operators.
 -/
+
+@[expose] public section
 
 open Matrix
 open scoped ComplexOrder MatrixOrder

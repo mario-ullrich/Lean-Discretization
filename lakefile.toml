@@ -1,18 +1,12 @@
 name = "discretization"
 defaultTargets = ["Discretization", "BasicResults"]
 
-# Mathlib pinned to the v4.33.1 tag, matching lean-toolchain: a release tag has a
+# Mathlib pinned to the v4.35.0-rc2 tag, matching lean-toolchain: a release tag has a
 # fully-published build cache, so `lake exe cache get` finds every olean.
 [[require]]
 name = "mathlib"
 scope = "leanprover-community"
-version = "git#v4.33.1"
-
-# Supplies `lake exe checkdecls`, which the blueprint build runs to verify that every
-# `\lean{Decl}` tag names a declaration that really exists in the compiled project.
-[[require]]
-name = "checkdecls"
-git = "https://github.com/PatrickMassot/checkdecls.git"
+version = "git#v4.35.0-rc2"
 
 # The general matrix and integration facts the theory consumes: the Loewner order, trace
 # inequalities, the Sherman–Morrison formula, and the bridge between integrals of quadratic
@@ -34,7 +28,7 @@ name = "Discretization"
 # likewise compiles the two separately.
 #
 # `Palomar` is listed alongside `Palomar.+` because the `.+` form builds the submodules
-# only, while `leanblueprint checkdecls` imports the root module of every `lean_lib`. The
+# only, while `blueprint/scripts/check_lean_decls.py` imports the root module of every `lean_lib`. The
 # root imports nothing, so loading it alongside the other libraries stays harmless.
 [[lean_lib]]
 name = "Palomar"

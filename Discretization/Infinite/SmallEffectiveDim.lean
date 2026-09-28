@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.SmallEffectiveDim
-import Discretization.Infinite.MainTheorem
+module
+
+public import Discretization.SmallEffectiveDim
+public import Discretization.Infinite.MainTheorem
 
 /-!
 # A small effective dimension, with a countable second family
@@ -31,6 +33,8 @@ the last step because `M ≤ 1 + 1/n` forces `M ≤ (1 + s)²`.  The read-off is
 `Discretization.Infinite.sum_smul_rankOne_le_smul_one`, and the result is
 `Discretization.Infinite.bss_generalized_of_small_dim`.
 -/
+
+@[expose] public section
 
 open MeasureTheory
 open scoped InnerProductSpace ComplexOrder MatrixOrder

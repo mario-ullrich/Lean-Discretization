@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import Discretization.NormDiscretization
-import Discretization.Infinite.BothEdgeCases
+module
+
+public import Discretization.NormDiscretization
+public import Discretization.Infinite.BothEdgeCases
 
 /-!
 # The discretization inequality with a countable second family
@@ -32,6 +34,8 @@ The dictionary is the same as in finite dimension, with the quadratic form of a 
 of rank-one operators (`ContinuousLinearMap.re_inner_sum_rankOne`) in place of the quadratic
 form of a sum of rank-one matrices.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped InnerProductSpace ComplexOrder MatrixOrder

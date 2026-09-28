@@ -3,8 +3,10 @@ Copyright (c) 2026 Mario Ullrich. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Ullrich
 -/
-import BasicResults.IntegralQuadraticForm
-import Discretization.KieferWolfowitz.MainTheorem
+module
+
+public import BasicResults.IntegralQuadraticForm
+public import Discretization.KieferWolfowitz.MainTheorem
 
 /-!
 # The Kiefer–Wolfowitz measure
@@ -30,6 +32,8 @@ measurable, since a Dirac measure only sees a function through its value at one 
 The second identity is what lets the measure produced here be handed to the sparsification
 theorem, which asks for `Discretization.gram` of a measure.
 -/
+
+@[expose] public section
 
 open Matrix MeasureTheory
 open scoped ComplexOrder MatrixOrder
