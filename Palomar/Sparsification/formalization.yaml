@@ -43,7 +43,7 @@ sources:
     relationship: "formalizes"
     note: >-
       Theorem 3 is the sparsification theorem formalized here and Corollary 4 the
-      discretization inequality; Section 4 is the proof followed. The source states
+      discretization inequality; its proof is the one followed. The source states
       Theorem 3 for an at most countable second index set, and both cases are
       formalized: a finite one with a Gram matrix, and a countable one with a Gram
       operator of finite trace on a Hilbert space. The applications of the paper to
@@ -80,9 +80,7 @@ status:
     (bss_generalized_of_gram_eq_one), the three edge cases that remove them
     (bss_generalized_of_unique, bss_generalized_of_small_dim,
     bss_generalized_of_unique_of_small_dim), each in a finite and in a countable
-    version; the theorem of Kiefer and Wolfowitz for sampling projections, which
-    produces the measure the sparsification theorem starts from; and John's
-    decomposition of the identity over the design points.
+    version.
 
     Not formalized: the construction of the Gram operator from a reproducing kernel,
     that is the singular value decomposition of the embedding into L_2; sampling

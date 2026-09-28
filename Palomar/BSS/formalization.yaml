@@ -53,10 +53,9 @@ sources:
     location: "https://arxiv.org/abs/2602.18719"
     relationship: "background"
     note: >-
-      The proof that is formalized. Its Theorem 3 allows two different families and
-      replaces the size of the second one by the effective dimension of its Gram
-      matrix; the statement advertised here is the case of a single family, where that
-      effective dimension is m. The generalization is registered separately.
+      The proof followed. The paper states the theorem for two families at once, with
+      the upper bound in terms of the effective dimension of the second; that form is a
+      separate submission (Palomar/Sparsification).
     author_endorsement: "participated"
 
 related_formalizations: []
@@ -66,13 +65,6 @@ status:
     Formalized and advertised: Discretization.bss, the two-sided frame bound for a
     single family with Gram matrix the identity, for every n >= m and with no further
     hypothesis.
-
-    Proved in the repository but not advertised here: the generalization of
-    Chkifa, Dolbeault, Krieg and Ullrich, which allows a second family and depends on
-    its effective dimension rather than its size, both for a finite and for a countably
-    infinite second family, together with the corresponding discretization inequalities
-    for the L_2 norm; the potential argument and the three edge cases it rests on; and
-    the theorem of Kiefer and Wolfowitz for sampling projections.
 
     Not formalized: the graph-sparsification application of the source, and the
     algorithmic content, that is the running time of the construction. The proof is
@@ -125,10 +117,8 @@ fidelity:
     rather than as the condition number ((sqrt(d)+1)/(sqrt(d)-1))^2 for n = d*m. The
     two agree up to replacing (m-1) by m, which the source does as well.
 
-    The formalized proof is the one of Chkifa, Dolbeault, Krieg and Ullrich, of which
-    this statement is the case of a single family. It is the potential-function
-    argument of the source, with the second potential weighted by the Gram matrix of
-    the second family.
+    The proof is the potential-function argument of the source, followed in the form
+    given by Chkifa, Dolbeault, Krieg and Ullrich.
 
     Traces of the matrices involved are real, and the formalization takes real parts
     explicitly with RCLike.re wherever a real number is needed.

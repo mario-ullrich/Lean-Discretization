@@ -20,14 +20,12 @@ the development: from `BasicResults/IntegralQuadraticForm.lean` and
 wrapper is needed and why the names Palomar records are the names the development actually
 uses.
 
-The theorem is the case `a = b` of the generalized sparsification theorem
-`Discretization.bss_generalized_of_gram_eq_one'`: the Gram matrix of the second family is
-then the identity, `Λ = 1` bounds it, and its effective dimension `Tr J / Λ` is the number
-of functions, so both frame constants are built from the same `√((m-1)/n)`.
-
-Underneath lies the potential-function argument. Two matrices are carried along, one for
-each frame bound, and two potentials measure how close each is to failure. Each of the `n`
-steps shifts both matrices, which costs an exactly computable amount of both potentials,
-and the barrier lemma names the weights that spend no more than that. Averaging the
-verifiers over `μ` shows that such a point exists.
+The proof is the potential-function argument of Batson, Spielman and Srivastava. Two
+matrices are carried along, one for each frame bound, and two potentials measure how close
+each is to failure. Each of the `n` steps shifts both matrices, which costs an exactly
+computable amount of both potentials, and the barrier lemma names the weights that spend no
+more than that. Averaging the verifiers over `μ` shows that such a point exists. The
+development in `Discretization/` runs this argument in the form of Chkifa, Dolbeault, Krieg
+and Ullrich, which allows a second family; `Discretization/BSS.lean` reads off the statement
+for a single family.
 -/

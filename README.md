@@ -280,7 +280,7 @@ Apache 2.0, the same as Mathlib. See [LICENSE](LICENSE).
 * A. Chkifa, M. Dolbeault, D. Krieg, M. Ullrich, *Constructive discretization and
   approximation in reproducing kernel Hilbert spaces*, preprint, 2026,
   [arxiv](https://arxiv.org/abs/2602.18719). Theorem 3 is the result formalised here,
-  Corollary 4 the discretization inequality, and Section 4 the proof followed in
+  Corollary 4 the discretization inequality, and its proof the one followed in
   `Discretization/`.
 * J. Batson, D. A. Spielman, N. Srivastava, *Twice-Ramanujan sparsifiers*, SIAM Review
   **56** (2014), no. 2, 315–334, [doi](https://doi.org/10.1137/130949117),
