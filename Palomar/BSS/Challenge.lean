@@ -30,8 +30,9 @@ in the **Loewner order** `A ≼ B ↔ (B - A)` positive semidefinite. Written fo
 the same statement says that `∑ᵢ wᵢ |f(xᵢ)|²` stays within those two factors of
 `∫ |f|² dμ` for every `f` in the span.
 
-For `n = d·m` the ratio of the two constants is `((√d + 1)/(√d - 1))²`, the condition
-number of the original theorem. Taking `μ` the counting measure on a finite set gives the
+The original theorem has `√(m/n)` in place of `√((m-1)/n)`, so this is a slight
+improvement, and for `n = d·m` the ratio of the two constants is at most
+`((√d + 1)/(√d - 1))²`, the condition number of the original theorem. Taking `μ` the counting measure on a finite set gives the
 statement for finitely many vectors that Batson, Spielman and Srivastava prove: a
 reweighted subset of `n` of the vectors is a spectral sparsifier of their sum.
 
@@ -77,7 +78,7 @@ are `n` points and positive weights with
 
 `(1 - √((m-1)/n))² • 1 ≤ ∑ wᵢ a(xᵢ) a(xᵢ)* ≤ (1 + √((m-1)/n))² • 1`
 
-in the Loewner order.  For `n = d·m` the ratio of the two constants is
+in the Loewner order.  For `n = d·m` the ratio of the two constants is at most
 `((√d + 1)/(√d - 1))²`. -/
 theorem bss [Nonempty ι] {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ)
     (hgrama : gram a μ = 1) {n : ℕ} (hmn : Fintype.card ι ≤ n) :

@@ -6,12 +6,11 @@ project:
   name: "The theorem of Kiefer and Wolfowitz for sampling projections"
   description: >-
     On an m-dimensional space V of bounded functions on an arbitrary set D, and for
-    every epsilon > 0, there is a finitely supported probability measure
-    rho = sum_k w_k delta(x_k) for which the uniform norm on V is dominated by the
-    L_2(rho) norm with the constant sqrt(m + epsilon):
-    |f(y)|^2 <= (m + epsilon) * sum_k w_k |f(x_k)|^2 for every y in D and every f in V.
+    every ε > 0, there is a finitely supported probability measure ϱ = ∑ₖ wₖ δ(xₖ) for
+    which the uniform norm on V is dominated by the L₂(ϱ) norm with the constant
+    √(m + ε): |f(y)|² ≤ (m + ε) ∑ₖ wₖ |f(xₖ)|² for every y ∈ D and every f ∈ V.
     For continuous functions on a compact domain the loss disappears and the constant
-    is the sharp sqrt(m). In both cases at most 2m^2 + 1 points are needed. The measure
+    is the sharp √m. In both cases at most 2m² + 1 points are needed. The measure
     is one whose Gram matrix has an almost maximal determinant; applying a
     sparsification theorem to such a measure is how one arrives at sampling projections
     with few points and small norm.
@@ -50,7 +49,7 @@ sources:
     location: "https://doi.org/10.4153/CJM-1960-030-4"
     relationship: "background"
     note: >-
-      Canad. J. Math. 12 (1960), 363-366. The original equivalence theorem for
+      Canad. J. Math. 12 (1960), 363–366. The original equivalence theorem for
       optimal designs, of which the advertised bound is the half used here.
 
 related_formalizations: []
@@ -59,19 +58,19 @@ status:
   scope: >-
     Formalized and advertised:
     Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le, the bound
-    with the constant m + epsilon on an arbitrary set, and
+    with the constant m + ε on an arbitrary set, and
     Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le,
     the sharp constant m for continuous functions on a compact domain. Both give a
-    design of at most 2m^2 + 1 points whose Gram matrix is positive definite.
+    design of at most 2m² + 1 points whose Gram matrix is positive definite.
 
     Proved in the repository but not advertised here: the same two theorems without
     the bound on the number of points (exists_design_kieferWolfowitz,
     exists_design_kieferWolfowitz_of_compact); the statement for the measure
-    rho = sum_k w_k delta(x_k) itself
+    ϱ = ∑ₖ wₖ δ(xₖ) itself
     (exists_probabilityMeasure_kieferWolfowitz), together with the identity
-    gram a rho = designGram a x w that hands it to the sparsification theorem; the
-    reduction of any design to one with at most 2m^2 + 1 points and the same Gram
-    matrix (exists_design_card_le), by Caratheodory's theorem; and John's
+    gram a ϱ = designGram a x w that hands it to the sparsification theorem; the
+    reduction of any design to one with at most 2m² + 1 points and the same Gram
+    matrix (exists_design_card_le), by Carathéodory's theorem; and John's
     decomposition of the identity over the design points
     (sum_weight_quadForm_inv_eq_card, sum_weight_smul_quadForm_inv_eq_self).
 
@@ -112,12 +111,12 @@ automation:
 fidelity:
   divergences: >-
     Linear independence of the functions is stated as the separating condition
-    "for every coefficient vector c, if <c, a(y)> vanishes for every y then c = 0",
+    "for every coefficient vector c, if ⟨c, a(y)⟩ vanishes for every y then c = 0",
     which the development identifies with LinearIndependent over the complex numbers
     (linearIndependent_iff_forall_star). Boundedness is stated as one constant C bounding
-    every value |a_i(y)|.
+    every value |aᵢ(y)|.
 
-    The design is given as points x_1, ..., x_n with weights w_1, ..., w_n rather
+    The design is given as points x₁, …, x_N with weights w₁, …, w_N rather
     than as a measure. The measure form is proved in the repository as
     exists_probabilityMeasure_kieferWolfowitz, with the identity relating its Gram
     matrix to the Gram matrix of the points and weights.
@@ -126,7 +125,7 @@ fidelity:
     determinant over the compact convex hull of the rank-one matrices, it takes a
     near-maximiser of the supremum of the determinants; the perturbation is computed
     exactly by the matrix determinant lemma, and the first-order condition is replaced
-    by Bernoulli's inequality with the explicit weight alpha = (t-m)/(2m(t-1)). This
+    by Bernoulli's inequality with the explicit weight α = (t − m)/(2m(t − 1)). This
     avoids both a Jacobi formula and the compactness of a convex hull, neither of
     which Mathlib has. On a compact domain the maximum is attained and the same
     computation gives the sharp constant.
@@ -148,15 +147,15 @@ alignment:
       module: "Discretization.KieferWolfowitz.PointCount"
       status: "proved"
       note: >-
-        The bound with the constant m + epsilon on an arbitrary set, with at most
-        2m^2 + 1 points.
+        The bound with the constant m + ε on an arbitrary set, with at most
+        2m² + 1 points.
     - source: "Sampling projections in the uniform norm, Proposition 9, compact case"
       lean: "Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le"
       module: "Discretization.KieferWolfowitz.PointCount"
       status: "proved"
       note: >-
         The sharp constant m for continuous functions on a compact domain, with at
-        most 2m^2 + 1 points.
+        most 2m² + 1 points.
 
 acknowledgements: >-
   Built on Mathlib. The Challenge module reproduces the definition

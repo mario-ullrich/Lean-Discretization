@@ -21,7 +21,8 @@ and the one weighted sum is squeezed between them:
 
 `(1 - r)² • 1 ≤ ∑ wᵢ a(xᵢ) a(xᵢ)* ≤ (1 + r)² • 1`.
 
-For `n = d·m` the ratio of the two constants is `((√d + 1)/(√d - 1))²`, which is the
+The original theorem has `√(m/n)` in place of `r`, so this is a slight improvement, and
+for `n = d·m` the ratio of the two constants is at most `((√d + 1)/(√d - 1))²`, the
 condition number of the original theorem.  Taking `μ` the counting measure on a finite set
 gives the statement for finitely many vectors that Batson, Spielman and Srivastava prove.
 

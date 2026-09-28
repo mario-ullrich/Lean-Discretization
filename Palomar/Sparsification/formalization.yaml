@@ -6,20 +6,20 @@ project:
   name: "A generalized sparsification theorem of Batson, Spielman and Srivastava type"
   description: >-
     Given two families of square-integrable functions on a measure space, a finite
-    one a = (a_k) with m elements and a second one b, one can select n points and
-    positive weights, for every n >= m, so that the first family stays a frame from
+    one a = (aₖ) with m elements and a second one b, one can select n points and
+    positive weights, for every n ≥ m, so that the first family stays a frame from
     below and the second stays a frame from above, with the constants
-    (1 - sqrt((m-1)/n))^2 and (1 + sqrt((M-1)/n))^2 * Lambda. Here Lambda bounds the
-    Gram matrix J of the second family and M = Tr J / Lambda is its effective
-    dimension. What the number of points depends on is M, not the number of functions
-    in the second family, which is what makes the theorem applicable to infinite
-    families and to reproducing kernel Hilbert spaces, and why its constants beat
-    those obtainable from the theorem of Kadison and Singer. For a = b with both Gram
-    matrices the identity, M equals m and the statement is the sparsification theorem
-    of Batson, Spielman and Srivastava. Formalized in two forms, as an inequality
+    (1 − √((m−1)/n))² and (1 + √((M−1)/n))² Λ. Here Λ bounds the Gram matrix J of the
+    second family and M = Tr J / Λ is its effective dimension. What the number of
+    points depends on is M, not the number of functions in the second family, which
+    is what makes the theorem applicable to infinite families and to reproducing
+    kernel Hilbert spaces, and why its constants beat those obtainable from the
+    theorem of Kadison and Singer. For a = b with both Gram matrices the identity,
+    M equals m and the statement is the sparsification theorem of Batson, Spielman
+    and Srivastava with m − 1 in place of m. Formalized in two forms, as an inequality
     between matrices in the Loewner order and as a discretization inequality for the
-    L_2 norm, and each for a finite and for a countably infinite second family. There
-    is no side condition beyond n >= m.
+    L₂ norm, and each for a finite and for a countably infinite second family. There
+    is no side condition beyond n ≥ m.
   authors:
     - "Mario Ullrich"
   license: "Apache-2.0"
@@ -60,9 +60,9 @@ sources:
     location: "https://doi.org/10.1137/130949117"
     relationship: "background"
     note: >-
-      SIAM Review 56 (2014), no. 2, 315-334. The original potential-function
+      SIAM Review 56 (2014), no. 2, 315–334. The original potential-function
       argument, which is the case a = b with both Gram matrices the identity and
-      M = m.
+      M = m, with the constants (1 ∓ √(m/n))².
 
 related_formalizations: []
 
@@ -73,17 +73,17 @@ status:
     countably infinite second family, together with the discretization inequalities
     Discretization.exists_discretization and
     Discretization.Infinite.exists_discretization. None of the four carries a side
-    condition beyond n >= m.
+    condition beyond n ≥ m.
 
     Proved in the repository but not advertised here: the potential argument under
-    the two side conditions m >= 2 and M >= 1 + 1/n
+    the two side conditions m ≥ 2 and M ≥ 1 + 1/n
     (bss_generalized_of_gram_eq_one), the three edge cases that remove them
     (bss_generalized_of_unique, bss_generalized_of_small_dim,
     bss_generalized_of_unique_of_small_dim), each in a finite and in a countable
     version.
 
     Not formalized: the construction of the Gram operator from a reproducing kernel,
-    that is the singular value decomposition of the embedding into L_2; sampling
+    that is the singular value decomposition of the embedding into L₂; sampling
     projections in the uniform norm; least-squares recovery and sampling numbers.
   sorry_count: 0
   sorry_in_definitions: 0
@@ -120,18 +120,18 @@ automation:
 
 fidelity:
   divergences: >-
-    The lower frame bound of the source is stated with the factor lambda_min(I) for
-    the Gram matrix I of the first family; the formalization states the equivalent
-    Loewner inequality (1 - sqrt((m-1)/n))^2 * I <= sum_i w_i a(x_i) a(x_i)^*, from
-    which the eigenvalue form follows.
+    The lower frame bound of the source is stated with the factor λ_min(I) for the
+    Gram matrix I of the first family; the formalization states the equivalent
+    Loewner inequality (1 − √((m−1)/n))² I ≼ ∑ᵢ wᵢ a(xᵢ) a(xᵢ)*, from which the
+    eigenvalue form follows.
 
     Traces of the matrices involved are real, and the formalization takes real parts
     explicitly with RCLike.re wherever a real number is needed.
 
-    For a countably infinite second family the source works with a family (b_k)
+    For a countably infinite second family the source works with a family (bₖ)
     indexed by a countable set. The formalization instead takes a single
     square-integrable map b into a Hilbert space H together with a given operator J
-    tied to it by the Gram identity Re <u, J u> = integral |<u, b x>|^2 dmu, which is
+    tied to it by the Gram identity Re ⟨u, J u⟩ = ∫ |⟨u, b(x)⟩|² dμ(x), which is
     what the averaging step consumes and which avoids constructing J as a Bochner
     integral in the operator algebra. Since Mathlib has no trace-class theory, the
     trace is taken along a fixed Hilbert basis e of H (ContinuousLinearMap.traceAlong),
@@ -158,7 +158,7 @@ alignment:
       status: "proved"
       note: >-
         The frame bounds with the lower one against the Gram matrix of the first
-        family, for a finite second family, with no side condition beyond n >= m.
+        family, for a finite second family, with no side condition beyond n ≥ m.
     - source: "Constructive discretization and approximation in RKHS, Corollary 4, finite second family"
       lean: "Discretization.exists_discretization"
       module: "Discretization.NormDiscretization"
