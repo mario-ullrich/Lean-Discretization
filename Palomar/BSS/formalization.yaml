@@ -11,11 +11,12 @@ project:
     (1 − √((m−1)/n))² I ≼ ∑ᵢ wᵢ a(xᵢ) a(xᵢ)* ≼ (1 + √((m−1)/n))² I
     in the Loewner order. Read through quadratic forms, the weighted sum
     ∑ᵢ wᵢ |f(xᵢ)|² stays within those two factors of ∫ |f|² dμ for every f in the span.
-    This slightly improves the original theorem, whose constants are (1 ∓ √(m/n))²,
-    so for n = d·m the ratio of the two constants is at most ((√d + 1)/(√d − 1))²,
-    the condition number of the original theorem. The counting measure on a finite set
-    gives the statement for finitely many vectors: a reweighted subset of n of them is
-    a spectral sparsifier of their sum.
+    The original theorem of Batson, Spielman and Srivastava has the constants
+    (1 ∓ √(m/n))², so for n = d·m the ratio of the upper to the lower constant, the
+    condition number, is ((√d + 1)/(√d − 1))². With m − 1 in place of m, following
+    Chkifa, Dolbeault, Krieg and Ullrich, the statement here is slightly stronger. The
+    counting measure on a finite set gives the statement for finitely many vectors: a
+    reweighted subset of n of them is a spectral sparsifier of their sum.
   authors:
     - "Mario Ullrich"
   license: "Apache-2.0"

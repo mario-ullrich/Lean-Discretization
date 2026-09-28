@@ -30,11 +30,13 @@ in the **Loewner order** `A ≼ B ↔ (B - A)` positive semidefinite. Written fo
 the same statement says that `∑ᵢ wᵢ |f(xᵢ)|²` stays within those two factors of
 `∫ |f|² dμ` for every `f` in the span.
 
-The original theorem has `√(m/n)` in place of `√((m-1)/n)`, so this is a slight
-improvement, and for `n = d·m` the ratio of the two constants is at most
-`((√d + 1)/(√d - 1))²`, the condition number of the original theorem. Taking `μ` the counting measure on a finite set gives the
-statement for finitely many vectors that Batson, Spielman and Srivastava prove: a
-reweighted subset of `n` of the vectors is a spectral sparsifier of their sum.
+The original theorem of Batson, Spielman and Srivastava has `√(m/n)` in place of
+`√((m-1)/n)`, so for `n = d·m` the ratio of the upper to the lower constant, the condition
+number, is `((√d + 1)/(√d - 1))²`. With `m - 1` in place of `m`, following Chkifa,
+Dolbeault, Krieg and Ullrich, the statement here is slightly stronger. Taking `μ` the
+counting measure on a finite set gives the statement for finitely many vectors that Batson,
+Spielman and Srivastava prove: a reweighted subset of `n` of the vectors is a spectral
+sparsifier of their sum.
 
 The formalisation states this over an arbitrary measure space, which covers both the
 finite case and families indexed by a continuum.

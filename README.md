@@ -63,8 +63,9 @@ in the Loewner order, with no side condition
 * **The special case `a = b`** is the sparsification theorem of Batson, Spielman and
   Srivastava (`Discretization.bss`): one family with Gram matrix the identity, squeezed
   between `(1 - √((m-1)/n))² • 1` and `(1 + √((m-1)/n))² • 1`. The original theorem has
-  `m` in place of `m - 1`, so for `n = d·m` the ratio of the two constants is at most
-  `((√d + 1)/(√d - 1))²`.
+  `m` in place of `m - 1`, so for `n = d·m` the ratio of the upper to the lower
+  constant, the condition number, is `((√d + 1)/(√d - 1))²`. The version here, from
+  Chkifa, Dolbeault, Krieg and Ullrich, is slightly stronger.
 
 * **The potential argument** gives the theorem under the two side conditions `m ≥ 2`
   and `M ≥ 1 + 1/n` (`Discretization.bss_generalized_of_gram_eq_one`). Three further
