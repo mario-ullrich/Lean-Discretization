@@ -16,7 +16,7 @@ public import Mathlib.MeasureTheory.Function.L2Space
 This module is the *Challenge* of a Palomar submission: the small, auditable surface
 carrying the advertised statements. It imports nothing beyond Mathlib, so every notion it
 uses is either standard or written out here. The proofs live in
-`Palomar.Sparsification.Solution`, which supplies them from the development in
+`Palomar.Discretization.Solution`, which supplies them from the development in
 `Discretization/`; the `sorry`s below are the placeholders required by that format.
 
 ## The mathematics

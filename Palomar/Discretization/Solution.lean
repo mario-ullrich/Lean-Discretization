@@ -15,7 +15,7 @@ public import Discretization.Infinite.NormDiscretization
 
 This module is the *Solution* of a Palomar submission. Comparator checks that every
 declaration named in `comparator.json` has, in this module's environment, exactly the same
-name and type as its counterpart in `Palomar.Sparsification.Challenge`, and that it uses no
+name and type as its counterpart in `Palomar.Discretization.Challenge`, and that it uses no
 axioms beyond `propext`, `Classical.choice` and `Quot.sound`.
 
 Nothing is declared here. The advertised statements

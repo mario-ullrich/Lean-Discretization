@@ -54,7 +54,7 @@ sources:
       The proof followed, and the source of the constants √((m−1)/n) in place of
       √(m/n). The paper states the theorem over a measure space and for two families
       at once, with the upper bound in terms of the effective dimension of the second;
-      that form is a separate submission (Palomar/Sparsification).
+      that form is a separate submission (Palomar/Discretization).
     author_endorsement: "participated"
 
 related_formalizations: []

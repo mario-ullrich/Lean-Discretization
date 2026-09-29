@@ -1,6 +1,6 @@
 {
-  "challenge_module": "Palomar.Sparsification.Challenge",
-  "solution_module": "Palomar.Sparsification.Solution",
+  "challenge_module": "Palomar.Discretization.Challenge",
+  "solution_module": "Palomar.Discretization.Solution",
   "theorem_names": [
     "Discretization.bss_generalized",
     "Discretization.exists_discretization",
