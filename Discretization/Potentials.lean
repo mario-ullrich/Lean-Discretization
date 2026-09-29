@@ -5,7 +5,7 @@ Authors: Mario Ullrich
 -/
 module
 
-public import BasicResults.TraceInequalities
+public import BasicResults.Matrix.TraceInequalities
 
 /-!
 # Potentials
@@ -24,12 +24,13 @@ Both shifts move the potentials in the unfavourable direction, and the exact amo
 computed here:
 
 * `Discretization.lowerPotential_sub_eq`: `Φ(A - δ • 1) - Φ(A) = δ · Re Tr ((A - δ • 1)⁻¹ A⁻¹)`,
-* `Discretization.upperPotential_sub_eq`: `Ψ_J(B) - Ψ_J(B + ζ • J) = ζ · Re Tr (J B⁻¹ J (B + ζ • J)⁻¹)`.
+* `Discretization.upperPotential_sub_eq`:
+  `Ψ_J(B) - Ψ_J(B + ζ • J) = ζ · Re Tr (J B⁻¹ J (B + ζ • J)⁻¹)`.
 
 Both right-hand sides are positive, so shrinking increases the lower potential and growing
 decreases the upper one; the gap this opens is what a new sampling point is allowed to
 consume.  Both identities come from the resolvent identities of
-`BasicResults.LoewnerOrder`, and the sign from the positivity of the trace of a product of
+`BasicResults.Matrix.LoewnerOrder`, and the sign from the positivity of the trace of a product of
 positive definite matrices (`Matrix.PosDef.re_trace_mul_pos`).
 -/
 

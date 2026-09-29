@@ -5,7 +5,7 @@ Authors: Mario Ullrich
 -/
 module
 
-public import Discretization.BothEdgeCases
+public import Discretization.EdgeCases.BothEdgeCases
 public import Discretization.Infinite.Averages
 public import Discretization.Infinite.Bounds
 

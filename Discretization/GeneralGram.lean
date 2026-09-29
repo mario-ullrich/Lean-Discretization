@@ -5,7 +5,7 @@ Authors: Mario Ullrich
 -/
 module
 
-public import Discretization.BothEdgeCases
+public import Discretization.EdgeCases.BothEdgeCases
 
 /-!
 # Removing the normalisation of the first family
@@ -25,8 +25,8 @@ Mathlib's `conjugate_le_conjugate_of_nonneg`.
 The reduction never looks at the second family, so it is stated once for an arbitrary
 conclusion about it, as `Discretization.bss_of_gram_eq_one`.  Both
 `Discretization.bss_generalized` and `Discretization.Infinite.bss_generalized_of_hilbertBasis`
-are instances of it, the first with an upper frame bound between matrices and the second with one between
-operators.
+are instances of it, the first with an upper frame bound between matrices and the second
+with one between operators.
 
 The result is `Discretization.bss_generalized`, with lower frame bound
 `(1 - √((m-1)/n))² • I`.  In eigenvalue form this is the factor `λ_min(I)` of the paper.

@@ -5,7 +5,7 @@ Authors: Mario Ullrich
 -/
 module
 
-public import BasicResults.LoewnerOrder
+public import BasicResults.Matrix.LoewnerOrder
 public import Mathlib.Analysis.InnerProductSpace.Positive
 
 /-!

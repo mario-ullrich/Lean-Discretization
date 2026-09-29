@@ -5,7 +5,7 @@ kept here only because the discretization argument needs it. Everything is state
 over a general `RCLike` field wherever the C⋆-algebra structure is not needed.
 Grouped by topic, with the main declarations:
 
-* **Traces of products of positive matrices** (`BasicResults/TraceInequalities.lean`):
+* **Traces of products of positive matrices** (`BasicResults/Matrix/TraceInequalities.lean`):
   the trace of a product of positive semidefinite matrices is nonnegative
   (`Matrix.PosSemidef.trace_mul_nonneg`) and positive when one factor is positive
   definite and the other nonzero (`Matrix.PosDef.re_trace_mul_pos`); Cauchy–Schwarz
@@ -15,7 +15,7 @@ Grouped by topic, with the main declarations:
   nonnegative scalar (`Matrix.IsHermitian.ofReal_re_trace`, `.ofReal_re_trace_mul`,
   `RCLike.ofReal_re_of_nonneg`).
 * **The Loewner order against multiples of the identity**
-  (`BasicResults/LoewnerOrder.lean`): `A ≼ (Tr A) • 1` for `A ≽ 0`
+  (`BasicResults/Matrix/LoewnerOrder.lean`): `A ≼ (Tr A) • 1` for `A ≽ 0`
   (`Matrix.PosSemidef.le_trace_smul_one`), the same from a bound on the eigenvalues
   (`Matrix.IsHermitian.le_smul_one`), antitonicity of the inverse packaged for
   matrices (`Matrix.PosDef.inv_le_inv_of_le`), and conjugation by a Hermitian matrix
@@ -25,15 +25,15 @@ Grouped by topic, with the main declarations:
 * **Conjugation by a square root** (`BasicResults/SqrtConjugation.lean`): in a
   C⋆-algebra, a bound on the conjugate of `X` by the inverse square root of `B` is a
   bound on `X` itself (`CStarAlgebra.inv_smul_le_of_conj_inv_sqrt_le`).
-* **Sherman–Morrison** (`BasicResults/ShermanMorrison.lean`,
-  `BasicResults/OperatorShermanMorrison.lean`): the inverse and the trace of a
+* **Sherman–Morrison** (`BasicResults/Matrix/ShermanMorrison.lean`,
+  `BasicResults/Operator/ShermanMorrison.lean`): the inverse and the trace of a
   rank-one update written with `Matrix.vecMulVec` (`Matrix.inv_add_smul_vecMulVec`,
   `Matrix.trace_inv_add_smul_vecMulVec`, and the real-weight forms
   `Matrix.PosDef.inv_add_smul_vecMulVec`, `.inv_sub_smul_vecMulVec`), where Mathlib
   has only the block form `Matrix.add_mul_mul_inv_eq_sub`; the same for operators
   (`ContinuousLinearMap.inverse_add_smul_rankOne`), which Mathlib has in no form; and
   `Ring.inverse_eq_of_mul_eq_one`, the converse of the two cancellation laws.
-* **The trace of an operator** (`BasicResults/OperatorTrace.lean`): Mathlib has no
+* **The trace of an operator** (`BasicResults/Operator/Trace.lean`): Mathlib has no
   trace outside finite dimension. `ContinuousLinearMap.traceAlong` defines it along a
   fixed Hilbert basis, and the invariance of the Hilbert–Schmidt sum under adjoints
   (`.tsum_norm_sq_adjoint`), the cyclicity `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫`
@@ -44,7 +44,7 @@ Grouped by topic, with the main declarations:
   are general facts, and so is the countability of every Hilbert basis of a separable
   space (`HilbertBasis.countable_of_separableSpace`), which Mathlib also lacks.
 * **Averages of quadratic forms** (`BasicResults/IntegralQuadraticForm.lean`,
-  `BasicResults/OperatorQuadraticForm.lean`): the average of a quadratic form along a
+  `BasicResults/Operator/QuadraticForm.lean`): the average of a quadratic form along a
   square-integrable family is a trace against its Gram matrix
   (`Discretization.integral_quadForm`), and against its Gram operator in infinite
   dimension (`ContinuousLinearMap.integral_re_inner_apply`). The operator file also
@@ -55,7 +55,7 @@ Grouped by topic, with the main declarations:
   `u u* ≼ ‖u‖² • 1` (`.rankOne_le_norm_sq_smul_one`) follows over `ℂ` from
   `IsSelfAdjoint.le_algebraMap_norm_self`; what Mathlib lacks is the version over a general
   `RCLike` field, where the C⋆-algebra instance is unavailable.
-* **Rank-one updates of a determinant** (`BasicResults/RankOneDeterminant.lean`): the
+* **Rank-one updates of a determinant** (`BasicResults/Matrix/RankOneDeterminant.lean`): the
   matrix determinant lemma in terms of `Matrix.vecMulVec`
   (`Matrix.det_add_vecMulVec`), where Mathlib has it only for a product of a column
   and a row (`Matrix.det_add_replicateCol_mul_replicateRow`); the exact value of
@@ -71,7 +71,7 @@ Grouped by topic, with the main declarations:
   compactness only of the closure. The proof needs no norm, only continuity of the
   vector space operations, which is what lets it apply to spaces such as
   `Matrix ι ι ℂ`, whose norms are all scoped.
-* **Quadratic forms and sums of squares** (`BasicResults/QuadraticForm.lean`): the
+* **Quadratic forms and sums of squares** (`BasicResults/Matrix/QuadraticForm.lean`): the
   quadratic form of a weighted sum of rank-one matrices is the corresponding weighted
   sum of squared moduli (`Discretization.re_dotProduct_sum_mulVec`), and the quadratic
   form is monotone for the Loewner order (`Discretization.re_quadForm_le_of_le`).

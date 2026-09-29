@@ -13,7 +13,7 @@ public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 
 The construction of sampling points changes the operator of the upper bound by a rank-one
 operator at a time, so the whole argument rests on knowing how the inverse reacts.  This
-file is the operator counterpart of `BasicResults.ShermanMorrison`.
+file is the operator counterpart of `BasicResults.Matrix.ShermanMorrison`.
 
 Two notations differ from the matrix case.  The rank-one operator `u u*` is Mathlib's
 `InnerProductSpace.rankOne ℂ u u`, which sends `z` to `⟪u, z⟫ • u`.  The inverse is

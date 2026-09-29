@@ -13,10 +13,10 @@ public import Discretization.Averages
 public import Discretization.UpperBarrier
 public import Discretization.Iteration
 public import Discretization.MainTheorem
+public import Discretization.EdgeCases.CardOne
+public import Discretization.EdgeCases.SmallEffectiveDim
+public import Discretization.EdgeCases.BothEdgeCases
 public import Discretization.GeneralGram
-public import Discretization.CardOne
-public import Discretization.SmallEffectiveDim
-public import Discretization.BothEdgeCases
 public import Discretization.NormDiscretization
 public import Discretization.BSS
 public import Discretization.Infinite.Potentials
@@ -55,9 +55,9 @@ family to be countably infinite.
 The argument is the potential-function argument of Batson–Spielman–Srivastava in the form
 given by Chkifa, Dolbeault, Krieg and Ullrich.  Two matrices are carried along, a small one
 for the lower bound and a large one for the upper bound; for a countable second family the
-large one is an operator, and the two cases share everything but its analysis.  Two real numbers, the potentials,
-measure how close they are to failure.  Each new sampling point is chosen so that neither
-potential gets worse.
+large one is an operator, and the two cases share everything but its analysis.  Two real
+numbers, the potentials, measure how close they are to failure.  Each new sampling point is
+chosen so that neither potential gets worse.
 
 The second is the theorem of Kiefer and Wolfowitz in the form needed for sampling
 projections: on an `m`-dimensional space of bounded functions on an arbitrary set, and for
@@ -68,6 +68,11 @@ determinant, and the whole argument consists of comparing that determinant with 
 determinants obtained by giving one further point a small weight.
 
 ## Layout
+
+The finite theory lies at the top level, with its three edge cases in
+`Discretization/EdgeCases/`; `Discretization/Infinite/` holds the analysis of the upper
+state for a countably infinite second family and the theorems for it, and
+`Discretization/KieferWolfowitz/` the second theorem.
 
 * `Discretization.Parameters`: the arithmetic of the four parameters `r`, `s`, `δ`, `ζ`
   that drive the construction.
@@ -85,20 +90,20 @@ determinants obtained by giving one further point a small weight.
 * `Discretization.MainTheorem`: the initial data, the read-off of the frame bounds, and the
   theorem itself, for every upper barrier and for finite families,
   `Discretization.bss_generalized_of_gram_eq_one`.
+* `Discretization.EdgeCases.CardOne`: the edge case of a one-element first family, where
+  the lower verifier becomes a constant, `Discretization.bss_generalized_of_unique`.
+* `Discretization.EdgeCases.SmallEffectiveDim`: the edge case of an effective dimension
+  below `1 + 1/n`, where the upper verifier becomes a constant,
+  `Discretization.bss_generalized_of_small_dim`.
+* `Discretization.EdgeCases.BothEdgeCases`: the two edge cases at the same time, where both
+  verifiers are constants and a single point suffices,
+  `Discretization.bss_generalized_of_unique_of_small_dim`.
 * `Discretization.GeneralGram`: removing the normalisation of the first family, which gives
   the theorem in the form of the paper, `Discretization.bss_generalized`.
 * `Discretization.NormDiscretization`: the same statement read as a discretization
   inequality for the `L₂`-norm, `Discretization.exists_discretization`.
 * `Discretization.BSS`: the case of a single family, which is the sparsification theorem
   of Batson, Spielman and Srivastava, `Discretization.bss`.
-* `Discretization.CardOne`: the edge case of a one-element first family, where the lower
-  verifier becomes a constant, `Discretization.bss_generalized_of_unique`.
-* `Discretization.SmallEffectiveDim`: the edge case of an effective dimension below
-  `1 + 1/n`, where the upper verifier becomes a constant,
-  `Discretization.bss_generalized_of_small_dim`.
-* `Discretization.BothEdgeCases`: the two edge cases at the same time, where both verifiers
-  are constants and a single point suffices,
-  `Discretization.bss_generalized_of_unique_of_small_dim`.
 * `Discretization.Infinite.Potentials`: the upper potential `Ψ_J(B) = Tr (J B⁻¹)` for a
   positive operator `J` of finite trace, where the second family is indexed by a countable
   set.

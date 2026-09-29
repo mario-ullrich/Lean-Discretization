@@ -5,8 +5,8 @@ Authors: Mario Ullrich
 -/
 module
 
-public import BasicResults.QuadraticForm
-public import BasicResults.RankOneDeterminant
+public import BasicResults.Matrix.QuadraticForm
+public import BasicResults.Matrix.RankOneDeterminant
 
 /-!
 # Designs and their Gram matrices

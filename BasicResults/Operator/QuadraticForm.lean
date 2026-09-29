@@ -5,7 +5,7 @@ Authors: Mario Ullrich
 -/
 module
 
-public import BasicResults.OperatorTrace
+public import BasicResults.Operator.Trace
 public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Order
 public import Mathlib.MeasureTheory.Function.L2Space
 public import Mathlib.MeasureTheory.Integral.DominatedConvergence
@@ -40,7 +40,7 @@ countable index.
 A first section collects the dictionary between an operator and the function it defines on
 `H`, with no measure in sight: the quadratic form of a rank-one operator, of a weighted sum
 of them, its monotonicity for the operator order, and the crude bound `u u* ≼ ‖u‖² • 1`.
-This is the operator counterpart of `BasicResults.QuadraticForm`.
+This is the operator counterpart of `BasicResults.Matrix.QuadraticForm`.
 -/
 
 @[expose] public section

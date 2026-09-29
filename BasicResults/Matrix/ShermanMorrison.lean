@@ -5,7 +5,7 @@ Authors: Mario Ullrich
 -/
 module
 
-public import BasicResults.LoewnerOrder
+public import BasicResults.Matrix.LoewnerOrder
 
 /-!
 # Rank-one updates: the Sherman–Morrison formula

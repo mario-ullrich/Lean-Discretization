@@ -5,7 +5,7 @@ Authors: Mario Ullrich
 -/
 module
 
-public import BasicResults.OperatorQuadraticForm
+public import BasicResults.Operator.QuadraticForm
 public import Discretization.Averages
 public import Discretization.Infinite.Barrier
 

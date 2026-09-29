@@ -6,7 +6,7 @@ Authors: Mario Ullrich
 module
 
 public import BasicResults.SqrtConjugation
-public import BasicResults.TraceInequalities
+public import BasicResults.Matrix.TraceInequalities
 
 /-!
 # Lower bounds by the reciprocal of a potential
@@ -18,7 +18,7 @@ quantities
 * `Ψ(B) = Re Tr (J B⁻¹)`, the **upper potential** relative to a positive definite `J`.
 
 Their whole point is that a bound on the potential is a bound on the matrix:
-`Φ(A)⁻¹ • 1 ≤ A` (`Matrix.PosDef.inv_re_trace_smul_one_le` in `BasicResults.LoewnerOrder`)
+`Φ(A)⁻¹ • 1 ≤ A` (`Matrix.PosDef.inv_re_trace_smul_one_le` in `BasicResults.Matrix.LoewnerOrder`)
 and `Ψ(B)⁻¹ • J ≤ B`, proved here as `Matrix.PosDef.inv_re_trace_mul_smul_le`.
 
 The `J`-weighted statement is the one that makes the upper frame bound of the main theorem

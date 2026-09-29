@@ -5,7 +5,7 @@ Authors: Mario Ullrich
 -/
 module
 
-public import BasicResults.PotentialBounds
+public import BasicResults.Matrix.PotentialBounds
 public import Discretization.Averages
 
 /-!

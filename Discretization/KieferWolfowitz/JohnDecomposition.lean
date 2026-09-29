@@ -5,7 +5,7 @@ Authors: Mario Ullrich
 -/
 module
 
-public import BasicResults.TraceInequalities
+public import BasicResults.Matrix.TraceInequalities
 public import Discretization.KieferWolfowitz.Compact
 
 /-!

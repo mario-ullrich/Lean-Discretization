@@ -5,7 +5,7 @@ Authors: Mario Ullrich
 -/
 module
 
-public import BasicResults.ShermanMorrison
+public import BasicResults.Matrix.ShermanMorrison
 public import Mathlib.LinearAlgebra.Matrix.SchurComplement
 
 /-!

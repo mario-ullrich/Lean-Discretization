@@ -21,8 +21,8 @@ identity, and `b : Ω → κ → ℂ` one whose Gram matrix is `J`.  Then
 * `Discretization.integral_upperVerifier_lt`: `∫ upperVerifier J B ζ (b x) dμ < 1/ζ + Ψ_J(B)`.
 
 So as soon as `1/δ - Φ(A) ≥ 1/ζ + Ψ_J(B)`, the lower verifier exceeds the upper one on
-average, hence at some point `x` (`Discretization.UpperBarrier.exists_admissible_point`).  Any weight `w`
-between the two reciprocals is then admissible for both barriers.
+average, hence at some point `x` (`Discretization.UpperBarrier.exists_admissible_point`).
+Any weight `w` between the two reciprocals is then admissible for both barriers.
 
 The averages are computed with `Discretization.integral_re_quadForm`, which turns the
 average of a quadratic form into a trace against the Gram matrix.  The estimate of the lower

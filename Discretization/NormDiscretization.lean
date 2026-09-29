@@ -5,8 +5,8 @@ Authors: Mario Ullrich
 -/
 module
 
-public import BasicResults.QuadraticForm
-public import Discretization.BothEdgeCases
+public import BasicResults.Matrix.QuadraticForm
+public import Discretization.EdgeCases.BothEdgeCases
 
 /-!
 # The discretization inequality
@@ -24,7 +24,7 @@ The dictionary is elementary.  A coefficient vector `c` gives the function
 * `c* A c ≤ c* B c` whenever `A ≤ B` in the Loewner order
   (`Discretization.re_quadForm_le_of_le`),
 
-both from `BasicResults.QuadraticForm`, together with the one fact of this kind that does
+both from `BasicResults.Matrix.QuadraticForm`, together with the one fact of this kind that does
 involve the measure, `∫ |f|² dμ = c* (gram a μ) c`
 (`Discretization.integral_norm_sq_combination`, proved below).
 

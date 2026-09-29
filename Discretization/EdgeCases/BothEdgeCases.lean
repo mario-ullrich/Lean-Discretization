@@ -5,8 +5,8 @@ Authors: Mario Ullrich
 -/
 module
 
-public import Discretization.CardOne
-public import Discretization.SmallEffectiveDim
+public import Discretization.EdgeCases.CardOne
+public import Discretization.EdgeCases.SmallEffectiveDim
 
 /-!
 # A single function and a small effective dimension

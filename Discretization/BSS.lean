@@ -5,7 +5,7 @@ Authors: Mario Ullrich
 -/
 module
 
-public import Discretization.BothEdgeCases
+public import Discretization.EdgeCases.BothEdgeCases
 
 /-!
 # The sparsification theorem of Batson, Spielman and Srivastava
