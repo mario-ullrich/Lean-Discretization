@@ -76,11 +76,16 @@ in the Loewner order, with no side condition
 * **Without the normalisation** of the first family, the lower bound reads
   `(1 - √((m-1)/n))² • I` with `I = ∫ a a* dμ` (`Discretization.bss_generalized`); in
   eigenvalue form that is the factor `λ_min(I)` of the paper.
-* **A countably infinite second family.** Then `b` maps into a Hilbert space, its Gram
-  operator `J` is positive, injective and of finite trace, and the same two bounds hold
-  with the second one in the order of operators, again with no side condition
-  (`Discretization.Infinite.bss_generalized`). Underneath it are the same four cases as in
-  finite dimension: the potential argument
+* **A countably infinite second family**, in the form of the paper. Let
+  `b = (b_k)_{k ∈ κ}` be square-integrable functions indexed by a countable set with
+  `∑_k ‖b_k‖²_{L₂} < ∞`, whose Gram matrix `J = (∫ b_k b̄_l dμ)` is injective on `ℓ²(κ)`
+  and bounded by `Λ • 1`, and put `M = ∑_k ‖b_k‖² / Λ`. Then the same two bounds hold,
+  the second one as `∑ wᵢ |∑_k c̄_k b_k(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖c‖²` for every
+  `c ∈ ℓ²(κ)`, again with no side condition (`Discretization.Family.bss_generalized`).
+  Nothing pointwise is assumed: `∑_k |b_k(x)|² < ∞` holds almost everywhere, and the
+  points are chosen where it holds. The proof passes through the form for a
+  Hilbert-space-valued `b` with its Gram operator (`Discretization.Infinite.bss_generalized`),
+  which has the same four cases as in finite dimension underneath: the potential argument
   (`.Infinite.bss_generalized_of_gram_eq_one`) and the three edge cases
   (`.Infinite.bss_generalized_of_unique`, `.Infinite.bss_generalized_of_small_dim`,
   `.Infinite.bss_generalized_of_unique_of_small_dim`). The number of points does not
@@ -88,9 +93,8 @@ in the Loewner order, with no side condition
 * **The discretization inequality.** For every `f` in the span of the first family,
   `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²`, and the weighted sum of every `g` in
   the span of the second family is at most `(1 + √((M-1)/n))² Λ ‖c‖²` in its
-  coefficients `c` (`Discretization.exists_discretization`,
-  `.Infinite.exists_discretization`, the second with a vector of the Hilbert space in
-  place of `c`). This is Corollary 4 of the paper, in both cases without a side condition;
+  coefficients `c` (`Discretization.exists_discretization`, and for a countable family
+  `Discretization.Family.exists_discretization`, with `c ∈ ℓ²(κ)`). This is Corollary 4 of the paper, in both cases without a side condition;
   with `b` the singular basis of the embedding of a reproducing kernel Hilbert space into
   `L₂`, the coefficient norm is the norm of that space.
 

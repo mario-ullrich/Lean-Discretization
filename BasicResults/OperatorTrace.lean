@@ -20,9 +20,10 @@ bounded operator is the sum
 `traceAlong e T = ∑' k, Re ⟪e k, T (e k)⟫`,
 
 with the convention of `tsum`, so that the definition makes sense for every `T` and carries
-information exactly when the family is summable.  No basis independence is proved, and none
-is needed: every statement below fixes one basis, and in the application the basis is the
-standard basis of `ℓ₂`.
+information exactly when the family is summable.  For a positive operator neither the value
+nor the finiteness depends on the basis (`ContinuousLinearMap.traceAlong_eq_of_basis`,
+`ContinuousLinearMap.summable_re_inner_iff_of_basis`), so the basis in the notation only
+records how the trace is computed.
 
 For a **positive** operator the sum is a sum of nonnegative terms, because
 
@@ -215,6 +216,78 @@ theorem tsum_norm_sq_adjoint (e : HilbertBasis κ ℂ H) (S : H →L[ℂ] H)
   rw [ENNReal.ofReal_tsum_of_nonneg (fun k => by positivity) h',
     ENNReal.ofReal_tsum_of_nonneg (fun k => by positivity) h,
     ← tsum_ofReal_norm_sq_adjoint e S]
+
+/-! ### Independence of the basis
+
+The two-basis form of the Hilbert–Schmidt identity: expanding `‖S eₖ‖²` by Parseval along a
+second basis `e'` and interchanging the two sums turns the Hilbert–Schmidt sum of `S` along
+`e` into that of `S*` along `e'`.  For a positive operator, applied to its square root, this
+says that the trace does not depend on the basis. -/
+
+/-- **The Hilbert–Schmidt sum of an operator along one basis equals that of its adjoint along
+any other basis**, as an identity in `ℝ≥0∞`.  The two bases may have different index sets. -/
+theorem tsum_ofReal_norm_sq_adjoint_of_basis {κ' : Type*} (e : HilbertBasis κ ℂ H)
+    (e' : HilbertBasis κ' ℂ H) (S : H →L[ℂ] H) :
+    ∑' k, ENNReal.ofReal (‖S (e k)‖ ^ 2)
+      = ∑' j, ENNReal.ofReal (‖ContinuousLinearMap.adjoint S (e' j)‖ ^ 2) := by
+  calc ∑' k, ENNReal.ofReal (‖S (e k)‖ ^ 2)
+      = ∑' k, ∑' j, ENNReal.ofReal (‖⟪e' j, S (e k)⟫_ℂ‖ ^ 2) :=
+        tsum_congr fun k => (tsum_ofReal_norm_sq_inner e' (S (e k))).symm
+    _ = ∑' j, ∑' k, ENNReal.ofReal (‖⟪e' j, S (e k)⟫_ℂ‖ ^ 2) := ENNReal.tsum_comm
+    _ = ∑' j, ∑' k, ENNReal.ofReal (‖⟪e k, ContinuousLinearMap.adjoint S (e' j)⟫_ℂ‖ ^ 2) := by
+        refine tsum_congr fun j => tsum_congr fun k => ?_
+        rw [← ContinuousLinearMap.adjoint_inner_left, norm_inner_symm]
+    _ = ∑' j, ENNReal.ofReal (‖ContinuousLinearMap.adjoint S (e' j)‖ ^ 2) :=
+        tsum_congr fun j => tsum_ofReal_norm_sq_inner e _
+
+/-- **The Hilbert–Schmidt sum of a self-adjoint operator does not depend on the basis**, as
+an identity in `ℝ≥0∞`. -/
+theorem tsum_ofReal_norm_sq_of_isSelfAdjoint {κ' : Type*} (e : HilbertBasis κ ℂ H)
+    (e' : HilbertBasis κ' ℂ H) {S : H →L[ℂ] H} (hS : IsSelfAdjoint S) :
+    ∑' k, ENNReal.ofReal (‖S (e k)‖ ^ 2) = ∑' j, ENNReal.ofReal (‖S (e' j)‖ ^ 2) := by
+  have hadj : ContinuousLinearMap.adjoint S = S := hS.star_eq
+  have h := tsum_ofReal_norm_sq_adjoint_of_basis e e' S
+  rwa [hadj] at h
+
+/-- **Whether a positive operator has finite trace does not depend on the basis.** -/
+theorem summable_re_inner_iff_of_basis {κ' : Type*} (e : HilbertBasis κ ℂ H)
+    (e' : HilbertBasis κ' ℂ H) {T : H →L[ℂ] H} (hT : 0 ≤ T) :
+    (Summable fun k => RCLike.re ⟪e k, T (e k)⟫_ℂ)
+      ↔ Summable fun j => RCLike.re ⟪e' j, T (e' j)⟫_ℂ := by
+  have hsa : IsSelfAdjoint (CFC.sqrt T) := .of_nonneg (CFC.sqrt_nonneg T)
+  have h := tsum_ofReal_norm_sq_of_isSelfAdjoint e e' hsa
+  rw [← summable_norm_sq_sqrt_iff e hT, ← summable_norm_sq_sqrt_iff e' hT]
+  constructor <;> intro hs
+  · refine summable_of_tsum_ofReal_ne_top (fun j => by positivity) ?_
+    rw [← h]
+    exact hs.tsum_ofReal_ne_top
+  · refine summable_of_tsum_ofReal_ne_top (fun k => by positivity) ?_
+    rw [h]
+    exact hs.tsum_ofReal_ne_top
+
+/-- **The trace of a positive operator does not depend on the basis**:
+`traceAlong e T = traceAlong e' T` for any two Hilbert bases, with no summability hypothesis.
+If the trace diverges along one basis it diverges along the other
+(`ContinuousLinearMap.summable_re_inner_iff_of_basis`), and then both sums are `0` by the
+convention of `tsum`. -/
+theorem traceAlong_eq_of_basis {κ' : Type*} (e : HilbertBasis κ ℂ H)
+    (e' : HilbertBasis κ' ℂ H) {T : H →L[ℂ] H} (hT : 0 ≤ T) :
+    traceAlong e T = traceAlong e' T := by
+  by_cases hs : Summable fun k => RCLike.re ⟪e k, T (e k)⟫_ℂ
+  · have hs' := (summable_re_inner_iff_of_basis e e' hT).1 hs
+    have hsa : IsSelfAdjoint (CFC.sqrt T) := .of_nonneg (CFC.sqrt_nonneg T)
+    rw [← summable_norm_sq_sqrt_iff e hT] at hs
+    rw [← summable_norm_sq_sqrt_iff e' hT] at hs'
+    rw [traceAlong_eq_tsum_norm_sq_sqrt e hT, traceAlong_eq_tsum_norm_sq_sqrt e' hT]
+    refine (ENNReal.ofReal_eq_ofReal_iff (tsum_nonneg fun k => by positivity)
+      (tsum_nonneg fun j => by positivity)).1 ?_
+    rw [ENNReal.ofReal_tsum_of_nonneg (fun k => by positivity) hs,
+      ENNReal.ofReal_tsum_of_nonneg (fun j => by positivity) hs']
+    exact tsum_ofReal_norm_sq_of_isSelfAdjoint e e' hsa
+  · have hs' : ¬ Summable fun j => RCLike.re ⟪e' j, T (e' j)⟫_ℂ :=
+      fun h => hs ((summable_re_inner_iff_of_basis e e' hT).2 h)
+    rw [traceAlong, traceAlong, tsum_eq_zero_of_not_summable hs,
+      tsum_eq_zero_of_not_summable hs']
 
 /-! ### Operators with vanishing trace -/
 

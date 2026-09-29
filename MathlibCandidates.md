@@ -37,8 +37,11 @@ Grouped by topic, with the main declarations:
   trace outside finite dimension. `ContinuousLinearMap.traceAlong` defines it along a
   fixed Hilbert basis, and the invariance of the Hilbert–Schmidt sum under adjoints
   (`.tsum_norm_sq_adjoint`), the cyclicity `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫`
-  (`.tsum_inner_apply_comm`) and the bound `T ≼ Tr(T) • 1`
-  (`.le_traceAlong_smul_one`) are general facts.
+  (`.tsum_inner_apply_comm`), the bound `T ≼ Tr(T) • 1` (`.le_traceAlong_smul_one`)
+  and the independence of the basis, for a positive operator of both the finiteness and
+  the value of the trace (`.summable_re_inner_iff_of_basis`, `.traceAlong_eq_of_basis`,
+  from the two-basis Hilbert–Schmidt identity `.tsum_ofReal_norm_sq_adjoint_of_basis`),
+  are general facts.
 * **Averages of quadratic forms** (`BasicResults/IntegralQuadraticForm.lean`,
   `BasicResults/OperatorQuadraticForm.lean`): the average of a quadratic form along a
   square-integrable family is a trace against its Gram matrix

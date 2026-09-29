@@ -4,7 +4,8 @@
 \label{ch:problem}
 
 Let $(\Omega, \mu)$ be a measure space, $\iota$ a finite nonempty index set with
-$m = \#\iota$ elements and $\kappa$ a second finite index set. Two families of
+$m = \#\iota$ elements and $\kappa$ a second index set, finite or countably infinite.
+Two families of
 square-integrable functions on $\Omega$ are given,
 \[
   a = (a_k)_{k \in \iota}, \qquad b = (b_p)_{p \in \kappa},
@@ -56,41 +57,54 @@ coordinate, the \emph{Gram matrix} is
   G(a) = \int_\Omega a(x) a(x)^* \, d\mu(x) \in \mathbb{C}^{\iota \times \iota},
 \]
 the matrix with entries $\int_\Omega a_k \overline{a_l} \, d\mu$; in Lean it is
-\texttt{Discretization.gram}. For a positive definite $J$ and $\Lambda > 0$ with $J \preceq \Lambda \cdot 1$, the
-number $M = \Tr J / \Lambda$ is the \emph{effective dimension} of $J$ relative to
-$\Lambda$. The upper frame bound is stated in it, and it is what makes the theorem
-applicable when the second family is infinite.
+\texttt{Discretization.gram}. The same formula defines the Gram matrix
+$J = (\int_\Omega b_p \overline{b_q} \, d\mu)_{p, q \in \kappa}$ of a countable family
+$b = (b_p)_{p \in \kappa}$; if $\sum_p \|b_p\|_{L_2}^2 < \infty$, it acts on
+$\ell_2(\kappa)$ as a positive operator of trace $\sum_p \|b_p\|_{L_2}^2$. For $\Lambda > 0$
+with $J \preceq \Lambda \cdot 1$, the number $M = \Tr J / \Lambda$ is the \emph{effective
+dimension} of $J$ relative to $\Lambda$. The upper frame bound is stated in it, and it is
+what makes the theorem applicable when the second family is infinite.
 
 \begin{theorem}[Generalized sparsification]
 \label{thm:sparsification}
-\lean{Discretization.bss_generalized, Discretization.bss_generalized_of_gram_eq_one',
+\lean{Discretization.bss_generalized, Discretization.Family.bss_generalized,
+      Discretization.bss_generalized_of_gram_eq_one',
       Discretization.bss_of_gram_eq_one, Discretization.bss_generalized_of_unique,
       Discretization.bss_generalized_of_small_dim,
       Discretization.bss_generalized_of_unique_of_small_dim}
 \leanok
-Let $(\Omega, \mu)$ be a measure space, let $\iota$ and $\kappa$ be finite nonempty sets,
-and let $a : \Omega \to \mathbb{C}^{\iota}$ and $b : \Omega \to \mathbb{C}^{\kappa}$ be
-square-integrable in every coordinate, with Gram matrices
-$I = \int_\Omega a(x) a(x)^* \, d\mu(x)$ and $J = \int_\Omega b(x) b(x)^* \, d\mu(x)$
-positive definite. Let $\Lambda > 0$ satisfy $J \preceq \Lambda \cdot 1$, and put $m = \#\iota$
-and $M = \Tr J / \Lambda$. Then for every $n \geq m$ there are points
-$x_1, \dots, x_n \in \Omega$ and weights $w_1, \dots, w_n > 0$ with
+Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let
+$\kappa$ be a nonempty set that is finite or countably infinite. Let
+$a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in every coordinate with
+$I = \int_\Omega a(x) a(x)^* \, d\mu(x)$ positive definite, and let
+$b = (b_p)_{p \in \kappa}$ be square-integrable functions on $\Omega$ with
+$\sum_p \|b_p\|_{L_2}^2 < \infty$. Let $J$ be their Gram matrix, with entries
+$J_{pq} = \int_\Omega b_p \overline{b_q} \, d\mu$, as an operator on $\ell_2(\kappa)$;
+assume that $J$ is injective, let $\Lambda > 0$ satisfy $J \preceq \Lambda \cdot 1$, and
+put $m = \#\iota$ and $M = \Tr J / \Lambda = \sum_p \|b_p\|_{L_2}^2 / \Lambda$. Then for
+every $n \geq m$ there are points $x_1, \dots, x_n \in \Omega$ with
+$\sum_p |b_p(x_i)|^2 < \infty$ and weights $w_1, \dots, w_n > 0$ with
 \[
   \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot I
     \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
 \]
 and
 \[
-  \sum_{i=1}^n w_i \, b(x_i) b(x_i)^*
-    \; \preceq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \cdot 1 .
+  \sum_{i=1}^n w_i \, \Bigl| \sum_{p \in \kappa} c_p \, b_p(x_i) \Bigr|^2
+    \; \leq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \sum_{p \in \kappa} |c_p|^2
+  \qquad \text{for every } c \in \ell_2(\kappa).
 \]
 \end{theorem}
 
 \begin{proof}
 \leanok
 \uses{lem:gram-identities, thm:two-barriers, lem:barrier, lem:verifiers-on-average,
-      lem:point-from-averages, lem:frame-bounds-from-potentials, lem:loewner-basic-bounds}
-Replace $a$ by $I^{-1/2} a$, whose Gram matrix is $I^{-1/2} I \, I^{-1/2} = 1$ by
+      lem:point-from-averages, lem:frame-bounds-from-potentials, lem:loewner-basic-bounds,
+      lem:family-gram-operator, thm:operator-sparsification}
+\emph{Finite $\kappa$.} Here $b(x) = (b_p(x))_p \in \mathbb{C}^{\kappa}$, and the upper
+bound is the Loewner inequality
+$\sum_i w_i \, b(x_i) b(x_i)^* \preceq (1 + \sqrt{(M-1)/n})^2 \Lambda \cdot 1$ read at the
+vector $\bar c$. Replace $a$ by $I^{-1/2} a$, whose Gram matrix is $I^{-1/2} I \, I^{-1/2} = 1$ by
 \Cref{lem:gram-identities}(b). Conjugating the resulting lower bound by $I^{1/2}$
 preserves the Loewner order and turns $(1 - r)^2 \cdot 1$, with $r = \sqrt{(m-1)/n}$,
 into $(1 - r)^2 \cdot I$; this is \texttt{Discretization.bss\_of\_gram\_eq\_one}, and the
@@ -129,7 +143,24 @@ $L(y) > 0$; using it $n$ times with the weight $w = 1/L(y)$ makes the lower boun
 identity $\sum_i w_i |a(x_i)|^2 = 1$, while $w \, U(y) \leq 1$ and
 \Cref{lem:loewner-basic-bounds}(c) give the upper bound as in the previous case. No
 induction is needed.
+
+\emph{Countably infinite $\kappa$.} By \Cref{lem:family-gram-operator}(a) there is a
+measurable set $S \subseteq \Omega$ of full measure on which $b(x) = (b_p(x))_p$ lies in
+$\ell_2(\kappa)$. Restricted to $S$, which changes neither $I$ nor any of the integrals,
+$b$ is a square-integrable map into $\ell_2(\kappa)$ whose Gram operator is $J$, positive,
+injective, bounded by $\Lambda \cdot 1$ and of trace $\sum_p \|b_p\|^2$ along the standard
+basis, by \Cref{lem:family-gram-operator}(b). \Cref{thm:operator-sparsification}, applied
+to the measure space $S$, gives the points, which therefore lie in $S$, and the weights;
+its upper bound in the order of operators, evaluated at $\bar c$, is the bound claimed.
 \end{proof}
+
+In the formalisation the Gram matrix of the second family enters through its quadratic
+form $\langle c, J c \rangle = \int_\Omega |\sum_p \overline{c_p} \, b_p|^2 \, d\mu$:
+$J \preceq \Lambda \cdot 1$ is the bound of this integral by $\Lambda \|c\|^2$ for every
+$c \in \ell_2(\kappa)$, and injectivity says that it vanishes only for $c = 0$. For finite
+$\kappa$ the theorem is \texttt{Discretization.bss\_generalized}, where injectivity is
+positive definiteness and both finiteness conditions are automatic; for countable
+$\kappa$ it is \texttt{Discretization.Family.bss\_generalized}.
 
 This is Theorem 3 of Chkifa, Dolbeault, Krieg and Ullrich~\cite{CDKU}. In eigenvalue form
 the first bound is the factor $(1 - \sqrt{(m-1)/n})^2 \lambda_{\min}(I)$ of the paper. No
@@ -170,14 +201,18 @@ Read through quadratic forms, the theorem becomes a statement about norms.
 
 \begin{corollary}[Discretization of the $L_2$-norm]
 \label{cor:l2-discretization}
-\lean{Discretization.exists_discretization}
+\lean{Discretization.exists_discretization, Discretization.Family.exists_discretization,
+      Discretization.Infinite.exists_discretization}
 \leanok
-Let $(\Omega, \mu)$ be a measure space, let $\iota$ and $\kappa$ be finite nonempty sets,
-and let $a : \Omega \to \mathbb{C}^{\iota}$ and $b : \Omega \to \mathbb{C}^{\kappa}$ be
-square-integrable in every coordinate with $\int_\Omega a(x) a(x)^* \, d\mu(x) = 1$ and
-$J = \int_\Omega b(x) b(x)^* \, d\mu(x)$ positive definite. Let $\Lambda > 0$ satisfy
-$J \preceq \Lambda \cdot 1$, and put $m = \#\iota$ and $M = \Tr J / \Lambda$. Then for
-every $n \geq m$ there are points $x_1, \dots, x_n \in \Omega$ and weights
+Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let
+$\kappa$ be a nonempty set that is finite or countably infinite. Let
+$a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in every coordinate with
+$\int_\Omega a(x) a(x)^* \, d\mu(x) = 1$, and let $b = (b_p)_{p \in \kappa}$ be
+square-integrable functions on $\Omega$ with $\sum_p \|b_p\|_{L_2}^2 < \infty$ whose Gram
+matrix $J = (\int_\Omega b_p \overline{b_q} \, d\mu)_{p, q}$, as an operator on
+$\ell_2(\kappa)$, is injective. Let $\Lambda > 0$ satisfy $J \preceq \Lambda \cdot 1$, and
+put $m = \#\iota$ and $M = \Tr J / \Lambda$. Then for every $n \geq m$ there are points
+$x_1, \dots, x_n \in \Omega$ with $\sum_p |b_p(x_i)|^2 < \infty$ and weights
 $w_1, \dots, w_n > 0$ with
 \[
   \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \int_\Omega |f|^2 \, d\mu
@@ -188,7 +223,7 @@ for every $f \in \operatorname{span}\{a_k\}$, and with
   \sum_{i=1}^n w_i \, |g(x_i)|^2
   \; \leq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \sum_{p} |c_p|^2
 \]
-for every $c \in \mathbb{C}^{\kappa}$ and $g = \sum_p c_p \, b_p$.
+for every $c \in \ell_2(\kappa)$ and $g = \sum_p c_p \, b_p$.
 \end{corollary}
 
 \begin{proof}
@@ -198,9 +233,9 @@ A Loewner inequality between matrices is an inequality between quadratic forms, 
 in the coefficient vector. For $f = \sum_k c_k a_k$ one has
 $\sum_i w_i |f(x_i)|^2 = c^* G c$ with $G$ the accumulated matrix, and
 $\int_\Omega |f|^2 d\mu = c^* G(a) c = \|c\|^2$ by \Cref{lem:gram-identities}(a) and
-$G(a) = 1$. Reading the second bound of \Cref{thm:sparsification}, applied with $I = 1$,
-the same way turns its right-hand side into $(1 + s)^2 \Lambda \|c\|^2$, with
-$s = \sqrt{(M-1)/n}$.
+$G(a) = 1$. The second bound is that of \Cref{thm:sparsification}, applied with $I = 1$;
+the series $g(x_i) = \sum_p c_p \, b_p(x_i)$ converges because
+$\sum_p |b_p(x_i)|^2 < \infty$.
 \end{proof}
 
 The lower bound is stated for a function and the upper one for a coefficient vector,
@@ -786,17 +821,19 @@ $n r^2 + 1 = m$ and $n s^2 + 1 = M$.
 \label{ch:infinite}
 
 Nothing in \Cref{thm:sparsification} ties the number of points to the size of the
-second family: it is governed by the effective dimension alone. The second family may
-therefore be infinite. In this chapter it is a single square-integrable map
-$b : \Omega \to H$ into a Hilbert space with a countable Hilbert basis, and the Gram
-matrix becomes the \emph{Gram operator} $J$ of $b$, the bounded operator on $H$ with
+second family: it is governed by the effective dimension alone, so the second family may
+be infinite, and this chapter supplies that case. The argument runs for a single
+square-integrable map $b : \Omega \to H$ into a Hilbert space with a countable Hilbert
+basis; a family $(b_p)_{p \in \kappa}$ is the case $H = \ell_2(\kappa)$ with
+$b(x) = (b_p(x))_p$ (\Cref{lem:family-gram-operator}). The Gram matrix becomes the
+\emph{Gram operator} $J$ of $b$, the bounded operator on $H$ with
 \[
   \langle u, J u \rangle = \int_\Omega \bigl| \langle u, b(x) \rangle \bigr|^2 d\mu(x)
   \qquad \text{for every } u \in H .
 \]
 The first family stays finite, so the lower half of the argument is unchanged, and only
 the upper half has to be redone. Mathlib has no trace-class theory, so the trace is
-built along a fixed Hilbert basis.
+built along a Hilbert basis.
 
 The Gram operator is positive, since the right-hand side is nonnegative. Its trace along
 any Hilbert basis $e$ is finite and equal to $\int_\Omega \|b\|^2 \, d\mu$, by Parseval
@@ -824,16 +861,19 @@ $\bigl( \re \langle e_k, T e_k \rangle \bigr)_k$ is summable.
 \end{definition}
 
 In Lean, \texttt{IsFiniteTracePos e J} bundles three properties of $J$: positive, of
-finite trace along $e$, and injective. No basis independence is proved and none is
-needed: every statement below fixes one basis, and in the application the basis is the
-singular basis of the embedding. For a positive $T$ the terms are nonnegative, because
+finite trace along $e$, and injective. For a positive operator neither the finiteness nor
+the value of $\Tr_e T$ depends on the basis (\Cref{lem:operator-traces}(c)), so the basis
+only records how the trace is computed. For a positive $T$ the terms are nonnegative,
+because
 $\re \langle x, T x \rangle = \|T^{1/2} x\|^2$, so $\Tr_e T$ is the squared
 Hilbert--Schmidt norm of $T^{1/2}$.
 
 \begin{lemma}[Parseval and Hilbert--Schmidt sums under adjoints]
 \label{lem:hilbert-schmidt-adjoint}
 \lean{HilbertBasis.hasSum_norm_sq_inner, ContinuousLinearMap.tsum_norm_sq_adjoint,
-      ContinuousLinearMap.summable_norm_sq_adjoint_iff}
+      ContinuousLinearMap.summable_norm_sq_adjoint_iff,
+      ContinuousLinearMap.tsum_ofReal_norm_sq_adjoint_of_basis,
+      ContinuousLinearMap.tsum_ofReal_norm_sq_of_isSelfAdjoint}
 \leanok
 Let $H$ be a complex Hilbert space with a Hilbert basis $e = (e_k)_{k \in \kappa}$.
 
@@ -845,6 +885,12 @@ $\|x\|^2$.
   \sum_k \| T e_k \|^2 = \sum_k \| T^* e_k \|^2 ,
 \]
 and the family on the left is summable if and only if the one on the right is.
+
+(c) For every bounded operator $T$ on $H$ and every second Hilbert basis
+$e' = (e'_j)_{j \in \kappa'}$ of $H$,
+\[
+  \sum_k \| T e_k \|^2 = \sum_j \| T^* e'_j \|^2 \qquad \text{in } [0, \infty] .
+\]
 \end{lemma}
 
 \begin{proof}
@@ -856,6 +902,10 @@ $\sum_k \langle x, e_k \rangle \langle e_k, x \rangle = \langle x, x \rangle$.
 $\sum_{j,k} |\langle e_j, T e_k \rangle|^2$ with the two indices exchanged. The
 rearrangement is carried out in $[0, \infty]$, where every sum is defined and the
 interchange needs no hypothesis; summability is then read off the value being finite.
+
+(c) The same computation, expanding $\|T e_k\|^2$ by (a) along $e'$ and
+$\|T^* e'_j\|^2$ along $e$. For a self-adjoint $T$ it says that the Hilbert--Schmidt sum
+does not depend on the basis.
 \end{proof}
 
 Part (b) is the hinge of the whole trace layer: it is what supplies the summability of
@@ -864,7 +914,9 @@ $P^{1/2} Q$, whose adjoint $Q P^{1/2}$ is visibly Hilbert--Schmidt.
 \begin{lemma}[Traces of positive operators]
 \label{lem:operator-traces}
 \lean{ContinuousLinearMap.le_traceAlong_smul_one, ContinuousLinearMap.traceAlong_mul,
-      ContinuousLinearMap.traceAlong_mul_pos}
+      ContinuousLinearMap.traceAlong_mul_pos,
+      ContinuousLinearMap.summable_re_inner_iff_of_basis,
+      ContinuousLinearMap.traceAlong_eq_of_basis}
 \leanok
 \uses{def:trace-along-basis}
 Let $H$ be a complex Hilbert space with a Hilbert basis $e$.
@@ -878,6 +930,10 @@ $T \preceq \Tr_e T \cdot 1$.
   \; \geq \; 0 ,
 \]
 and the value is positive as soon as $Q$ is invertible and $P \neq 0$.
+
+(c) Let $T$ be positive and let $e'$ be a second Hilbert basis of $H$. Then $T$ is of
+finite trace along $e$ if and only if it is of finite trace along $e'$, and
+$\Tr_e T = \Tr_{e'} T$.
 \end{lemma}
 
 \begin{proof}
@@ -886,13 +942,18 @@ and the value is positive as soon as $Q$ is invertible and $P \neq 0$.
 (a) For $x \in H$, writing $x$ in the basis and applying the Cauchy--Schwarz inequality
 to each term gives $\re \langle x, T x \rangle \leq \Tr_e T \cdot \|x\|^2$. This is the
 operator analogue of \Cref{lem:loewner-basic-bounds}(b), and unlike the matrix proof it
-uses no diagonalisation, which is also why no basis independence is required.
+uses no diagonalisation.
 
 (b) The identity is the cyclicity $\Tr (PQ) = \Tr (P^{1/2} Q P^{1/2})$, read as a
 symmetry of the pairing $\sum_k \langle S e_k, T e_k \rangle$ under passing to adjoints;
 the required summability is \Cref{lem:hilbert-schmidt-adjoint}(b). Every term on the
 right is nonnegative. For the strict inequality, invertibility of $Q$ makes $Q^{1/2}$
 injective, so a vanishing trace would force $P^{1/2}$ to annihilate the whole basis.
+
+(c) Along either basis the trace is $\sum \|T^{1/2} e_k\|^2$, and
+\Cref{lem:hilbert-schmidt-adjoint}(c) for the self-adjoint operator $T^{1/2}$ gives the
+same value in $[0, \infty]$ for both. If it is infinite, both traces are $0$ by the
+convention of \Cref{def:trace-along-basis}; no summability has to be assumed.
 \end{proof}
 
 Invertibility of $Q$ here is what replaces positive definiteness. A positive operator of
@@ -1077,8 +1138,8 @@ functions, one coming from a matrix and one from an operator, so
 
 \section{The theorem}
 
-\begin{theorem}[Sparsification with a countable second family]
-\label{thm:countable-sparsification}
+\begin{theorem}[Sparsification for a Hilbert-space-valued second family]
+\label{thm:operator-sparsification}
 \lean{Discretization.Infinite.bss_generalized,
       Discretization.Infinite.bss_generalized_of_gram_eq_one',
       Discretization.Infinite.upperState, Discretization.Infinite.exists_points_weights,
@@ -1112,14 +1173,14 @@ in the order of operators.
 
 \begin{proof}
 \leanok
-\uses{thm:sparsification, thm:two-barriers, prop:barrier-iteration, lem:barrier,
+\uses{thm:two-barriers, prop:barrier-iteration, lem:barrier,
       lem:operator-barrier, lem:countable-averages, lem:frame-bounds-from-potentials,
       lem:point-from-averages, lem:operator-rank-one-updates, lem:gram-identities}
-The normalisation is removed as in \Cref{thm:sparsification}: replace $a$ by
+The normalisation is removed as in the finite case: replace $a$ by
 $I^{-1/2} a$, whose Gram matrix is $1$ by \Cref{lem:gram-identities}(b), and conjugate the
 resulting lower bound by $I^{1/2}$; the upper bound does not involve the first family.
 The case $I = 1$ is \texttt{Discretization.Infinite.bss\_generalized\_of\_gram\_eq\_one'},
-and it splits into the same four cases as in the proof of \Cref{thm:sparsification}. The
+and it splits into the same four cases as in the finite case. The
 lower side is the finite argument verbatim, since the first family is finite in all of
 them; only the upper side changes.
 
@@ -1159,51 +1220,67 @@ upper bound.
 By \Cref{lem:countable-averages}(b) the effective dimension is
 $M = \int_\Omega \|b\|^2 \, d\mu \, / \, \Lambda$, which does not depend on the basis.
 
-\begin{corollary}[Discretization with a countable second family]
-\label{cor:countable-l2-discretization}
-\lean{Discretization.Infinite.exists_discretization}
+\section{A countable family}
+
+\begin{lemma}[A countable family as a map into $\ell_2$]
+\label{lem:family-gram-operator}
+\lean{Discretization.Family.ae_mem_l2, Discretization.Family.exists_measurableSet_mem_l2,
+      Discretization.Family.toLp, Discretization.Family.memLp_toLp,
+      Discretization.Family.gramOp, Discretization.Family.inner_gramOp_self,
+      Discretization.Family.gramOp_nonneg, Discretization.Family.traceAlong_gramOp,
+      Discretization.Family.gramOp_injective, Discretization.Family.gramOp_le,
+      Discretization.Family.integral_comap_val, Discretization.Family.gram_comap_val}
 \leanok
 \uses{def:trace-along-basis}
-Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let $H$
-be a nonzero complex Hilbert space with a countable Hilbert basis
-$e = (e_k)_{k \in \kappa}$. Let $a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in
-every coordinate with $\int_\Omega a(x) a(x)^* \, d\mu(x) = 1$ and $b : \Omega \to H$
-square-integrable, let $J$ be the Gram operator of $b$, the bounded operator with
-$\langle u, J u \rangle = \int_\Omega |\langle u, b(x) \rangle|^2 \, d\mu(x)$ for every
-$u \in H$, and assume that $J$ is injective and of finite trace along $e$. Let
-$\Lambda > 0$ satisfy $J \preceq \Lambda \cdot 1$, and put $m = \#\iota$ and
-$M = \Tr_e J / \Lambda$. Then for every $n \geq m$ there are points
-$x_1, \dots, x_n \in \Omega$ and weights $w_1, \dots, w_n > 0$ with
+Let $(\Omega, \mu)$ be a measure space, let $\kappa$ be a countable set, and let
+$b = (b_p)_{p \in \kappa}$ be square-integrable functions on $\Omega$ with
+$\sum_p \|b_p\|_{L_2}^2 < \infty$.
+
+(a) There is a measurable set $S \subseteq \Omega$ of full measure with
+$\sum_p |b_p(x)|^2 < \infty$ for every $x \in S$.
+
+(b) If $\sum_p |b_p(x)|^2 < \infty$ for every $x \in \Omega$, then
+$x \mapsto b(x) = (b_p(x))_p$ is a square-integrable map into $\ell_2(\kappa)$, and its
+Gram operator $J = \int_\Omega b(x) b(x)^* \, d\mu(x)$ satisfies
 \[
-  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \int_\Omega |f|^2 \, d\mu
-  \; \leq \; \sum_{i=1}^n w_i \, |f(x_i)|^2
+  \langle c, J c \rangle = \int_\Omega \Bigl| \sum_p \overline{c_p} \, b_p(x) \Bigr|^2 d\mu(x)
+  \qquad \text{for every } c \in \ell_2(\kappa).
 \]
-for every $f \in \operatorname{span}\{a_k\}$, and with
-\[
-  \sum_{i=1}^n w_i \bigl| \langle u, b(x_i) \rangle \bigr|^2
-  \; \leq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \, \|u\|^2
-\]
-for every $u \in H$.
-\end{corollary}
+It is positive, its trace along the standard basis $e$ of $\ell_2(\kappa)$ is
+$\Tr_e J = \sum_p \|b_p\|_{L_2}^2$, it is injective if the right-hand side vanishes only
+for $c = 0$, and $J \preceq \Lambda \cdot 1$ if the right-hand side is at most
+$\Lambda \|c\|^2$ for every $c$.
+\end{lemma}
 
 \begin{proof}
 \leanok
-\uses{thm:countable-sparsification, lem:gram-identities}
-Apply \Cref{thm:countable-sparsification} with $I = 1$. A Loewner inequality between
-operators is an inequality between quadratic forms, uniformly in the vector; for the
-first family this is \Cref{lem:gram-identities}(a) read backwards, and for the second the
-quadratic form of a weighted sum of rank-one operators is the weighted sum of the squared
-moduli.
+(a) By Tonelli, $\int_\Omega \sum_p |b_p|^2 \, d\mu = \sum_p \|b_p\|^2 < \infty$, so the
+sum is finite almost everywhere, and the complement of a measurable null set containing
+the exceptional points is a set $S$ as required.
+
+(b) The finite partial sums $\sum_{p \in F} b_p(x) e_p$ converge to $b(x)$ in
+$\ell_2(\kappa)$, so $b$ is strongly measurable, and $\int_\Omega \|b\|^2 \, d\mu =
+\sum_p \|b_p\|^2$ by Tonelli. The integrand $b(x) b(x)^*$ has norm $\|b(x)\|^2$, so the
+Bochner integral $J$ exists and commutes with pairing against $c$; since
+$\langle c, b(x) b(x)^* c \rangle = |\langle c, b(x) \rangle|^2$ this gives the identity,
+and with it positivity. On the diagonal, $\langle e_p, b(x) \rangle = b_p(x)$ gives
+$\langle e_p, J e_p \rangle = \|b_p\|^2$. If $J c = 0$ the quadratic form vanishes at $c$,
+which gives injectivity, and a bound on the quadratic form of the self-adjoint operator
+$\Lambda \cdot 1 - J$ is positivity of that operator.
 \end{proof}
+
+Restricting the measure space to the set $S$ of (a) changes no integral and no Gram
+matrix, because $S$ has full measure, and it makes (b) applicable. This is how the proof of
+\Cref{thm:sparsification} chooses its points inside $S$: the construction runs in $S$.
 
 \begin{remark}[What is left]
 \label{rem:left}
 \leanok
-The number of points in \Cref{thm:countable-sparsification} is governed by the effective
-dimension $M = \Tr_e J / \Lambda$ and not by the size of the second family. What is not formalised
-is the construction of the Gram operator from a reproducing kernel: the singular value
+The number of points in \Cref{thm:sparsification} is governed by the effective dimension
+$M = \Tr J / \Lambda$ and not by the size of the second family. What is not formalised is
+the construction of the Gram matrix from a reproducing kernel: the singular value
 decomposition of the embedding $H \hookrightarrow L_2(\mu)$, which supplies the family
-$b$ and makes $J$ diagonal, with $\Tr_e J$ the trace of the kernel and $\Lambda$ the
+$b$ and makes $J$ diagonal, with $\Tr J$ the trace of the kernel and $\Lambda$ the
 squared norm of the embedding.
 \end{remark}
 

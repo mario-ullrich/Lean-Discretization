@@ -29,6 +29,7 @@ public import Discretization.Infinite.SmallEffectiveDim
 public import Discretization.Infinite.BothEdgeCases
 public import Discretization.Infinite.GeneralGram
 public import Discretization.Infinite.NormDiscretization
+public import Discretization.Infinite.Family
 public import Discretization.KieferWolfowitz.MixEstimate
 public import Discretization.KieferWolfowitz.Design
 public import Discretization.KieferWolfowitz.NonDegenerate
@@ -114,10 +115,14 @@ determinants obtained by giving one further point a small weight.
   dimension, and the theorem without side conditions,
   `Discretization.Infinite.bss_generalized_of_gram_eq_one'`.
 * `Discretization.Infinite.GeneralGram`: removing the normalisation of the first family,
-  which gives the theorem in the form of the paper,
+  which gives the theorem for a Hilbert-space-valued second family,
   `Discretization.Infinite.bss_generalized`.
 * `Discretization.Infinite.NormDiscretization`: the same statement read as a discretization
   inequality, `Discretization.Infinite.exists_discretization`.
+* `Discretization.Infinite.Family`: the theorem in the form of the paper, for a countable
+  family `(b_k)` with `∑_k ‖b_k‖² < ∞` and its Gram matrix, deduced from the Hilbert-space
+  form on `ℓ²(κ)`: `Discretization.Family.bss_generalized`,
+  `Discretization.Family.exists_discretization`.
 * `Discretization.KieferWolfowitz.MixEstimate`: the one real inequality behind the
   Kiefer–Wolfowitz argument, describing how the determinant reacts to giving a new point the
   weight `α`.  No matrices occur in it.
