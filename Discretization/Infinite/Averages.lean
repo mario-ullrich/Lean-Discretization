@@ -21,7 +21,7 @@ so a point at which the upper verifier is small exists as soon as the lower veri
 large on average.  Since the first family stays finite, the lower verifier is a matrix
 quantity and the upper one an operator quantity; both are real functions on `Ω`, and the
 conclusion is `Discretization.UpperBarrier.exists_admissible_point` for the operator
-upper barrier of `Discretization.Infinite.MainTheorem`.  This file also proves
+upper barrier of `Discretization.Infinite.UpperBarrier`.  This file also proves
 `∫ ‖b‖² dμ = Tr J` (`Discretization.Infinite.integral_norm_sq_eq_traceAlong`).
 
 Two ingredients do the work.  The average of a quadratic form is a trace

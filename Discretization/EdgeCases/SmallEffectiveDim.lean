@@ -5,12 +5,12 @@ Authors: Mario Ullrich
 -/
 module
 
-public import Discretization.MainTheorem
+public import Discretization.PotentialArgument
 
 /-!
 # The case of a small effective dimension
 
-The main theorem needs `M = Tr J / Λ ≥ 1 + 1/n`, because the initial state
+The potential argument needs `M = Tr J / Λ ≥ 1 + 1/n`, because the initial state
 `B₀ = (ζ Tr J / s) • 1` involves `s = √((M-1)/n)`, which is too small otherwise.  As the
 paper observes, for `M ≤ 1 + 1/n` the upper potential is not needed: a constant upper
 verifier does the job,
@@ -25,7 +25,7 @@ crude bound `b b* ≼ ‖b‖² • 1` of an upper barrier gives
 
 the last step because `M ≤ 1 + 1/n` forces `s ≤ 1/n` and hence `M = 1 + n s² ≤ 1 + s`.
 
-The lower half of the argument is that of the main theorem; only the induction is one-sided
+The lower half of the argument is that of the potential argument; only the induction is one-sided
 (`Discretization.exists_points_weights_of_small_dim`).  The read-off is
 `Discretization.UpperBarrier.sum_smul_R_le_smul_one`, the theorem for every upper barrier is
 `Discretization.UpperBarrier.bss_generalized_of_small_dim`, and the theorem for finite
@@ -188,7 +188,7 @@ theorem bss_generalized_of_small_dim [Nonempty ι] {Λ : ℝ} (hΛ : 0 < Λ) {a 
       (fun y => mul_nonneg (by positivity) (U.sq_nonneg y))
       (U.integrable_sq.const_mul _) hn (U.integral_div_tr_mul_sq n) hgap n
   refine ⟨x, w, hwpos, ?_, ?_⟩
-  · -- the lower frame bound, exactly as in the main theorem
+  · -- the lower frame bound, exactly as in the potential argument
     exact lower_frame_bound hn0 hr0 h1r hm_eq hδdef hc₀def hAn (hΦ₀ ▸ hΦn)
   · -- the upper frame bound from the crude rank-one estimate
     set T : ℝ := U.tr with hTdef

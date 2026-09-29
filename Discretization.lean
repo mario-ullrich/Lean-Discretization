@@ -12,7 +12,7 @@ public import Discretization.Barrier
 public import Discretization.Averages
 public import Discretization.UpperBarrier
 public import Discretization.Iteration
-public import Discretization.MainTheorem
+public import Discretization.PotentialArgument
 public import Discretization.EdgeCases.CardOne
 public import Discretization.EdgeCases.SmallEffectiveDim
 public import Discretization.EdgeCases.BothEdgeCases
@@ -23,7 +23,7 @@ public import Discretization.Infinite.Potentials
 public import Discretization.Infinite.Barrier
 public import Discretization.Infinite.Averages
 public import Discretization.Infinite.Bounds
-public import Discretization.Infinite.MainTheorem
+public import Discretization.Infinite.UpperBarrier
 public import Discretization.Infinite.GeneralGram
 public import Discretization.Infinite.NormDiscretization
 public import Discretization.Infinite.Countable
@@ -87,8 +87,9 @@ state for a countably infinite second family and the theorems for it, and
   `Discretization.matrixUpperBarrier`.
 * `Discretization.Iteration`: the construction in `n` steps, with the invariant that both
   states stay admissible and neither potential exceeds its initial value.
-* `Discretization.MainTheorem`: the initial data, the read-off of the frame bounds, and the
-  theorem itself, for every upper barrier and for finite families,
+* `Discretization.PotentialArgument`: the potential argument, under the side conditions
+  `m ≥ 2` and `M ≥ 1 + 1/n`: the initial data, the read-off of the frame bounds, and the
+  theorem, for every upper barrier and for finite families,
   `Discretization.bss_generalized_of_gram_eq_one`.
 * `Discretization.EdgeCases.CardOne`: the edge case of a one-element first family, where
   the lower verifier becomes a constant, `Discretization.bss_generalized_of_unique`.
@@ -113,7 +114,7 @@ state for a countably infinite second family and the theorems for it, and
   `∫ ‖b‖² dμ = Tr J`.
 * `Discretization.Infinite.Bounds`: a bound on the upper potential is a bound on the
   operator, `Ψ_J(B)⁻¹ • J ≼ B`.
-* `Discretization.Infinite.MainTheorem`: the operators as an upper barrier,
+* `Discretization.Infinite.UpperBarrier`: the operators as an upper barrier,
   `Discretization.Infinite.operatorUpperBarrier`, and with it the theorem without side
   conditions for a countable second family,
   `Discretization.Infinite.bss_generalized_of_gram_eq_one'`.

@@ -10,10 +10,10 @@ public import Discretization.EdgeCases.BothEdgeCases
 /-!
 # Removing the normalisation of the first family
 
-The main theorem assumes that the Gram matrix of the first family is the identity.  The
-general case reduces to it, as in the original proof of Batson, Spielman and Srivastava:
-replace `a` by `I^{-1/2} a`, where `I = ∫ a a* dμ`, so that the new family is orthonormal,
-and conjugate the resulting frame bound back by `I^{1/2}`.
+The potential argument and its edge cases assume that the Gram matrix of the first family
+is the identity.  The general case reduces to it, as in the original proof of Batson,
+Spielman and Srivastava: replace `a` by `I^{-1/2} a`, where `I = ∫ a a* dμ`, so that the new
+family is orthonormal, and conjugate the resulting frame bound back by `I^{1/2}`.
 
 The two ingredients are the behaviour of the Gram matrix under a linear change of the family,
 

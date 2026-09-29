@@ -21,7 +21,7 @@ Their whole point is that a bound on the potential is a bound on the matrix:
 `Φ(A)⁻¹ • 1 ≤ A` (`Matrix.PosDef.inv_re_trace_smul_one_le` in `BasicResults.Matrix.LoewnerOrder`)
 and `Ψ(B)⁻¹ • J ≤ B`, proved here as `Matrix.PosDef.inv_re_trace_mul_smul_le`.
 
-The `J`-weighted statement is the one that makes the upper frame bound of the main theorem
+The `J`-weighted statement is the one that makes the upper frame bound of the potential argument
 dimension-free.  Its proof conjugates by the positive square root `S = B^{1/2}`.  The matrix
 `S⁻¹ J S⁻¹` is positive semidefinite with trace `Tr (J B⁻¹) = Ψ(B)`, hence bounded by
 `Ψ(B) • 1`.  Conjugating back by `S` gives `J ≤ Ψ(B) • B`.

@@ -34,7 +34,7 @@ This file states the definition, the upper state after `k` steps
 (`Discretization.UpperBarrier.upperState`), the existence of an admissible point
 (`Discretization.UpperBarrier.exists_admissible_point`), and the finite instance,
 `Discretization.matrixUpperBarrier`.  The operator instance is
-`Discretization.Infinite.operatorUpperBarrier`.  The construction, the main theorem and its
+`Discretization.Infinite.operatorUpperBarrier`.  The construction, the potential argument and its
 edge cases are then proved once for every upper barrier, in the files that follow.
 -/
 

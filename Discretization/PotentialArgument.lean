@@ -8,7 +8,7 @@ module
 public import Discretization.Iteration
 
 /-!
-# The generalized sparsification theorem
+# The potential argument
 
 This file turns the construction of the previous file into frame bounds.  The two
 ingredients are the initial data and the final read-off:

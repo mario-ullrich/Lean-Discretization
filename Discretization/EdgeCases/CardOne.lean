@@ -5,12 +5,12 @@ Authors: Mario Ullrich
 -/
 module
 
-public import Discretization.MainTheorem
+public import Discretization.PotentialArgument
 
 /-!
 # The case of a single function
 
-The main theorem needs `m = card ι ≥ 2`, because the initial matrix `A₀ = (δ m / r) • 1` of
+The potential argument needs `m = card ι ≥ 2`, because the initial matrix `A₀ = (δ m / r) • 1` of
 the construction involves `r = √((m-1)/n)`, which vanishes for `m = 1`.  As the paper
 observes, for `m = 1` the lower potential is not needed at all: the lower verifier can be
 replaced by the constant
@@ -23,7 +23,7 @@ bound an identity:
 
 `∑ wᵢ |a(xᵢ)|² = ∑ 1/n = 1 = (1 - √((m-1)/n))²`.
 
-The upper half of the argument is that of the main theorem; only the induction is one-sided
+The upper half of the argument is that of the potential argument; only the induction is one-sided
 (`Discretization.UpperBarrier.exists_points_weights_of_unique`).  That the weights make the
 lower bound an identity is `Discretization.sum_smul_vecMulVec_eq_one`.  Both the construction
 and the theorem, `Discretization.UpperBarrier.bss_generalized_of_unique`, are proved for every
@@ -174,7 +174,7 @@ theorem bss_generalized_of_unique [Unique ι] {Λ : ℝ} (hΛ : 0 < Λ) (hJΛ : 
   refine ⟨x, w, hwpos, ?_, ?_⟩
   · -- the lower frame bound is an identity: each point contributes exactly `1/n`
     rw [sum_smul_vecMulVec_eq_one hn0 x w hwk]
-  · -- the upper frame bound, exactly as in the main theorem
+  · -- the upper frame bound, exactly as in the potential argument
     exact U.upper_frame_bound hΛ hJΛ hn0 hs0 hζdef hd₀def hT hBn (hΨ₀ ▸ hΨn)
 
 end UpperBarrier

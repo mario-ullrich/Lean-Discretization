@@ -6,7 +6,7 @@ Authors: Mario Ullrich
 module
 
 public import Discretization.GeneralGram
-public import Discretization.Infinite.MainTheorem
+public import Discretization.Infinite.UpperBarrier
 
 /-!
 # Removing the normalisation of the first family, with a countable second family

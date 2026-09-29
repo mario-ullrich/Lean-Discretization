@@ -10,7 +10,7 @@ public import Discretization.Infinite.Averages
 public import Discretization.Infinite.Bounds
 
 /-!
-# The generalized sparsification theorem with a countable second family
+# The operators as an upper barrier
 
 The theorem `Discretization.bss_generalized_of_gram_eq_one'` for a second family given by a
 square-integrable map `b : Ω → H` into a Hilbert space with a countable Hilbert basis `e`,

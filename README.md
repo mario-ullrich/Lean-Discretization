@@ -220,7 +220,7 @@ Everything else is in the blueprint, with its Lean name at every statement.
 
 Two libraries. `Discretization` holds the arguments: the arithmetic of the parameters,
 the two potentials and the verifiers, the barrier lemma, the averaging step, the
-`n`-step iteration, the main theorem with its edge cases under
+`n`-step iteration, the potential argument with its edge cases under
 `Discretization/EdgeCases/`, the discretization inequality, under
 `Discretization/Infinite/` the analysis of the upper state for a countably infinite
 second family with the theorem for it, and under `Discretization/KieferWolfowitz/` the

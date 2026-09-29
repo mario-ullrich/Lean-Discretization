@@ -11,10 +11,11 @@ public import Discretization.EdgeCases.BothEdgeCases
 /-!
 # The discretization inequality
 
-The main theorem is a statement about matrices.  This file translates it into the statement
-about functions that motivates it.  For a function `f` in the span of the first family, the
-integral `∫ |f|² dμ` is bounded by a weighted sum of `|f(xᵢ)|²`.  For a function `g` in the
-span of the second family, the weighted sum is bounded by the squared coefficient norm.
+The sparsification theorem is a statement about matrices.  This file translates it into the
+statement about functions that motivates it.  For a function `f` in the span of the first
+family, the integral `∫ |f|² dμ` is bounded by a weighted sum of `|f(xᵢ)|²`.  For a function
+`g` in the span of the second family, the weighted sum is bounded by the squared coefficient
+norm.
 
 The dictionary is elementary.  A coefficient vector `c` gives the function
 `f(x) = ⟪c, a(x)⟫ = ∑ conj (cₖ) aₖ(x)`, and

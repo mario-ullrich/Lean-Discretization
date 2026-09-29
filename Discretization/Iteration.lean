@@ -29,7 +29,7 @@ lemma restores the invariant.
 
 The result is `Discretization.UpperBarrier.exists_points_weights`.  Note that the number of
 steps `n` is arbitrary: the initial gap condition alone drives the whole construction, and it
-is the choice of `A₀`, `B₀`, `δ` and `ζ` in `Discretization.MainTheorem` that ties `n` to the
+is the choice of `A₀`, `B₀`, `δ` and `ζ` in `Discretization.PotentialArgument` that ties `n` to the
 frame bounds.
 -/
 
