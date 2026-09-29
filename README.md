@@ -84,7 +84,7 @@ in the Loewner order, with no side condition
   `∑_k ‖b_k‖²_{L₂} < ∞`, whose Gram matrix `J = (∫ b_k b̄_l dμ)` is injective on `ℓ²(κ)`
   and bounded by `Λ • 1`, and put `M = ∑_k ‖b_k‖² / Λ`. Then the same two bounds hold,
   the second one as `∑ wᵢ |∑_k c̄_k b_k(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖c‖²` for every
-  `c ∈ ℓ²(κ)`, again with no side condition (`Discretization.Family.bss_generalized`).
+  `c ∈ ℓ²(κ)`, again with no side condition (`Discretization.Countable.bss_generalized`).
   Nothing pointwise is assumed: `∑_k |b_k(x)|² < ∞` holds almost everywhere, and the
   points are chosen where it holds. More generally the theorem holds for a map `b` into a
   separable Hilbert space, whose Gram operator `J` (`⟪u, J u⟫ = ∫ |⟪u, b(x)⟫|² dμ`) need
@@ -101,7 +101,8 @@ in the Loewner order, with no side condition
   `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²`, and the weighted sum of every `g` in
   the span of the second family is at most `(1 + √((M-1)/n))² Λ ‖c‖²` in its
   coefficients `c` (`Discretization.exists_discretization`, and for a countable family
-  `Discretization.Family.exists_discretization`, with `c ∈ ℓ²(κ)`). This is Corollary 4 of the paper, in both cases without a side condition;
+  `Discretization.Countable.exists_discretization`, with `c ∈ ℓ²(κ)`). This is Corollary 4
+  of the paper, in both cases without a side condition;
   with `b` the singular basis of the embedding of a reproducing kernel Hilbert space into
   `L₂`, the coefficient norm is the norm of that space.
 

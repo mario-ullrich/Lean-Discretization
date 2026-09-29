@@ -24,16 +24,16 @@ The hypotheses are those of the paper:
 * `∫ |∑_k c̄_k b_k|² dμ ≤ Λ ‖c‖²` for every `c ∈ ℓ²(κ)` (`J ≤ Λ • 1`).
 
 Nothing pointwise is assumed.  The finite trace gives `∑_k |b_k(x)|² < ∞` for almost every
-`x` (`Discretization.Family.ae_mem_l2`), and the theorem is first proved under the
-assumption that this holds for every `x` (`Discretization.Family.bss_generalized_of_mem_l2`).
+`x` (`Discretization.Countable.ae_mem_l2`), and the theorem is first proved under the
+assumption that this holds for every `x` (`Discretization.Countable.bss_generalized_of_mem_l2`).
 The general case restricts the measure space to a measurable set of full measure on which
 it holds; the construction then runs inside that set, so the points it chooses lie in it.
 This is the formal counterpart of the remark that points chosen at random avoid any null
 set with probability one.
 
 The dictionary to the operator form: `x ↦ (b_k(x))_k` is a square-integrable map into
-`ℓ²(κ)` (`Discretization.Family.memLp_toLp`), its Gram operator
-`J = ∫ b(x) b(x)* dμ` (`Discretization.Family.gramOp`) is positive, of trace
+`ℓ²(κ)` (`Discretization.Countable.memLp_toLp`), its Gram operator
+`J = ∫ b(x) b(x)* dμ` (`Discretization.Countable.gramOp`) is positive, of trace
 `∑_k ‖b_k‖²` along the standard basis, injective, and bounded by `Λ • 1`.
 -/
 
@@ -45,7 +45,7 @@ open InnerProductSpace ContinuousLinearMap
 
 namespace Discretization
 
-namespace Family
+namespace Countable
 
 variable {κ Ω : Type*} {b : Ω → κ → ℂ}
 
@@ -424,7 +424,7 @@ theorem bss_generalized [Nonempty ι] [Nonempty κ]
 
 /-- **Discretization of the `L₂`-norm for a countable second family**
 (Chkifa–Dolbeault–Krieg–Ullrich, Corollary 4), in the form of the paper: under the
-hypotheses of `Discretization.Family.bss_generalized` with a normalized first family, its
+hypotheses of `Discretization.Countable.bss_generalized` with a normalized first family, its
 points and weights satisfy
 
 `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ᵢ wᵢ |f(xᵢ)|²`  for every `f` in the span of `a`, and
@@ -446,6 +446,6 @@ theorem exists_discretization [Nonempty ι] [Nonempty κ]
     bss_generalized ha (by rw [hgrama]; exact Matrix.PosDef.one) hb htr hinj hΛ hJΛ hmn
   exact ⟨x, w, hw, hmem, mul_integral_norm_sq_le_sum ha hlow, hup⟩
 
-end Family
+end Countable
 
 end Discretization

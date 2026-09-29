@@ -67,7 +67,7 @@ what makes the theorem applicable when the second family is infinite.
 
 \begin{theorem}[Generalized sparsification]
 \label{thm:sparsification}
-\lean{Discretization.bss_generalized, Discretization.Family.bss_generalized,
+\lean{Discretization.bss_generalized, Discretization.Countable.bss_generalized,
       Discretization.bss_generalized_of_gram_eq_one',
       Discretization.bss_of_gram_eq_one, Discretization.bss_generalized_of_unique,
       Discretization.bss_generalized_of_small_dim,
@@ -100,7 +100,7 @@ and
 \leanok
 \uses{lem:gram-identities, thm:two-barriers, lem:barrier, lem:verifiers-on-average,
       lem:point-from-averages, lem:frame-bounds-from-potentials, lem:loewner-basic-bounds,
-      lem:family-gram-operator, thm:operator-sparsification}
+      lem:countable-gram-operator, thm:operator-sparsification}
 \emph{Finite $\kappa$.} Here $b(x) = (b_p(x))_p \in \mathbb{C}^{\kappa}$, and the upper
 bound is the Loewner inequality
 $\sum_i w_i \, b(x_i) b(x_i)^* \preceq (1 + \sqrt{(M-1)/n})^2 \Lambda \cdot 1$ read at the
@@ -144,12 +144,12 @@ identity $\sum_i w_i |a(x_i)|^2 = 1$, while $w \, U(y) \leq 1$ and
 \Cref{lem:loewner-basic-bounds}(c) give the upper bound as in the previous case. No
 induction is needed.
 
-\emph{Countably infinite $\kappa$.} By \Cref{lem:family-gram-operator}(a) there is a
+\emph{Countably infinite $\kappa$.} By \Cref{lem:countable-gram-operator}(a) there is a
 measurable set $S \subseteq \Omega$ of full measure on which $b(x) = (b_p(x))_p$ lies in
 $\ell_2(\kappa)$. Restricted to $S$, which changes neither $I$ nor any of the integrals,
 $b$ is a square-integrable map into $\ell_2(\kappa)$ whose Gram operator is $J$, positive,
 injective, bounded by $\Lambda \cdot 1$ and of trace $\sum_p \|b_p\|^2$ along the standard
-basis, by \Cref{lem:family-gram-operator}(b). \Cref{thm:operator-sparsification}, applied
+basis, by \Cref{lem:countable-gram-operator}(b). \Cref{thm:operator-sparsification}, applied
 to the measure space $S$ and the space $\ell_2(\kappa)$, which is separable because $\kappa$
 is countable, gives the points, which therefore lie in $S$, and the weights;
 its upper bound in the order of operators, evaluated at $\bar c$, is the bound claimed.
@@ -161,7 +161,7 @@ $J \preceq \Lambda \cdot 1$ is the bound of this integral by $\Lambda \|c\|^2$ f
 $c \in \ell_2(\kappa)$, and injectivity says that it vanishes only for $c = 0$. For finite
 $\kappa$ the theorem is \texttt{Discretization.bss\_generalized}, where injectivity is
 positive definiteness and both finiteness conditions are automatic; for countable
-$\kappa$ it is \texttt{Discretization.Family.bss\_generalized}.
+$\kappa$ it is \texttt{Discretization.Countable.bss\_generalized}.
 
 This is Theorem 3 of Chkifa, Dolbeault, Krieg and Ullrich~\cite{CDKU}. In eigenvalue form
 the first bound is the factor $(1 - \sqrt{(m-1)/n})^2 \lambda_{\min}(I)$ of the paper. No
@@ -219,7 +219,7 @@ Read through quadratic forms, the theorem becomes a statement about norms.
 
 \begin{corollary}[Discretization of the $L_2$-norm]
 \label{cor:l2-discretization}
-\lean{Discretization.exists_discretization, Discretization.Family.exists_discretization,
+\lean{Discretization.exists_discretization, Discretization.Countable.exists_discretization,
       Discretization.Infinite.exists_discretization,
       Discretization.Infinite.exists_discretization_of_hilbertBasis,
       Discretization.mul_integral_norm_sq_le_sum,
@@ -858,7 +858,7 @@ second family: it is governed by the effective dimension alone, so the second fa
 be infinite, and this chapter supplies that case. The argument runs for a single
 square-integrable map $b : \Omega \to H$ into a Hilbert space with a countable Hilbert
 basis; a family $(b_p)_{p \in \kappa}$ is the case $H = \ell_2(\kappa)$ with
-$b(x) = (b_p(x))_p$ (\Cref{lem:family-gram-operator}). The Gram matrix becomes the
+$b(x) = (b_p(x))_p$ (\Cref{lem:countable-gram-operator}). The Gram matrix becomes the
 \emph{Gram operator} $J$ of $b$, the bounded operator on $H$ with
 \[
   \langle u, J u \rangle = \int_\Omega \bigl| \langle u, b(x) \rangle \bigr|^2 d\mu(x)
@@ -1275,13 +1275,13 @@ the basis in any case (\Cref{lem:operator-traces}(c)).
 \section{A countable family}
 
 \begin{lemma}[A countable family as a map into $\ell_2$]
-\label{lem:family-gram-operator}
-\lean{Discretization.Family.ae_mem_l2, Discretization.Family.exists_measurableSet_mem_l2,
-      Discretization.Family.toLp, Discretization.Family.memLp_toLp,
-      Discretization.Family.gramOp, Discretization.Family.inner_gramOp_self,
-      Discretization.Family.gramOp_nonneg, Discretization.Family.traceAlong_gramOp,
-      Discretization.Family.gramOp_injective, Discretization.Family.gramOp_le,
-      Discretization.Family.integral_comap_val, Discretization.Family.gram_comap_val}
+\label{lem:countable-gram-operator}
+\lean{Discretization.Countable.ae_mem_l2, Discretization.Countable.exists_measurableSet_mem_l2,
+      Discretization.Countable.toLp, Discretization.Countable.memLp_toLp,
+      Discretization.Countable.gramOp, Discretization.Countable.inner_gramOp_self,
+      Discretization.Countable.gramOp_nonneg, Discretization.Countable.traceAlong_gramOp,
+      Discretization.Countable.gramOp_injective, Discretization.Countable.gramOp_le,
+      Discretization.Countable.integral_comap_val, Discretization.Countable.gram_comap_val}
 \leanok
 \uses{def:trace-along-basis}
 Let $(\Omega, \mu)$ be a measure space, let $\kappa$ be a countable set, and let

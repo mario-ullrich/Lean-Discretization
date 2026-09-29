@@ -77,7 +77,7 @@ status:
 
     Proved in the repository but not advertised here: the same two statements in the
     literal form of the source, for a countable family (bₖ) with its Gram matrix
-    (Discretization.Family.bss_generalized, Discretization.Family.exists_discretization),
+    (Discretization.Countable.bss_generalized, Discretization.Countable.exists_discretization),
     deduced from the Hilbert-space form on ℓ²; and the forms along a given Hilbert
     basis (Discretization.Infinite.bss_generalized_of_hilbertBasis,
     Discretization.Infinite.exists_discretization_of_hilbertBasis).
@@ -139,7 +139,7 @@ fidelity:
     countable set. The advertised form takes a single square-integrable map b into a
     nonzero separable Hilbert space H together with an operator J tied to it by the
     Gram identity ⟨u, J u⟩ = ∫ |⟨u, b(x)⟩|² dμ(x); a family (bₖ) is the case
-    H = ℓ², and that form is proved as well (Discretization.Family.bss_generalized).
+    H = ℓ², and that form is proved as well (Discretization.Countable.bss_generalized).
     Positivity of J and the finiteness of its trace are not assumed: both follow from
     the Gram identity, and the effective dimension is M = ∫ ‖b‖² dμ / Λ, which equals
     the trace of J along any Hilbert basis. Positive definiteness of the Gram matrix

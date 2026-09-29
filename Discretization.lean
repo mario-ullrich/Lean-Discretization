@@ -26,7 +26,7 @@ public import Discretization.Infinite.Bounds
 public import Discretization.Infinite.MainTheorem
 public import Discretization.Infinite.GeneralGram
 public import Discretization.Infinite.NormDiscretization
-public import Discretization.Infinite.Family
+public import Discretization.Infinite.Countable
 public import Discretization.KieferWolfowitz.MixEstimate
 public import Discretization.KieferWolfowitz.Design
 public import Discretization.KieferWolfowitz.NonDegenerate
@@ -125,10 +125,10 @@ state for a countably infinite second family and the theorems for it, and
 * `Discretization.Infinite.NormDiscretization`: the same statements read as discretization
   inequalities, `Discretization.Infinite.exists_discretization_of_hilbertBasis` and
   `Discretization.Infinite.exists_discretization`.
-* `Discretization.Infinite.Family`: the theorem in the form of the paper, for a countable
+* `Discretization.Infinite.Countable`: the theorem in the form of the paper, for a countable
   family `(b_k)` with `∑_k ‖b_k‖² < ∞` and its Gram matrix, deduced from the Hilbert-space
-  form on `ℓ²(κ)`: `Discretization.Family.bss_generalized`,
-  `Discretization.Family.exists_discretization`.
+  form on `ℓ²(κ)`: `Discretization.Countable.bss_generalized`,
+  `Discretization.Countable.exists_discretization`.
 * `Discretization.KieferWolfowitz.MixEstimate`: the one real inequality behind the
   Kiefer–Wolfowitz argument, describing how the determinant reacts to giving a new point the
   weight `α`.  No matrices occur in it.
