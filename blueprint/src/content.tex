@@ -1445,7 +1445,8 @@ weight of \Cref{lem:mixing-gain} would make it at least $1 + \eta$.
 
 \begin{theorem}[Discretization of the uniform norm]
 \label{thm:uniform-discretization}
-\lean{Discretization.KieferWolfowitz.exists_design_kieferWolfowitz}
+\lean{Discretization.KieferWolfowitz.exists_design_kieferWolfowitz,
+      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le}
 \leanok
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
 $a = (a_k)_{k \in \iota}$ be bounded functions on a set $D$ with linearly independent
@@ -1455,22 +1456,28 @@ that
 \[
   |f(y)|^2 \; \leq \; (m + \varepsilon) \sum_{k=1}^n w_k \, |f(x_k)|^2
 \]
-for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$.
+for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$. The points can be taken
+to number at most $2m^2 + 1$.
 \end{theorem}
 
 \begin{proof}
 \leanok
-\uses{prop:almost-maximal-determinant, lem:design-quadratic-form, lem:rank-one-updates}
+\uses{prop:almost-maximal-determinant, lem:design-quadratic-form, lem:rank-one-updates,
+      lem:few-design-points}
 Take the design of \Cref{prop:almost-maximal-determinant} for $\varepsilon/2$. For $s = m + \varepsilon$
 the bound $s^{-1} a(y)^* G^{-1} a(y) < 1$ is strict, so subtracting $s^{-1} a(y) a(y)^*$
 from $G$ leaves a positive definite matrix by \Cref{lem:rank-one-updates}(b), that is
 $a(y) a(y)^* \preceq s \cdot G$. Evaluating this at the coefficient vector of $f$ and
-using \Cref{lem:design-quadratic-form} gives the claim.
+using \Cref{lem:design-quadratic-form} gives the claim. The inequality depends on the design
+only through its Gram matrix, which \Cref{lem:few-design-points} preserves while cutting the
+design down to $2m^2 + 1$ points.
 \end{proof}
 
 \begin{theorem}[The sharp constant on a compact domain]
 \label{thm:uniform-discretization-compact}
-\lean{Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact}
+\lean{Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact,
+      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le,
+      IsCompact.convexHull}
 \leanok
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let $D$ be a
 compact space and let $a = (a_k)_{k \in \iota}$ be continuous functions on it with
@@ -1480,19 +1487,22 @@ that
 \[
   |f(y)|^2 \; \leq \; m \sum_{k=1}^n w_k \, |f(x_k)|^2
 \]
-for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$.
+for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$. The points can be taken
+to number at most $2m^2 + 1$.
 \end{theorem}
 
 \begin{proof}
 \leanok
-\uses{prop:almost-maximal-determinant, lem:mixing-gain, lem:design-quadratic-form}
+\uses{prop:almost-maximal-determinant, lem:mixing-gain, lem:design-quadratic-form,
+      lem:few-design-points}
 The matrices $a(y) a(y)^*$ form a compact set, whose convex hull is compact as well and
 consists exactly of the Gram matrices of designs. The determinant is continuous, so it
 attains its maximum at a design. No mixture can then increase the determinant at all,
 and \Cref{lem:mixing-gain} applied with the factor $1$ gives $a(y)^* G^{-1} a(y) \leq m$ without
 slack. The passage to the norm inequality is that of
 \Cref{thm:uniform-discretization} for every constant $s > m$, followed by the limit
-$s \to m$, which is a limit of real numbers.
+$s \to m$, which is a limit of real numbers, and the point count is again
+\Cref{lem:few-design-points}.
 \end{proof}
 
 Both theorems produce a list of points with weights. Read as a measure, that list is
@@ -1523,7 +1533,9 @@ every strongly measurable integrand.
 
 \begin{lemma}[Few points suffice]
 \label{lem:few-design-points}
-\lean{Discretization.KieferWolfowitz.exists_design_card_le}
+\lean{Discretization.KieferWolfowitz.exists_design_card_le,
+      Discretization.KieferWolfowitz.designGram_mem_convexHull,
+      Discretization.KieferWolfowitz.exists_design_of_mem_convexHull}
 \leanok
 Let $D$ be a set, let $\iota$ be a finite set with $m = \#\iota$ elements and let
 $a : D \to \mathbb{C}^{\iota}$. For all points $x_1, \dots, x_N \in D$ and weights
@@ -1543,11 +1555,8 @@ whose real dimension is $2m^2$, has at most $2m^2 + 1$ members.
 \begin{remark}[What the count is good for]
 \label{rem:point-count}
 \leanok
-\uses{lem:few-design-points, thm:uniform-discretization, thm:uniform-discretization-compact,
-      lem:design-quadratic-form}
-Both \Cref{thm:uniform-discretization} and \Cref{thm:uniform-discretization-compact}
-depend on the design only through its Gram matrix, by \Cref{lem:design-quadratic-form}, so
-\Cref{lem:few-design-points} gives them with at most $2m^2 + 1$ points. The sharper count
+\uses{lem:few-design-points, thm:uniform-discretization, thm:uniform-discretization-compact}
+The sharper count
 $r + 1$, with $r$ the dimension of the span of the products $a_k \overline{a_l}$, is not
 formalised, and nothing needs it.
 \end{remark}
