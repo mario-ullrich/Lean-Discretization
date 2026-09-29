@@ -7,6 +7,8 @@ module
 
 public import Mathlib.LinearAlgebra.Matrix.Hermitian
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
+public import Mathlib.MeasureTheory.Integral.Bochner.SumMeasure
+public import Mathlib.MeasureTheory.Measure.Count
 
 /-!
 # From integrals of quadratic forms to Gram matrices
@@ -30,6 +32,10 @@ The file also records the two auxiliary facts that go with it: the integrand is 
 average of `g` is smaller than the average of `f`, then `g x < f x` at some point
 (`Discretization.exists_lt_of_integral_lt`).  The paper phrases this as a set of positive
 measure; one good point is all that is needed here.
+
+For the counting measure on a finite set the Gram matrix is the sum of the rank-one matrices
+of the points (`Discretization.gram_count`), which is how a statement over a measure space
+specializes to finitely many vectors.
 -/
 
 @[expose] public section
@@ -55,6 +61,14 @@ theorem isHermitian_gram (a : D → ι → ℂ) (μ : Measure D) : (gram a μ).I
   ext k l
   rw [Matrix.conjTranspose_apply, gram_apply, gram_apply, RCLike.star_def, ← integral_conj]
   exact integral_congr_ae (Filter.Eventually.of_forall fun x => by simp [mul_comm])
+
+/-- **The Gram matrix of the counting measure** on a finite set is the sum of the rank-one
+matrices of the points, `∫ a a* d(count) = ∑_y a(y) a(y)*`. -/
+theorem gram_count [Fintype D] [MeasurableSingletonClass D] (a : D → ι → ℂ) :
+    gram a Measure.count = ∑ y, vecMulVec (a y) (star (a y)) := by
+  ext k l
+  rw [gram_apply, integral_fintype Integrable.of_finite, Matrix.sum_apply]
+  simp [vecMulVec_apply]
 
 /-- The product of two members of the family is integrable, by Cauchy–Schwarz for
 `L₂`-functions. -/

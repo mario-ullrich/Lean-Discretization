@@ -65,7 +65,10 @@ in the Loewner order, with no side condition
   between `(1 - √((m-1)/n))² • 1` and `(1 + √((m-1)/n))² • 1`. The original theorem has
   `m` in place of `m - 1`, so for `n = d·m` the ratio of the upper to the lower
   constant, the condition number, is `((√d + 1)/(√d - 1))²`. The version here, from
-  Chkifa, Dolbeault, Krieg and Ullrich, is slightly stronger.
+  Chkifa, Dolbeault, Krieg and Ullrich, is slightly stronger. For finitely many vectors
+  `v_y ∈ ℂ^m` with `∑ v_y v_y* = 1`, the form of the original theorem, it gives weights
+  `s_y ≥ 0`, at most `n` of them nonzero, with `∑ s_y v_y v_y*` between the same two
+  constants (`Discretization.bss_of_sum_eq_one`).
 
 * **The potential argument** gives the theorem under the two side conditions `m ≥ 2`
   and `M ≥ 1 + 1/n` (`Discretization.bss_generalized_of_gram_eq_one`). Three further

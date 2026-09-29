@@ -5,18 +5,15 @@ version: "v0.4"
 project:
   name: "The sparsification theorem of Batson, Spielman and Srivastava"
   description: >-
-    Let a = (aₖ) be m square-integrable functions on a measure space (Ω, μ) whose
-    Gram matrix ∫ a a* dμ is the identity I. Then for every n ≥ m there are n points
-    x₁, …, xₙ and positive weights w₁, …, wₙ with
-    (1 − √((m−1)/n))² I ≼ ∑ᵢ wᵢ a(xᵢ) a(xᵢ)* ≼ (1 + √((m−1)/n))² I
-    in the Loewner order. Read through quadratic forms, the weighted sum
-    ∑ᵢ wᵢ |f(xᵢ)|² stays within those two factors of ∫ |f|² dμ for every f in the span.
-    The original theorem of Batson, Spielman and Srivastava has the constants
-    (1 ∓ √(m/n))², so for n = d·m the ratio of the upper to the lower constant, the
-    condition number, is ((√d + 1)/(√d − 1))². With m − 1 in place of m, following
-    Chkifa, Dolbeault, Krieg and Ullrich, the statement here is slightly stronger. The
-    counting measure on a finite set gives the statement for finitely many vectors: a
-    reweighted subset of n of them is a spectral sparsifier of their sum.
+    Let v_y ∈ ℂᵐ, for y in a finite set Ω, be vectors with ∑_y v_y v_y* = I. Then for
+    every n ≥ m there are weights s_y ≥ 0, at most n of them nonzero, with
+    (1 − √((m−1)/n))² I ≼ ∑_y s_y v_y v_y* ≼ (1 + √((m−1)/n))² I
+    in the Loewner order: a reweighted subset of at most n of the vectors is a spectral
+    sparsifier of their sum. The original theorem of Batson, Spielman and Srivastava has
+    the constants (1 ∓ √(m/n))², so for n = d·m the ratio of the upper to the lower
+    constant, the condition number, is ((√d + 1)/(√d − 1))². With m − 1 in place of m,
+    following Chkifa, Dolbeault, Krieg and Ullrich, the statement here is slightly
+    stronger.
   authors:
     - "Mario Ullrich"
   license: "Apache-2.0"
@@ -41,7 +38,7 @@ sources:
       SIAM Review 56 (2014), no. 2, 315–334. The source states the theorem for a finite
       list of vectors summing to the identity and produces a reweighting supported on
       at most d·m of them, with frame constants (1 ∓ 1/√d)² = (1 ∓ √(m/n))². The
-      formalized statement holds over an arbitrary measure space, with m − 1 in place of
+      formalized statement is that theorem for complex vectors, with m − 1 in place of
       m, following Chkifa, Dolbeault, Krieg and Ullrich; see fidelity.divergences.
   - title: "Constructive discretization and approximation in reproducing kernel Hilbert spaces"
     authors:
@@ -55,18 +52,21 @@ sources:
     relationship: "background"
     note: >-
       The proof followed, and the source of the constants √((m−1)/n) in place of
-      √(m/n). The paper states the theorem for two families at once, with the upper
-      bound in terms of the effective dimension of the second; that form is a separate
-      submission (Palomar/Sparsification).
+      √(m/n). The paper states the theorem over a measure space and for two families
+      at once, with the upper bound in terms of the effective dimension of the second;
+      that form is a separate submission (Palomar/Sparsification).
     author_endorsement: "participated"
 
 related_formalizations: []
 
 status:
   scope: >-
-    Formalized and advertised: Discretization.bss, the two-sided frame bound for a
-    single family with Gram matrix the identity, for every n ≥ m and with no further
-    hypothesis.
+    Formalized and advertised: Discretization.bss_of_sum_eq_one, the two-sided
+    bound for a reweighting of finitely many vectors summing to the identity, with at
+    most n nonzero weights, for every n ≥ m and with no further hypothesis. It is
+    derived in the repository from the same bound for a square-integrable family on an
+    arbitrary measure space whose Gram matrix is the identity (Discretization.bss),
+    applied to the counting measure.
 
     Not formalized: the graph-sparsification application of the source, and the
     algorithmic content, that is the running time of the construction. The proof is
@@ -107,20 +107,16 @@ automation:
 
 fidelity:
   divergences: >-
-    The source fixes finitely many vectors v₁, …, v_M in ℂᵐ with ∑ᵢ vᵢ vᵢ* = I and
-    reweights them. The formalized statement instead takes a square-integrable family
-    a on an arbitrary measure space (Ω, μ) with Gram matrix I, and selects n points of
-    Ω with positive weights. The counting measure on a finite set recovers the source:
-    the points are then indices, repetitions allowed, so the conclusion is a
-    reweighting supported on at most n of the vectors.
+    The source works with real vectors; the formalized statement takes complex vectors
+    v_y ∈ ℂᵐ and the Loewner order on complex matrices.
+    The source bounds the number of nonzero weights by d·m for a real d > 1; the
+    formalized statement takes any natural number n ≥ m instead, which is the same
+    with n = d·m.
 
     The constants are (1 − √((m−1)/n))² and (1 + √((m−1)/n))², slightly better than
     the constants (1 ∓ √(m/n))² of the source. The improvement comes from the proof of
     Chkifa, Dolbeault, Krieg and Ullrich, which is the potential-function argument of
     the source in a refined form.
-
-    Traces of the matrices involved are real, and the formalization takes real parts
-    explicitly with RCLike.re wherever a real number is needed.
 
 review:
   status: "self-assessed"
@@ -135,14 +131,13 @@ alignment:
   namespace: "Discretization"
   statements:
     - source: "Twice-Ramanujan sparsifiers, the sparsification theorem"
-      lean: "Discretization.bss"
+      lean: "Discretization.bss_of_sum_eq_one"
       module: "Discretization.BSS"
       status: "proved"
       note: >-
-        The two-sided frame bound for a single family whose Gram matrix is the
-        identity, over an arbitrary measure space; see fidelity.divergences.
+        The two-sided bound for a reweighting of finitely many complex vectors summing
+        to the identity; see fidelity.divergences.
 
 acknowledgements: >-
-  Built on Mathlib. The Challenge module reproduces the definition Discretization.gram
-  from the development in BasicResults/IntegralQuadraticForm.lean, so that the
-  advertised statement can be read against Mathlib alone.
+  Built on Mathlib. The advertised statement uses only Mathlib's definitions, so the
+  Challenge module restates none.

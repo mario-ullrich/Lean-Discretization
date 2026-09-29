@@ -170,15 +170,28 @@ side condition on $m$ or on $M$ is needed; the potential argument of
 
 \begin{corollary}[Sparsification]
 \label{cor:bss}
-\lean{Discretization.bss}
+\lean{Discretization.bss, Discretization.bss_of_sum_eq_one, Discretization.gram_count,
+      Discretization.sum_fiberwise_smul,
+      Discretization.card_filter_sum_fiberwise_ne_zero_le}
 \leanok
-Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let
-$a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in every coordinate with
-$\int_\Omega a(x) a(x)^* \, d\mu(x) = 1$. Put $m = \#\iota$. Then for every $n \geq m$ there are points
-$x_1, \dots, x_n \in \Omega$ and weights $w_1, \dots, w_n > 0$ with
+Let $\iota$ be a finite nonempty set and put $m = \#\iota$.
+
+(a) Let $(\Omega, \mu)$ be a measure space and let $a : \Omega \to \mathbb{C}^{\iota}$ be
+square-integrable in every coordinate with $\int_\Omega a(x) a(x)^* \, d\mu(x) = 1$. Then
+for every $n \geq m$ there are points $x_1, \dots, x_n \in \Omega$ and weights
+$w_1, \dots, w_n > 0$ with
 \[
   \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot 1
     \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
+    \; \preceq \; \Bigl(1 + \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot 1 .
+\]
+
+(b) Let $Y$ be a finite set and let $v_y \in \mathbb{C}^{\iota}$, for $y \in Y$, be vectors
+with $\sum_{y \in Y} v_y v_y^* = 1$. Then for every $n \geq m$ there are weights
+$s_y \geq 0$, at most $n$ of them nonzero, with
+\[
+  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot 1
+    \; \preceq \; \sum_{y \in Y} s_y \, v_y v_y^*
     \; \preceq \; \Bigl(1 + \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot 1 .
 \]
 \end{corollary}
@@ -186,17 +199,21 @@ $x_1, \dots, x_n \in \Omega$ and weights $w_1, \dots, w_n > 0$ with
 \begin{proof}
 \leanok
 \uses{thm:sparsification}
-This is \Cref{thm:sparsification} for $b = a$ and $I = 1$: the Gram matrix of the second
-family is then the identity, $\Lambda = 1$ bounds it, and its effective dimension is
+(a) This is \Cref{thm:sparsification} for $b = a$ and $I = 1$: the Gram matrix of the
+second family is then the identity, $\Lambda = 1$ bounds it, and its effective dimension is
 $\Tr 1 / 1 = m$, so both frame constants are built from the same $r = \sqrt{(m-1)/n}$.
+
+(b) The counting measure on $Y$ has Gram matrix $\sum_y v_y v_y^* = 1$, so (a) applies to
+$y \mapsto v_y$. A vector chosen several times receives the sum of its weights,
+$s_y = \sum_{i : x_i = y} w_i$, which leaves both sums unchanged, and a nonzero $s_y$ belongs
+to one of the $n$ chosen points.
 \end{proof}
 
 This is the theorem of Batson, Spielman and Srivastava~\cite{BSS} in a slightly stronger
 form. They have $\sqrt{m/n}$ in place of $\sqrt{(m-1)/n}$, so for $n = d\,m$ the ratio of
 the upper to the lower constant, the condition number, is
 $\bigl((\sqrt{d}+1)/(\sqrt{d}-1)\bigr)^2$. The $m-1$ in place of $m$ comes
-from~\cite{CDKU}. The counting measure on a finite set turns the corollary into their
-statement for finitely many vectors.
+from~\cite{CDKU}. Part (b) is their statement for finitely many vectors, over $\mathbb{C}$.
 
 Read through quadratic forms, the theorem becomes a statement about norms.
 

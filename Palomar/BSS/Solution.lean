@@ -15,21 +15,21 @@ declaration named in `comparator.json` has, in this module's environment, exactl
 name and type as its counterpart in `Palomar.BSS.Challenge`, and that it uses no axioms
 beyond `propext`, `Classical.choice` and `Quot.sound`.
 
-Nothing is declared here. The advertised statement `Discretization.bss`, and the definition
-it rests on, `Discretization.gram`, arrive through the import above under their own names in
-the development: from `BasicResults/IntegralQuadraticForm.lean` and
-`Discretization/BSS.lean`. The Challenge module restates exactly those, which is why no
-wrapper is needed and why the names Palomar records are the names the development actually
-uses.
+Nothing is declared here. The advertised statement `Discretization.bss_of_sum_eq_one`
+arrives through the import above under its own name in the development, from
+`Discretization/BSS.lean`; it uses only Mathlib's notions, so the Challenge module restates
+no definition. That is why no wrapper is needed and why the name Palomar records is the
+name the development actually uses.
 
 The proof is the potential-function argument of Batson, Spielman and Srivastava. Two
 matrices are carried along, one for each frame bound, and two potentials measure how close
 each is to failure. Each of the `n` steps shifts both matrices, which costs an exactly
 computable amount of both potentials, and the barrier lemma names the weights that spend no
-more than that. Averaging the verifiers over `μ` shows that such a point exists. The
-development in `Discretization/` runs this argument in the form of Chkifa, Dolbeault, Krieg
-and Ullrich, which allows a second family; `Discretization/BSS.lean` reads off the statement
-for a single family.
+more than that. Averaging the verifiers shows that such a vector exists. The development in
+`Discretization/` runs this argument in the form of Chkifa, Dolbeault, Krieg and Ullrich,
+over an arbitrary measure space and with a second family; `Discretization/BSS.lean` reads
+off the statement for a single family, takes the counting measure on the finite set of
+vectors, and adds up the weights of a vector chosen several times.
 -/
 
 @[expose] public section
