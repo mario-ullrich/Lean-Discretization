@@ -86,8 +86,8 @@ status:
     the two side conditions m ≥ 2 and M ≥ 1 + 1/n
     (bss_generalized_of_gram_eq_one), the three edge cases that remove them
     (bss_generalized_of_unique, bss_generalized_of_small_dim,
-    bss_generalized_of_unique_of_small_dim), each in a finite and in a countable
-    version.
+    bss_generalized_of_unique_of_small_dim), each proved once for a finite and a
+    countable second family (Discretization.UpperBarrier).
 
     Not formalized: the construction of the Gram operator from a reproducing kernel,
     that is the singular value decomposition of the embedding into L₂; sampling

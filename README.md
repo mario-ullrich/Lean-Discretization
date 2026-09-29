@@ -88,10 +88,11 @@ in the Loewner order, with no side condition
   only be injective, with `M = ∫ ‖b‖² dμ / Λ` and no basis in the statement
   (`Discretization.Infinite.bss_generalized`); positivity of `J` and the finiteness of its
   trace follow from the Gram identity, and the family form is the case `H = ℓ²(κ)`.
-  Underneath are the same four cases as in finite dimension: the potential argument
-  (`.Infinite.bss_generalized_of_gram_eq_one`) and the three edge cases
-  (`.Infinite.bss_generalized_of_unique`, `.Infinite.bss_generalized_of_small_dim`,
-  `.Infinite.bss_generalized_of_unique_of_small_dim`). The number of points does not
+  Underneath are the same four cases as in finite dimension, proved once for matrices
+  and operators alike: the potential argument
+  (`Discretization.UpperBarrier.bss_generalized_of_gram_eq_one`) and the three edge cases
+  (`.UpperBarrier.bss_generalized_of_unique`, `.UpperBarrier.bss_generalized_of_small_dim`,
+  `.UpperBarrier.bss_generalized_of_unique_of_small_dim`). The number of points does not
   change, because it is governed by `M = Tr J / Λ` and not by the size of the family.
 * **The discretization inequality.** For every `f` in the span of the first family,
   `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²`, and the weighted sum of every `g` in
@@ -155,11 +156,10 @@ more than that. Averaging the verifiers over `μ` turns them into traces against
 matrices, so such a point exists. After `n` steps both potentials are still below their
 initial values, and reading a bound on a potential back as a bound on the matrix gives
 the two frame bounds. For a countably infinite second family, `B` is a positive
-invertible operator and the traces are sums along a fixed Hilbert basis; only the upper
-side is redone, in `Discretization/Infinite/`. The edge cases and the removal of the
-normalisation follow the finite argument there as well: both inductions consume the second
-family only through a constant verifier of average `n`, so the lower half is the finite
-lemma itself, and the crude bound `b b* ≼ ‖b‖² • 1` is all the upper half needs.
+invertible operator and the traces are sums along a fixed Hilbert basis. Only the analysis
+of `B` is redone, in `Discretization/Infinite/`: the construction, the read-off and the
+edge cases use `B` through a handful of properties, collected in
+`Discretization.UpperBarrier`, and are proved once for matrices and operators alike.
 
 The second proof maximises a determinant. Among all finitely supported probability
 measures one is chosen whose Gram matrix `G = ∑ wₖ a(xₖ) a(xₖ)*` has an almost maximal
@@ -183,7 +183,7 @@ The steps the two arguments are built from:
 * **The verifiers pass on average**, which is where the measure space enters: an
   admissible point exists because the lower verifier exceeds the upper one on average
   (`Discretization.integral_lowerVerifier_gt`, `.integral_upperVerifier_lt`,
-  `.exists_admissible_point`).
+  `.UpperBarrier.exists_admissible_point`).
 * **A bound on a potential is a bound on the matrix**: `Φ(A)⁻¹ • 1 ≼ A` and
   `Ψ_J(B)⁻¹ • J ≼ B` (`Matrix.PosDef.inv_re_trace_smul_one_le`,
   `.inv_re_trace_mul_smul_le`, `Discretization.Infinite.inv_upperPotential_smul_le`).
@@ -217,8 +217,8 @@ Everything else is in the blueprint, with its Lean name at every statement.
 Two libraries. `Discretization` holds the arguments: the arithmetic of the parameters,
 the two potentials and the verifiers, the barrier lemma, the averaging step, the
 `n`-step iteration, the main theorem with its edge cases, the discretization
-inequality, under `Discretization/Infinite/` the same chain for a countably infinite
-second family, and under `Discretization/KieferWolfowitz/` the maximisation of the
+inequality, under `Discretization/Infinite/` the analysis of the upper state for a
+countably infinite second family, with the theorem for it, and under `Discretization/KieferWolfowitz/` the maximisation of the
 determinant of a Gram matrix, the theorem it yields and John's decomposition of the
 identity beside it. `BasicResults` holds what the arguments need and Mathlib lacks:
 comparisons in the Loewner order, traces of products and Cauchy–Schwarz for them,

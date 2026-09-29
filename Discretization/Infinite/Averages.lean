@@ -20,7 +20,9 @@ square-integrable family `b` whose Gram operator is `J`,
 so a point at which the upper verifier is small exists as soon as the lower verifier is
 large on average.  Since the first family stays finite, the lower verifier is a matrix
 quantity and the upper one an operator quantity; both are real functions on `Ω`, and the
-conclusion is `Discretization.Infinite.exists_admissible_point`.
+conclusion is `Discretization.UpperBarrier.exists_admissible_point` for the operator
+upper barrier of `Discretization.Infinite.MainTheorem`.  This file also proves
+`∫ ‖b‖² dμ = Tr J` (`Discretization.Infinite.integral_norm_sq_eq_traceAlong`).
 
 Two ingredients do the work.  The average of a quadratic form is a trace
 (`ContinuousLinearMap.integral_re_inner_apply`).  With `W = B⁻¹` and `X = (B + ζ • J)⁻¹` it turns
@@ -134,26 +136,22 @@ theorem integral_upperVerifier_lt [Nonempty κ] [Countable κ] (hJ : IsFiniteTra
     exact hle
   linarith
 
-/-! ### An admissible point exists -/
+/-! ### The trace as an average -/
 
-/-- **An admissible point exists.**  If the gap opened by the two shifts is large enough,
-`1/δ - Φ(A) ≥ 1/ζ + Ψ_J(B)`, then some point passes the test of both verifiers, the lower
-one for the finite first family and the upper one for the operator second family. -/
-theorem exists_admissible_point {ι : Type*} [Fintype ι] [DecidableEq ι] [Nonempty ι]
-    [Nonempty κ] [Countable κ] {A : Matrix ι ι ℂ} (hA : A.PosDef) {δ : ℝ} (hδ : 0 < δ)
-    (hδ' : δ < (lowerPotential A)⁻¹) {a : Ω → ι → ℂ}
-    (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hgrama : gram a μ = 1)
-    (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H} (hB : IsStrictlyPositive B) {ζ : ℝ}
-    (hζ : 0 < ζ) {b : Ω → H} (hb : MemLp b 2 μ)
-    (hgramb : ∀ u, RCLike.re ⟪u, J u⟫_ℂ = ∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ)
-    (hgap : 1 / ζ + upperPotential e J B ≤ 1 / δ - lowerPotential A) :
-    ∃ x, upperVerifier e J B ζ (b x) < lowerVerifier A δ (a x) := by
-  have hlow := integral_lowerVerifier_gt hA hδ hδ' ha hgrama
-  have hup := integral_upperVerifier_lt hJ hB hζ hb hgramb
-  refine exists_lt_of_integral_lt (μ := μ) (f := fun x => lowerVerifier A δ (a x))
-    (g := fun x => upperVerifier e J B ζ (b x)) (integrable_lowerVerifier ha)
-    (integrable_upperVerifier hb J B ζ) ?_
-  linarith
+/-- **The trace of the Gram operator is the average of `‖b‖²`**, `∫ ‖b x‖² dμ(x) = Tr J`.
+
+This is `ContinuousLinearMap.integral_re_inner_apply` with `Q = 1`, and it is the form in
+which the finite-trace assumption of the paper is used here. -/
+theorem integral_norm_sq_eq_traceAlong [Countable κ] (hJ : IsFiniteTracePos e J) {b : Ω → H}
+    (hb : MemLp b 2 μ)
+    (hgramb : ∀ u, RCLike.re ⟪u, J u⟫_ℂ = ∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ) :
+    ∫ x, ‖b x‖ ^ 2 ∂μ = traceAlong e J := by
+  have h1 := integral_re_inner_apply e hJ.nonneg zero_le_one hJ.summableTrace hb hgramb
+  rw [mul_one] at h1
+  rw [← h1]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  show ‖b x‖ ^ 2 = RCLike.re ⟪b x, b x⟫_ℂ
+  exact (inner_self_eq_norm_sq (b x)).symm
 
 end Infinite
 

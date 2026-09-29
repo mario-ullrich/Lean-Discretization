@@ -18,15 +18,16 @@ replaced by the constant
 `L(x) = n |a(x)|²`,   with   `∫ L dμ = n`
 
 whenever the single function `a` is normalized.  The construction then tracks only the upper
-matrix, and choosing the largest admissible weight, `1/wᵢ = L(xᵢ)`, makes the lower frame
+state, and choosing the largest admissible weight, `1/wᵢ = L(xᵢ)`, makes the lower frame
 bound an identity:
 
 `∑ wᵢ |a(xᵢ)|² = ∑ 1/n = 1 = (1 - √((m-1)/n))²`.
 
 The upper half of the argument is that of the main theorem; only the induction is one-sided
-(`Discretization.exists_points_weights_of_unique`).  That the weights make the lower bound an
-identity is `Discretization.sum_smul_vecMulVec_eq_one`, and the result is
-`Discretization.bss_generalized_of_unique`.
+(`Discretization.UpperBarrier.exists_points_weights_of_unique`).  That the weights make the
+lower bound an identity is `Discretization.sum_smul_vecMulVec_eq_one`.  Both the construction
+and the theorem, `Discretization.UpperBarrier.bss_generalized_of_unique`, are proved for every
+upper barrier; the theorem for finite families is `Discretization.bss_generalized_of_unique`.
 
 Here `card ι = 1` is expressed by the typeclass assumption `[Unique ι]`, and `default : ι` is
 the single index.
@@ -84,17 +85,20 @@ theorem sum_smul_vecMulVec_eq_one [Unique ι] {n : ℕ} (hn0 : (0 : ℝ) < n) {a
 
 /-! ### The one-sided construction -/
 
-/-- **The construction for a single function.**  Only the upper matrix is tracked; the weights
+namespace UpperBarrier
+
+variable {S : Type*} [AddCommGroup S] [PartialOrder S] [IsOrderedAddMonoid S] [Module ℝ S]
+  [IsOrderedModule ℝ S] [One S] (U : UpperBarrier μ S)
+
+omit [IsOrderedAddMonoid S] [IsOrderedModule ℝ S] in
+/-- **The construction for a single function.**  Only the upper state is tracked; the weights
 are chosen as large as the constant lower verifier allows, so that each point contributes
 exactly `1/n` to the lower frame bound. -/
-theorem exists_points_weights_of_unique [Unique ι] [Nonempty κ] {J B₀ : Matrix κ κ ℂ}
-    (hJ : J.PosDef) (hB₀ : B₀.PosDef) {ζ : ℝ} (hζ : 0 < ζ) {a : Ω → ι → ℂ} {b : Ω → κ → ℂ}
-    (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
-    (hgrama : gram a μ = 1) (hgramb : gram b μ = J) {n : ℕ}
-    (hgap : 1 / ζ + upperPotential J B₀ ≤ n) (k : ℕ) :
+theorem exists_points_weights_of_unique [Unique ι] {B₀ : S} (hB₀ : U.Adm B₀) {ζ : ℝ}
+    (hζ : 0 < ζ) {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ)
+    (hgrama : gram a μ = 1) {n : ℕ} (hgap : 1 / ζ + U.pot B₀ ≤ n) (k : ℕ) :
     ∃ (x : Fin k → Ω) (w : Fin k → ℝ), (∀ i, 0 < w i) ∧
-      (upperState J B₀ ζ b x w).PosDef ∧
-      upperPotential J (upperState J B₀ ζ b x w) ≤ upperPotential J B₀ ∧
+      U.Adm (U.upperState B₀ ζ x w) ∧ U.pot (U.upperState B₀ ζ x w) ≤ U.pot B₀ ∧
       ∀ i, w i * ((n : ℝ) * ‖a (x i) default‖ ^ 2) = 1 := by
   induction k with
   | zero => exact ⟨Fin.elim0, Fin.elim0, fun i => i.elim0, by simpa using hB₀, by simp,
@@ -104,21 +108,19 @@ theorem exists_points_weights_of_unique [Unique ι] [Nonempty κ] {J B₀ : Matr
     -- the average of the constant lower verifier is `n`, and dominates that of the upper one
     have hint : ∫ y, (n : ℝ) * ‖a y default‖ ^ 2 ∂μ = n := by
       rw [integral_const_mul, integral_norm_sq_eq_one ha hgrama, mul_one]
-    have hlt : ∫ y, upperVerifier J (upperState J B₀ ζ b x w) ζ (b y) ∂μ
+    have hlt : ∫ y, U.ver (U.upperState B₀ ζ x w) ζ y ∂μ
         < ∫ y, (n : ℝ) * ‖a y default‖ ^ 2 ∂μ := by
       rw [hint]
-      have h1 := integral_upperVerifier_lt hJ hBk hζ hb hgramb
+      have h1 := U.integral_ver_lt hBk hζ
       linarith
     obtain ⟨y, hy⟩ := exists_lt_of_integral_lt (μ := μ)
-      (f := fun y => (n : ℝ) * ‖a y default‖ ^ 2)
-      (g := fun y => upperVerifier J (upperState J B₀ ζ b x w) ζ (b y))
-      ((integrable_norm_sq ha default).const_mul _) (integrable_upperVerifier hb) hlt
+      (f := fun y => (n : ℝ) * ‖a y default‖ ^ 2) (g := U.ver (U.upperState B₀ ζ x w) ζ)
+      ((integrable_norm_sq ha default).const_mul _) (U.integrable_ver _ ζ) hlt
     -- the weight allowed by the constant verifier
-    have hU0 : 0 ≤ upperVerifier J (upperState J B₀ ζ b x w) ζ (b y) :=
-      upperVerifier_nonneg hJ hBk hζ (b y)
+    have hU0 : 0 ≤ U.ver (U.upperState B₀ ζ x w) ζ y := U.ver_nonneg hBk hζ y
     have hLpos : 0 < (n : ℝ) * ‖a y default‖ ^ 2 := lt_of_le_of_lt hU0 hy
     obtain ⟨hwnew, -, hcondU⟩ := weight_of_verifier_lt hU0 hy
-    obtain ⟨hBnew, hΨnew⟩ := upperPotential_update_le hJ hBk hζ (b y) hwnew hcondU
+    obtain ⟨hBnew, hΨnew⟩ := U.update_le y hBk hζ hwnew hcondU
     refine ⟨Fin.snoc x y, Fin.snoc w (1 / ((n : ℝ) * ‖a y default‖ ^ 2)), ?_, ?_, ?_, ?_⟩
     · exact forall_snoc_pos hwpos hwnew
     · rw [upperState_snoc]; exact hBnew
@@ -128,6 +130,56 @@ theorem exists_points_weights_of_unique [Unique ι] [Nonempty κ] {J B₀ : Matr
       · intro j; simpa using hwk j
 
 /-! ### The theorem for a single function -/
+
+/-- **Generalized sparsification theorem for a one-element first family and an upper
+barrier.**  For `card ι = 1` the lower frame bound is `1 = (1 - √((m-1)/n))²`, and the upper
+bound is as in `Discretization.UpperBarrier.bss_generalized_of_gram_eq_one`, which needs
+`m ≥ 2`. -/
+theorem bss_generalized_of_unique [Unique ι] {Λ : ℝ} (hΛ : 0 < Λ) (hJΛ : U.J ≤ Λ • (1 : S))
+    {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hgrama : gram a μ = 1)
+    {n : ℕ} (hn : 0 < n) (hM : 1 + 1 / (n : ℝ) ≤ U.tr / Λ) :
+    ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
+      (1 : Matrix ι ι ℂ) ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) ∧
+      ∑ i, w i • U.R (x i) ≤ ((1 + Real.sqrt ((U.tr / Λ - 1) / n)) ^ 2 * Λ) • (1 : S) := by
+  -- the parameters of the upper half of the construction
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  set M : ℝ := U.tr / Λ with hMdef
+  set s : ℝ := Real.sqrt ((M - 1) / n) with hsdef
+  have hs0 : 1 / (n : ℝ) ≤ s := one_div_le_sqrt_div hn0 hM
+  have hspos : 0 < s := lt_of_lt_of_le (by positivity) hs0
+  have hM1 : (1 : ℝ) ≤ M := by
+    have h1 : 0 < 1 / (n : ℝ) := by positivity
+    linarith
+  have hM_eq : M = (n : ℝ) * s ^ 2 + 1 := eq_mul_sq_sqrt_div_add_one hn0 hM1
+  have hT : U.tr = Λ * ((n : ℝ) * s ^ 2 + 1) := by
+    rw [← hM_eq, hMdef]
+    field_simp
+  set ζ : ℝ := (1 + s) / n with hζdef
+  have hζ0 : 0 < ζ := div_pos (by linarith) hn0
+  clear_value M s
+  set d₀ : ℝ := ζ * U.tr / s with hd₀def
+  have hd₀0 : 0 < d₀ := div_pos (mul_pos hζ0 U.tr_pos) hspos
+  have hB₀ : U.Adm (d₀ • (1 : S)) := U.adm_smul_one hd₀0
+  clear_value ζ d₀
+  have hΨ₀ : U.pot (d₀ • (1 : S)) = s / ζ := by
+    have hT0 := U.tr_pos
+    rw [U.pot_smul_one hd₀0.ne', hd₀def]
+    field_simp
+  have h1s : (1 : ℝ) + s ≠ 0 := by positivity
+  have hgap : 1 / ζ + U.pot (d₀ • (1 : S)) ≤ n := by
+    rw [hΨ₀, hζdef, one_div_add_div_eq hn0 h1s]
+  -- run the one-sided construction
+  obtain ⟨x, w, hwpos, hBn, hΨn, hwk⟩ :=
+    U.exists_points_weights_of_unique hB₀ hζ0 ha hgrama hgap n
+  refine ⟨x, w, hwpos, ?_, ?_⟩
+  · -- the lower frame bound is an identity: each point contributes exactly `1/n`
+    rw [sum_smul_vecMulVec_eq_one hn0 x w hwk]
+  · -- the upper frame bound, exactly as in the main theorem
+    exact U.upper_frame_bound hΛ hJΛ hn0 hs0 hζdef hd₀def hT hBn (hΨ₀ ▸ hΨn)
+
+end UpperBarrier
+
+/-! ### The theorem for finite families -/
 
 /-- **Generalized sparsification theorem for a one-element first family.**
 
@@ -144,41 +196,7 @@ theorem bss_generalized_of_unique [Unique ι] [Nonempty κ]
       (1 : Matrix ι ι ℂ) ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) ∧
       ∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))
         ≤ ((1 + Real.sqrt ((RCLike.re J.trace / Λ - 1) / n)) ^ 2 * Λ)
-            • (1 : Matrix κ κ ℂ) := by
-  -- the parameters of the upper half of the construction
-  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
-  set M : ℝ := RCLike.re J.trace / Λ with hMdef
-  set s : ℝ := Real.sqrt ((M - 1) / n) with hsdef
-  have hs0 : 1 / (n : ℝ) ≤ s := one_div_le_sqrt_div hn0 hM
-  have hspos : 0 < s := lt_of_lt_of_le (by positivity) hs0
-  have hM1 : (1 : ℝ) ≤ M := by
-    have h1 : 0 < 1 / (n : ℝ) := by positivity
-    linarith
-  have hM_eq : M = (n : ℝ) * s ^ 2 + 1 := eq_mul_sq_sqrt_div_add_one hn0 hM1
-  have hT : RCLike.re J.trace = Λ * ((n : ℝ) * s ^ 2 + 1) := by
-    rw [← hM_eq, hMdef]
-    field_simp
-  set ζ : ℝ := (1 + s) / n with hζdef
-  have hζ0 : 0 < ζ := div_pos (by linarith) hn0
-  clear_value M s
-  have hT0 : 0 < RCLike.re J.trace := (RCLike.pos_iff.mp hJ.trace_pos).1
-  set d₀ : ℝ := ζ * RCLike.re J.trace / s with hd₀def
-  have hd₀0 : 0 < d₀ := div_pos (by positivity) hspos
-  have hB₀ : (d₀ • (1 : Matrix κ κ ℂ)).PosDef := Matrix.PosDef.one.smul hd₀0
-  clear_value ζ d₀
-  have hΨ₀ : upperPotential J (d₀ • (1 : Matrix κ κ ℂ)) = s / ζ := by
-    rw [upperPotential_smul_one J hd₀0.ne', hd₀def]
-    field_simp
-  have h1s : (1 : ℝ) + s ≠ 0 := by positivity
-  have hgap : 1 / ζ + upperPotential J (d₀ • (1 : Matrix κ κ ℂ)) ≤ n := by
-    rw [hΨ₀, hζdef, one_div_add_div_eq hn0 h1s]
-  -- run the one-sided construction
-  obtain ⟨x, w, hwpos, hBn, hΨn, hwk⟩ :=
-    exists_points_weights_of_unique hJ hB₀ hζ0 ha hb hgrama hgramb hgap n
-  refine ⟨x, w, hwpos, ?_, ?_⟩
-  · -- the lower frame bound is an identity: each point contributes exactly `1/n`
-    rw [sum_smul_vecMulVec_eq_one hn0 x w hwk]
-  · -- the upper frame bound, exactly as in the main theorem
-    exact upper_frame_bound hJ hΛ hJΛ hn0 hs0 hζdef hd₀def hT hBn (hΨ₀ ▸ hΨn)
+            • (1 : Matrix κ κ ℂ) :=
+  (matrixUpperBarrier hJ hb hgramb).bss_generalized_of_unique hΛ hJΛ ha hgrama hn hM
 
 end Discretization

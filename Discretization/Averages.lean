@@ -21,7 +21,7 @@ identity, and `b : Ω → κ → ℂ` one whose Gram matrix is `J`.  Then
 * `Discretization.integral_upperVerifier_lt`: `∫ upperVerifier J B ζ (b x) dμ < 1/ζ + Ψ_J(B)`.
 
 So as soon as `1/δ - Φ(A) ≥ 1/ζ + Ψ_J(B)`, the lower verifier exceeds the upper one on
-average, hence at some point `x` (`Discretization.exists_admissible_point`).  Any weight `w`
+average, hence at some point `x` (`Discretization.UpperBarrier.exists_admissible_point`).  Any weight `w`
 between the two reciprocals is then admissible for both barriers.
 
 The averages are computed with `Discretization.integral_re_quadForm`, which turns the
@@ -186,23 +186,5 @@ theorem integrable_upperVerifier {J B : Matrix κ κ ℂ} {ζ : ℝ} {b : Ω →
     Integrable (fun x => upperVerifier J B ζ (b x)) μ := by
   simp only [upperVerifier]
   exact ((integrable_quadForm hb _).re.div_const _).add (integrable_quadForm hb _).re
-
-/-- **An admissible point exists.**  If the gap opened by the two shifts is large enough,
-`1/δ - Φ(A) ≥ 1/ζ + Ψ_J(B)`, then some point passes the test of the two verifiers. -/
-theorem exists_admissible_point [Nonempty ι] [Nonempty κ] {A : Matrix ι ι ℂ}
-    (hA : A.PosDef) {J B : Matrix κ κ ℂ} (hJ : J.PosDef) (hB : B.PosDef) {δ ζ : ℝ}
-    (hδ : 0 < δ) (hδ' : δ < (lowerPotential A)⁻¹) (hζ : 0 < ζ)
-    {a : Ω → ι → ℂ} {b : Ω → κ → ℂ}
-    (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
-    (hgrama : gram a μ = 1) (hgramb : gram b μ = J)
-    (hgap : 1 / ζ + upperPotential J B ≤ 1 / δ - lowerPotential A) :
-    ∃ x, upperVerifier J B ζ (b x) < lowerVerifier A δ (a x) := by
-  have hlow := integral_lowerVerifier_gt hA hδ hδ' ha hgrama
-  have hup := integral_upperVerifier_lt hJ hB hζ hb hgramb
-  refine exists_lt_of_integral_lt (μ := μ) (f := fun x => lowerVerifier A δ (a x))
-    (g := fun x => upperVerifier J B ζ (b x)) ?_ ?_ ?_
-  · exact integrable_lowerVerifier ha
-  · exact integrable_upperVerifier hb
-  · linarith
 
 end Discretization

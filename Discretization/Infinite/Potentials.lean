@@ -197,6 +197,32 @@ theorem upperPotential_add_smul_lt [Nonempty κ] (hJ : IsFiniteTracePos e J) {B 
   have heq := upperPotential_sub_eq hJ hB hζ.le
   nlinarith [heq, hpos, hζ]
 
+/-! ### Multiples of the identity -/
+
+omit [CompleteSpace H] in
+/-- The inverse of a positive multiple of the identity. -/
+theorem inverse_smul_one {c : ℝ} (hc : c ≠ 0) :
+    Ring.inverse (c • (1 : H →L[ℂ] H)) = c⁻¹ • (1 : H →L[ℂ] H) := by
+  refine Ring.inverse_eq_of_mul_eq_one ?_ ?_ <;>
+    rw [smul_mul_assoc, one_mul, smul_smul]
+  · rw [mul_inv_cancel₀ hc, one_smul]
+  · rw [inv_mul_cancel₀ hc, one_smul]
+
+/-- A positive multiple of the identity is strictly positive. -/
+theorem isStrictlyPositive_smul_one {c : ℝ} (hc : 0 < c) :
+    IsStrictlyPositive (c • (1 : H →L[ℂ] H)) := by
+  refine ⟨smul_nonneg hc.le zero_le_one, ⟨⟨c • 1, c⁻¹ • 1, ?_, ?_⟩, rfl⟩⟩ <;>
+    rw [smul_mul_assoc, one_mul, smul_smul]
+  · rw [mul_inv_cancel₀ hc.ne', one_smul]
+  · rw [inv_mul_cancel₀ hc.ne', one_smul]
+
+omit [CompleteSpace H] in
+/-- `Ψ_J(c • 1) = Tr J / c`. -/
+theorem upperPotential_smul_one {c : ℝ} (hc : c ≠ 0) :
+    upperPotential e J (c • (1 : H →L[ℂ] H)) = traceAlong e J / c := by
+  rw [upperPotential, inverse_smul_one hc, mul_smul_comm, mul_one, traceAlong_smul,
+    div_eq_inv_mul]
+
 end Infinite
 
 end Discretization

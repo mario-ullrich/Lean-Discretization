@@ -645,7 +645,7 @@ because the inequality holds on average.
 \begin{lemma}[The verifiers pass on average]
 \label{lem:verifiers-on-average}
 \lean{Discretization.integral_lowerVerifier_gt, Discretization.integral_upperVerifier_lt,
-      Discretization.exists_admissible_point}
+      Discretization.UpperBarrier.exists_admissible_point}
 \leanok
 \uses{def:potentials-and-verifiers}
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ and $\kappa$ be finite nonempty sets,
@@ -694,8 +694,9 @@ Any weight $w$ between the two reciprocals is then admissible for both halves of
 
 \begin{proposition}[The barrier iteration]
 \label{prop:barrier-iteration}
-\lean{Discretization.lowerState, Discretization.upperState,
-      Discretization.exists_points_weights}
+\lean{Discretization.lowerState, Discretization.UpperBarrier.upperState,
+      Discretization.UpperBarrier.exists_points_weights, Discretization.UpperBarrier,
+      Discretization.matrixUpperBarrier}
 \leanok
 \uses{def:potentials-and-verifiers}
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ and $\kappa$ be finite nonempty sets,
@@ -731,10 +732,20 @@ condition drives it. What ties the number of points to the frame bounds is the c
 the initial matrices and of the two shifts, made in the proof of
 \Cref{thm:two-barriers}. The next lemma turns the final potentials into frame bounds.
 
+The induction and the read-off use only a few properties of the upper state: that
+$\Psi_J(B)$ and $U_B^{\zeta}$ are positive, the upper half of \Cref{lem:barrier}, the
+average bound of \Cref{lem:verifiers-on-average}, the bound $\Psi_J(B)^{-1} \cdot J \preceq B$
+with the potential of a multiple of the identity, and the crude bound
+$b(y) b(y)^* \preceq \|b(y)\|^2 \cdot 1$ with $\int_\Omega \|b\|^2 \, d\mu = \Tr J$. In Lean
+they are collected in \texttt{Discretization.UpperBarrier}, and the construction, the
+read-off of the upper frame bound and the theorem with its edge cases are proved once for
+every such upper state. The matrices over $\kappa$ are one instance
+(\texttt{Discretization.matrixUpperBarrier}), the operators of \Cref{ch:infinite} another.
+
 \begin{lemma}[From the final potentials to the frame bounds]
 \label{lem:frame-bounds-from-potentials}
-\lean{Discretization.lower_bound_of_state, Discretization.upper_bound_of_state,
-      Discretization.lower_frame_bound, Discretization.upper_frame_bound}
+\lean{Discretization.lower_bound_of_state, Discretization.UpperBarrier.upper_bound_of_state,
+      Discretization.lower_frame_bound, Discretization.UpperBarrier.upper_frame_bound}
 \leanok
 \uses{def:potentials-and-verifiers}
 Let $\iota$ and $\kappa$ be finite nonempty sets, let $n \geq 1$, and let
@@ -783,7 +794,8 @@ in $r$ and $s$ because its proof never unfolds the square roots.
 
 \begin{theorem}[Sparsification with both barriers]
 \label{thm:two-barriers}
-\lean{Discretization.bss_generalized_of_gram_eq_one}
+\lean{Discretization.bss_generalized_of_gram_eq_one,
+      Discretization.UpperBarrier.bss_generalized_of_gram_eq_one}
 \leanok
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ and $\kappa$ be finite nonempty sets,
 and let $a : \Omega \to \mathbb{C}^{\iota}$ and $b : \Omega \to \mathbb{C}^{\kappa}$ be
@@ -1024,9 +1036,7 @@ $X = (B + \zeta \cdot J)^{-1}$ the \emph{upper verifier} at $u \in H$ is
 \lean{Discretization.Infinite.upperPotential_sub_eq,
       Discretization.Infinite.upperPotential_add_smul_lt,
       Discretization.Infinite.upperPotential_update_le,
-      Discretization.Infinite.inv_upperPotential_smul_le,
-      Discretization.Infinite.upper_bound_of_state,
-      Discretization.Infinite.upper_frame_bound}
+      Discretization.Infinite.inv_upperPotential_smul_le}
 \leanok
 \uses{def:operator-upper-potential}
 Let $H$ be a nonzero complex Hilbert space with a Hilbert basis $e$, let $J$ be a
@@ -1076,7 +1086,8 @@ $\Psi_J(B)$, so \Cref{lem:operator-traces}(a) bounds it by $\Psi_J(B) \cdot 1$, 
 \Cref{lem:sqrt-conjugation} carries that back to $J \preceq \Psi_J(B) \cdot B$.
 
 (d) As in \Cref{lem:frame-bounds-from-potentials}(b), with (c) in place of
-\Cref{lem:inverse-trace-bounds}(b); the arithmetic is the same.
+\Cref{lem:inverse-trace-bounds}(b); the arithmetic is the same. In Lean this is the read-off
+proved for every upper barrier, \texttt{Discretization.UpperBarrier.upper\_frame\_bound}.
 \end{proof}
 
 \begin{lemma}[Averages along a countable second family]
@@ -1086,8 +1097,7 @@ $\Psi_J(B)$, so \Cref{lem:operator-traces}(a) bounds it by $\Psi_J(B) \cdot 1$, 
       ContinuousLinearMap.summable_re_inner_of_gram,
       ContinuousLinearMap.integral_re_inner_apply,
       Discretization.Infinite.integral_norm_sq_eq_traceAlong,
-      Discretization.Infinite.integral_upperVerifier_lt,
-      Discretization.Infinite.exists_admissible_point}
+      Discretization.Infinite.integral_upperVerifier_lt}
 \leanok
 \uses{def:potentials-and-verifiers, def:operator-upper-potential}
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let $H$
@@ -1144,7 +1154,8 @@ $X \preceq B^{-1}$ bounds the numerator by $E/\zeta$.
 \Cref{lem:verifiers-on-average}, which by assumption is at least $1/\zeta + \Psi_J(B)$,
 which exceeds the average of the upper verifier by (c). These are two averages of real
 functions, one coming from a matrix and one from an operator, so
-\Cref{lem:point-from-averages}(a) applies unchanged.
+\Cref{lem:point-from-averages}(a) applies unchanged. In Lean this is the admissible point
+proved for every upper barrier, \texttt{Discretization.UpperBarrier.exists\_admissible\_point}.
 \end{proof}
 
 \section{The theorem}
@@ -1155,11 +1166,11 @@ functions, one coming from a matrix and one from an operator, so
       Discretization.Infinite.bss_generalized_of_hilbertBasis,
       HilbertBasis.countable_of_separableSpace, HilbertBasis.nonempty_of_nontrivial,
       Discretization.Infinite.bss_generalized_of_gram_eq_one',
-      Discretization.Infinite.upperState, Discretization.Infinite.exists_points_weights,
-      Discretization.Infinite.bss_generalized_of_gram_eq_one,
-      Discretization.Infinite.bss_generalized_of_unique,
-      Discretization.Infinite.bss_generalized_of_small_dim,
-      Discretization.Infinite.bss_generalized_of_unique_of_small_dim}
+      Discretization.Infinite.operatorUpperBarrier,
+      Discretization.UpperBarrier.bss_generalized_of_gram_eq_one',
+      Discretization.UpperBarrier.bss_generalized_of_unique,
+      Discretization.UpperBarrier.bss_generalized_of_small_dim,
+      Discretization.UpperBarrier.bss_generalized_of_unique_of_small_dim}
 \leanok
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let $H$
 be a nonzero separable complex Hilbert space. Let $a : \Omega \to \mathbb{C}^{\iota}$ be
@@ -1202,10 +1213,13 @@ resulting lower bound by $I^{1/2}$; the upper bound does not involve the first f
 The case $I = 1$ is \texttt{Discretization.Infinite.bss\_generalized\_of\_gram\_eq\_one'},
 and it splits into the same four cases as in the finite case. The
 lower side is the finite argument verbatim, since the first family is finite in all of
-them; only the upper side changes.
+them; only the upper side changes. In Lean the four cases and the case distinction are
+proved once for every upper barrier (the paragraph after \Cref{prop:barrier-iteration}),
+and the operators on $H$ with the potential, the verifier and the bounds of this chapter
+form one, \texttt{Discretization.Infinite.operatorUpperBarrier}.
 
 Case $m \geq 2$, $M \geq 1 + 1/n$
-(\texttt{Discretization.Infinite.bss\_generalized\_of\_gram\_eq\_one}). The construction is
+(\texttt{Discretization.UpperBarrier.bss\_generalized\_of\_gram\_eq\_one}). The construction is
 that of \Cref{prop:barrier-iteration} with the upper state the operator
 $B_k = B_0 + k \zeta \cdot J - \sum_i w_i \, b(x_i) b(x_i)^*$: the step is
 \Cref{lem:countable-averages}(d) followed by the two barrier lemmas, the lower one of

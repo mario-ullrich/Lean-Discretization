@@ -106,4 +106,25 @@ theorem upperPotential_add_smul_lt [Nonempty κ] {J B : Matrix κ κ ℂ} (hJ : 
     (posDef_conj_inv hJ hB).re_trace_mul_pos hA.inv
   nlinarith [htr, hpos, hζ]
 
+/-! ### Potentials of a multiple of the identity -/
+
+/-- The inverse of a positive multiple of the identity. -/
+theorem inv_smul_one {c : ℝ} (hc : c ≠ 0) :
+    (c • (1 : Matrix ι ι ℂ))⁻¹ = c⁻¹ • (1 : Matrix ι ι ℂ) := by
+  refine Matrix.inv_eq_right_inv ?_
+  rw [Matrix.smul_mul, Matrix.mul_smul, Matrix.one_mul, smul_smul, mul_inv_cancel₀ hc,
+    one_smul]
+
+/-- `Φ(c • 1) = card ι / c`. -/
+theorem lowerPotential_smul_one {c : ℝ} (hc : c ≠ 0) :
+    lowerPotential (c • (1 : Matrix ι ι ℂ)) = Fintype.card ι / c := by
+  rw [lowerPotential, inv_smul_one hc, Matrix.trace_smul, RCLike.smul_re, Matrix.trace_one]
+  simp [div_eq_inv_mul]
+
+/-- `Ψ_J(c • 1) = Re Tr J / c`. -/
+theorem upperPotential_smul_one (J : Matrix κ κ ℂ) {c : ℝ} (hc : c ≠ 0) :
+    upperPotential J (c • (1 : Matrix κ κ ℂ)) = RCLike.re J.trace / c := by
+  rw [upperPotential, inv_smul_one hc, mul_smul_comm, mul_one, Matrix.trace_smul,
+    RCLike.smul_re, div_eq_inv_mul]
+
 end Discretization

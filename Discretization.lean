@@ -10,6 +10,7 @@ public import Discretization.Parameters
 public import Discretization.Potentials
 public import Discretization.Barrier
 public import Discretization.Averages
+public import Discretization.UpperBarrier
 public import Discretization.Iteration
 public import Discretization.MainTheorem
 public import Discretization.GeneralGram
@@ -22,11 +23,7 @@ public import Discretization.Infinite.Potentials
 public import Discretization.Infinite.Barrier
 public import Discretization.Infinite.Averages
 public import Discretization.Infinite.Bounds
-public import Discretization.Infinite.Iteration
 public import Discretization.Infinite.MainTheorem
-public import Discretization.Infinite.CardOne
-public import Discretization.Infinite.SmallEffectiveDim
-public import Discretization.Infinite.BothEdgeCases
 public import Discretization.Infinite.GeneralGram
 public import Discretization.Infinite.NormDiscretization
 public import Discretization.Infinite.Family
@@ -57,7 +54,8 @@ family to be countably infinite.
 
 The argument is the potential-function argument of Batson–Spielman–Srivastava in the form
 given by Chkifa, Dolbeault, Krieg and Ullrich.  Two matrices are carried along, a small one
-for the lower bound and a large one for the upper bound.  Two real numbers, the potentials,
+for the lower bound and a large one for the upper bound; for a countable second family the
+large one is an operator, and the two cases share everything but its analysis.  Two real numbers, the potentials,
 measure how close they are to failure.  Each new sampling point is chosen so that neither
 potential gets worse.
 
@@ -77,12 +75,16 @@ determinants obtained by giving one further point a small weight.
   `Ψ_J(B) = Re Tr (J B⁻¹)`, and how the shifts `A ↦ A - δ • 1`, `B ↦ B + ζ • J` change them.
 * `Discretization.Barrier`: the verifiers, which test a single point, and the barrier
   lemma.  A weight between the two verifiers keeps both potentials from increasing.
-* `Discretization.Averages`: the verifiers pass the test on average, so an admissible point
-  exists.
+* `Discretization.Averages`: the verifiers pass the test on average.
+* `Discretization.UpperBarrier`: what the construction needs to know about the upper state,
+  `Discretization.UpperBarrier`, so that matrices and operators share everything else; the
+  upper state after `k` steps, the existence of an admissible point, and the matrix instance
+  `Discretization.matrixUpperBarrier`.
 * `Discretization.Iteration`: the construction in `n` steps, with the invariant that both
-  matrices stay positive definite and neither potential exceeds its initial value.
+  states stay admissible and neither potential exceeds its initial value.
 * `Discretization.MainTheorem`: the initial data, the read-off of the frame bounds, and the
-  theorem itself, `Discretization.bss_generalized_of_gram_eq_one`.
+  theorem itself, for every upper barrier and for finite families,
+  `Discretization.bss_generalized_of_gram_eq_one`.
 * `Discretization.GeneralGram`: removing the normalisation of the first family, which gives
   the theorem in the form of the paper, `Discretization.bss_generalized`.
 * `Discretization.NormDiscretization`: the same statement read as a discretization
@@ -102,17 +104,13 @@ determinants obtained by giving one further point a small weight.
   set.
 * `Discretization.Infinite.Barrier`: the upper verifier and the barrier lemma for
   operators.
-* `Discretization.Infinite.Averages`: the upper verifier passes the test on average, so an
-  admissible point exists.
+* `Discretization.Infinite.Averages`: the upper verifier passes the test on average, and
+  `∫ ‖b‖² dμ = Tr J`.
 * `Discretization.Infinite.Bounds`: a bound on the upper potential is a bound on the
   operator, `Ψ_J(B)⁻¹ • J ≼ B`.
-* `Discretization.Infinite.Iteration`: the construction, with a matrix on the lower side and
-  an operator on the upper one.
-* `Discretization.Infinite.MainTheorem`: the potential argument for a countable second
-  family, `Discretization.Infinite.bss_generalized_of_gram_eq_one`.
-* `Discretization.Infinite.CardOne`, `Discretization.Infinite.SmallEffectiveDim` and
-  `Discretization.Infinite.BothEdgeCases`: the same three edge cases as in finite
-  dimension, and the theorem without side conditions,
+* `Discretization.Infinite.MainTheorem`: the operators as an upper barrier,
+  `Discretization.Infinite.operatorUpperBarrier`, and with it the theorem without side
+  conditions for a countable second family,
   `Discretization.Infinite.bss_generalized_of_gram_eq_one'`.
 * `Discretization.Infinite.GeneralGram`: removing the normalisation of the first family,
   which gives the theorem along a Hilbert basis,
