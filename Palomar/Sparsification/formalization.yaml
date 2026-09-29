@@ -45,8 +45,8 @@ sources:
       Theorem 3 is the sparsification theorem formalized here and Corollary 4 the
       discretization inequality; its proof is the one followed. The source states
       Theorem 3 for an at most countable second index set, and both cases are
-      formalized: a finite one with a Gram matrix, and a countable one with a Gram
-      operator of finite trace on a Hilbert space. The applications of the paper to
+      formalized: a finite one with a Gram matrix, and an infinite one with the Gram
+      operator of a map into a separable Hilbert space. The applications of the paper to
       reproducing kernel Hilbert spaces, least-squares recovery and sampling numbers
       are not formalized.
     author_endorsement: "participated"
@@ -69,11 +69,18 @@ related_formalizations: []
 status:
   scope: >-
     Formalized and advertised: Discretization.bss_generalized and
-    Discretization.Infinite.bss_generalized, the frame bounds for a finite and for a
-    countably infinite second family, together with the discretization inequalities
+    Discretization.Infinite.bss_generalized, the frame bounds for a finite and for an
+    infinite second family, together with the discretization inequalities
     Discretization.exists_discretization and
     Discretization.Infinite.exists_discretization. None of the four carries a side
     condition beyond n ≥ m.
+
+    Proved in the repository but not advertised here: the same two statements in the
+    literal form of the source, for a countable family (bₖ) with its Gram matrix
+    (Discretization.Family.bss_generalized, Discretization.Family.exists_discretization),
+    deduced from the Hilbert-space form on ℓ²; and the forms along a given Hilbert
+    basis (Discretization.Infinite.bss_generalized_of_hilbertBasis,
+    Discretization.Infinite.exists_discretization_of_hilbertBasis).
 
     Proved in the repository but not advertised here: the potential argument under
     the two side conditions m ≥ 2 and M ≥ 1 + 1/n
@@ -128,17 +135,17 @@ fidelity:
     Traces of the matrices involved are real, and the formalization takes real parts
     explicitly with RCLike.re wherever a real number is needed.
 
-    For a countably infinite second family the source works with a family (bₖ)
-    indexed by a countable set. The formalization instead takes a single
-    square-integrable map b into a Hilbert space H together with a given operator J
-    tied to it by the Gram identity Re ⟨u, J u⟩ = ∫ |⟨u, b(x)⟩|² dμ(x), which is
-    what the averaging step consumes and which avoids constructing J as a Bochner
-    integral in the operator algebra. Since Mathlib has no trace-class theory, the
-    trace is taken along a fixed Hilbert basis e of H (ContinuousLinearMap.traceAlong),
-    and the finite-trace hypothesis is the summability of that series. Positive
-    definiteness of the Gram matrix is replaced by injectivity of J, which is the
-    correct hypothesis in infinite dimension because a positive operator of finite
-    trace is compact and hence never bounded away from zero.
+    For an infinite second family the source works with a family (bₖ) indexed by a
+    countable set. The advertised form takes a single square-integrable map b into a
+    nonzero separable Hilbert space H together with an operator J tied to it by the
+    Gram identity ⟨u, J u⟩ = ∫ |⟨u, b(x)⟩|² dμ(x); a family (bₖ) is the case
+    H = ℓ², and that form is proved as well (Discretization.Family.bss_generalized).
+    Positivity of J and the finiteness of its trace are not assumed: both follow from
+    the Gram identity, and the effective dimension is M = ∫ ‖b‖² dμ / Λ, which equals
+    the trace of J along any Hilbert basis. Positive definiteness of the Gram matrix
+    is replaced by injectivity of J, which is the correct hypothesis in infinite
+    dimension because a positive operator of finite trace is compact and hence never
+    bounded away from zero.
 
 review:
   status: "self-assessed"
@@ -171,8 +178,9 @@ alignment:
       module: "Discretization.Infinite.GeneralGram"
       status: "proved"
       note: >-
-        The upper frame bound is an inequality between operators; the number of points
-        is unchanged, being governed by the effective dimension.
+        For a second family with values in a separable Hilbert space; the upper frame
+        bound is an inequality between operators, and the number of points is
+        unchanged, being governed by the effective dimension M = ∫ ‖b‖² dμ / Λ.
     - source: "Constructive discretization and approximation in RKHS, Corollary 4, countable second family"
       lean: "Discretization.Infinite.exists_discretization"
       module: "Discretization.Infinite.NormDiscretization"
@@ -182,8 +190,6 @@ alignment:
         second family.
 
 acknowledgements: >-
-  Built on Mathlib. The Challenge module reproduces the definitions Discretization.gram,
-  ContinuousLinearMap.traceAlong and Discretization.Infinite.IsFiniteTracePos from the
-  development in BasicResults/IntegralQuadraticForm.lean, BasicResults/OperatorTrace.lean
-  and Discretization/Infinite/Potentials.lean, so that the advertised statements can be
-  read against Mathlib alone.
+  Built on Mathlib. The Challenge module reproduces the definition Discretization.gram
+  from the development in BasicResults/IntegralQuadraticForm.lean, so that the advertised
+  statements can be read against Mathlib alone.

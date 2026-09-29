@@ -25,16 +25,14 @@ Nothing is declared here. The advertised statements
   `∑ wᵢ b(xᵢ) b(xᵢ)* ≼ (1 + √((M-1)/n))² Λ • 1`, for a finite second family,
 * `Discretization.exists_discretization` — the same read as a discretization inequality for
   the `L₂` norm,
-* `Discretization.Infinite.bss_generalized` — the frame bounds for a countably infinite
-  second family, the second one in the order of operators,
+* `Discretization.Infinite.bss_generalized` — the frame bounds for a second family with
+  values in a separable Hilbert space, the second one in the order of operators,
 * `Discretization.Infinite.exists_discretization` — the discretization inequality in that
   case,
 
-and the definitions they rest on — `Discretization.gram`,
-`ContinuousLinearMap.traceAlong` and `Discretization.Infinite.IsFiniteTracePos` — all arrive
-through the imports above, under their own names in the development: from
-`BasicResults/IntegralQuadraticForm.lean`, `BasicResults/OperatorTrace.lean`,
-`Discretization/Infinite/Potentials.lean`, `Discretization/GeneralGram.lean`,
+and the definition they rest on, `Discretization.gram`, all arrive through the imports
+above, under their own names in the development: from
+`BasicResults/IntegralQuadraticForm.lean`, `Discretization/GeneralGram.lean`,
 `Discretization/NormDiscretization.lean`, `Discretization/Infinite/GeneralGram.lean` and
 `Discretization/Infinite/NormDiscretization.lean`. The Challenge module restates exactly
 those, which is why no wrapper is needed and why the names Palomar records are the names the

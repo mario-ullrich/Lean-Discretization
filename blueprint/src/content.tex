@@ -150,7 +150,8 @@ $\ell_2(\kappa)$. Restricted to $S$, which changes neither $I$ nor any of the in
 $b$ is a square-integrable map into $\ell_2(\kappa)$ whose Gram operator is $J$, positive,
 injective, bounded by $\Lambda \cdot 1$ and of trace $\sum_p \|b_p\|^2$ along the standard
 basis, by \Cref{lem:family-gram-operator}(b). \Cref{thm:operator-sparsification}, applied
-to the measure space $S$, gives the points, which therefore lie in $S$, and the weights;
+to the measure space $S$ and the space $\ell_2(\kappa)$, which is separable because $\kappa$
+is countable, gives the points, which therefore lie in $S$, and the weights;
 its upper bound in the order of operators, evaluated at $\bar c$, is the bound claimed.
 \end{proof}
 
@@ -202,7 +203,8 @@ Read through quadratic forms, the theorem becomes a statement about norms.
 \begin{corollary}[Discretization of the $L_2$-norm]
 \label{cor:l2-discretization}
 \lean{Discretization.exists_discretization, Discretization.Family.exists_discretization,
-      Discretization.Infinite.exists_discretization}
+      Discretization.Infinite.exists_discretization,
+      Discretization.Infinite.exists_discretization_of_hilbertBasis}
 \leanok
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let
 $\kappa$ be a nonempty set that is finite or countably infinite. Let
@@ -836,13 +838,13 @@ the upper half has to be redone. Mathlib has no trace-class theory, so the trace
 built along a Hilbert basis.
 
 The Gram operator is positive, since the right-hand side is nonnegative. Its trace along
-any Hilbert basis $e$ is finite and equal to $\int_\Omega \|b\|^2 \, d\mu$, by Parseval
-and monotone convergence. The only genuine assumption on $J$ is therefore that it is
-injective, which is what positive definiteness of the Gram matrix says for a finite
-family. The formalisation states the Gram identity with real parts and assumes $J$
-positive, which for a positive $J$ is the same identity; it also assumes the trace
-finite and proves $\int_\Omega \|b\|^2 \, d\mu = \Tr_e J$
-(\Cref{lem:countable-averages}(b)).
+any Hilbert basis $e$ with countable index is finite and equal to
+$\int_\Omega \|b\|^2 \, d\mu$, by Parseval and monotone convergence
+(\Cref{lem:countable-averages}(a)). The only genuine assumption on $J$ is therefore that
+it is injective, which is what positive definiteness of the Gram matrix says for a finite
+family, and the main theorem of this chapter assumes nothing else: no basis appears in its
+statement. The lemmas leading to it work along a fixed Hilbert basis with countable
+index, which a separable space always has.
 
 \section{The trace of an operator along a basis}
 
@@ -1077,7 +1079,10 @@ $\Psi_J(B)$, so \Cref{lem:operator-traces}(a) bounds it by $\Psi_J(B) \cdot 1$, 
 
 \begin{lemma}[Averages along a countable second family]
 \label{lem:countable-averages}
-\lean{ContinuousLinearMap.integral_re_inner_apply,
+\lean{ContinuousLinearMap.nonneg_of_inner_eq_integral,
+      ContinuousLinearMap.re_inner_eq_integral,
+      ContinuousLinearMap.summable_re_inner_of_gram,
+      ContinuousLinearMap.integral_re_inner_apply,
       Discretization.Infinite.integral_norm_sq_eq_traceAlong,
       Discretization.Infinite.integral_upperVerifier_lt,
       Discretization.Infinite.exists_admissible_point}
@@ -1089,14 +1094,15 @@ $e = (e_k)_{k \in \kappa}$. Let $a : \Omega \to \mathbb{C}^{\iota}$ be square-in
 every coordinate with $\int_\Omega a(x) a(x)^* \, d\mu(x) = 1$ and $b : \Omega \to H$
 square-integrable, let $J$ be the Gram operator of $b$, the bounded operator with
 $\langle u, J u \rangle = \int_\Omega |\langle u, b(x) \rangle|^2 \, d\mu(x)$ for every
-$u \in H$, and assume that $J$ is injective and of finite trace along $e$.
+$u \in H$, and assume that $J$ is injective.
 
-(a) For every positive bounded operator $Q$ on $H$,
+(a) $J$ is positive and of finite trace along $e$, and
+$\Tr_e J = \int_\Omega \|b(x)\|^2 \, d\mu(x)$.
+
+(b) For every positive bounded operator $Q$ on $H$,
 \[
   \int_\Omega \re \bigl\langle b(x), Q \, b(x) \bigr\rangle \, d\mu(x) = \Tr_e (J Q).
 \]
-
-(b) $\int_\Omega \|b(x)\|^2 \, d\mu(x) = \Tr_e J$.
 
 (c) Let $B$ be a strictly positive operator on $H$ and $\zeta > 0$. Then
 \[
@@ -1113,7 +1119,12 @@ $U_B^{\zeta}\bigl( b(x) \bigr) < L_A^{\delta}\bigl( a(x) \bigr)$.
 \leanok
 \uses{lem:hilbert-schmidt-adjoint, lem:operator-traces, lem:operator-barrier,
       lem:verifiers-on-average, lem:point-from-averages}
-(a) Pointwise $\re \langle b, Q b \rangle = \|Q^{1/2} b\|^2$, which
+(a) The quadratic form $\langle u, J u \rangle$ is real and nonnegative, so $J$ is
+positive. By Tonelli and \Cref{lem:hilbert-schmidt-adjoint}(a),
+$\sum_k \langle e_k, J e_k \rangle = \sum_k \int_\Omega |\langle e_k, b \rangle|^2 \, d\mu
+= \int_\Omega \|b\|^2 \, d\mu < \infty$, which is the finite trace and its value.
+
+(b) Pointwise $\re \langle b, Q b \rangle = \|Q^{1/2} b\|^2$, which
 \Cref{lem:hilbert-schmidt-adjoint}(a) turns into
 $\sum_k |\langle Q^{1/2} e_k, b \rangle|^2$. Sum and integral may be exchanged because all
 terms are nonnegative and their integrals sum to a finite value, and the Gram identity
@@ -1123,9 +1134,7 @@ $Q^{1/2} J^{1/2}$, once read through the operator and once through its adjoint, 
 \Cref{lem:hilbert-schmidt-adjoint}(b) and \Cref{lem:operator-traces}(b). Countability of
 the index set of the basis enters here, in the interchange.
 
-(b) This is (a) with $Q = 1$.
-
-(c) By (a) the average is $\Tr_e (J X J X) / E + \Psi_J(B + \zeta \cdot J)$ with
+(c) By (b) the average is $\Tr_e (J X J X) / E + \Psi_J(B + \zeta \cdot J)$ with
 $X = (B + \zeta \cdot J)^{-1}$ and $E$ the gain of \Cref{lem:operator-barrier}(a), and
 $X \preceq B^{-1}$ bounds the numerator by $E/\zeta$.
 
@@ -1141,6 +1150,8 @@ functions, one coming from a matrix and one from an operator, so
 \begin{theorem}[Sparsification for a Hilbert-space-valued second family]
 \label{thm:operator-sparsification}
 \lean{Discretization.Infinite.bss_generalized,
+      Discretization.Infinite.bss_generalized_of_hilbertBasis,
+      HilbertBasis.countable_of_separableSpace, HilbertBasis.nonempty_of_nontrivial,
       Discretization.Infinite.bss_generalized_of_gram_eq_one',
       Discretization.Infinite.upperState, Discretization.Infinite.exists_points_weights,
       Discretization.Infinite.bss_generalized_of_gram_eq_one,
@@ -1148,16 +1159,15 @@ functions, one coming from a matrix and one from an operator, so
       Discretization.Infinite.bss_generalized_of_small_dim,
       Discretization.Infinite.bss_generalized_of_unique_of_small_dim}
 \leanok
-\uses{def:trace-along-basis}
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let $H$
-be a nonzero complex Hilbert space with a countable Hilbert basis
-$e = (e_k)_{k \in \kappa}$. Let $a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in
-every coordinate with $I = \int_\Omega a(x) a(x)^* \, d\mu(x)$ positive definite and
-$b : \Omega \to H$ square-integrable, let $J$ be the Gram operator of $b$, the bounded
-operator with $\langle u, J u \rangle = \int_\Omega |\langle u, b(x) \rangle|^2 \, d\mu(x)$
-for every $u \in H$, and assume that $J$ is injective and of finite trace along $e$. Let
-$\Lambda > 0$ satisfy $J \preceq \Lambda \cdot 1$, and put $m = \#\iota$ and
-$M = \Tr_e J / \Lambda$. Then for every $n \geq m$ there are points
+be a nonzero separable complex Hilbert space. Let $a : \Omega \to \mathbb{C}^{\iota}$ be
+square-integrable in every coordinate with $I = \int_\Omega a(x) a(x)^* \, d\mu(x)$
+positive definite and $b : \Omega \to H$ square-integrable, let $J$ be the Gram operator of
+$b$, the bounded operator with
+$\langle u, J u \rangle = \int_\Omega |\langle u, b(x) \rangle|^2 \, d\mu(x)$ for every
+$u \in H$, and assume that $J$ is injective. Let $\Lambda > 0$ satisfy
+$J \preceq \Lambda \cdot 1$, and put $m = \#\iota$ and
+$M = \int_\Omega \|b(x)\|^2 \, d\mu(x) / \Lambda$. Then for every $n \geq m$ there are points
 $x_1, \dots, x_n \in \Omega$ and weights $w_1, \dots, w_n > 0$ with
 \[
   \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot I
@@ -1176,6 +1186,14 @@ in the order of operators.
 \uses{thm:two-barriers, prop:barrier-iteration, lem:barrier,
       lem:operator-barrier, lem:countable-averages, lem:frame-bounds-from-potentials,
       lem:point-from-averages, lem:operator-rank-one-updates, lem:gram-identities}
+Choose a Hilbert basis $e = (e_k)_{k \in \kappa}$ of $H$. Its index set is countable: the
+open balls of radius $1/2$ around the basis vectors are pairwise disjoint, because distinct
+basis vectors are $\sqrt{2}$ apart, and a separable space holds only countably many
+pairwise disjoint nonempty open sets. It is nonempty because $H \neq 0$. By
+\Cref{lem:countable-averages}(a), $J$ is positive and of finite trace along $e$ with
+$\Tr_e J = \int_\Omega \|b\|^2 \, d\mu$, so $M = \Tr_e J / \Lambda$; everything below works
+along $e$, and is \texttt{Discretization.Infinite.bss\_generalized\_of\_hilbertBasis}.
+
 The normalisation is removed as in the finite case: replace $a$ by
 $I^{-1/2} a$, whose Gram matrix is $1$ by \Cref{lem:gram-identities}(b), and conjugate the
 resulting lower bound by $I^{1/2}$; the upper bound does not involve the first family.
@@ -1203,7 +1221,7 @@ $\sum_i w_i |a(x_i)|^2 = 1$.
 
 Case $m \geq 2$, $M \leq 1 + 1/n$. The induction of the finite case verbatim: it consumes
 the second family only through the constant upper verifier, here
-$U(x) = n \|b(x)\|^2 / \Tr_e J$, whose average is $n$ by \Cref{lem:countable-averages}(b).
+$U(x) = n \|b(x)\|^2 / \Tr_e J$, whose average is $n$ by \Cref{lem:countable-averages}(a).
 The weights it produces satisfy $w_i \|b(x_i)\|^2 \leq \Tr_e J / n$, so
 \Cref{lem:operator-rank-one-updates}(b) gives
 $\sum_i w_i \, b(x_i) b(x_i)^* \preceq \Tr_e J \cdot 1 = M \Lambda \cdot 1$, and
@@ -1217,8 +1235,9 @@ identity, and $w \, U(y) \leq 1$ with \Cref{lem:operator-rank-one-updates}(b) gi
 upper bound.
 \end{proof}
 
-By \Cref{lem:countable-averages}(b) the effective dimension is
-$M = \int_\Omega \|b\|^2 \, d\mu \, / \, \Lambda$, which does not depend on the basis.
+Along every Hilbert basis $e$ of $H$ the effective dimension is also $\Tr_e J / \Lambda$,
+by \Cref{lem:countable-averages}(a); for a positive operator the trace does not depend on
+the basis in any case (\Cref{lem:operator-traces}(c)).
 
 \section{A countable family}
 

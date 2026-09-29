@@ -204,4 +204,55 @@ theorem integral_re_inner_apply [Countable κ] (e : HilbertBasis κ ℂ H) {J Q 
     _ = ∑' k, RCLike.re ⟪CFC.sqrt Q (e k), J (CFC.sqrt Q (e k))⟫_ℂ := tsum_congr hgval
     _ = traceAlong e (J * Q) := (traceAlong_mul_eq_tsum_sqrt e hJ hQ hsum).symm
 
+/-! ### What the Gram identity gives for free
+
+For a square-integrable `b`, an operator `J` with `⟪u, J u⟫ = ∫ |⟪u, b x⟫|² dμ` is positive,
+and its trace is finite along every Hilbert basis with countable index, with value
+`∫ ‖b‖² dμ`.  Neither needs to be assumed. -/
+
+omit [CompleteSpace H] in
+/-- **An operator given by a Gram identity is positive.** -/
+theorem nonneg_of_inner_eq_integral {J : H →L[ℂ] H} {b : Ω → H}
+    (hgram : ∀ u, ⟪u, J u⟫_ℂ = ((∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ : ℝ) : ℂ)) : 0 ≤ J := by
+  rw [ContinuousLinearMap.nonneg_iff_isPositive, ContinuousLinearMap.isPositive_iff_complex]
+  intro u
+  have h : ⟪J u, u⟫_ℂ = ((∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ : ℝ) : ℂ) := by
+    rw [← inner_conj_symm, hgram, Complex.conj_ofReal]
+  rw [h]
+  have h0 : 0 ≤ ∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ := integral_nonneg fun x => by positivity
+  simpa using h0
+
+omit [CompleteSpace H] in
+/-- The real form of a Gram identity. -/
+theorem re_inner_eq_integral {J : H →L[ℂ] H} {b : Ω → H}
+    (hgram : ∀ u, ⟪u, J u⟫_ℂ = ((∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ : ℝ) : ℂ)) (u : H) :
+    RCLike.re ⟪u, J u⟫_ℂ = ∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ := by
+  rw [hgram]
+  simp
+
+omit [CompleteSpace H] in
+/-- **The Gram operator of a square-integrable map has finite trace** along every Hilbert
+basis with countable index: by Tonelli and Parseval,
+`∑ₖ Re ⟪eₖ, J eₖ⟫ = ∑ₖ ∫ |⟪eₖ, b x⟫|² dμ = ∫ ‖b‖² dμ < ∞`. -/
+theorem summable_re_inner_of_gram [Countable κ] (e : HilbertBasis κ ℂ H) {J : H →L[ℂ] H}
+    {b : Ω → H} (hb : MemLp b 2 μ)
+    (hgram : ∀ u, RCLike.re ⟪u, J u⟫_ℂ = ∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ) :
+    Summable fun k => RCLike.re ⟪e k, J (e k)⟫_ℂ := by
+  have hmeas : ∀ k, AEMeasurable (fun x => ENNReal.ofReal (‖⟪e k, b x⟫_ℂ‖ ^ 2)) μ := fun k =>
+    (((hb.continuousLinearMap_comp (innerSL ℂ (e k))).aestronglyMeasurable.aemeasurable.norm
+      ).pow_const 2).ennreal_ofReal
+  refine summable_of_tsum_ofReal_ne_top (fun k => by rw [hgram]; positivity) ?_
+  calc ∑' k, ENNReal.ofReal (RCLike.re ⟪e k, J (e k)⟫_ℂ)
+      = ∑' k, ∫⁻ x, ENNReal.ofReal (‖⟪e k, b x⟫_ℂ‖ ^ 2) ∂μ := tsum_congr fun k => by
+        rw [hgram, ofReal_integral_eq_lintegral_ofReal (integrable_norm_sq_inner hb (e k))
+          (ae_of_all _ fun x => by positivity)]
+    _ = ∫⁻ x, ∑' k, ENNReal.ofReal (‖⟪e k, b x⟫_ℂ‖ ^ 2) ∂μ := (lintegral_tsum hmeas).symm
+    _ = ∫⁻ x, ENNReal.ofReal (‖b x‖ ^ 2) ∂μ :=
+        lintegral_congr fun x => tsum_ofReal_norm_sq_inner e (b x)
+    _ ≠ ⊤ := by
+        rw [← ofReal_integral_eq_lintegral_ofReal
+          ((memLp_two_iff_integrable_sq_norm hb.aestronglyMeasurable).1 hb)
+          (ae_of_all _ fun x => by positivity)]
+        exact ENNReal.ofReal_ne_top
+
 end ContinuousLinearMap

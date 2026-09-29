@@ -13,9 +13,9 @@ public import Discretization.Infinite.NormDiscretization
 
 The paper states its Theorem 3 for a second family `b = (b_k)_{k ∈ κ}` of square-integrable
 functions indexed by an at most countable set, with the Gram matrix `J = (∫ b_k b_l̄ dμ)` in
-place of the Gram operator.  This file proves that form from the operator form
-`Discretization.Infinite.bss_generalized`, applied to the Hilbert space `ℓ²(κ)` with its
-standard basis.
+place of the Gram operator.  This file proves that form from the operator form along a
+Hilbert basis, `Discretization.Infinite.bss_generalized_of_hilbertBasis`, applied to the
+Hilbert space `ℓ²(κ)` with its standard basis.
 
 The hypotheses are those of the paper:
 
@@ -303,7 +303,8 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 include hbx in
 /-- **Generalized sparsification for a countable family, when every value lies in `ℓ²`.**
 
-This is `Discretization.Infinite.bss_generalized` for `H = ℓ²(κ)` with its standard basis,
+This is `Discretization.Infinite.bss_generalized_of_hilbertBasis` for `H = ℓ²(κ)` with its
+standard basis,
 `b(x) = (b_k(x))_k` and the Gram operator of the family; the effective dimension is
 `M = ∑_k ‖b_k‖²_{L₂} / Λ`, and the upper bound is read through quadratic forms. -/
 theorem bss_generalized_of_mem_l2 [Nonempty ι] [Nonempty κ]
@@ -318,7 +319,7 @@ theorem bss_generalized_of_mem_l2 [Nonempty ι] [Nonempty κ]
         ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) ∧
       ∀ c : ℓ²(κ, ℂ), ∑ i, w i * ‖∑' k, conj (c k) * b (x i) k‖ ^ 2
         ≤ (1 + Real.sqrt (((∑' k, ∫ y, ‖b y k‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2 * Λ * ‖c‖ ^ 2 := by
-  obtain ⟨x, w, hw, hlow, hup⟩ := Infinite.bss_generalized
+  obtain ⟨x, w, hw, hlow, hup⟩ := Infinite.bss_generalized_of_hilbertBasis
     (isFiniteTracePos_gramOp hbx hb htr hinj) hΛ (gramOp_le hbx hb htr hJΛ) ha
     (memLp_toLp hbx hb htr) hI (re_inner_gramOp hbx hb htr) hmn
   refine ⟨x, w, hw, hlow, fun c => ?_⟩
@@ -334,7 +335,7 @@ theorem bss_generalized_of_mem_l2 [Nonempty ι] [Nonempty κ]
 
 include hbx in
 /-- **Discretization of the `L₂`-norm for a countable family, when every value lies in
-`ℓ²`**: `Discretization.Infinite.exists_discretization` for `H = ℓ²(κ)`. -/
+`ℓ²`**: `Discretization.Infinite.exists_discretization_of_hilbertBasis` for `H = ℓ²(κ)`. -/
 theorem exists_discretization_of_mem_l2 [Nonempty ι] [Nonempty κ]
     {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hgrama : gram a μ = 1)
     (hb : ∀ k, MemLp (fun x => b x k) 2 μ) (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ)
@@ -348,7 +349,7 @@ theorem exists_discretization_of_mem_l2 [Nonempty ι] [Nonempty κ]
           ≤ ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2) ∧
       ∀ c : ℓ²(κ, ℂ), ∑ i, w i * ‖∑' k, conj (c k) * b (x i) k‖ ^ 2
         ≤ (1 + Real.sqrt (((∑' k, ∫ y, ‖b y k‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2 * Λ * ‖c‖ ^ 2 := by
-  obtain ⟨x, w, hw, hlow, hup⟩ := Infinite.exists_discretization
+  obtain ⟨x, w, hw, hlow, hup⟩ := Infinite.exists_discretization_of_hilbertBasis
     (isFiniteTracePos_gramOp hbx hb htr hinj) hΛ (gramOp_le hbx hb htr hJΛ) ha
     (memLp_toLp hbx hb htr) hgrama (re_inner_gramOp hbx hb htr) hmn
   refine ⟨x, w, hw, hlow, fun c => ?_⟩

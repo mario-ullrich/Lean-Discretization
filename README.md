@@ -83,9 +83,12 @@ in the Loewner order, with no side condition
   the second one as `∑ wᵢ |∑_k c̄_k b_k(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖c‖²` for every
   `c ∈ ℓ²(κ)`, again with no side condition (`Discretization.Family.bss_generalized`).
   Nothing pointwise is assumed: `∑_k |b_k(x)|² < ∞` holds almost everywhere, and the
-  points are chosen where it holds. The proof passes through the form for a
-  Hilbert-space-valued `b` with its Gram operator (`Discretization.Infinite.bss_generalized`),
-  which has the same four cases as in finite dimension underneath: the potential argument
+  points are chosen where it holds. More generally the theorem holds for a map `b` into a
+  separable Hilbert space, whose Gram operator `J` (`⟪u, J u⟫ = ∫ |⟪u, b(x)⟫|² dμ`) need
+  only be injective, with `M = ∫ ‖b‖² dμ / Λ` and no basis in the statement
+  (`Discretization.Infinite.bss_generalized`); positivity of `J` and the finiteness of its
+  trace follow from the Gram identity, and the family form is the case `H = ℓ²(κ)`.
+  Underneath are the same four cases as in finite dimension: the potential argument
   (`.Infinite.bss_generalized_of_gram_eq_one`) and the three edge cases
   (`.Infinite.bss_generalized_of_unique`, `.Infinite.bss_generalized_of_small_dim`,
   `.Infinite.bss_generalized_of_unique_of_small_dim`). The number of points does not

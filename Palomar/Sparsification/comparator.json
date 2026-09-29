@@ -8,9 +8,7 @@
     "Discretization.Infinite.exists_discretization"
   ],
   "definition_names": [
-    "Discretization.gram",
-    "ContinuousLinearMap.traceAlong",
-    "Discretization.Infinite.IsFiniteTracePos"
+    "Discretization.gram"
   ],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": true

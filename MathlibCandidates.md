@@ -41,7 +41,8 @@ Grouped by topic, with the main declarations:
   and the independence of the basis, for a positive operator of both the finiteness and
   the value of the trace (`.summable_re_inner_iff_of_basis`, `.traceAlong_eq_of_basis`,
   from the two-basis Hilbert–Schmidt identity `.tsum_ofReal_norm_sq_adjoint_of_basis`),
-  are general facts.
+  are general facts, and so is the countability of every Hilbert basis of a separable
+  space (`HilbertBasis.countable_of_separableSpace`), which Mathlib also lacks.
 * **Averages of quadratic forms** (`BasicResults/IntegralQuadraticForm.lean`,
   `BasicResults/OperatorQuadraticForm.lean`): the average of a quadratic form along a
   square-integrable family is a trace against its Gram matrix

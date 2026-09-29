@@ -83,6 +83,46 @@ theorem ne_zero (e : HilbertBasis κ ℂ H) (k : κ) : e k ≠ 0 := by
   rw [h, norm_zero] at h1
   exact absurd h1 (by norm_num)
 
+/-! ### The index set of a Hilbert basis -/
+
+omit [CompleteSpace H] in
+/-- Two distinct vectors of a Hilbert basis are at distance `√2`, in particular more than
+`1` apart. -/
+theorem one_lt_dist (e : HilbertBasis κ ℂ H) {i j : κ} (hij : i ≠ j) :
+    1 < dist (e i) (e j) := by
+  have h2 : ‖e i - e j‖ ^ 2 = 2 := by
+    rw [@norm_sub_sq ℂ, e.orthonormal.1 i, e.orthonormal.1 j, e.orthonormal.2 hij]
+    norm_num
+  rw [dist_eq_norm]
+  nlinarith [norm_nonneg (e i - e j)]
+
+omit [CompleteSpace H] in
+/-- **In a separable Hilbert space every Hilbert basis has a countable index set.**  The open
+balls of radius `1/2` around the basis vectors are pairwise disjoint, since distinct basis
+vectors are more than `1` apart (`HilbertBasis.one_lt_dist`), and a separable space holds
+only countably many pairwise disjoint nonempty open sets
+(`Set.PairwiseDisjoint.countable_of_isOpen`). -/
+theorem countable_of_separableSpace [TopologicalSpace.SeparableSpace H]
+    (e : HilbertBasis κ ℂ H) : Countable κ := by
+  have hdisj : (Set.univ : Set κ).PairwiseDisjoint fun i => Metric.ball (e i) (1 / 2) := by
+    intro i _ j _ hij
+    refine Set.disjoint_left.2 fun y hyi hyj => ?_
+    rw [Metric.mem_ball] at hyi hyj
+    have := dist_triangle_right (e i) (e j) y
+    linarith [e.one_lt_dist hij, dist_comm y (e i), dist_comm y (e j)]
+  have hc := hdisj.countable_of_isOpen (fun i _ => Metric.isOpen_ball)
+    (fun i _ => ⟨e i, Metric.mem_ball_self (by norm_num)⟩)
+  exact Set.countable_univ_iff.1 hc
+
+omit [CompleteSpace H] in
+/-- A Hilbert basis of a nonzero space has a nonempty index set: along an empty basis every
+vector would be the empty sum `0`. -/
+theorem nonempty_of_nontrivial [Nontrivial H] (e : HilbertBasis κ ℂ H) : Nonempty κ := by
+  by_contra hκ
+  rw [not_nonempty_iff] at hκ
+  obtain ⟨x, hx⟩ := exists_ne (0 : H)
+  exact hx ((e.hasSum_repr x).unique hasSum_empty)
+
 end HilbertBasis
 
 namespace ContinuousLinearMap

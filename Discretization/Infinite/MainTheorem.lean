@@ -160,7 +160,7 @@ finite as soon as `J` has finite trace.
 
 The two side conditions are removed in
 `Discretization.Infinite.bss_generalized_of_gram_eq_one'`, and the normalisation of the
-first family in `Discretization.Infinite.bss_generalized`. -/
+first family in `Discretization.Infinite.bss_generalized_of_hilbertBasis`. -/
 theorem bss_generalized_of_gram_eq_one [Nonempty ι] [Nonempty κ] [Countable κ]
     (hJ : IsFiniteTracePos e J) {Λ : ℝ} (hΛ : 0 < Λ)
     (hJΛ : J ≤ Λ • (1 : H →L[ℂ] H)) {a : Ω → ι → ℂ} {b : Ω → H}

@@ -115,10 +115,13 @@ determinants obtained by giving one further point a small weight.
   dimension, and the theorem without side conditions,
   `Discretization.Infinite.bss_generalized_of_gram_eq_one'`.
 * `Discretization.Infinite.GeneralGram`: removing the normalisation of the first family,
-  which gives the theorem for a Hilbert-space-valued second family,
+  which gives the theorem along a Hilbert basis,
+  `Discretization.Infinite.bss_generalized_of_hilbertBasis`, and without a basis for a
+  separable space, where the Gram identity supplies positivity and the finite trace,
   `Discretization.Infinite.bss_generalized`.
-* `Discretization.Infinite.NormDiscretization`: the same statement read as a discretization
-  inequality, `Discretization.Infinite.exists_discretization`.
+* `Discretization.Infinite.NormDiscretization`: the same statements read as discretization
+  inequalities, `Discretization.Infinite.exists_discretization_of_hilbertBasis` and
+  `Discretization.Infinite.exists_discretization`.
 * `Discretization.Infinite.Family`: the theorem in the form of the paper, for a countable
   family `(b_k)` with `∑_k ‖b_k‖² < ∞` and its Gram matrix, deduced from the Hilbert-space
   form on `ℓ²(κ)`: `Discretization.Family.bss_generalized`,
