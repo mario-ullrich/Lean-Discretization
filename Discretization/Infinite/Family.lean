@@ -324,38 +324,7 @@ theorem bss_generalized_of_mem_l2 [Nonempty ι] [Nonempty κ]
     (memLp_toLp hbx hb htr) hI (re_inner_gramOp hbx hb htr) hmn
   refine ⟨x, w, hw, hlow, fun c => ?_⟩
   rw [traceAlong_gramOp hbx hb htr] at hup
-  calc ∑ i, w i * ‖∑' k, conj (c k) * b (x i) k‖ ^ 2
-      = ∑ i, w i * ‖⟪c, toLp hbx (x i)⟫_ℂ‖ ^ 2 := by simp only [inner_toLp]
-    _ = RCLike.re ⟪c, (∑ i, w i • rankOne ℂ (toLp hbx (x i)) (toLp hbx (x i))) c⟫_ℂ :=
-        (re_inner_sum_rankOne x w (toLp hbx) c).symm
-    _ ≤ RCLike.re ⟪c, (((1 + Real.sqrt (((∑' k, ∫ y, ‖b y k‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2
-          * Λ) • (1 : ℓ²(κ, ℂ) →L[ℂ] ℓ²(κ, ℂ))) c⟫_ℂ := re_inner_le_of_le hup c
-    _ = (1 + Real.sqrt (((∑' k, ∫ y, ‖b y k‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2 * Λ * ‖c‖ ^ 2 :=
-        Infinite.re_inner_smul_one _ c
-
-include hbx in
-/-- **Discretization of the `L₂`-norm for a countable family, when every value lies in
-`ℓ²`**: `Discretization.Infinite.exists_discretization_of_hilbertBasis` for `H = ℓ²(κ)`. -/
-theorem exists_discretization_of_mem_l2 [Nonempty ι] [Nonempty κ]
-    {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hgrama : gram a μ = 1)
-    (hb : ∀ k, MemLp (fun x => b x k) 2 μ) (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ)
-    (hinj : ∀ c : ℓ²(κ, ℂ), ∫ x, ‖∑' k, conj (c k) * b x k‖ ^ 2 ∂μ = 0 → c = 0)
-    {Λ : ℝ} (hΛ : 0 < Λ)
-    (hJΛ : ∀ c : ℓ²(κ, ℂ), ∫ x, ‖∑' k, conj (c k) * b x k‖ ^ 2 ∂μ ≤ Λ * ‖c‖ ^ 2)
-    {n : ℕ} (hmn : Fintype.card ι ≤ n) :
-    ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
-      (∀ c : ι → ℂ, (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
-            * ∫ y, ‖star c ⬝ᵥ a y‖ ^ 2 ∂μ
-          ≤ ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2) ∧
-      ∀ c : ℓ²(κ, ℂ), ∑ i, w i * ‖∑' k, conj (c k) * b (x i) k‖ ^ 2
-        ≤ (1 + Real.sqrt (((∑' k, ∫ y, ‖b y k‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2 * Λ * ‖c‖ ^ 2 := by
-  obtain ⟨x, w, hw, hlow, hup⟩ := Infinite.exists_discretization_of_hilbertBasis
-    (isFiniteTracePos_gramOp hbx hb htr hinj) hΛ (gramOp_le hbx hb htr hJΛ) ha
-    (memLp_toLp hbx hb htr) hgrama (re_inner_gramOp hbx hb htr) hmn
-  refine ⟨x, w, hw, hlow, fun c => ?_⟩
-  have h := hup c
-  rw [traceAlong_gramOp hbx hb htr] at h
-  simpa only [inner_toLp] using h
+  simpa only [inner_toLp] using Infinite.sum_mul_norm_sq_inner_le hup c
 
 /-! ### Restriction to a set of full measure -/
 
@@ -455,7 +424,7 @@ theorem bss_generalized [Nonempty ι] [Nonempty κ]
 
 /-- **Discretization of the `L₂`-norm for a countable second family**
 (Chkifa–Dolbeault–Krieg–Ullrich, Corollary 4), in the form of the paper: under the
-hypotheses of `Discretization.Family.bss_generalized` with a normalized first family, the
+hypotheses of `Discretization.Family.bss_generalized` with a normalized first family, its
 points and weights satisfy
 
 `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ᵢ wᵢ |f(xᵢ)|²`  for every `f` in the span of `a`, and
@@ -473,25 +442,9 @@ theorem exists_discretization [Nonempty ι] [Nonempty κ]
           ≤ ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2) ∧
       ∀ c : ℓ²(κ, ℂ), ∑ i, w i * ‖∑' k, conj (c k) * b (x i) k‖ ^ 2
         ≤ (1 + Real.sqrt (((∑' k, ∫ y, ‖b y k‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2 * Λ * ‖c‖ ^ 2 := by
-  obtain ⟨S, hSm, hSae, hSb⟩ := exists_measurableSet_mem_l2 hb htr
-  have htr' : (∑' k, ∫ y : S, ‖b y k‖ ^ 2 ∂(μ.comap Subtype.val))
-      = ∑' k, ∫ y, ‖b y k‖ ^ 2 ∂μ :=
-    tsum_congr fun k => integral_comap_val hSm hSae (fun y => ‖b y k‖ ^ 2)
-  obtain ⟨x, w, hw, hlow, hup⟩ := exists_discretization_of_mem_l2 (μ := μ.comap Subtype.val)
-    (a := fun y : S => a y) (b := fun y : S => b y) (fun y => hSb y y.2)
-    (fun k => memLp_comap_val hSm hSae (ha k)) (by rwa [gram_comap_val hSm hSae])
-    (fun k => memLp_comap_val hSm hSae (hb k))
-    ((summable_congr fun k => integral_comap_val hSm hSae (fun y => ‖b y k‖ ^ 2)).2 htr)
-    (fun c hc => hinj c
-      ((integral_comap_val hSm hSae (fun y => ‖∑' k, conj (c k) * b y k‖ ^ 2)).symm.trans hc))
-    hΛ (fun c => (integral_comap_val hSm hSae
-      (fun y => ‖∑' k, conj (c k) * b y k‖ ^ 2)).trans_le (hJΛ c)) hmn
-  refine ⟨fun i => x i, w, hw, fun i => hSb (x i) (x i).2, fun c => ?_, fun c => ?_⟩
-  · have h := hlow c
-    rwa [integral_comap_val hSm hSae (fun y => ‖star c ⬝ᵥ a y‖ ^ 2)] at h
-  · have h := hup c
-    rw [htr'] at h
-    exact h
+  obtain ⟨x, w, hw, hmem, hlow, hup⟩ :=
+    bss_generalized ha (by rw [hgrama]; exact Matrix.PosDef.one) hb htr hinj hΛ hJΛ hmn
+  exact ⟨x, w, hw, hmem, mul_integral_norm_sq_le_sum ha hlow, hup⟩
 
 end Family
 

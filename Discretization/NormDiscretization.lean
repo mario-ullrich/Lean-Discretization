@@ -29,8 +29,9 @@ involve the measure, `∫ |f|² dμ = c* (gram a μ) c`
 (`Discretization.integral_norm_sq_combination`, proved below).
 
 So a Loewner inequality between matrices is exactly an inequality between quadratic forms,
-uniformly in the coefficient vector.  The result is
-`Discretization.exists_discretization`.
+uniformly in the coefficient vector.  For the lower frame bound this reading is
+`Discretization.mul_integral_norm_sq_le_sum`, which also serves the countable case.  The
+result is `Discretization.exists_discretization`.
 -/
 
 @[expose] public section
@@ -71,6 +72,23 @@ theorem integral_norm_sq_combination {a : Ω → ι → ℂ}
   rw [integral_congr_ae (Filter.Eventually.of_forall h1), integral_re_quadForm ha,
     Matrix.trace_mul_comm, Matrix.trace_mul_vecMulVec_self_star]
 
+/-- **A lower frame bound is a discretization inequality.**  If the weighted sum of the
+rank-one matrices `a(xᵢ) a(xᵢ)*` dominates `α` times the Gram matrix of `a`, then every
+function `f` in the span of `a`, with coefficient vector `c`, satisfies
+
+`α · ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²`. -/
+theorem mul_integral_norm_sq_le_sum {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ)
+    {n : ℕ} {x : Fin n → Ω} {w : Fin n → ℝ} {α : ℝ}
+    (h : α • gram a μ ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i)))) (c : ι → ℂ) :
+    α * ∫ y, ‖star c ⬝ᵥ a y‖ ^ 2 ∂μ ≤ ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2 := by
+  calc α * ∫ y, ‖star c ⬝ᵥ a y‖ ^ 2 ∂μ
+      = RCLike.re (star c ⬝ᵥ ((α • gram a μ) *ᵥ c)) := by
+        rw [Matrix.smul_mulVec, dotProduct_smul, RCLike.smul_re,
+          integral_norm_sq_combination ha c]
+    _ ≤ RCLike.re (star c ⬝ᵥ ((∑ i, w i • vecMulVec (a (x i)) (star (a (x i)))) *ᵥ c)) :=
+        re_quadForm_le_of_le h c
+    _ = ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2 := re_dotProduct_sum_mulVec x w c a
+
 /-! ### The discretization inequality -/
 
 variable [DecidableEq ι]
@@ -107,25 +125,15 @@ theorem exists_discretization [Nonempty ι] [Nonempty κ]
               * ∑ k, ‖c k‖ ^ 2) := by
   obtain ⟨x, w, hwpos, hlow, hup⟩ :=
     bss_generalized_of_gram_eq_one' hJ hΛ hJΛ ha hb hgrama hgramb hmn
-  refine ⟨x, w, hwpos, fun c => ?_, fun c => ?_⟩
-  · have h1 : RCLike.re (star c ⬝ᵥ ((1 : Matrix ι ι ℂ) *ᵥ c)) = ∑ k, ‖c k‖ ^ 2 := by
-      simpa using re_quadForm_smul_one (ι := ι) 1 c
-    calc (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 * ∫ y, ‖star c ⬝ᵥ a y‖ ^ 2 ∂μ
-        = RCLike.re (star c ⬝ᵥ
-            (((1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 • (1 : Matrix ι ι ℂ)) *ᵥ c)) := by
-          rw [re_quadForm_smul_one, integral_norm_sq_combination ha c, hgrama, h1]
-      _ ≤ RCLike.re (star c ⬝ᵥ
-            ((∑ i, w i • vecMulVec (a (x i)) (star (a (x i)))) *ᵥ c)) :=
-          re_quadForm_le_of_le hlow c
-      _ = ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2 := re_dotProduct_sum_mulVec x w c a
-  · calc ∑ i, w i * ‖star c ⬝ᵥ b (x i)‖ ^ 2
-        = RCLike.re (star c ⬝ᵥ
-            ((∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))) *ᵥ c)) :=
-          (re_dotProduct_sum_mulVec x w c b).symm
-      _ ≤ RCLike.re (star c ⬝ᵥ
-            ((((1 + Real.sqrt ((RCLike.re J.trace / Λ - 1) / n)) ^ 2 * Λ)
-              • (1 : Matrix κ κ ℂ)) *ᵥ c)) := re_quadForm_le_of_le hup c
-      _ = (1 + Real.sqrt ((RCLike.re J.trace / Λ - 1) / n)) ^ 2 * Λ * ∑ k, ‖c k‖ ^ 2 :=
-          re_quadForm_smul_one _ c
+  refine ⟨x, w, hwpos, mul_integral_norm_sq_le_sum ha (by rwa [hgrama]), fun c => ?_⟩
+  calc ∑ i, w i * ‖star c ⬝ᵥ b (x i)‖ ^ 2
+      = RCLike.re (star c ⬝ᵥ
+          ((∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))) *ᵥ c)) :=
+        (re_dotProduct_sum_mulVec x w c b).symm
+    _ ≤ RCLike.re (star c ⬝ᵥ
+          ((((1 + Real.sqrt ((RCLike.re J.trace / Λ - 1) / n)) ^ 2 * Λ)
+            • (1 : Matrix κ κ ℂ)) *ᵥ c)) := re_quadForm_le_of_le hup c
+    _ = (1 + Real.sqrt ((RCLike.re J.trace / Λ - 1) / n)) ^ 2 * Λ * ∑ k, ‖c k‖ ^ 2 :=
+        re_quadForm_smul_one _ c
 
 end Discretization

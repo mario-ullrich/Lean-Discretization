@@ -6,13 +6,14 @@ Authors: Mario Ullrich
 module
 
 public import Discretization.NormDiscretization
-public import Discretization.Infinite.BothEdgeCases
+public import Discretization.Infinite.GeneralGram
 
 /-!
 # The discretization inequality with a countable second family
 
-The theorem `Discretization.Infinite.bss_generalized_of_gram_eq_one'` read as an inequality
-between norms, the operator counterpart of `Discretization.exists_discretization`.
+The theorems `Discretization.Infinite.bss_generalized_of_hilbertBasis` and
+`Discretization.Infinite.bss_generalized` read as inequalities between norms, the operator
+counterpart of `Discretization.exists_discretization`.
 
 For a coefficient vector `c` the function `f(x) = ⟪c, a(x)⟫` lies in the span of the first
 family, and the lower frame bound says
@@ -32,7 +33,9 @@ the right-hand side is the squared norm of `g` in that space.
 
 The dictionary is the same as in finite dimension, with the quadratic form of a weighted sum
 of rank-one operators (`ContinuousLinearMap.re_inner_sum_rankOne`) in place of the quadratic
-form of a sum of rank-one matrices.
+form of a sum of rank-one matrices.  The lower half is the finite
+`Discretization.mul_integral_norm_sq_le_sum`, the upper half
+`Discretization.Infinite.sum_mul_norm_sq_inner_le`.
 
 As for the frame bounds, there are two forms: along a given Hilbert basis
 (`Discretization.Infinite.exists_discretization_of_hilbertBasis`), and without a basis in
@@ -62,6 +65,19 @@ theorem re_inner_smul_one (c : ℝ) (u : H) :
     RCLike.re ⟪u, (c • (1 : H →L[ℂ] H)) u⟫_ℂ = c * ‖u‖ ^ 2 := by
   rw [show (c • (1 : H →L[ℂ] H)) u = c • u from rfl, RCLike.real_smul_eq_coe_smul (K := ℂ),
     inner_smul_real_right, RCLike.smul_re, inner_self_eq_norm_sq]
+
+/-- **An upper frame bound between operators is a bound on quadratic forms.**  If the
+weighted sum of the rank-one operators `b(xᵢ) b(xᵢ)*` is at most `C • 1`, then
+
+`∑ᵢ wᵢ |⟪u, b(xᵢ)⟫|² ≤ C ‖u‖²`  for every `u ∈ H`. -/
+theorem sum_mul_norm_sq_inner_le [CompleteSpace H] {n : ℕ} {x : Fin n → Ω} {w : Fin n → ℝ}
+    {b : Ω → H} {C : ℝ} (h : ∑ i, w i • rankOne ℂ (b (x i)) (b (x i)) ≤ C • (1 : H →L[ℂ] H))
+    (u : H) : ∑ i, w i * ‖⟪u, b (x i)⟫_ℂ‖ ^ 2 ≤ C * ‖u‖ ^ 2 := by
+  calc ∑ i, w i * ‖⟪u, b (x i)⟫_ℂ‖ ^ 2
+      = RCLike.re ⟪u, (∑ i, w i • rankOne ℂ (b (x i)) (b (x i))) u⟫_ℂ :=
+        (re_inner_sum_rankOne x w b u).symm
+    _ ≤ RCLike.re ⟪u, (C • (1 : H →L[ℂ] H)) u⟫_ℂ := re_inner_le_of_le h u
+    _ = C * ‖u‖ ^ 2 := re_inner_smul_one C u
 
 /-! ### The discretization inequality -/
 
@@ -96,26 +112,8 @@ theorem exists_discretization_of_hilbertBasis [Nonempty ι] [Nonempty κ] [Count
           ≤ (1 + Real.sqrt ((traceAlong e J / Λ - 1) / n)) ^ 2 * Λ * ‖u‖ ^ 2) := by
   obtain ⟨x, w, hwpos, hlow, hup⟩ :=
     bss_generalized_of_gram_eq_one' hJ hΛ hJΛ ha hb hgrama hgramb hmn
-  refine ⟨x, w, hwpos, fun c => ?_, fun u => ?_⟩
-  · -- the lower half is the finite statement
-    have h1 : RCLike.re (star c ⬝ᵥ ((1 : Matrix ι ι ℂ) *ᵥ c)) = ∑ k, ‖c k‖ ^ 2 := by
-      simpa using re_quadForm_smul_one (ι := ι) 1 c
-    calc (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 * ∫ y, ‖star c ⬝ᵥ a y‖ ^ 2 ∂μ
-        = RCLike.re (star c ⬝ᵥ
-            (((1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 • (1 : Matrix ι ι ℂ)) *ᵥ c)) := by
-          rw [re_quadForm_smul_one, integral_norm_sq_combination ha c, hgrama, h1]
-      _ ≤ RCLike.re (star c ⬝ᵥ
-            ((∑ i, w i • Matrix.vecMulVec (a (x i)) (star (a (x i)))) *ᵥ c)) :=
-          re_quadForm_le_of_le hlow c
-      _ = ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2 := re_dotProduct_sum_mulVec x w c a
-  · -- the upper half, read through the operator order
-    calc ∑ i, w i * ‖⟪u, b (x i)⟫_ℂ‖ ^ 2
-        = RCLike.re ⟪u, (∑ i, w i • rankOne ℂ (b (x i)) (b (x i))) u⟫_ℂ :=
-          (re_inner_sum_rankOne x w b u).symm
-      _ ≤ RCLike.re ⟪u, (((1 + Real.sqrt ((traceAlong e J / Λ - 1) / n)) ^ 2 * Λ)
-            • (1 : H →L[ℂ] H)) u⟫_ℂ := re_inner_le_of_le hup u
-      _ = (1 + Real.sqrt ((traceAlong e J / Λ - 1) / n)) ^ 2 * Λ * ‖u‖ ^ 2 :=
-          re_inner_smul_one _ u
+  exact ⟨x, w, hwpos, mul_integral_norm_sq_le_sum ha (by rwa [hgrama]),
+    sum_mul_norm_sq_inner_le hup⟩
 
 /-- **Discretization of the `L₂`-norm for a second family with values in a separable Hilbert
 space**, with no basis in the statement.
@@ -140,18 +138,9 @@ theorem exists_discretization [Nonempty ι] [TopologicalSpace.SeparableSpace H]
           ≤ ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2) ∧
       (∀ u : H, ∑ i, w i * ‖⟪u, b (x i)⟫_ℂ‖ ^ 2
           ≤ (1 + Real.sqrt (((∫ y, ‖b y‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2 * Λ * ‖u‖ ^ 2) := by
-  -- a Hilbert basis, countable because `H` is separable
-  obtain ⟨s, e0, -⟩ := exists_hilbertBasis ℂ H
-  have : Countable s := e0.countable_of_separableSpace
-  have : Nonempty s := e0.nonempty_of_nontrivial
-  -- what the Gram identity gives along it
-  have hre := re_inner_eq_integral hgramb
-  have hJ : IsFiniteTracePos e0 J :=
-    ⟨nonneg_of_inner_eq_integral hgramb, summable_re_inner_of_gram e0 hb hre, hJinj⟩
-  have htr : traceAlong e0 J = ∫ y, ‖b y‖ ^ 2 ∂μ :=
-    (integral_norm_sq_eq_traceAlong hJ hb hre).symm
-  have h := exists_discretization_of_hilbertBasis hJ hΛ hJΛ ha hb hgrama hre hmn
-  rwa [htr] at h
+  obtain ⟨x, w, hwpos, hlow, hup⟩ :=
+    bss_generalized hΛ hJΛ hJinj ha hb (by rw [hgrama]; exact Matrix.PosDef.one) hgramb hmn
+  exact ⟨x, w, hwpos, mul_integral_norm_sq_le_sum ha hlow, sum_mul_norm_sq_inner_le hup⟩
 
 end Infinite
 
