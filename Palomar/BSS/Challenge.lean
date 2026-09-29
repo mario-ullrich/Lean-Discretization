@@ -8,7 +8,7 @@ module
 public import Mathlib.Analysis.Matrix.Order
 
 /-!
-# The sparsification theorem of Batson, Spielman and Srivastava — statement surface
+# The sparsification theorem of Batson, Spielman and Srivastava: statement surface
 
 This module is the *Challenge* of a Palomar submission: the small, auditable surface
 carrying the advertised statement. It imports nothing beyond Mathlib, and every notion it

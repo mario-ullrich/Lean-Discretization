@@ -18,8 +18,8 @@ compact set, its convex hull is compact as well (`IsCompact.convexHull`), the de
 continuous, and every point of that hull is the Gram matrix of a design.
 
 With the maximum attained, no mixture can increase the determinant at all, and
-`Discretization.KieferWolfowitz.le_of_forall_mix_le_one` — the same real estimate as in the
-general case, with the factor `1` — gives `a(y)* G⁻¹ a(y) ≤ m` on the nose.
+`Discretization.KieferWolfowitz.le_of_forall_mix_le_one`, the same real estimate as in the
+general case with the factor `1`, gives `a(y)* G⁻¹ a(y) ≤ m` on the nose.
 
 The passage from that to the norm inequality is the one place that needs a *strict*
 inequality, since `Matrix.PosDef.sub_smul_vecMulVec` asks for one.  So the bound is proved

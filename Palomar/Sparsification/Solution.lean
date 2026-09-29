@@ -11,7 +11,7 @@ public import Discretization.Infinite.GeneralGram
 public import Discretization.Infinite.NormDiscretization
 
 /-!
-# The generalized sparsification theorem — proofs
+# The generalized sparsification theorem: proofs
 
 This module is the *Solution* of a Palomar submission. Comparator checks that every
 declaration named in `comparator.json` has, in this module's environment, exactly the same
@@ -20,14 +20,14 @@ axioms beyond `propext`, `Classical.choice` and `Quot.sound`.
 
 Nothing is declared here. The advertised statements
 
-* `Discretization.bss_generalized` — the frame bounds
+* `Discretization.bss_generalized`: the frame bounds
   `(1 - √((m-1)/n))² • I ≼ ∑ wᵢ a(xᵢ) a(xᵢ)*` and
   `∑ wᵢ b(xᵢ) b(xᵢ)* ≼ (1 + √((M-1)/n))² Λ • 1`, for a finite second family,
-* `Discretization.exists_discretization` — the same read as a discretization inequality for
+* `Discretization.exists_discretization`: the same read as a discretization inequality for
   the `L₂` norm,
-* `Discretization.Infinite.bss_generalized` — the frame bounds for a second family with
+* `Discretization.Infinite.bss_generalized`: the frame bounds for a second family with
   values in a separable Hilbert space, the second one in the order of operators,
-* `Discretization.Infinite.exists_discretization` — the discretization inequality in that
+* `Discretization.Infinite.exists_discretization`: the discretization inequality in that
   case,
 
 and the definition they rest on, `Discretization.gram`, all arrive through the imports

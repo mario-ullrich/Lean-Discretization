@@ -9,7 +9,7 @@ public import Mathlib.Analysis.Matrix.Order
 public import Mathlib.Topology.Compactness.Compact
 
 /-!
-# The Kiefer–Wolfowitz theorem for sampling projections — statement surface
+# The Kiefer–Wolfowitz theorem for sampling projections: statement surface
 
 This module is the *Challenge* of a Palomar submission: the small, auditable surface
 carrying the advertised statements. It imports nothing beyond Mathlib, so every notion it
@@ -40,7 +40,7 @@ points and small norm.
 
 ## The definition restated here
 
-* `Discretization.KieferWolfowitz.designGram` — the Gram matrix
+* `Discretization.KieferWolfowitz.designGram`: the Gram matrix
   `∑ₖ wₖ a(xₖ) a(xₖ)*` of a design.
 
 It is reproduced verbatim from the development, under the same name, so that Comparator can

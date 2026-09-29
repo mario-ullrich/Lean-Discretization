@@ -8,7 +8,7 @@ module
 public import Discretization.KieferWolfowitz.PointCount
 
 /-!
-# The Kiefer–Wolfowitz theorem for sampling projections — proofs
+# The Kiefer–Wolfowitz theorem for sampling projections: proofs
 
 This module is the *Solution* of a Palomar submission. Comparator checks that every
 declaration named in `comparator.json` has, in this module's environment, exactly the same
@@ -17,9 +17,9 @@ axioms beyond `propext`, `Classical.choice` and `Quot.sound`.
 
 Nothing is declared here. The advertised statements
 
-* `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le` —
+* `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le`:
   `|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²` for a design of at most `2m² + 1` points,
-* `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le` — the
+* `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le`: the
   same with the sharp constant `m` for continuous functions on a compact domain,
 
 and the definition they rest on, `Discretization.KieferWolfowitz.designGram`, arrive through

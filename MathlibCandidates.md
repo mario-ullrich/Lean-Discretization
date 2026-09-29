@@ -20,7 +20,7 @@ Grouped by topic, with the main declarations:
   (`Matrix.IsHermitian.le_smul_one`), antitonicity of the inverse packaged for
   matrices (`Matrix.PosDef.inv_le_inv_of_le`), and conjugation by a Hermitian matrix
   (`Matrix.PosSemidef.mul_mul_same_of_isHermitian`,
-  `Matrix.PosDef.mul_mul_same_of_isHermitian`) — the form of
+  `Matrix.PosDef.mul_mul_same_of_isHermitian`), the form of
   `Matrix.PosSemidef.conjTranspose_mul_mul_same` that arises in practice.
 * **Conjugation by a square root** (`BasicResults/SqrtConjugation.lean`): in a
   C⋆-algebra, a bound on the conjugate of `X` by the inverse square root of `B` is a

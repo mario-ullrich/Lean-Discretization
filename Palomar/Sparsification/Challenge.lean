@@ -11,7 +11,7 @@ public import Mathlib.Analysis.Matrix.Order
 public import Mathlib.MeasureTheory.Function.L2Space
 
 /-!
-# The generalized sparsification theorem — statement surface
+# The generalized sparsification theorem: statement surface
 
 This module is the *Challenge* of a Palomar submission: the small, auditable surface
 carrying the advertised statements. It imports nothing beyond Mathlib, so every notion it
