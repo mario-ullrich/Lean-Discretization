@@ -7,6 +7,7 @@ module
 
 public import Discretization.Infinite.GeneralGram
 public import Discretization.Infinite.NormDiscretization
+public import BasicResults.Operator.GramOperator
 
 /-!
 # The countable case for a family of functions
@@ -183,55 +184,24 @@ noncomputable def gramOp (hbx : ∀ x, Memℓp (b x) 2) (μ : Measure Ω) :
     ℓ²(κ, ℂ) →L[ℂ] ℓ²(κ, ℂ) :=
   ∫ x, rankOne ℂ (toLp hbx x) (toLp hbx x) ∂μ
 
-/-- The integrand of the Gram operator is integrable: its norm is `‖b(x)‖²`. -/
-theorem integrable_rankOne_toLp (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
-    (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ) :
-    Integrable (fun x => rankOne ℂ (toLp hbx x) (toLp hbx x)) μ := by
-  have hm := memLp_toLp hbx hb htr
-  -- `u u* = (innerSL u).smulRight u`, and `smulRightL` is bilinear
-  have hcont : Continuous fun u : ℓ²(κ, ℂ) => rankOne ℂ u u := by
-    have h1 := (ContinuousLinearMap.smulRightL ℂ ℓ²(κ, ℂ) ℓ²(κ, ℂ)).continuous₂
-    have h2 : Continuous fun u : ℓ²(κ, ℂ) => (innerSL ℂ u, u) :=
-      (innerSL ℂ).continuous.prodMk continuous_id
-    exact h1.comp h2
-  refine ((memLp_two_iff_integrable_sq_norm hm.aestronglyMeasurable).1 hm).mono'
-    (hcont.comp_aestronglyMeasurable hm.aestronglyMeasurable) (ae_of_all _ fun x => ?_)
-  rw [norm_rankOne, sq]
-
 /-- **The Gram identity**: the quadratic form of the Gram operator is the average of
-`|⟪u, b(x)⟫|²`, as a complex number. -/
+`|⟪u, b(x)⟫|²`, as a complex number.  This is `ContinuousLinearMap.inner_integral_rankOne_self`
+for the square-integrable map `x ↦ (b_k(x))_k` into `ℓ²(κ)`. -/
 theorem inner_gramOp_self (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
     (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ) (u : ℓ²(κ, ℂ)) :
-    ⟪u, gramOp hbx μ u⟫_ℂ = ((∫ x, ‖⟪u, toLp hbx x⟫_ℂ‖ ^ 2 ∂μ : ℝ) : ℂ) := by
-  have hi := integrable_rankOne_toLp hbx hb htr
-  rw [gramOp, ContinuousLinearMap.integral_apply hi,
-    ← integral_inner (hi.apply_continuousLinearMap u), ← integral_complex_ofReal]
-  refine integral_congr_ae (ae_of_all _ fun x => ?_)
-  simp only
-  rw [rankOne_apply, inner_smul_right, ← inner_conj_symm (toLp hbx x) u, RCLike.conj_mul]
-  norm_cast
+    ⟪u, gramOp hbx μ u⟫_ℂ = ((∫ x, ‖⟪u, toLp hbx x⟫_ℂ‖ ^ 2 ∂μ : ℝ) : ℂ) :=
+  inner_integral_rankOne_self (memLp_toLp hbx hb htr) u
 
 /-- The real form of the Gram identity. -/
 theorem re_inner_gramOp (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
     (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ) (u : ℓ²(κ, ℂ)) :
-    RCLike.re ⟪u, gramOp hbx μ u⟫_ℂ = ∫ x, ‖⟪u, toLp hbx x⟫_ℂ‖ ^ 2 ∂μ := by
-  rw [inner_gramOp_self hbx hb htr]
-  simp
-
-/-- The Gram identity with the operator on the left of the inner product. -/
-theorem inner_gramOp_apply_self (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
-    (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ) (u : ℓ²(κ, ℂ)) :
-    ⟪gramOp hbx μ u, u⟫_ℂ = ((∫ x, ‖⟪u, toLp hbx x⟫_ℂ‖ ^ 2 ∂μ : ℝ) : ℂ) := by
-  rw [← inner_conj_symm, inner_gramOp_self hbx hb htr, Complex.conj_ofReal]
+    RCLike.re ⟪u, gramOp hbx μ u⟫_ℂ = ∫ x, ‖⟪u, toLp hbx x⟫_ℂ‖ ^ 2 ∂μ :=
+  re_inner_eq_integral (inner_gramOp_self hbx hb htr) u
 
 /-- **The Gram operator is positive.** -/
 theorem gramOp_nonneg (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
-    (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ) : 0 ≤ gramOp hbx μ := by
-  rw [ContinuousLinearMap.nonneg_iff_isPositive, ContinuousLinearMap.isPositive_iff_complex]
-  intro u
-  rw [inner_gramOp_apply_self hbx hb htr]
-  have h0 : 0 ≤ ∫ x, ‖⟪u, toLp hbx x⟫_ℂ‖ ^ 2 ∂μ := integral_nonneg fun x => by positivity
-  simpa using h0
+    (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ) : 0 ≤ gramOp hbx μ :=
+  nonneg_of_inner_eq_integral (inner_gramOp_self hbx hb htr)
 
 /-- The diagonal of the Gram operator along the standard basis: `⟪e_k, J e_k⟫ = ‖b_k‖²`. -/
 theorem re_inner_basis_gramOp (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
@@ -265,26 +235,15 @@ theorem gramOp_injective (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
     inner_zero_right, map_zero]
 
 /-- **The Gram operator is bounded by `Λ • 1`** if its quadratic form is bounded by
-`Λ ‖c‖²`. -/
+`Λ ‖c‖²`: the Bessel-type reading of `J ≤ Λ • 1`
+(`ContinuousLinearMap.le_smul_one_iff_of_inner_eq_integral`). -/
 theorem gramOp_le (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
     (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ) {Λ : ℝ}
     (hJΛ : ∀ c : ℓ²(κ, ℂ), ∫ x, ‖∑' k, conj (c k) * b x k‖ ^ 2 ∂μ ≤ Λ * ‖c‖ ^ 2) :
-    gramOp hbx μ ≤ Λ • (1 : ℓ²(κ, ℂ) →L[ℂ] ℓ²(κ, ℂ)) := by
-  rw [ContinuousLinearMap.le_def, ContinuousLinearMap.isPositive_iff_complex]
-  intro c
-  have h : ⟪(Λ • (1 : ℓ²(κ, ℂ) →L[ℂ] ℓ²(κ, ℂ)) - gramOp hbx μ) c, c⟫_ℂ
-      = ((Λ * ‖c‖ ^ 2 - ∫ x, ‖⟪c, toLp hbx x⟫_ℂ‖ ^ 2 ∂μ : ℝ) : ℂ) := by
-    rw [_root_.sub_apply, inner_sub_left, inner_gramOp_apply_self hbx hb htr,
-      _root_.smul_apply, one_apply_eq_self, RCLike.real_smul_eq_coe_smul (K := ℂ),
-      inner_smul_left, inner_self_eq_norm_sq_to_K, RCLike.conj_ofReal]
-    norm_cast
-    exact (Complex.ofReal_sub _ _).symm
-  have := hJΛ c
-  rw [← integral_norm_sq_inner_toLp hbx c] at this
-  have h0 : 0 ≤ Λ * ‖c‖ ^ 2 - ∫ x, ‖⟪c, toLp hbx x⟫_ℂ‖ ^ 2 ∂μ := by linarith
-  rw [h]
-  simp only [RCLike.re_to_complex, Complex.ofReal_re]
-  exact ⟨trivial, h0⟩
+    gramOp hbx μ ≤ Λ • (1 : ℓ²(κ, ℂ) →L[ℂ] ℓ²(κ, ℂ)) :=
+  (le_smul_one_iff_of_inner_eq_integral (inner_gramOp_self hbx hb htr)).2 fun c => by
+    rw [integral_norm_sq_inner_toLp hbx c]
+    exact hJΛ c
 
 /-- The Gram operator is positive, of finite trace along the standard basis, and
 injective. -/

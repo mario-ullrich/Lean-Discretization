@@ -121,7 +121,7 @@ state for a countably infinite second family and the theorems for it, and
 * `Discretization.Infinite.GeneralGram`: removing the normalisation of the first family,
   which gives the theorem along a Hilbert basis,
   `Discretization.Infinite.bss_generalized_of_hilbertBasis`, and without a basis for a
-  separable space, where the Gram identity supplies positivity and the finite trace,
+  separable space and the Gram operator `J = ∫ b(x) b(x)* dμ(x)`,
   `Discretization.Infinite.bss_generalized`.
 * `Discretization.Infinite.NormDiscretization`: the same statements read as discretization
   inequalities, `Discretization.Infinite.exists_discretization_of_hilbertBasis` and

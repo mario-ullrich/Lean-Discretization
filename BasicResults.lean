@@ -17,6 +17,7 @@ public import BasicResults.Matrix.RankOneDeterminant
 public import BasicResults.Operator.Trace
 public import BasicResults.Operator.ShermanMorrison
 public import BasicResults.Operator.QuadraticForm
+public import BasicResults.Operator.GramOperator
 
 /-!
 # General ingredients
@@ -73,4 +74,7 @@ the countably infinite second family needs.
   `B ↦ B + ζ • J`.
 * `BasicResults.Operator.QuadraticForm`: the average of a quadratic form along a
   square-integrable family is a trace against the Gram operator.
+* `BasicResults.Operator.GramOperator`: the Gram operator `∫ b(x) b(x)* dμ(x)` of a
+  square-integrable map as a Bochner integral, its quadratic form, and the readings of
+  `J ≤ Λ • 1` as a Bessel-type bound and of injectivity as nondegeneracy of `b`.
 -/

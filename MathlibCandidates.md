@@ -55,6 +55,15 @@ Grouped by topic, with the main declarations:
   `u u* ≼ ‖u‖² • 1` (`.rankOne_le_norm_sq_smul_one`) follows over `ℂ` from
   `IsSelfAdjoint.le_algebraMap_norm_self`; what Mathlib lacks is the version over a general
   `RCLike` field, where the C⋆-algebra instance is unavailable.
+* **The Gram operator** (`BasicResults/Operator/GramOperator.lean`): for a
+  square-integrable map `b : Ω → H` the operators `b(x) b(x)*` are Bochner integrable
+  (`ContinuousLinearMap.integrable_rankOne_self`), and `J = ∫ b(x) b(x)* dμ(x)` has the
+  quadratic form `⟪u, J u⟫ = ∫ |⟪u, b(x)⟫|² dμ(x)`
+  (`ContinuousLinearMap.inner_integral_rankOne_self`). For any operator with that quadratic
+  form, `J ≤ Λ • 1` is the bound `∫ |⟪u, b⟫|² dμ ≤ Λ ‖u‖²`
+  (`.le_smul_one_iff_of_inner_eq_integral`), and injectivity says that `⟪u, b(·)⟫ = 0`
+  almost everywhere only for `u = 0` (`.injective_iff_of_inner_eq_integral`). Mathlib has
+  none of these.
 * **Rank-one updates of a determinant** (`BasicResults/Matrix/RankOneDeterminant.lean`): the
   matrix determinant lemma in terms of `Matrix.vecMulVec`
   (`Matrix.det_add_vecMulVec`), where Mathlib has it only for a product of a column

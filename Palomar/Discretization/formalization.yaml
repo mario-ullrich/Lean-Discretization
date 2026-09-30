@@ -18,8 +18,8 @@ project:
     M equals m and the statement is the sparsification theorem of Batson, Spielman
     and Srivastava with m − 1 in place of m. Formalized in two forms, as an inequality
     between matrices in the Loewner order and as a discretization inequality for the
-    L₂ norm, and each for a finite and for a countably infinite second family. There
-    is no side condition beyond n ≥ m.
+    L₂ norm, and each for a finite second family and for a square-integrable map into
+    a separable Hilbert space. There is no side condition beyond n ≥ m.
   authors:
     - "Mario Ullrich"
   license: "Apache-2.0"
@@ -137,12 +137,12 @@ fidelity:
 
     For an infinite second family the source works with a family (bₖ) indexed by a
     countable set. The advertised form takes a single square-integrable map b into a
-    nonzero separable Hilbert space H together with an operator J tied to it by the
-    Gram identity ⟨u, J u⟩ = ∫ |⟨u, b(x)⟩|² dμ(x); a family (bₖ) is the case
-    H = ℓ², and that form is proved as well (Discretization.Countable.bss_generalized).
-    Positivity of J and the finiteness of its trace are not assumed: both follow from
-    the Gram identity, and the effective dimension is M = ∫ ‖b‖² dμ / Λ, which equals
-    the trace of J along any Hilbert basis. Positive definiteness of the Gram matrix
+    nonzero separable Hilbert space H with its Gram operator J = ∫ b(x) b(x)* dμ(x),
+    a Bochner integral of rank-one operators; a family (bₖ) is the case H = ℓ², and
+    that form is proved as well (Discretization.Countable.bss_generalized).
+    Positivity of J and the finiteness of its trace follow from its definition, and
+    the effective dimension is M = ∫ ‖b‖² dμ / Λ, which equals the trace of J along
+    any Hilbert basis. Positive definiteness of the Gram matrix
     is replaced by injectivity of J, which is the correct hypothesis in infinite
     dimension because a positive operator of finite trace is compact and hence never
     bounded away from zero.

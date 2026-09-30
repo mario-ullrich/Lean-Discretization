@@ -58,10 +58,10 @@ for every `g` in the span of the second family with coefficient vector `c`.
 
 Both forms come in a version for a finite second family and one for an infinite second
 family. In the second, `b` takes values in a separable Hilbert space `H`, the Gram matrix
-becomes the Gram operator `J` of `b`, given by `⟪u, J u⟫ = ∫ |⟪u, b(x)⟫|² dμ(x)` for every
-`u`, the only further hypothesis on `J` is that it is injective, the effective dimension is
-`M = ∫ ‖b‖² dμ / Λ`, and the upper bound is an inequality between operators. No basis of
-`H` and no trace appear in these statements.
+becomes the Gram operator `J = ∫ b(x) b(x)* dμ(x)` of `b`, a Bochner integral of rank-one
+operators, the only further hypothesis on `J` is that it is injective, the effective
+dimension is `M = ∫ ‖b‖² dμ / Λ`, and the upper bound is an inequality between operators. No
+basis of `H` and no trace appear in these statements.
 
 Traces of the matrices appearing here are real, and real parts are taken with `RCLike.re`
 wherever a real number is needed.
@@ -187,9 +187,9 @@ a second family with values in a separable Hilbert space.
 
 Let `a` be a family of square-integrable functions indexed by a finite nonempty set `ι` of
 `m` elements with positive definite Gram matrix `I = ∫ a a* dμ`, and let `b : Ω → H` be
-square-integrable, with values in a nonzero separable Hilbert space.  Let `J` be its Gram
-operator, `⟪u, J u⟫ = ∫ |⟪u, b x⟫|² dμ(x)` for every `u`, assume `J` injective and
-`J ≤ Λ • 1`, and put `M = ∫ ‖b‖² dμ / Λ`.  Then for every `n ≥ m` there are `n` points and
+square-integrable, with values in a nonzero separable Hilbert space.  Let
+`J = ∫ b(x) b(x)* dμ(x)` be its Gram operator, assume `J` injective and `J ≤ Λ • 1`, and put
+`M = ∫ ‖b‖² dμ / Λ`.  Then for every `n ≥ m` there are `n` points and
 positive weights with
 
 `(1 - √((m-1)/n))² • I ≤ ∑ wᵢ a(xᵢ) a(xᵢ)*`  and
@@ -202,7 +202,7 @@ theorem bss_generalized [Nonempty ι] [TopologicalSpace.SeparableSpace H] [Nontr
     {Λ : ℝ} (hΛ : 0 < Λ) (hJΛ : J ≤ Λ • (1 : H →L[ℂ] H)) (hJinj : ∀ v, J v = 0 → v = 0)
     {a : Ω → ι → ℂ} {b : Ω → H}
     (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : MemLp b 2 μ) (hI : (gram a μ).PosDef)
-    (hgramb : ∀ u, ⟪u, J u⟫_ℂ = ((∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ : ℝ) : ℂ))
+    (hgramb : ∫ x, rankOne ℂ (b x) (b x) ∂μ = J)
     {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
       (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 • gram a μ
@@ -239,7 +239,7 @@ theorem exists_discretization [Nonempty ι] [TopologicalSpace.SeparableSpace H]
     [Nontrivial H] {Λ : ℝ} (hΛ : 0 < Λ) (hJΛ : J ≤ Λ • (1 : H →L[ℂ] H))
     (hJinj : ∀ v, J v = 0 → v = 0) {a : Ω → ι → ℂ} {b : Ω → H}
     (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : MemLp b 2 μ) (hgrama : gram a μ = 1)
-    (hgramb : ∀ u, ⟪u, J u⟫_ℂ = ((∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ : ℝ) : ℂ))
+    (hgramb : ∫ x, rankOne ℂ (b x) (b x) ∂μ = J)
     {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
       (∀ c : ι → ℂ, (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
