@@ -178,9 +178,9 @@ namespace Infinite
 
 section InfiniteGeneralGram
 
-variable {ι κ Ω H : Type*} [Fintype ι] [DecidableEq ι] [NormedAddCommGroup H]
+variable {ι Ω H : Type*} [Fintype ι] [DecidableEq ι] [NormedAddCommGroup H]
   [InnerProductSpace ℂ H] [CompleteSpace H] [MeasurableSpace Ω] {μ : Measure Ω}
-  {e : HilbertBasis κ ℂ H} {J : H →L[ℂ] H}
+  {J : H →L[ℂ] H}
 
 /-- **Generalized sparsification theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
 a second family with values in a separable Hilbert space.
@@ -216,8 +216,7 @@ end InfiniteGeneralGram
 
 section InfiniteNormDiscretization
 
-variable {ι κ Ω H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-  {e : HilbertBasis κ ℂ H} {J : H →L[ℂ] H}
+variable {ι Ω H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {J : H →L[ℂ] H}
 
 variable [Fintype ι] [DecidableEq ι] [CompleteSpace H] [MeasurableSpace Ω] {μ : Measure Ω}
 
