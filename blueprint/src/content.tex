@@ -11,9 +11,8 @@ replaced by finitely many point evaluations, so that the first family stays a fr
 below and $b$ stays a frame from above. Two cases of $b$ are the ones to keep in mind.
 \begin{itemize}
   \item A countable family $(b_k)_{k \in \kappa}$ of square-integrable functions, with
-    $b(x) = (b_k(x))_k \in \ell_2(\kappa)$. The functions
-    $\langle c, b(\cdot) \rangle = \sum_k \overline{c_k} \, b_k$ form the span of the
-    family.
+    $b(x) = (b_k(x))_k \in \ell_2(\kappa)$. The functions $\langle c, b(\cdot) \rangle$,
+    for $c \in \ell_2(\kappa)$, form the span of the family.
   \item A reproducing kernel Hilbert space $H$ of functions on $\Omega$ with kernel $K$,
     and $b(x) = K(x, \cdot)$, the kernel section at $x$. Then
     $\langle b(x), f \rangle = f(x)$ for every $f \in H$.
@@ -288,7 +287,7 @@ Both bounds are therefore those of \Cref{thm:discretization} with $I = 1$.
 
 For a countable family, with $b(x) = (b_k(x))_k$ and $u = c \in \ell_2(\kappa)$, the second
 bound reads $\sum_i w_i |g(x_i)|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \sum_k |c_k|^2$ for
-$g = \sum_k \overline{c_k} \, b_k$, with $M = \sum_k \|b_k\|_{L_2}^2 / \Lambda$
+$g = \sum_k c_k \, b_k$, with $M = \sum_k \|b_k\|_{L_2}^2 / \Lambda$
 (\texttt{Discretization.exists\_discretization} for finite $\kappa$,
 \texttt{Discretization.Countable.exists\_discretization} for countable $\kappa$). It is
 stated for the coefficient vector, because its right-hand side is the coefficient norm and
