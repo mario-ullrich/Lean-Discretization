@@ -42,6 +42,8 @@ norm.
 
 ## Main results
 
+### The discretization theorem
+
 Let `(Ω, μ)` be a measure space, `ι` a finite nonempty index set with `m = card ι`
 elements, and `H` a nonzero separable complex Hilbert space. Let
 
@@ -60,28 +62,31 @@ with
 ```
 
 in the Loewner order, with no side condition (`Discretization.Infinite.bss_generalized`).
-This is Theorem 3 of Chkifa, Dolbeault, Krieg and Ullrich; in eigenvalue form the lower
-bound is their factor `λ_min(I)`. Positivity of `J` and the finiteness of its trace follow
-from its definition, and both hypotheses on `J` can be checked on `b`: `J ≤ Λ • 1` says
-`∫ |⟪u, b⟫|² dμ ≤ Λ ‖u‖²` for every `u ∈ H`, and injectivity says that `⟪u, b(·)⟫ = 0`
-almost everywhere only for `u = 0` (`ContinuousLinearMap.integral_rankOne_self_le_iff`,
+This is Theorem 3 of
+[Chkifa, Dolbeault, Krieg and Ullrich](https://arxiv.org/abs/2602.18719); in eigenvalue
+form the lower bound is their factor `λ_min(I)`. For `a = b` it is the sparsification
+theorem of [Batson, Spielman and Srivastava](https://arxiv.org/abs/0808.0163) in a
+slightly stronger form, with `√((m-1)/n)` in place of their `√(m/n)`. Positivity
+of `J` and the finiteness of its trace follow from its definition, and both hypotheses on
+`J` can be checked on `b`: `J ≤ Λ • 1` says `∫ |⟪u, b⟫|² dμ ≤ Λ ‖u‖²` for every `u ∈ H`,
+and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0`
+(`ContinuousLinearMap.integral_rankOne_self_le_iff`,
 `.integral_rankOne_self_injective_iff`). Five statements go with it:
 
 * **A family of functions**, in the form of the paper. Let `b = (b_k)_{k ∈ κ}` be
   square-integrable functions indexed by a finite or countable set with
   `∑_k ‖b_k‖²_{L₂} < ∞`, whose Gram matrix `J = (∫ b_k b̄_l dμ)` is injective on `ℓ²(κ)`
   and bounded by `Λ • 1`, and put `M = ∑_k ‖b_k‖² / Λ`. Then the same two bounds hold,
-  the second one as `∑ wᵢ |∑_k c̄_k b_k(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖c‖²` for every
+  the second one as `∑ wᵢ |∑_k c_k b_k(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖c‖²` for every
   `c ∈ ℓ²(κ)` (`Discretization.bss_generalized` for finite `κ`, proved with matrices;
   `Discretization.Countable.bss_generalized` for countable `κ`, the case `H = ℓ²(κ)`).
   Nothing pointwise is assumed: `∑_k |b_k(x)|² < ∞` holds almost everywhere, and the
   points are chosen where it holds.
 * **The special case `a = b`** is the sparsification theorem of Batson, Spielman and
   Srivastava (`Discretization.bss`): one family with Gram matrix the identity, squeezed
-  between `(1 - √((m-1)/n))² • 1` and `(1 + √((m-1)/n))² • 1`. The original theorem has
-  `m` in place of `m - 1`, so for `n = d·m` the ratio of the upper to the lower
-  constant, the condition number, is `((√d + 1)/(√d - 1))²`. The version here, from
-  Chkifa, Dolbeault, Krieg and Ullrich, is slightly stronger. For finitely many vectors
+  between `(1 - √((m-1)/n))² • 1` and `(1 + √((m-1)/n))² • 1`. With the original
+  `√(m/n)` and `n = d·m`, the ratio of the upper to the lower constant, the condition
+  number, is `((√d + 1)/(√d - 1))²`. For finitely many vectors
   `v_y ∈ ℂ^m` with `∑ v_y v_y* = 1`, the form of the original theorem, it gives weights
   `s_y ≥ 0`, at most `n` of them nonzero, with `∑ s_y v_y v_y*` between the same two
   constants (`Discretization.bss_of_sum_eq_one`).
@@ -108,18 +113,23 @@ almost everywhere only for `u = 0` (`ContinuousLinearMap.integral_rankOne_self_l
   `Discretization.UpperBarrier`), and they are proved once for matrices and operators
   alike. The number of points does not depend on the second family beyond `M`.
 
-For the second theorem, let `D` be any set, `ι` a finite nonempty index set with
-`m = card ι` elements, and `a : D → ι → ℂ` a bounded family whose coordinate functions
-are linearly independent. Then for every `ε > 0` there are points `x₁, …, xₙ ∈ D` and
-weights `w₁, …, wₙ ≥ 0` summing to one such that
+### The Kiefer–Wolfowitz theorem
+
+Let `D` be any set, `ι` a finite nonempty index set with `m = card ι` elements, and
+`a : D → ι → ℂ` a bounded family whose coordinate functions are linearly independent.
+Then for every `ε > 0` there are points `x₁, …, xₙ ∈ D` and weights `w₁, …, wₙ ≥ 0`
+summing to one such that
 
 ```
 |f(y)|²  ≤  (m + ε) · ∑ wₖ |f(xₖ)|²
 ```
 
 for every point `y ∈ D` and every `f` in the span of the family
-(`Discretization.KieferWolfowitz.exists_design_kieferWolfowitz`). This is Proposition 9
-of Krieg, Pozharska, Ullrich and Ullrich. Three variants of it are proved:
+(`Discretization.KieferWolfowitz.exists_design_kieferWolfowitz`). This is the theorem of
+[Kiefer and Wolfowitz](https://doi.org/10.4153/CJM-1960-030-4), in the complex and
+non-compact form of Proposition 9 of
+[Krieg, Pozharska, Ullrich and Ullrich](https://arxiv.org/abs/2401.02220). Three variants
+of it are proved:
 
 * **As a measure.** The points and weights are a finitely supported probability measure
   `ϱ = ∑ wₖ δ(xₖ)` with invertible Gram matrix, and the inequality reads
