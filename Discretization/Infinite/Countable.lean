@@ -33,9 +33,10 @@ This is the formal counterpart of the remark that points chosen at random avoid 
 set with probability one.
 
 The dictionary to the operator form: `x ↦ (b_k(x))_k` is a square-integrable map into
-`ℓ²(κ)` (`Discretization.Countable.memLp_toLp`), its Gram operator
-`J = ∫ b(x) b(x)* dμ` (`Discretization.Countable.gramOp`) is positive, of trace
-`∑_k ‖b_k‖²` along the standard basis, injective, and bounded by `Λ • 1`.
+`ℓ²(κ)` (`Discretization.Countable.memLp_toLp`) with `∫ ‖b‖² dμ = ∑_k ‖b_k‖²`
+(`Discretization.Countable.integral_norm_sq_toLp`), and its Gram operator
+`J = ∫ b(x) b(x)* dμ` (`Discretization.Countable.gramOp`) is injective and bounded by
+`Λ • 1` under the two quadratic-form hypotheses above.
 -/
 
 @[expose] public section
@@ -198,11 +199,6 @@ theorem re_inner_gramOp (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
     RCLike.re ⟪u, gramOp hbx μ u⟫_ℂ = ∫ x, ‖⟪u, toLp hbx x⟫_ℂ‖ ^ 2 ∂μ :=
   re_inner_eq_integral (inner_gramOp_self hbx hb htr) u
 
-/-- **The Gram operator is positive.** -/
-theorem gramOp_nonneg (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
-    (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ) : 0 ≤ gramOp hbx μ :=
-  nonneg_of_inner_eq_integral (inner_gramOp_self hbx hb htr)
-
 /-- The diagonal of the Gram operator along the standard basis: `⟪e_k, J e_k⟫ = ‖b_k‖²`. -/
 theorem re_inner_basis_gramOp (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
     (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ) (k : κ) :
@@ -217,6 +213,15 @@ theorem traceAlong_gramOp (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
     traceAlong (default : HilbertBasis κ ℂ ℓ²(κ, ℂ)) (gramOp hbx μ)
       = ∑' k, ∫ x, ‖b x k‖ ^ 2 ∂μ :=
   tsum_congr fun k => re_inner_basis_gramOp hbx hb htr k
+
+/-- **The average of `‖b‖²` is `∑_k ‖b_k‖²`**: the trace of the Gram operator, read once as
+`∫ ‖b‖² dμ` (`Discretization.Infinite.integral_norm_sq_eq_traceAlong`) and once along the
+standard basis (`Discretization.Countable.traceAlong_gramOp`). -/
+theorem integral_norm_sq_toLp (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
+    (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ) :
+    ∫ x, ‖toLp hbx x‖ ^ 2 ∂μ = ∑' k, ∫ x, ‖b x k‖ ^ 2 ∂μ :=
+  (Infinite.integral_norm_sq_eq_traceAlong (default : HilbertBasis κ ℂ ℓ²(κ, ℂ))
+    (memLp_toLp hbx hb htr) rfl).trans (traceAlong_gramOp hbx hb htr)
 
 omit [Countable κ] in
 /-- The average of `|⟪c, b(x)⟫|²`, written with the series `∑_k c̄_k b_k(x)`. -/
@@ -245,16 +250,6 @@ theorem gramOp_le (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
     rw [integral_norm_sq_inner_toLp hbx c]
     exact hJΛ c
 
-/-- The Gram operator is positive, of finite trace along the standard basis, and
-injective. -/
-theorem isFiniteTracePos_gramOp (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
-    (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ)
-    (hinj : ∀ c : ℓ²(κ, ℂ), ∫ x, ‖∑' k, conj (c k) * b x k‖ ^ 2 ∂μ = 0 → c = 0) :
-    Infinite.IsFiniteTracePos (default : HilbertBasis κ ℂ ℓ²(κ, ℂ)) (gramOp hbx μ) where
-  nonneg := gramOp_nonneg hbx hb htr
-  summableTrace := (summable_congr fun k => re_inner_basis_gramOp hbx hb htr k).2 htr
-  injective := gramOp_injective hbx hb htr hinj
-
 /-! ### The theorem when every value lies in `ℓ²` -/
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
@@ -279,10 +274,10 @@ theorem bss_generalized_of_mem_l2 [Nonempty ι] [Nonempty κ]
       ∀ c : ℓ²(κ, ℂ), ∑ i, w i * ‖∑' k, conj (c k) * b (x i) k‖ ^ 2
         ≤ (1 + Real.sqrt (((∑' k, ∫ y, ‖b y k‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2 * Λ * ‖c‖ ^ 2 := by
   obtain ⟨x, w, hw, hlow, hup⟩ := Infinite.bss_generalized_of_hilbertBasis
-    (isFiniteTracePos_gramOp hbx hb htr hinj) hΛ (gramOp_le hbx hb htr hJΛ) ha
-    (memLp_toLp hbx hb htr) hI (re_inner_gramOp hbx hb htr) hmn
+    (default : HilbertBasis κ ℂ ℓ²(κ, ℂ)) hΛ (gramOp_le hbx hb htr hJΛ)
+    (gramOp_injective hbx hb htr hinj) ha (memLp_toLp hbx hb htr) hI rfl hmn
   refine ⟨x, w, hw, hlow, fun c => ?_⟩
-  rw [traceAlong_gramOp hbx hb htr] at hup
+  rw [integral_norm_sq_toLp hbx hb htr] at hup
   simpa only [inner_toLp] using Infinite.sum_mul_norm_sq_inner_le hup c
 
 /-! ### Restriction to a set of full measure -/

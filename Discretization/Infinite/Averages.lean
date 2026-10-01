@@ -6,6 +6,7 @@ Authors: Mario Ullrich
 module
 
 public import BasicResults.Operator.QuadraticForm
+public import BasicResults.Operator.GramOperator
 public import Discretization.Averages
 public import Discretization.Infinite.Barrier
 
@@ -13,7 +14,7 @@ public import Discretization.Infinite.Barrier
 # The upper verifier passes the test on average
 
 The operator counterpart of the upper half of `Discretization.Averages`.  For a
-square-integrable family `b` whose Gram operator is `J`,
+square-integrable family `b` with injective Gram operator `J = ∫ b(x) b(x)* dμ(x)`,
 
 `∫ U_B^ζ(b x) dμ(x) < 1/ζ + Ψ_J(B)`   (`Discretization.Infinite.integral_upperVerifier_lt`),
 
@@ -21,7 +22,9 @@ so a point at which the upper verifier is small exists as soon as the lower veri
 large on average.  Since the first family stays finite, the lower verifier is a matrix
 quantity and the upper one an operator quantity; both are real functions on `Ω`, and the
 conclusion is `Discretization.UpperBarrier.exists_admissible_point` for the operator
-upper barrier of `Discretization.Infinite.UpperBarrier`.  This file also proves
+upper barrier of `Discretization.Infinite.UpperBarrier`.  This file also proves that the Gram
+operator is positive and of finite trace along every Hilbert basis with countable index
+(`Discretization.Infinite.isFiniteTracePos_of_integral_rankOne`), with
 `∫ ‖b‖² dμ = Tr J` (`Discretization.Infinite.integral_norm_sq_eq_traceAlong`).
 
 Two ingredients do the work.  The average of a quadratic form is a trace
@@ -69,6 +72,28 @@ theorem traceAlong_mul_le_of_le {P₁ P₂ Q : H →L[ℂ] H}
   rw [hsplit, traceAlong_add e hs₁ hs₂]
   linarith
 
+/-! ### The Gram operator along a basis -/
+
+/-- The quadratic form of the Gram operator `J = ∫ b(x) b(x)* dμ(x)`:
+`⟪u, J u⟫ = ∫ |⟪u, b(x)⟫|² dμ(x)` (`ContinuousLinearMap.inner_integral_rankOne_self`). -/
+theorem inner_eq_integral_of_integral_rankOne {b : Ω → H} (hb : MemLp b 2 μ)
+    (hJ : ∫ x, rankOne ℂ (b x) (b x) ∂μ = J) (u : H) :
+    ⟪u, J u⟫_ℂ = ((∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ : ℝ) : ℂ) := by
+  rw [← hJ]
+  exact inner_integral_rankOne_self hb u
+
+/-- **The Gram operator is positive and of finite trace along every Hilbert basis with
+countable index**, and so, once injective, satisfies `IsFiniteTracePos`: positivity is that
+of its quadratic form (`ContinuousLinearMap.nonneg_of_inner_eq_integral`), the finite trace
+`∑ₖ Re ⟪eₖ, J eₖ⟫ = ∫ ‖b‖² dμ` is Tonelli and Parseval
+(`ContinuousLinearMap.summable_re_inner_of_gram`). -/
+theorem isFiniteTracePos_of_integral_rankOne [Countable κ] (e : HilbertBasis κ ℂ H)
+    {b : Ω → H} (hb : MemLp b 2 μ) (hJ : ∫ x, rankOne ℂ (b x) (b x) ∂μ = J)
+    (hinj : ∀ v, J v = 0 → v = 0) : IsFiniteTracePos e J :=
+  ⟨nonneg_of_inner_eq_integral (inner_eq_integral_of_integral_rankOne hb hJ),
+    summable_re_inner_of_gram e hb
+      (re_inner_eq_integral (inner_eq_integral_of_integral_rankOne hb hJ)), hinj⟩
+
 /-! ### The average of the upper verifier -/
 
 omit [CompleteSpace H] in
@@ -84,11 +109,12 @@ Writing `W = B⁻¹` and `X = (B + ζ • J)⁻¹`, the average equals
 `Tr (J X J X) / E + Ψ_J(B + ζ • J)` with `E = ζ · Tr (J W J X)`.  Since `X ≼ W` the
 numerator is at most `Tr (J W J X) = E/ζ`, so the first summand is at most `1/ζ`, and the
 second is strictly smaller than `Ψ_J(B)`. -/
-theorem integral_upperVerifier_lt [Nonempty κ] [Countable κ] (hJ : IsFiniteTracePos e J)
-    {B : H →L[ℂ] H} (hB : IsStrictlyPositive B) {ζ : ℝ} (hζ : 0 < ζ) {b : Ω → H}
-    (hb : MemLp b 2 μ)
-    (hgram : ∀ u, RCLike.re ⟪u, J u⟫_ℂ = ∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ) :
+theorem integral_upperVerifier_lt [Nonempty κ] [Countable κ] {b : Ω → H} (hb : MemLp b 2 μ)
+    (hJb : ∫ x, rankOne ℂ (b x) (b x) ∂μ = J) (hinj : ∀ v, J v = 0 → v = 0)
+    {B : H →L[ℂ] H} (hB : IsStrictlyPositive B) {ζ : ℝ} (hζ : 0 < ζ) :
     ∫ x, upperVerifier e J B ζ (b x) ∂μ < 1 / ζ + upperPotential e J B := by
+  have hJ := isFiniteTracePos_of_integral_rankOne e hb hJb hinj
+  have hgram := re_inner_eq_integral (inner_eq_integral_of_integral_rankOne hb hJb)
   have hM : IsStrictlyPositive (B + ζ • J) := isStrictlyPositive_add_smul hJ.nonneg hB hζ.le
   have hX : IsStrictlyPositive (Ring.inverse (B + ζ • J)) := hM.ringInverse
   have hW : IsStrictlyPositive (Ring.inverse B) := hB.ringInverse
@@ -141,12 +167,14 @@ theorem integral_upperVerifier_lt [Nonempty κ] [Countable κ] (hJ : IsFiniteTra
 /-- **The trace of the Gram operator is the average of `‖b‖²`**, `∫ ‖b x‖² dμ(x) = Tr J`.
 
 This is `ContinuousLinearMap.integral_re_inner_apply` with `Q = 1`, and it is the form in
-which the finite-trace assumption of the paper is used here. -/
-theorem integral_norm_sq_eq_traceAlong [Countable κ] (hJ : IsFiniteTracePos e J) {b : Ω → H}
-    (hb : MemLp b 2 μ)
-    (hgramb : ∀ u, RCLike.re ⟪u, J u⟫_ℂ = ∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ) :
+which the finite-trace assumption of the paper is used here.  Injectivity is not needed. -/
+theorem integral_norm_sq_eq_traceAlong [Countable κ] (e : HilbertBasis κ ℂ H) {b : Ω → H}
+    (hb : MemLp b 2 μ) (hJ : ∫ x, rankOne ℂ (b x) (b x) ∂μ = J) :
     ∫ x, ‖b x‖ ^ 2 ∂μ = traceAlong e J := by
-  have h1 := integral_re_inner_apply e hJ.nonneg zero_le_one hJ.summableTrace hb hgramb
+  have hq := inner_eq_integral_of_integral_rankOne hb hJ
+  have hgramb := re_inner_eq_integral hq
+  have h1 := integral_re_inner_apply e (nonneg_of_inner_eq_integral hq) zero_le_one
+    (summable_re_inner_of_gram e hb hgramb) hb hgramb
   rw [mul_one] at h1
   rw [← h1]
   refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)

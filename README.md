@@ -111,7 +111,10 @@ and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0
   (`.bss_generalized_of_unique`, `.bss_generalized_of_small_dim`,
   `.bss_generalized_of_unique_of_small_dim`, each also under
   `Discretization.UpperBarrier`), and they are proved once for matrices and operators
-  alike. The number of points does not depend on the second family beyond `M`.
+  alike. For operators the normalized theorem is stated for a Hilbert space with a
+  countable Hilbert basis, with the same hypothesis `∫ b b* dμ = J` and the same
+  `M = ∫ ‖b‖² dμ / Λ` (`Discretization.Infinite.bss_generalized_of_gram_eq_one'`). The
+  number of points does not depend on the second family beyond `M`.
 
 ### The Kiefer–Wolfowitz theorem
 
@@ -228,7 +231,10 @@ The steps the two arguments are built from:
 * **The Gram operator** `∫ b(x) b(x)* dμ(x)` as a Bochner integral, with its quadratic
   form `⟪u, J u⟫ = ∫ |⟪u, b(x)⟫|² dμ(x)` and the two readings of the hypotheses on it
   (`ContinuousLinearMap.inner_integral_rankOne_self`,
-  `.le_smul_one_iff_of_inner_eq_integral`, `.injective_iff_of_inner_eq_integral`).
+  `.le_smul_one_iff_of_inner_eq_integral`, `.injective_iff_of_inner_eq_integral`); it is
+  positive and of finite trace along every countable Hilbert basis, with trace
+  `∫ ‖b‖² dμ` (`Discretization.Infinite.isFiniteTracePos_of_integral_rankOne`,
+  `.integral_norm_sq_eq_traceAlong`).
 
 Everything else is in the blueprint, with its Lean name at every statement.
 

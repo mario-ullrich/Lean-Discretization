@@ -109,18 +109,19 @@ state for a second family in a Hilbert space and the theorems for it, and
 * `Discretization.BSS`: the case of a single family, which is the sparsification theorem
   of Batson, Spielman and Srivastava, `Discretization.bss`.
 * `Discretization.Infinite.Potentials`: the upper potential `Ψ_J(B) = Tr (J B⁻¹)` for a
-  positive operator `J` of finite trace, where the second family is indexed by a countable
-  set.
+  positive operator `J` of finite trace along a fixed Hilbert basis.
 * `Discretization.Infinite.Barrier`: the upper verifier and the barrier lemma for
   operators.
-* `Discretization.Infinite.Averages`: the upper verifier passes the test on average, and
-  `∫ ‖b‖² dμ = Tr J`.
+* `Discretization.Infinite.Averages`: the Gram operator `J = ∫ b(x) b(x)* dμ(x)` is
+  positive and of finite trace along every countable Hilbert basis,
+  `Discretization.Infinite.isFiniteTracePos_of_integral_rankOne`, with `∫ ‖b‖² dμ = Tr J`;
+  and the upper verifier passes the test on average.
 * `Discretization.Infinite.Bounds`: a bound on the upper potential is a bound on the
   operator, `Ψ_J(B)⁻¹ • J ≼ B`.
 * `Discretization.Infinite.UpperBarrier`: the operators as an upper barrier,
   `Discretization.Infinite.operatorUpperBarrier`, and with it the theorem without side
-  conditions for a countable second family,
-  `Discretization.Infinite.bss_generalized_of_gram_eq_one'`.
+  conditions for a normalized first family and a Hilbert space with a countable Hilbert
+  basis, `Discretization.Infinite.bss_generalized_of_gram_eq_one'`.
 * `Discretization.Infinite.GeneralGram`: removing the normalisation of the first family,
   which gives the theorem along a Hilbert basis,
   `Discretization.Infinite.bss_generalized_of_hilbertBasis`, and without a basis for a

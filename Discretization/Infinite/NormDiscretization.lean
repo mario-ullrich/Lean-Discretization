@@ -55,8 +55,7 @@ namespace Discretization
 
 namespace Infinite
 
-variable {ι κ Ω H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
-  {e : HilbertBasis κ ℂ H} {J : H →L[ℂ] H}
+variable {ι κ Ω H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] {J : H →L[ℂ] H}
 
 /-! ### The quadratic form of a multiple of the identity -/
 
@@ -83,7 +82,7 @@ theorem sum_mul_norm_sq_inner_le [CompleteSpace H] {n : ℕ} {x : Fin n → Ω} 
 
 variable [Fintype ι] [DecidableEq ι] [CompleteSpace H] [MeasurableSpace Ω] {μ : Measure Ω}
 
-/-- **Discretization of the `L₂`-norm, with a countable second family.**
+/-- **Discretization of the `L₂`-norm, for a Hilbert space with a countable Hilbert basis.**
 
 Under the hypotheses of `Discretization.Infinite.bss_generalized_of_gram_eq_one'`, the `n`
 points and weights discretize the norm of every function in the span of the first family
@@ -96,22 +95,22 @@ and bound the weighted sum for every function in the span of the second family f
 `∑ᵢ wᵢ |⟪u, b(xᵢ)⟫|² ≤ (1 + √((M-1)/n))² Λ · ‖u‖²`.
 
 This is Corollary 4 of the paper for an infinite-dimensional second family: what controls
-the number of points is the effective dimension `M = Tr J / Λ`, and there is no side
+the number of points is the effective dimension `M = ∫ ‖b‖² dμ / Λ`, and there is no side
 condition beyond `n ≥ m`. -/
 theorem exists_discretization_of_hilbertBasis [Nonempty ι] [Nonempty κ] [Countable κ]
-    (hJ : IsFiniteTracePos e J) {Λ : ℝ} (hΛ : 0 < Λ)
-    (hJΛ : J ≤ Λ • (1 : H →L[ℂ] H)) {a : Ω → ι → ℂ} {b : Ω → H}
+    (e : HilbertBasis κ ℂ H) {Λ : ℝ} (hΛ : 0 < Λ) (hJΛ : J ≤ Λ • (1 : H →L[ℂ] H))
+    (hJinj : ∀ v, J v = 0 → v = 0) {a : Ω → ι → ℂ} {b : Ω → H}
     (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : MemLp b 2 μ) (hgrama : gram a μ = 1)
-    (hgramb : ∀ u, RCLike.re ⟪u, J u⟫_ℂ = ∫ x, ‖⟪u, b x⟫_ℂ‖ ^ 2 ∂μ)
+    (hgramb : ∫ x, rankOne ℂ (b x) (b x) ∂μ = J)
     {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
       (∀ c : ι → ℂ, (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
             * ∫ y, ‖star c ⬝ᵥ a y‖ ^ 2 ∂μ
           ≤ ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2) ∧
       (∀ u : H, ∑ i, w i * ‖⟪u, b (x i)⟫_ℂ‖ ^ 2
-          ≤ (1 + Real.sqrt ((traceAlong e J / Λ - 1) / n)) ^ 2 * Λ * ‖u‖ ^ 2) := by
+          ≤ (1 + Real.sqrt (((∫ y, ‖b y‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2 * Λ * ‖u‖ ^ 2) := by
   obtain ⟨x, w, hwpos, hlow, hup⟩ :=
-    bss_generalized_of_gram_eq_one' hJ hΛ hJΛ ha hb hgrama hgramb hmn
+    bss_generalized_of_gram_eq_one' e hΛ hJΛ hJinj ha hb hgrama hgramb hmn
   exact ⟨x, w, hwpos, mul_integral_norm_sq_le_sum ha (by rwa [hgrama]),
     sum_mul_norm_sq_inner_le hup⟩
 
