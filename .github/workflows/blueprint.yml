@@ -117,16 +117,12 @@ jobs:
       #     "Blue border" (every statement is formalized, so no node has either)
       #     and "Blue background" (now recolored white; the green-border row
       #     already explains a stated-but-unproved node).
-      #   * Explain the two kinds of edges in the legend, which plastexdepgraph
-      #     leaves out: a solid arrow comes from a `\uses` inside a proof, a
-      #     dashed arrow from a `\uses` inside a statement. The two rows go in
-      #     front of the closing `</dl>`, the only one on the page.
-      #   * Reorient the graph left-to-right (rankdir=LR): base results on the
-      #     left, derived results on the right. plastexdepgraph sets no rankdir,
-      #     so we inject one right after the "digraph ... {" opening brace.
-      - name: Tidy dependency graph (recolor sorry-nodes white, adjust legend rows, lay out left-to-right)
+      #   * Draw every edge solid. plastexdepgraph dashes the edges that come
+      #     from a `\uses` inside a statement; here these say only that a
+      #     statement uses a definition, so one kind of arrow suffices.
+      - name: Tidy dependency graph (recolor sorry-nodes white, drop unused legend rows, draw all edges solid)
         run: |
-          sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s|^\( *\)</dl>|\1  <dt>Solid arrow</dt><dd>the <em>proof</em> of the target uses the source</dd>\n\1  <dt>Dashed arrow</dt><dd>the <em>statement</em> of the target uses the source</dd>\n\1</dl>|; s/\(digraph[^{]*{\)/\1 rankdir="LR";/' blueprint/web/dep_graph_document.html
+          sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\[style=dashed\]//g' blueprint/web/dep_graph_document.html
 
       # Point the `\lean{...}` links at this repository. leanblueprint builds
       # them as `{dochome}/find/#doc/Decl` and, with no `\dochome` set, falls

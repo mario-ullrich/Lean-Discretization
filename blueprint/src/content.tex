@@ -1305,7 +1305,6 @@ $H = \ell_2(\kappa)$, and the kernel sections of a reproducing kernel Hilbert sp
       Discretization.Countable.gramOp_le, Discretization.Countable.integral_comap_val,
       Discretization.Countable.gram_comap_val, HilbertBasis.separableSpace}
 \leanok
-\uses{lem:gram-operator}
 Let $(\Omega, \mu)$ be a measure space, let $\kappa$ be a countable set, and let
 $b = (b_k)_{k \in \kappa}$ be square-integrable functions on $\Omega$ with
 $\sum_k \|b_k\|_{L_2}^2 < \infty$.
@@ -1327,6 +1326,7 @@ $c \in \ell_2(\kappa)$, and it is injective if this integral vanishes only for $
 
 \begin{proof}
 \leanok
+\uses{lem:gram-operator}
 (a) By Tonelli, $\int_\Omega \sum_k |b_k|^2 \, d\mu = \sum_k \|b_k\|^2 < \infty$, so the
 sum is finite almost everywhere, and the complement of a measurable null set containing
 the exceptional points is a set $S$ as required.
