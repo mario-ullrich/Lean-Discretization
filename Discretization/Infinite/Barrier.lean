@@ -37,8 +37,11 @@ namespace Discretization
 
 namespace Infinite
 
-variable {κ H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-  {e : HilbertBasis κ ℂ H} {J : H →L[ℂ] H}
+variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+  {J : H →L[ℂ] H}
+
+/-- The Hilbert basis chosen once and for all, along which traces are computed. -/
+local notation "e₀" => HilbertBasis.chosen H
 
 /-! ### Quadratic forms of a positive injective operator -/
 
@@ -46,7 +49,7 @@ variable {κ H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [Comple
 
 This is the substitute for positive definiteness: `J` need not be bounded away from zero,
 but its quadratic form vanishes only at `0`. -/
-theorem IsFiniteTracePos.re_inner_pos (hJ : IsFiniteTracePos e J) {y : H} (hy : y ≠ 0) :
+theorem IsFiniteTracePos.re_inner_pos (hJ : IsFiniteTracePos J) {y : H} (hy : y ≠ 0) :
     0 < RCLike.re ⟪y, J y⟫_ℂ := by
   have hsq : CFC.sqrt J * CFC.sqrt J = J := CFC.sqrt_mul_sqrt_self J hJ.nonneg
   rw [re_inner_apply_eq_norm_sq_sqrt hJ.nonneg y]
@@ -62,7 +65,7 @@ theorem IsFiniteTracePos.re_inner_pos (hJ : IsFiniteTracePos e J) {y : H} (hy : 
 
 /-- The conjugate `X J X` of a positive injective operator by a strictly positive one has a
 positive quadratic form on nonzero vectors. -/
-theorem re_inner_conj_pos (hJ : IsFiniteTracePos e J) {X : H →L[ℂ] H}
+theorem re_inner_conj_pos (hJ : IsFiniteTracePos J) {X : H →L[ℂ] H}
     (hX : IsStrictlyPositive X) {u : H} (hu : u ≠ 0) :
     0 < RCLike.re ⟪u, (X * J * X) u⟫_ℂ := by
   have hXu : X u ≠ 0 := fun h =>
@@ -75,11 +78,11 @@ theorem re_inner_conj_pos (hJ : IsFiniteTracePos e J) {X : H →L[ℂ] H}
 /-- **The upper potential after a rank-one downdate**, in closed form:
 `Ψ_J(M - w u u*) = Ψ_J(M) + w / (1 - w ⟪u, M⁻¹ u⟫) · ⟪u, M⁻¹ J M⁻¹ u⟫`,
 valid as long as the Sherman–Morrison denominator is positive. -/
-theorem upperPotential_sub_smul_rankOne (hJ : IsFiniteTracePos e J) {M : H →L[ℂ] H}
+theorem upperPotential_sub_smul_rankOne (hJ : IsFiniteTracePos J) {M : H →L[ℂ] H}
     (hM : IsStrictlyPositive M) (u : H) {w : ℝ} (hw : 0 ≤ w)
     (hden : 0 < 1 - w * RCLike.re ⟪u, Ring.inverse M u⟫_ℂ) :
-    upperPotential e J (M - w • rankOne ℂ u u)
-      = upperPotential e J M
+    upperPotential J (M - w • rankOne ℂ u u)
+      = upperPotential J M
         + (w / (1 - w * RCLike.re ⟪u, Ring.inverse M u⟫_ℂ))
           * RCLike.re ⟪u, (Ring.inverse M * J * Ring.inverse M) u⟫_ℂ := by
   have hMinv : IsStrictlyPositive (Ring.inverse M) := hM.ringInverse
@@ -91,12 +94,12 @@ theorem upperPotential_sub_smul_rankOne (hJ : IsFiniteTracePos e J) {M : H →L[
       ≤ (w / (1 - w * RCLike.re ⟪u, Ring.inverse M u⟫_ℂ))
         • rankOne ℂ (Ring.inverse M u) (Ring.inverse M u) :=
     smul_nonneg hc0 (nonneg_rankOne_self _)
-  have h₁ : Summable fun k => RCLike.re ⟪e k, (J * Ring.inverse M) (e k)⟫_ℂ :=
-    summable_re_inner_apply_mul e hJ.nonneg hMinv.nonneg hJ.summableTrace
-  have h₂ : Summable fun k => RCLike.re ⟪e k,
+  have h₁ : Summable fun k => RCLike.re ⟪e₀ k, (J * Ring.inverse M) (e₀ k)⟫_ℂ :=
+    summable_re_inner_apply_mul e₀ hJ.nonneg hMinv.nonneg hJ.summableTrace
+  have h₂ : Summable fun k => RCLike.re ⟪e₀ k,
       (J * ((w / (1 - w * RCLike.re ⟪u, Ring.inverse M u⟫_ℂ))
-        • rankOne ℂ (Ring.inverse M u) (Ring.inverse M u))) (e k)⟫_ℂ :=
-    summable_re_inner_apply_mul e hJ.nonneg hR0 hJ.summableTrace
+        • rankOne ℂ (Ring.inverse M u) (Ring.inverse M u))) (e₀ k)⟫_ℂ :=
+    summable_re_inner_apply_mul e₀ hJ.nonneg hR0 hJ.summableTrace
   have hform : RCLike.re ⟪Ring.inverse M u, J (Ring.inverse M u)⟫_ℂ
       = RCLike.re ⟪u, (Ring.inverse M * J * Ring.inverse M) u⟫_ℂ := by
     have h := ContinuousLinearMap.adjoint_inner_right (Ring.inverse M) u
@@ -104,24 +107,24 @@ theorem upperPotential_sub_smul_rankOne (hJ : IsFiniteTracePos e J) {M : H →L[
     rw [hWadj] at h
     rw [← h, show Ring.inverse M (J (Ring.inverse M u))
       = (Ring.inverse M * J * Ring.inverse M) u from rfl]
-  rw [upperPotential, upperPotential, hinv, mul_add, traceAlong_add e h₁ h₂, mul_smul_comm,
+  rw [upperPotential, upperPotential, hinv, mul_add, traceAlong_add e₀ h₁ h₂, mul_smul_comm,
     traceAlong_smul, traceAlong_mul_rankOne, hform]
 
 /-! ### The verifier and the barrier lemma -/
 
 /-- The **upper verifier** of a candidate vector `u`, testing how much of the gap opened by
 the shift `B ↦ B + ζ • J` the rank-one downdate `w u u*` would consume. -/
-noncomputable def upperVerifier (e : HilbertBasis κ ℂ H) (J B : H →L[ℂ] H) (ζ : ℝ) (u : H) :
+noncomputable def upperVerifier (J B : H →L[ℂ] H) (ζ : ℝ) (u : H) :
     ℝ :=
   RCLike.re ⟪u, (Ring.inverse (B + ζ • J) * J * Ring.inverse (B + ζ • J)) u⟫_ℂ
-      / (upperPotential e J B - upperPotential e J (B + ζ • J))
+      / (upperPotential J B - upperPotential J (B + ζ • J))
     + RCLike.re ⟪u, Ring.inverse (B + ζ • J) u⟫_ℂ
 
 /-- The upper verifier is nonnegative: both summands are, the numerator because `X J X` is
 positive and the denominator because growing `B` lowers the potential. -/
-theorem upperVerifier_nonneg [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}
+theorem upperVerifier_nonneg [Nontrivial H] (hJ : IsFiniteTracePos J) {B : H →L[ℂ] H}
     (hB : IsStrictlyPositive B) {ζ : ℝ} (hζ : 0 < ζ) (u : H) :
-    0 ≤ upperVerifier e J B ζ u := by
+    0 ≤ upperVerifier J B ζ u := by
   have hM : IsStrictlyPositive (B + ζ • J) := isStrictlyPositive_add_smul hJ.nonneg hB hζ.le
   have hMinv : IsStrictlyPositive (Ring.inverse (B + ζ • J)) := hM.ringInverse
   have h₁ : 0 ≤ RCLike.re ⟪u,
@@ -130,7 +133,7 @@ theorem upperVerifier_nonneg [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : H �
       (nonneg_conj hMinv.nonneg hJ.nonneg)).re_inner_nonneg_right u
   have h₂ : 0 ≤ RCLike.re ⟪u, Ring.inverse (B + ζ • J) u⟫_ℂ :=
     (ContinuousLinearMap.nonneg_iff_isPositive.1 hMinv.nonneg).re_inner_nonneg_right u
-  have h₃ : 0 < upperPotential e J B - upperPotential e J (B + ζ • J) := by
+  have h₃ : 0 < upperPotential J B - upperPotential J (B + ζ • J) := by
     have := upperPotential_add_smul_lt hJ hB hζ
     linarith
   exact add_nonneg (div_nonneg h₁ h₃.le) h₂
@@ -141,17 +144,17 @@ and its upper potential has not increased.
 
 The real arithmetic is `Discretization.upper_barrier_ineq`, the same as in the
 finite-dimensional proof. -/
-theorem upperPotential_update_le [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}
+theorem upperPotential_update_le [Nontrivial H] (hJ : IsFiniteTracePos J) {B : H →L[ℂ] H}
     (hB : IsStrictlyPositive B) {ζ : ℝ} (hζ : 0 < ζ) (u : H) {w : ℝ} (hw : 0 < w)
-    (hcond : upperVerifier e J B ζ u ≤ 1 / w) :
+    (hcond : upperVerifier J B ζ u ≤ 1 / w) :
     IsStrictlyPositive (B + ζ • J - w • rankOne ℂ u u) ∧
-      upperPotential e J (B + ζ • J - w • rankOne ℂ u u) ≤ upperPotential e J B := by
+      upperPotential J (B + ζ • J - w • rankOne ℂ u u) ≤ upperPotential J B := by
   have hM : IsStrictlyPositive (B + ζ • J) := isStrictlyPositive_add_smul hJ.nonneg hB hζ.le
   have hMinv : IsStrictlyPositive (Ring.inverse (B + ζ • J)) := hM.ringInverse
-  have hEpos : upperPotential e J (B + ζ • J) < upperPotential e J B :=
+  have hEpos : upperPotential J (B + ζ • J) < upperPotential J B :=
     upperPotential_add_smul_lt hJ hB hζ
   simp only [upperVerifier] at hcond
-  set E := upperPotential e J B - upperPotential e J (B + ζ • J) with hEdef
+  set E := upperPotential J B - upperPotential J (B + ζ • J) with hEdef
   set p := RCLike.re ⟪u, Ring.inverse (B + ζ • J) u⟫_ℂ with hpdef
   set r := RCLike.re ⟪u,
     (Ring.inverse (B + ζ • J) * J * Ring.inverse (B + ζ • J)) u⟫_ℂ with hrdef

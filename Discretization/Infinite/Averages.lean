@@ -22,10 +22,11 @@ so a point at which the upper verifier is small exists as soon as the lower veri
 large on average.  Since the first family stays finite, the lower verifier is a matrix
 quantity and the upper one an operator quantity; both are real functions on `Ω`, and the
 conclusion is `Discretization.UpperBarrier.exists_admissible_point` for the operator
-upper barrier of `Discretization.Infinite.UpperBarrier`.  This file also proves that the Gram
-operator is positive and of finite trace along every Hilbert basis with countable index
+upper barrier of `Discretization.Infinite.UpperBarrier`.  This file also proves that on a
+separable space the Gram operator is positive and of finite trace
 (`Discretization.Infinite.isFiniteTracePos_of_integral_rankOne`), with
-`∫ ‖b‖² dμ = Tr J` (`Discretization.Infinite.integral_norm_sq_eq_traceAlong`).
+`∫ ‖b‖² dμ = Tr J` (`Discretization.Infinite.integral_norm_sq_eq_trace`, and along any
+countable Hilbert basis `Discretization.Infinite.integral_norm_sq_eq_traceAlong`).
 
 Two ingredients do the work.  The average of a quadratic form is a trace
 (`ContinuousLinearMap.integral_re_inner_apply`).  With `W = B⁻¹` and `X = (B + ζ • J)⁻¹` it turns
@@ -46,7 +47,10 @@ namespace Discretization
 namespace Infinite
 
 variable {κ Ω H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-  [MeasurableSpace Ω] {μ : Measure Ω} {e : HilbertBasis κ ℂ H} {J : H →L[ℂ] H}
+  [MeasurableSpace Ω] {μ : Measure Ω} {J : H →L[ℂ] H}
+
+/-- The Hilbert basis chosen once and for all, along which traces are computed. -/
+local notation "e₀" => HilbertBasis.chosen H
 
 /-! ### Monotonicity of the trace of a product -/
 
@@ -55,7 +59,7 @@ variable {κ Ω H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [Com
 
 The difference `P₂ - P₁` is positive with summable trace, so the trace of its product with
 `Q` is nonnegative. -/
-theorem traceAlong_mul_le_of_le {P₁ P₂ Q : H →L[ℂ] H}
+theorem traceAlong_mul_le_of_le {e : HilbertBasis κ ℂ H} {P₁ P₂ Q : H →L[ℂ] H}
     (h₁ : Summable fun k => RCLike.re ⟪e k, P₁ (e k)⟫_ℂ)
     (h₂ : Summable fun k => RCLike.re ⟪e k, P₂ (e k)⟫_ℂ) (hP₁ : 0 ≤ P₁) (hle : P₁ ≤ P₂)
     (hQ : 0 ≤ Q) : traceAlong e (P₁ * Q) ≤ traceAlong e (P₂ * Q) := by
@@ -72,7 +76,7 @@ theorem traceAlong_mul_le_of_le {P₁ P₂ Q : H →L[ℂ] H}
   rw [hsplit, traceAlong_add e hs₁ hs₂]
   linarith
 
-/-! ### The Gram operator along a basis -/
+/-! ### The Gram operator -/
 
 /-- The quadratic form of the Gram operator `J = ∫ b(x) b(x)* dμ(x)`:
 `⟪u, J u⟫ = ∫ |⟪u, b(x)⟫|² dμ(x)` (`ContinuousLinearMap.inner_integral_rankOne_self`). -/
@@ -82,24 +86,23 @@ theorem inner_eq_integral_of_integral_rankOne {b : Ω → H} (hb : MemLp b 2 μ)
   rw [← hJ]
   exact inner_integral_rankOne_self hb u
 
-/-- **The Gram operator is positive and of finite trace along every Hilbert basis with
-countable index**, and so, once injective, satisfies `IsFiniteTracePos`: positivity is that
-of its quadratic form (`ContinuousLinearMap.nonneg_of_inner_eq_integral`), the finite trace
-`∑ₖ Re ⟪eₖ, J eₖ⟫ = ∫ ‖b‖² dμ` is Tonelli and Parseval
+/-- **On a separable space the Gram operator is positive and of finite trace**, and so, once
+injective, satisfies `IsFiniteTracePos`: positivity is that of its quadratic form
+(`ContinuousLinearMap.nonneg_of_inner_eq_integral`); along the chosen basis, which is
+countable, the finite trace `∑ₖ Re ⟪eₖ, J eₖ⟫ = ∫ ‖b‖² dμ` is Tonelli and Parseval
 (`ContinuousLinearMap.summable_re_inner_of_gram`). -/
-theorem isFiniteTracePos_of_integral_rankOne [Countable κ] (e : HilbertBasis κ ℂ H)
+theorem isFiniteTracePos_of_integral_rankOne [TopologicalSpace.SeparableSpace H]
     {b : Ω → H} (hb : MemLp b 2 μ) (hJ : ∫ x, rankOne ℂ (b x) (b x) ∂μ = J)
-    (hinj : ∀ v, J v = 0 → v = 0) : IsFiniteTracePos e J :=
+    (hinj : ∀ v, J v = 0 → v = 0) : IsFiniteTracePos J :=
   ⟨nonneg_of_inner_eq_integral (inner_eq_integral_of_integral_rankOne hb hJ),
-    summable_re_inner_of_gram e hb
+    summable_re_inner_of_gram e₀ hb
       (re_inner_eq_integral (inner_eq_integral_of_integral_rankOne hb hJ)), hinj⟩
 
 /-! ### The average of the upper verifier -/
 
-omit [CompleteSpace H] in
 /-- The upper verifier of a square-integrable family is integrable. -/
 theorem integrable_upperVerifier {b : Ω → H} (hb : MemLp b 2 μ) (J B : H →L[ℂ] H) (ζ : ℝ) :
-    Integrable (fun x => upperVerifier e J B ζ (b x)) μ := by
+    Integrable (fun x => upperVerifier J B ζ (b x)) μ := by
   simp only [upperVerifier]
   exact ((integrable_re_inner_apply hb _).div_const _).add (integrable_re_inner_apply hb _)
 
@@ -109,11 +112,12 @@ Writing `W = B⁻¹` and `X = (B + ζ • J)⁻¹`, the average equals
 `Tr (J X J X) / E + Ψ_J(B + ζ • J)` with `E = ζ · Tr (J W J X)`.  Since `X ≼ W` the
 numerator is at most `Tr (J W J X) = E/ζ`, so the first summand is at most `1/ζ`, and the
 second is strictly smaller than `Ψ_J(B)`. -/
-theorem integral_upperVerifier_lt [Nonempty κ] [Countable κ] {b : Ω → H} (hb : MemLp b 2 μ)
+theorem integral_upperVerifier_lt [Nontrivial H] [TopologicalSpace.SeparableSpace H]
+    {b : Ω → H} (hb : MemLp b 2 μ)
     (hJb : ∫ x, rankOne ℂ (b x) (b x) ∂μ = J) (hinj : ∀ v, J v = 0 → v = 0)
     {B : H →L[ℂ] H} (hB : IsStrictlyPositive B) {ζ : ℝ} (hζ : 0 < ζ) :
-    ∫ x, upperVerifier e J B ζ (b x) ∂μ < 1 / ζ + upperPotential e J B := by
-  have hJ := isFiniteTracePos_of_integral_rankOne e hb hJb hinj
+    ∫ x, upperVerifier J B ζ (b x) ∂μ < 1 / ζ + upperPotential J B := by
+  have hJ := isFiniteTracePos_of_integral_rankOne hb hJb hinj
   have hgram := re_inner_eq_integral (inner_eq_integral_of_integral_rankOne hb hJb)
   have hM : IsStrictlyPositive (B + ζ • J) := isStrictlyPositive_add_smul hJ.nonneg hB hζ.le
   have hX : IsStrictlyPositive (Ring.inverse (B + ζ • J)) := hM.ringInverse
@@ -130,31 +134,31 @@ theorem integral_upperVerifier_lt [Nonempty κ] [Countable κ] {b : Ω → H} (h
   have hint₂ : Integrable
       (fun x => RCLike.re ⟪b x, Ring.inverse (B + ζ • J) (b x)⟫_ℂ) μ :=
     integrable_re_inner_apply hb _
-  have hsplit : ∫ x, upperVerifier e J B ζ (b x) ∂μ
-      = traceAlong e (J * (Ring.inverse (B + ζ • J) * J * Ring.inverse (B + ζ • J)))
-          / (upperPotential e J B - upperPotential e J (B + ζ • J))
-        + upperPotential e J (B + ζ • J) := by
+  have hsplit : ∫ x, upperVerifier J B ζ (b x) ∂μ
+      = traceAlong e₀ (J * (Ring.inverse (B + ζ • J) * J * Ring.inverse (B + ζ • J)))
+          / (upperPotential J B - upperPotential J (B + ζ • J))
+        + upperPotential J (B + ζ • J) := by
     simp only [upperVerifier, upperPotential]
     rw [integral_add (hint₁.div_const _) hint₂, integral_div,
-      integral_re_inner_apply e hJ.nonneg hconjX hJ.summableTrace hb hgram,
-      integral_re_inner_apply e hJ.nonneg hX.nonneg hJ.summableTrace hb hgram]
+      integral_re_inner_apply e₀ hJ.nonneg hconjX hJ.summableTrace hb hgram,
+      integral_re_inner_apply e₀ hJ.nonneg hX.nonneg hJ.summableTrace hb hgram]
   -- the numerator is at most the gain of the potential, divided by `ζ`
   have hassoc : J * (Ring.inverse (B + ζ • J) * J * Ring.inverse (B + ζ • J))
       = (J * Ring.inverse (B + ζ • J) * J) * Ring.inverse (B + ζ • J) := by
     simp only [mul_assoc]
-  have hle : traceAlong e (J * (Ring.inverse (B + ζ • J) * J * Ring.inverse (B + ζ • J)))
-      ≤ traceAlong e ((J * Ring.inverse B * J) * Ring.inverse (B + ζ • J)) := by
+  have hle : traceAlong e₀ (J * (Ring.inverse (B + ζ • J) * J * Ring.inverse (B + ζ • J)))
+      ≤ traceAlong e₀ ((J * Ring.inverse B * J) * Ring.inverse (B + ζ • J)) := by
     rw [hassoc]
     exact traceAlong_mul_le_of_le (hJ.conj hX).summableTrace (hJ.conj hW).summableTrace
       (hJ.conj hX).nonneg (conjugate_le_conjugate_of_nonneg hXW hJ.nonneg) hX.nonneg
   have hE := upperPotential_sub_eq hJ hB hζ.le
-  have hlt : upperPotential e J (B + ζ • J) < upperPotential e J B :=
+  have hlt : upperPotential J (B + ζ • J) < upperPotential J B :=
     upperPotential_add_smul_lt hJ hB hζ
   rw [hsplit]
   -- real algebra
-  set E := upperPotential e J B - upperPotential e J (B + ζ • J) with hEdef
-  set G := traceAlong e ((J * Ring.inverse B * J) * Ring.inverse (B + ζ • J)) with hGdef
-  set P := traceAlong e (J * (Ring.inverse (B + ζ • J) * J * Ring.inverse (B + ζ • J)))
+  set E := upperPotential J B - upperPotential J (B + ζ • J) with hEdef
+  set G := traceAlong e₀ ((J * Ring.inverse B * J) * Ring.inverse (B + ζ • J)) with hGdef
+  set P := traceAlong e₀ (J * (Ring.inverse (B + ζ • J) * J * Ring.inverse (B + ζ • J)))
     with hPdef
   have hE0 : 0 < E := by simp only [hEdef]; linarith
   have hPE : P / E ≤ 1 / ζ := by
@@ -180,6 +184,14 @@ theorem integral_norm_sq_eq_traceAlong [Countable κ] (e : HilbertBasis κ ℂ H
   refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
   show ‖b x‖ ^ 2 = RCLike.re ⟪b x, b x⟫_ℂ
   exact (inner_self_eq_norm_sq (b x)).symm
+
+/-- **The trace of the Gram operator is the average of `‖b‖²`**, `∫ ‖b x‖² dμ(x) = Tr J`, on a
+separable space: `Discretization.Infinite.integral_norm_sq_eq_traceAlong` along the chosen
+basis, which is countable. -/
+theorem integral_norm_sq_eq_trace [TopologicalSpace.SeparableSpace H] {b : Ω → H}
+    (hb : MemLp b 2 μ) (hJ : ∫ x, rankOne ℂ (b x) (b x) ∂μ = J) :
+    ∫ x, ‖b x‖ ^ 2 ∂μ = trace J :=
+  integral_norm_sq_eq_traceAlong e₀ hb hJ
 
 end Infinite
 

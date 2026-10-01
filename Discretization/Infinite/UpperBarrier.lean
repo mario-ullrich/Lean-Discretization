@@ -13,8 +13,8 @@ public import Discretization.Infinite.Bounds
 # The operators as an upper barrier
 
 The theorem `Discretization.bss_generalized_of_gram_eq_one'` for a second family given by a
-square-integrable map `b : Ω → H` into a Hilbert space with a countable Hilbert basis `e`,
-whose Gram operator `J = ∫ b(x) b(x)* dμ(x)` is injective and bounded by `Λ • 1`.  With
+square-integrable map `b : Ω → H` into a Hilbert space that is separable and nonzero, whose
+Gram operator `J = ∫ b(x) b(x)* dμ(x)` is injective and bounded by `Λ • 1`.  With
 
 `m = card ι`,  `M = ∫ ‖b‖² dμ / Λ`,  `r = √((m-1)/n)`,  `s = √((M-1)/n)`,
 
@@ -48,26 +48,26 @@ namespace Discretization
 
 namespace Infinite
 
-variable {ι κ Ω H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
-  [MeasurableSpace Ω] {μ : Measure Ω} {e : HilbertBasis κ ℂ H} {J : H →L[ℂ] H}
+variable {ι Ω H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+  [MeasurableSpace Ω] {μ : Measure Ω} {J : H →L[ℂ] H}
 
 /-- **The upper barrier of a second family in a Hilbert space.**  The states are the bounded
 operators on `H`, the admissible ones the strictly positive operators, and potential and
-verifier are `Discretization.Infinite.upperPotential` and `Discretization.Infinite.upperVerifier`
-along the countable Hilbert basis `e`, for a square-integrable `b` with injective Gram
-operator `J = ∫ b(x) b(x)* dμ(x)`.  The trace it records is `∫ ‖b‖² dμ`, which equals the
-trace of `J` along `e` (`Discretization.Infinite.integral_norm_sq_eq_traceAlong`). -/
-noncomputable def operatorUpperBarrier [Nonempty κ] [Countable κ] (e : HilbertBasis κ ℂ H)
+verifier are `Discretization.Infinite.upperPotential` and `Discretization.Infinite.upperVerifier`,
+for a square-integrable `b` with injective Gram operator `J = ∫ b(x) b(x)* dμ(x)` on a
+separable nonzero space.  The trace it records is `∫ ‖b‖² dμ`, which equals the trace of `J`
+(`Discretization.Infinite.integral_norm_sq_eq_trace`). -/
+noncomputable def operatorUpperBarrier [Nontrivial H] [TopologicalSpace.SeparableSpace H]
     {b : Ω → H} (hb : MemLp b 2 μ) (hJb : ∫ x, rankOne ℂ (b x) (b x) ∂μ = J)
     (hinj : ∀ v, J v = 0 → v = 0) :
     UpperBarrier μ (H →L[ℂ] H) :=
-  have hJ := isFiniteTracePos_of_integral_rankOne e hb hJb hinj
-  have htr := integral_norm_sq_eq_traceAlong e hb hJb
+  have hJ := isFiniteTracePos_of_integral_rankOne hb hJb hinj
+  have htr := integral_norm_sq_eq_trace hb hJb
   { J := J
     R y := rankOne ℂ (b y) (b y)
     Adm B := IsStrictlyPositive B
-    pot := upperPotential e J
-    ver B ζ y := upperVerifier e J B ζ (b y)
+    pot := upperPotential J
+    ver B ζ y := upperVerifier J B ζ (b y)
     tr := ∫ y, ‖b y‖ ^ 2 ∂μ
     sq y := ‖b y‖ ^ 2
     pot_pos hB := upperPotential_pos hJ hB
@@ -79,19 +79,19 @@ noncomputable def operatorUpperBarrier [Nonempty κ] [Countable κ] (e : Hilbert
     inv_pot_smul_le hB := inv_upperPotential_smul_le hJ hB
     adm_smul_one hc := isStrictlyPositive_smul_one hc
     pot_smul_one hc := by rw [upperPotential_smul_one hc, htr]
-    tr_pos := htr ▸ hJ.traceAlong_pos
+    tr_pos := htr ▸ hJ.trace_pos
     R_le y := rankOne_le_norm_sq_smul_one (b y)
     sq_nonneg y := by positivity
     integrable_sq := (memLp_two_iff_integrable_sq_norm hb.aestronglyMeasurable).1 hb
     integral_sq := rfl }
 
-/-- **Discretization theorem for a normalized first family and a second family in a Hilbert
-space with a countable Hilbert basis**, with no side condition beyond `n ≥ m`: the theorem
+/-- **Discretization theorem for a normalized first family and a second family in a separable
+Hilbert space**, with no side condition beyond `n ≥ m`: the theorem
 `Discretization.UpperBarrier.bss_generalized_of_gram_eq_one'` for the upper barrier
 `Discretization.Infinite.operatorUpperBarrier`.  The Gram operator is
 `J = ∫ b(x) b(x)* dμ(x)`, and the effective dimension is `M = ∫ ‖b‖² dμ / Λ`. -/
-theorem bss_generalized_of_gram_eq_one' [Fintype ι] [DecidableEq ι] [Nonempty ι] [Nonempty κ]
-    [Countable κ] (e : HilbertBasis κ ℂ H) {Λ : ℝ} (hΛ : 0 < Λ)
+theorem bss_generalized_of_gram_eq_one' [Fintype ι] [DecidableEq ι] [Nonempty ι] [Nontrivial H]
+    [TopologicalSpace.SeparableSpace H] {Λ : ℝ} (hΛ : 0 < Λ)
     (hJΛ : J ≤ Λ • (1 : H →L[ℂ] H)) (hinj : ∀ v, J v = 0 → v = 0) {a : Ω → ι → ℂ}
     {b : Ω → H} (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : MemLp b 2 μ)
     (hgrama : gram a μ = 1) (hgramb : ∫ x, rankOne ℂ (b x) (b x) ∂μ = J)
@@ -102,7 +102,7 @@ theorem bss_generalized_of_gram_eq_one' [Fintype ι] [DecidableEq ι] [Nonempty 
       ∑ i, w i • rankOne ℂ (b (x i)) (b (x i))
         ≤ ((1 + Real.sqrt (((∫ y, ‖b y‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2 * Λ)
             • (1 : H →L[ℂ] H) :=
-  (operatorUpperBarrier e hb hgramb hinj).bss_generalized_of_gram_eq_one' hΛ hJΛ ha hgrama hmn
+  (operatorUpperBarrier hb hgramb hinj).bss_generalized_of_gram_eq_one' hΛ hJΛ ha hgrama hmn
 
 end Infinite
 

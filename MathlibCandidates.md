@@ -35,14 +35,17 @@ Grouped by topic, with the main declarations:
   `Ring.inverse_eq_of_mul_eq_one`, the converse of the two cancellation laws.
 * **The trace of an operator** (`BasicResults/Operator/Trace.lean`): Mathlib has no
   trace outside finite dimension. `ContinuousLinearMap.traceAlong` defines it along a
-  fixed Hilbert basis, and the invariance of the Hilbert–Schmidt sum under adjoints
+  given Hilbert basis and `ContinuousLinearMap.trace` along one chosen once
+  (`HilbertBasis.chosen`), and the invariance of the Hilbert–Schmidt sum under adjoints
   (`.tsum_norm_sq_adjoint`), the cyclicity `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫`
   (`.tsum_inner_apply_comm`), the bound `T ≼ Tr(T) • 1` (`.le_traceAlong_smul_one`)
   and the independence of the basis, for a positive operator of both the finiteness and
   the value of the trace (`.summable_re_inner_iff_of_basis`, `.traceAlong_eq_of_basis`,
-  from the two-basis Hilbert–Schmidt identity `.tsum_ofReal_norm_sq_adjoint_of_basis`),
-  are general facts, and so is the countability of every Hilbert basis of a separable
-  space (`HilbertBasis.countable_of_separableSpace`), which Mathlib also lacks.
+  from the two-basis Hilbert–Schmidt identity `.tsum_ofReal_norm_sq_adjoint_of_basis`;
+  restated for `trace` as `.trace_eq_traceAlong`), are general facts, and so are the
+  countability of every Hilbert basis of a separable space
+  (`HilbertBasis.countable_of_separableSpace`) and its converse, a space with a countable
+  Hilbert basis is separable (`HilbertBasis.separableSpace`), which Mathlib also lacks.
 * **Averages of quadratic forms** (`BasicResults/IntegralQuadraticForm.lean`,
   `BasicResults/Operator/QuadraticForm.lean`): the average of a quadratic form along a
   square-integrable family is a trace against its Gram matrix

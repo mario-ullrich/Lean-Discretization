@@ -23,7 +23,10 @@ with the convention of `tsum`, so that the definition makes sense for every `T` 
 information exactly when the family is summable.  For a positive operator neither the value
 nor the finiteness depends on the basis (`ContinuousLinearMap.traceAlong_eq_of_basis`,
 `ContinuousLinearMap.summable_re_inner_iff_of_basis`), so the basis in the notation only
-records how the trace is computed.
+records how the trace is computed.  Accordingly `ContinuousLinearMap.trace` is the trace
+along a Hilbert basis `HilbertBasis.chosen H` chosen once and for all, which for a positive
+operator is its trace along every Hilbert basis (`ContinuousLinearMap.trace_eq_traceAlong`).  The chosen basis is countable exactly when the
+space is separable (`HilbertBasis.countable_of_separableSpace`, `HilbertBasis.separableSpace`).
 
 For a **positive** operator the sum is a sum of nonnegative terms, because
 
@@ -123,6 +126,41 @@ theorem nonempty_of_nontrivial [Nontrivial H] (e : HilbertBasis κ ℂ H) : None
   obtain ⟨x, hx⟩ := exists_ne (0 : H)
   exact hx ((e.hasSum_repr x).unique hasSum_empty)
 
+omit [CompleteSpace H] in
+/-- **A Hilbert space with a countable Hilbert basis is separable.**  The span of the basis
+vectors is separable, as the span of a countable set (`TopologicalSpace.IsSeparable.span`),
+and dense (`HilbertBasis.dense_span`), so its closure is the whole space. -/
+theorem separableSpace [Countable κ] (e : HilbertBasis κ ℂ H) :
+    TopologicalSpace.SeparableSpace H := by
+  rw [← TopologicalSpace.isSeparable_univ_iff]
+  have hs : TopologicalSpace.IsSeparable (Submodule.span ℂ (Set.range e) : Set H) :=
+    (Set.countable_range e).isSeparable.span
+  have hd : closure (Submodule.span ℂ (Set.range e) : Set H) = Set.univ := by
+    rw [← Submodule.topologicalClosure_coe, e.dense_span]
+    rfl
+  simpa [hd] using TopologicalSpace.isSeparable_closure.2 hs
+
+/-! ### A Hilbert basis chosen once and for all -/
+
+variable (H) in
+/-- The index set of a Hilbert basis of `H` chosen once and for all (`exists_hilbertBasis`),
+a set of vectors of `H`. -/
+noncomputable def chosenIndex : Set H := (exists_hilbertBasis ℂ H).choose
+
+variable (H) in
+/-- A Hilbert basis of `H` chosen once and for all.  It defines the trace of an operator
+without naming a basis (`ContinuousLinearMap.trace`). -/
+noncomputable def chosen : HilbertBasis (chosenIndex H) ℂ H :=
+  (exists_hilbertBasis ℂ H).choose_spec.choose
+
+/-- The chosen basis of a separable space has a countable index set. -/
+instance [TopologicalSpace.SeparableSpace H] : Countable (chosenIndex H) :=
+  (chosen H).countable_of_separableSpace
+
+/-- The chosen basis of a nonzero space has a nonempty index set. -/
+instance [Nontrivial H] : Nonempty (chosenIndex H) :=
+  (chosen H).nonempty_of_nontrivial
+
 end HilbertBasis
 
 namespace ContinuousLinearMap
@@ -164,6 +202,13 @@ For a positive operator the terms are nonnegative.  If their sum diverges, Lean'
 returns `0`, so every statement about the value assumes that the family is summable. -/
 noncomputable def traceAlong (e : HilbertBasis κ ℂ H) (T : H →L[ℂ] H) : ℝ :=
   ∑' k, RCLike.re ⟪e k, T (e k)⟫_ℂ
+
+/-- The **trace** of a bounded operator, `∑' k, Re ⟪e k, T (e k)⟫` along the Hilbert basis
+`HilbertBasis.chosen H` chosen once and for all.  For a positive operator the value is the
+same along every Hilbert basis (`ContinuousLinearMap.trace_eq_traceAlong`), so the choice is
+invisible; as for `traceAlong`, the value is `0` when the sum diverges. -/
+noncomputable def trace (T : H →L[ℂ] H) : ℝ :=
+  traceAlong (HilbertBasis.chosen H) T
 
 /-- The quadratic form of a positive operator is the squared norm of its square root:
 `Re ⟪x, T x⟫ = ‖√T x‖²`. -/
@@ -320,6 +365,18 @@ theorem traceAlong_eq_of_basis {κ' : Type*} (e : HilbertBasis κ ℂ H)
       fun h => hs ((summable_re_inner_iff_of_basis e e' hT).2 h)
     rw [traceAlong, traceAlong, tsum_eq_zero_of_not_summable hs,
       tsum_eq_zero_of_not_summable hs']
+
+/-- **The trace of a positive operator is its trace along any Hilbert basis.** -/
+theorem trace_eq_traceAlong (e : HilbertBasis κ ℂ H) {T : H →L[ℂ] H} (hT : 0 ≤ T) :
+    trace T = traceAlong e T :=
+  traceAlong_eq_of_basis _ e hT
+
+/-- A positive operator has finite trace along the chosen basis exactly when it has finite
+trace along any given Hilbert basis. -/
+theorem summable_re_inner_chosen_iff (e : HilbertBasis κ ℂ H) {T : H →L[ℂ] H} (hT : 0 ≤ T) :
+    (Summable fun k => RCLike.re ⟪HilbertBasis.chosen H k, T (HilbertBasis.chosen H k)⟫_ℂ)
+      ↔ Summable fun k => RCLike.re ⟪e k, T (e k)⟫_ℂ :=
+  summable_re_inner_iff_of_basis _ e hT
 
 /-! ### Operators with vanishing trace -/
 

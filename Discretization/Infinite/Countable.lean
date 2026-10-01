@@ -14,9 +14,9 @@ public import BasicResults.Operator.GramOperator
 
 The paper states its Theorem 3 for a second family `b = (b_k)_{k ∈ κ}` of square-integrable
 functions indexed by an at most countable set, with the Gram matrix `J = (∫ b_k b_l̄ dμ)` in
-place of the Gram operator.  This file proves that form from the operator form along a
-Hilbert basis, `Discretization.Infinite.bss_generalized_of_hilbertBasis`, applied to the
-Hilbert space `ℓ²(κ)` with its standard basis.
+place of the Gram operator.  This file proves that form from the operator form,
+`Discretization.Infinite.bss_generalized`, applied to the Hilbert space `ℓ²(κ)`, which is
+separable.
 
 The hypotheses are those of the paper:
 
@@ -177,6 +177,20 @@ theorem memLp_toLp (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
   rw [norm_sq_toLp, ← ENNReal.ofReal_tsum_of_nonneg (fun k => by positivity)
     (summable_norm_sq hbx x), ENNReal.toReal_ofReal (tsum_nonneg fun k => by positivity)]
 
+/-! ### The space `ℓ²(κ)` -/
+
+/-- **`ℓ²(κ)` is separable** for a countable index set: its standard basis is countable
+(`HilbertBasis.separableSpace`). -/
+instance : TopologicalSpace.SeparableSpace ℓ²(κ, ℂ) :=
+  (default : HilbertBasis κ ℂ ℓ²(κ, ℂ)).separableSpace
+
+omit [Countable κ] in
+/-- `ℓ²(κ)` is nonzero for a nonempty index set: the vectors of its standard basis are
+nonzero. -/
+instance [Nonempty κ] : Nontrivial ℓ²(κ, ℂ) :=
+  let e : HilbertBasis κ ℂ ℓ²(κ, ℂ) := default
+  nontrivial_of_ne (e (Classical.arbitrary κ)) 0 (e.ne_zero _)
+
 /-! ### The Gram operator -/
 
 /-- The **Gram operator** of the family, `J = ∫ b(x) b(x)* dμ(x)` on `ℓ²(κ)`.  Its matrix
@@ -257,8 +271,7 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 include hbx in
 /-- **Discretization theorem for a countable family, when every value lies in `ℓ²`.**
 
-This is `Discretization.Infinite.bss_generalized_of_hilbertBasis` for `H = ℓ²(κ)` with its
-standard basis,
+This is `Discretization.Infinite.bss_generalized` for the separable space `H = ℓ²(κ)`,
 `b(x) = (b_k(x))_k` and the Gram operator of the family; the effective dimension is
 `M = ∑_k ‖b_k‖²_{L₂} / Λ`, and the upper bound is read through quadratic forms. -/
 theorem bss_generalized_of_mem_l2 [Nonempty ι] [Nonempty κ]
@@ -273,8 +286,7 @@ theorem bss_generalized_of_mem_l2 [Nonempty ι] [Nonempty κ]
         ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) ∧
       ∀ c : ℓ²(κ, ℂ), ∑ i, w i * ‖∑' k, conj (c k) * b (x i) k‖ ^ 2
         ≤ (1 + Real.sqrt (((∑' k, ∫ y, ‖b y k‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2 * Λ * ‖c‖ ^ 2 := by
-  obtain ⟨x, w, hw, hlow, hup⟩ := Infinite.bss_generalized_of_hilbertBasis
-    (default : HilbertBasis κ ℂ ℓ²(κ, ℂ)) hΛ (gramOp_le hbx hb htr hJΛ)
+  obtain ⟨x, w, hw, hlow, hup⟩ := Infinite.bss_generalized hΛ (gramOp_le hbx hb htr hJΛ)
     (gramOp_injective hbx hb htr hinj) ha (memLp_toLp hbx hb htr) hI rfl hmn
   refine ⟨x, w, hw, hlow, fun c => ?_⟩
   rw [integral_norm_sq_toLp hbx hb htr] at hup

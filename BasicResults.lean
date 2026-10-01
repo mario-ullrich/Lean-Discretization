@@ -66,8 +66,10 @@ a second family in a Hilbert space needs.
   bound `|det A| ≤ n! Cⁿ` by the size of the entries.
 * `BasicResults.Operator.Trace`: the trace of an operator along a Hilbert basis, for the
   passage to a second family in a Hilbert space.  For a positive operator
-  `Re ⟪x, T x⟫ = ‖√T x‖²`, so the trace is a squared Hilbert–Schmidt norm, and the crude
-  bound `T ≤ Tr(T) • 1` holds.
+  `Re ⟪x, T x⟫ = ‖√T x‖²`, so the trace is a squared Hilbert–Schmidt norm, it does not depend
+  on the basis, and the crude bound `T ≤ Tr(T) • 1` holds.  The basis-free trace
+  `ContinuousLinearMap.trace` is computed along a basis chosen once; a space with a countable
+  Hilbert basis is separable, `HilbertBasis.separableSpace`.
 * `BasicResults.Operator.ShermanMorrison`: rank-one updates of an operator, with the
   Sherman–Morrison formula for `Ring.inverse` and the preservation of strict positivity.  The
   last section is the operator counterpart of the order facts above, for the shift

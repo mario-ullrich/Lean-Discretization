@@ -78,11 +78,9 @@ status:
     Proved in the repository but not advertised here: the same two statements in the
     literal form of the source, for a countable family (bₖ) with its Gram matrix
     (Discretization.Countable.bss_generalized, Discretization.Countable.exists_discretization),
-    deduced from the Hilbert-space form on ℓ²; the discretization inequality for the
+    deduced from the Hilbert-space form on ℓ²; and the discretization inequality for the
     norm of a reproducing kernel Hilbert space, with the kernel sections K(x, ·) as
-    second family (Discretization.RKHS.exists_discretization); and the forms along a
-    given Hilbert basis (Discretization.Infinite.bss_generalized_of_hilbertBasis,
-    Discretization.Infinite.exists_discretization_of_hilbertBasis).
+    second family (Discretization.RKHS.exists_discretization).
 
     Proved in the repository but not advertised here: the potential argument under
     the two side conditions m ≥ 2 and M ≥ 1 + 1/n
