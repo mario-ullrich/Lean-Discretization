@@ -111,8 +111,8 @@ and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0
   (`.bss_generalized_of_unique`, `.bss_generalized_of_small_dim`,
   `.bss_generalized_of_unique_of_small_dim`, each also under
   `Discretization.UpperBarrier`), and they are proved once for matrices and operators
-  alike. For operators the normalized theorem is stated for a Hilbert space with a
-  countable Hilbert basis, with the same hypothesis `∫ b b* dμ = J` and the same
+  alike. For operators the normalized theorem is stated for a nonzero separable Hilbert
+  space, with the same hypothesis `∫ b b* dμ = J` and the same
   `M = ∫ ‖b‖² dμ / Λ` (`Discretization.Infinite.bss_generalized_of_gram_eq_one'`). The
   number of points does not depend on the second family beyond `M`.
 
@@ -175,7 +175,7 @@ more than that. Averaging the verifiers over `μ` turns them into traces against
 matrices, so such a point exists. After `n` steps both potentials are still below their
 initial values, and reading a bound on a potential back as a bound on the matrix gives
 the two frame bounds. For a second family in a Hilbert space, `B` is a positive
-invertible operator and the traces are sums along a fixed Hilbert basis. Only the analysis
+invertible operator and the traces are sums along a Hilbert basis. Only the analysis
 of `B` is redone, in `Discretization/Infinite/`: the construction, the read-off and the
 edge cases use `B` through a handful of properties, collected in
 `Discretization.UpperBarrier`, and are proved once for matrices and operators alike.
@@ -206,10 +206,11 @@ The steps the two arguments are built from:
 * **A bound on a potential is a bound on the matrix**: `Φ(A)⁻¹ • 1 ≼ A` and
   `Ψ_J(B)⁻¹ • J ≼ B` (`Matrix.PosDef.inv_re_trace_smul_one_le`,
   `.inv_re_trace_mul_smul_le`, `Discretization.Infinite.inv_upperPotential_smul_le`).
-* **The trace of an operator** along a fixed Hilbert basis, `Tr T = ∑ₖ Re ⟪eₖ, T eₖ⟫`,
-  with the cyclicity and the bound `T ≼ Tr(T) • 1` the argument needs
-  (`ContinuousLinearMap.traceAlong`, `.tsum_inner_apply_comm`,
-  `.le_traceAlong_smul_one`). Mathlib has no trace outside finite dimension.
+* **The trace of a positive operator**, `Tr T = ∑ₖ Re ⟪eₖ, T eₖ⟫` along a Hilbert basis,
+  which does not depend on the basis, with the cyclicity and the bound `T ≼ Tr(T) • 1` the
+  argument needs (`ContinuousLinearMap.trace`, `.trace_eq_traceAlong`,
+  `.tsum_inner_apply_comm`, `.le_traceAlong_smul_one`). In Lean the trace is computed along
+  a basis chosen once. Mathlib has no trace outside finite dimension.
 * **The determinant of a rank-one mixture**,
   `det (β A + α u u*) = β^(n-1) det A (β + α u* A⁻¹ u)`, affine in `α` and so the
   substitute for the derivative of the determinant
@@ -231,10 +232,10 @@ The steps the two arguments are built from:
 * **The Gram operator** `∫ b(x) b(x)* dμ(x)` as a Bochner integral, with its quadratic
   form `⟪u, J u⟫ = ∫ |⟪u, b(x)⟫|² dμ(x)` and the two readings of the hypotheses on it
   (`ContinuousLinearMap.inner_integral_rankOne_self`,
-  `.le_smul_one_iff_of_inner_eq_integral`, `.injective_iff_of_inner_eq_integral`); it is
-  positive and of finite trace along every countable Hilbert basis, with trace
-  `∫ ‖b‖² dμ` (`Discretization.Infinite.isFiniteTracePos_of_integral_rankOne`,
-  `.integral_norm_sq_eq_traceAlong`).
+  `.le_smul_one_iff_of_inner_eq_integral`, `.injective_iff_of_inner_eq_integral`); on a
+  separable space it is positive and of finite trace, with trace `∫ ‖b‖² dμ`
+  (`Discretization.Infinite.isFiniteTracePos_of_integral_rankOne`,
+  `.integral_norm_sq_eq_trace`).
 
 Everything else is in the blueprint, with its Lean name at every statement.
 
@@ -251,7 +252,7 @@ maximisation of the determinant of a Gram matrix, the theorem it yields and John
 decomposition of the identity beside it. `BasicResults` holds what the arguments need and
 Mathlib lacks: comparisons in the Loewner order, traces of products and Cauchy–Schwarz for
 them, Sherman–Morrison for rank-one updates of a matrix and of an operator, the trace of
-an operator along a Hilbert basis, the Gram operator as a Bochner integral, the matrix
+a positive operator on a Hilbert space, the Gram operator as a Bochner integral, the matrix
 determinant lemma, the compactness of the convex hull of a compact set, and the bridge
 from Bochner integrals to Gram matrices. The matrix facts lie under
 `BasicResults/Matrix/`, their operator counterparts under `BasicResults/Operator/`, and
