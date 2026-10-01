@@ -1,17 +1,17 @@
 # Norm discretization in Lean 4 / Mathlib
 
 A Lean 4 / Mathlib formalisation of two theorems that replace a norm by finitely many
-point evaluations. The first is the **generalized Batson–Spielman–Srivastava
-sparsification theorem** of Chkifa, Dolbeault, Krieg and Ullrich, with the `L₂`-norm
-discretization inequality it yields; what the generalisation adds is that the two frame
-bounds may refer to two different families of functions, and that the upper bound
-depends on the *effective dimension* of the second family rather than on how many
-functions it contains. The second is the **Kiefer–Wolfowitz theorem** in the form used
-by Krieg, Pozharska, Ullrich and Ullrich for sampling projections: on an
-`m`-dimensional space of bounded functions the uniform norm is dominated by the `L₂`
-norm of a finitely supported probability measure, with the constant `√(m+ε)`. The
-project builds without `sorry`, and every theorem uses only the three axioms Mathlib
-relies on throughout (`propext`, `Classical.choice`, `Quot.sound`).
+point evaluations. The first is the **discretization theorem** of Chkifa, Dolbeault,
+Krieg and Ullrich, a generalization of the Batson–Spielman–Srivastava sparsification
+theorem, with the `L₂`-norm discretization inequality it yields; what the generalisation
+adds is that the two frame bounds may refer to two different families, the second one a
+map into a Hilbert space, and that the upper bound depends on the *effective dimension*
+of the second family rather than on its size. The second is the **Kiefer–Wolfowitz
+theorem** in the form used by Krieg, Pozharska, Ullrich and Ullrich for sampling
+projections: on an `m`-dimensional space of bounded functions the uniform norm is
+dominated by the `L₂` norm of a finitely supported probability measure, with the
+constant `√(m+ε)`. The project builds without `sorry`, and every theorem uses only the
+three axioms Mathlib relies on throughout (`propext`, `Classical.choice`, `Quot.sound`).
 
 * **Blueprint** (a webpage explaining the mathematics):
   <https://mario-ullrich.github.io/Lean-Discretization/>
@@ -36,30 +36,46 @@ The second question is which measure to discretize in the first place. On an
 `m`-dimensional space of functions one may ask for a measure for which the uniform norm
 is already controlled by the `L₂` norm, and the answer of Kiefer and Wolfowitz is that a
 measure maximising the determinant of the Gram matrix does this with the constant `√m`,
-up to an arbitrarily small loss on a general domain. Applying the sparsification theorem
+up to an arbitrarily small loss on a general domain. Applying the discretization theorem
 to such a measure is how one arrives at sampling projections with few points and small
 norm.
 
 ## Main results
 
 Let `(Ω, μ)` be a measure space, `ι` a finite nonempty index set with `m = card ι`
-elements, and `κ` a second finite index set. Let
+elements, and `H` a nonzero separable complex Hilbert space. Let
 
-* `a : Ω → ι → ℂ` be square-integrable with Gram matrix `∫ a a* dμ = 1`, and
-* `b : Ω → κ → ℂ` be square-integrable with Gram matrix `J = ∫ b b* dμ` positive
-  definite and bounded by `Λ • 1`, of effective dimension `M = Tr J / Λ`.
+* `a : Ω → ι → ℂ` be square-integrable with positive definite Gram matrix
+  `I = ∫ a a* dμ`, and
+* `b : Ω → H` be square-integrable with injective Gram operator
+  `J = ∫ b(x) b(x)* dμ(x)`, a Bochner integral, bounded by `Λ • 1`, and put
+  `M = ∫ ‖b‖² dμ / Λ`, the effective dimension.
 
 Then for every `n ≥ m` there are points `x₁, …, xₙ ∈ Ω` and weights `w₁, …, wₙ > 0`
 with
 
 ```
-(1 - √((m-1)/n))² • 1  ≤  ∑ wᵢ a(xᵢ) a(xᵢ)*        (lower frame bound)
+(1 - √((m-1)/n))² • I  ≤  ∑ wᵢ a(xᵢ) a(xᵢ)*        (lower frame bound)
 ∑ wᵢ b(xᵢ) b(xᵢ)*      ≤  (1 + √((M-1)/n))² Λ • 1  (upper frame bound)
 ```
 
-in the Loewner order, with no side condition
-(`Discretization.bss_generalized_of_gram_eq_one'`). Five statements go with it:
+in the Loewner order, with no side condition (`Discretization.Infinite.bss_generalized`).
+This is Theorem 3 of Chkifa, Dolbeault, Krieg and Ullrich; in eigenvalue form the lower
+bound is their factor `λ_min(I)`. Positivity of `J` and the finiteness of its trace follow
+from its definition, and both hypotheses on `J` can be checked on `b`: `J ≤ Λ • 1` says
+`∫ |⟪u, b⟫|² dμ ≤ Λ ‖u‖²` for every `u ∈ H`, and injectivity says that `⟪u, b(·)⟫ = 0`
+almost everywhere only for `u = 0` (`ContinuousLinearMap.integral_rankOne_self_le_iff`,
+`.integral_rankOne_self_injective_iff`). Five statements go with it:
 
+* **A family of functions**, in the form of the paper. Let `b = (b_k)_{k ∈ κ}` be
+  square-integrable functions indexed by a finite or countable set with
+  `∑_k ‖b_k‖²_{L₂} < ∞`, whose Gram matrix `J = (∫ b_k b̄_l dμ)` is injective on `ℓ²(κ)`
+  and bounded by `Λ • 1`, and put `M = ∑_k ‖b_k‖² / Λ`. Then the same two bounds hold,
+  the second one as `∑ wᵢ |∑_k c̄_k b_k(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖c‖²` for every
+  `c ∈ ℓ²(κ)` (`Discretization.bss_generalized` for finite `κ`, proved with matrices;
+  `Discretization.Countable.bss_generalized` for countable `κ`, the case `H = ℓ²(κ)`).
+  Nothing pointwise is assumed: `∑_k |b_k(x)|² < ∞` holds almost everywhere, and the
+  points are chosen where it holds.
 * **The special case `a = b`** is the sparsification theorem of Batson, Spielman and
   Srivastava (`Discretization.bss`): one family with Gram matrix the identity, squeezed
   between `(1 - √((m-1)/n))² • 1` and `(1 + √((m-1)/n))² • 1`. The original theorem has
@@ -69,42 +85,28 @@ in the Loewner order, with no side condition
   `v_y ∈ ℂ^m` with `∑ v_y v_y* = 1`, the form of the original theorem, it gives weights
   `s_y ≥ 0`, at most `n` of them nonzero, with `∑ s_y v_y v_y*` between the same two
   constants (`Discretization.bss_of_sum_eq_one`).
-
-* **The potential argument** gives the theorem under the two side conditions `m ≥ 2`
-  and `M ≥ 1 + 1/n` (`Discretization.bss_generalized_of_gram_eq_one`). Three further
-  theorems cover the cases where one or both of them fail
+* **The discretization inequality.** For `I = 1` and every `f` in the span of the first
+  family, `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²`, and
+  `∑ wᵢ |⟪u, b(xᵢ)⟫|² ≤ (1 + √((M-1)/n))² Λ ‖u‖²` for every `u ∈ H`
+  (`Discretization.Infinite.exists_discretization`; for a family, in its coefficients
+  `c`, `Discretization.exists_discretization` and
+  `Discretization.Countable.exists_discretization`). This is Corollary 4 of the paper.
+* **A reproducing kernel Hilbert space.** Let `H` be a separable Hilbert space of
+  measurable functions on `Ω` with continuous point evaluations and reproducing kernel
+  `K`, with `∫ K(x, x) dμ < ∞`; let `∫ |f|² dμ ≤ Λ ‖f‖²_H` for every `f ∈ H`, and let
+  `f = 0` be the only function of `H` vanishing almost everywhere. With the kernel
+  sections `b(x) = K(x, ·)` as second family and `M = ∫ K(x, x) dμ / Λ`, the upper bound
+  reads `∑ wᵢ |f(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖f‖²_H` for every `f ∈ H`
+  (`Discretization.RKHS.exists_discretization`). No basis of `H` and no singular value
+  decomposition of the embedding into `L₂` enter.
+* **The four cases underneath.** The potential argument gives the theorem under the two
+  side conditions `m ≥ 2` and `M ≥ 1 + 1/n` (`Discretization.bss_generalized_of_gram_eq_one`
+  for matrices, `Discretization.UpperBarrier.bss_generalized_of_gram_eq_one` for every
+  upper state). Three further theorems cover the cases where one or both of them fail
   (`.bss_generalized_of_unique`, `.bss_generalized_of_small_dim`,
-  `.bss_generalized_of_unique_of_small_dim`), and the four together give the statement
-  above.
-* **Without the normalisation** of the first family, the lower bound reads
-  `(1 - √((m-1)/n))² • I` with `I = ∫ a a* dμ` (`Discretization.bss_generalized`); in
-  eigenvalue form that is the factor `λ_min(I)` of the paper.
-* **A countably infinite second family**, in the form of the paper. Let
-  `b = (b_k)_{k ∈ κ}` be square-integrable functions indexed by a countable set with
-  `∑_k ‖b_k‖²_{L₂} < ∞`, whose Gram matrix `J = (∫ b_k b̄_l dμ)` is injective on `ℓ²(κ)`
-  and bounded by `Λ • 1`, and put `M = ∑_k ‖b_k‖² / Λ`. Then the same two bounds hold,
-  the second one as `∑ wᵢ |∑_k c̄_k b_k(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖c‖²` for every
-  `c ∈ ℓ²(κ)`, again with no side condition (`Discretization.Countable.bss_generalized`).
-  Nothing pointwise is assumed: `∑_k |b_k(x)|² < ∞` holds almost everywhere, and the
-  points are chosen where it holds. More generally the theorem holds for a map `b` into a
-  separable Hilbert space, whose Gram operator `J` (`⟪u, J u⟫ = ∫ |⟪u, b(x)⟫|² dμ`) need
-  only be injective, with `M = ∫ ‖b‖² dμ / Λ` and no basis in the statement
-  (`Discretization.Infinite.bss_generalized`); positivity of `J` and the finiteness of its
-  trace follow from the Gram identity, and the family form is the case `H = ℓ²(κ)`.
-  Underneath are the same four cases as in finite dimension, proved once for matrices
-  and operators alike: the potential argument
-  (`Discretization.UpperBarrier.bss_generalized_of_gram_eq_one`) and the three edge cases
-  (`.UpperBarrier.bss_generalized_of_unique`, `.UpperBarrier.bss_generalized_of_small_dim`,
-  `.UpperBarrier.bss_generalized_of_unique_of_small_dim`). The number of points does not
-  change, because it is governed by `M = Tr J / Λ` and not by the size of the family.
-* **The discretization inequality.** For every `f` in the span of the first family,
-  `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²`, and the weighted sum of every `g` in
-  the span of the second family is at most `(1 + √((M-1)/n))² Λ ‖c‖²` in its
-  coefficients `c` (`Discretization.exists_discretization`, and for a countable family
-  `Discretization.Countable.exists_discretization`, with `c ∈ ℓ²(κ)`). This is Corollary 4
-  of the paper, in both cases without a side condition;
-  with `b` the singular basis of the embedding of a reproducing kernel Hilbert space into
-  `L₂`, the coefficient norm is the norm of that space.
+  `.bss_generalized_of_unique_of_small_dim`, each also under
+  `Discretization.UpperBarrier`), and they are proved once for matrices and operators
+  alike. The number of points does not depend on the second family beyond `M`.
 
 For the second theorem, let `D` be any set, `ι` a finite nonempty index set with
 `m = card ι` elements, and `a : D → ι → ℂ` a bounded family whose coordinate functions
@@ -125,7 +127,7 @@ of Krieg, Pozharska, Ullrich and Ullrich. Three variants of it are proved:
   (`Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz`). The Gram
   matrix of `ϱ` in the sense of `Discretization.gram` is the one of the points and
   weights (`.gram_designMeasure`), which is what lets the measure be handed to the
-  sparsification theorem.
+  discretization theorem.
 * **The sharp constant on a compact domain.** For continuous functions on a compact
   space the maximum of the determinant is attained, the `ε` disappears, and the constant
   is `√m` (`Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`).
@@ -159,7 +161,7 @@ both potentials, and the barrier lemma then says which weights at which point sp
 more than that. Averaging the verifiers over `μ` turns them into traces against the Gram
 matrices, so such a point exists. After `n` steps both potentials are still below their
 initial values, and reading a bound on a potential back as a bound on the matrix gives
-the two frame bounds. For a countably infinite second family, `B` is a positive
+the two frame bounds. For a second family in a Hilbert space, `B` is a positive
 invertible operator and the traces are sums along a fixed Hilbert basis. Only the analysis
 of `B` is redone, in `Discretization/Infinite/`: the construction, the read-off and the
 edge cases use `B` through a handful of properties, collected in
@@ -213,6 +215,10 @@ The steps the two arguments are built from:
   `ContinuousLinearMap.inverse_add_smul_rankOne`), Cauchy–Schwarz for the trace
   (`Matrix.PosSemidef.norm_trace_mul_sq_le`), and `∫ a(x)* Q a(x) dμ = Tr (Q · gram a μ)`
   (`Discretization.integral_quadForm`, `ContinuousLinearMap.integral_re_inner_apply`).
+* **The Gram operator** `∫ b(x) b(x)* dμ(x)` as a Bochner integral, with its quadratic
+  form `⟪u, J u⟫ = ∫ |⟪u, b(x)⟫|² dμ(x)` and the two readings of the hypotheses on it
+  (`ContinuousLinearMap.inner_integral_rankOne_self`,
+  `.le_smul_one_iff_of_inner_eq_integral`, `.injective_iff_of_inner_eq_integral`).
 
 Everything else is in the blueprint, with its Lean name at every statement.
 
@@ -222,16 +228,18 @@ Two libraries. `Discretization` holds the arguments: the arithmetic of the param
 the two potentials and the verifiers, the barrier lemma, the averaging step, the
 `n`-step iteration, the potential argument with its edge cases under
 `Discretization/EdgeCases/`, the discretization inequality, under
-`Discretization/Infinite/` the analysis of the upper state for a countably infinite
-second family with the theorem for it, and under `Discretization/KieferWolfowitz/` the
+`Discretization/Infinite/` the analysis of the upper state for a second family in a
+Hilbert space with the theorem for it, a countable family and a reproducing kernel
+Hilbert space, and under `Discretization/KieferWolfowitz/` the
 maximisation of the determinant of a Gram matrix, the theorem it yields and John's
 decomposition of the identity beside it. `BasicResults` holds what the arguments need and
 Mathlib lacks: comparisons in the Loewner order, traces of products and Cauchy–Schwarz for
 them, Sherman–Morrison for rank-one updates of a matrix and of an operator, the trace of
-an operator along a Hilbert basis, the matrix determinant lemma, the compactness of the
-convex hull of a compact set, and the bridge from Bochner integrals to Gram matrices. The
-matrix facts lie under `BasicResults/Matrix/`, their operator counterparts under
-`BasicResults/Operator/`, and the general ones at the top level;
+an operator along a Hilbert basis, the Gram operator as a Bochner integral, the matrix
+determinant lemma, the compactness of the convex hull of a compact set, and the bridge
+from Bochner integrals to Gram matrices. The matrix facts lie under
+`BasicResults/Matrix/`, their operator counterparts under `BasicResults/Operator/`, and
+the general ones at the top level;
 [MathlibCandidates.md](MathlibCandidates.md) lists what could be upstreamed.
 `blueprint/` holds the LaTeX source of the blueprint and the script that points its
 `\lean` links at this repository. `Palomar/` holds the submission surfaces for the
@@ -244,12 +252,8 @@ library sits outside `defaultTargets`; build it with `lake build Palomar`.
 
 ## What is left to do
 
-* **The application to a reproducing kernel Hilbert space.** The theorem for a
-  countable second family is proved; what is not formalised is the construction of the
-  Gram operator from a kernel, that is the singular value decomposition of the
-  embedding into `L₂` which supplies the family `b` and makes `J` diagonal.
 * **Sampling projections in the uniform norm**: handing the Kiefer–Wolfowitz measure to
-  the sparsification theorem, which is what yields a projection using `2m` points with
+  the discretization theorem, which is what yields a projection using `2m` points with
   norm of order `√m`.
 * **The applications of the paper**: least-squares recovery and sampling numbers.
 
