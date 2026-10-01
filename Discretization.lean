@@ -27,6 +27,7 @@ public import Discretization.Infinite.UpperBarrier
 public import Discretization.Infinite.GeneralGram
 public import Discretization.Infinite.NormDiscretization
 public import Discretization.Infinite.Countable
+public import Discretization.Infinite.RKHS
 public import Discretization.KieferWolfowitz.MixEstimate
 public import Discretization.KieferWolfowitz.Design
 public import Discretization.KieferWolfowitz.NonDegenerate
@@ -130,6 +131,9 @@ state for a countably infinite second family and the theorems for it, and
   family `(b_k)` with `∑_k ‖b_k‖² < ∞` and its Gram matrix, deduced from the Hilbert-space
   form on `ℓ²(κ)`: `Discretization.Countable.bss_generalized`,
   `Discretization.Countable.exists_discretization`.
+* `Discretization.Infinite.RKHS`: the discretization inequality for the norm of a reproducing
+  kernel Hilbert space, with the kernel sections `b(x) = K(x, ·)` as second family and
+  `M = ∫ K(x, x) dμ(x) / Λ`, `Discretization.RKHS.exists_discretization`.
 * `Discretization.KieferWolfowitz.MixEstimate`: the one real inequality behind the
   Kiefer–Wolfowitz argument, describing how the determinant reacts to giving a new point the
   weight `α`.  No matrices occur in it.
