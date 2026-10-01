@@ -144,7 +144,7 @@ theorem sum_smul_R_le_smul_one {T : ℝ} {n : ℕ} (hn0 : (0 : ℝ) < n) (x : Fi
 
 /-! ### The theorem for a small effective dimension -/
 
-/-- **Generalized sparsification theorem for a small effective dimension and an upper
+/-- **Discretization theorem for a small effective dimension and an upper
 barrier.**  For `M = Tr J / Λ ≤ 1 + 1/n` the upper frame bound follows from the crude
 estimate `b b* ≼ ‖b‖² • 1` alone; the first family still needs `m ≥ 2`. -/
 theorem bss_generalized_of_small_dim [Nonempty ι] {Λ : ℝ} (hΛ : 0 < Λ) {a : Ω → ι → ℂ}
@@ -212,7 +212,7 @@ end UpperBarrier
 
 variable [Fintype κ] [DecidableEq κ]
 
-/-- **Generalized sparsification theorem for a small effective dimension.**
+/-- **Discretization theorem for a small effective dimension.**
 
 For `M = Tr J / Λ ≤ 1 + 1/n` the upper frame bound follows from the crude estimate
 `b b* ≼ ‖b‖² • 1` alone; the first family still needs `m ≥ 2`.  Together with

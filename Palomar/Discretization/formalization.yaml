@@ -3,7 +3,7 @@
 version: "v0.4"
 
 project:
-  name: "A generalized sparsification theorem of Batson, Spielman and Srivastava type"
+  name: "A discretization theorem of Batson, Spielman and Srivastava type"
   description: >-
     Given two families of square-integrable functions on a measure space, a finite
     one a = (aₖ) with m elements and a second one b, one can select n points and
@@ -42,7 +42,7 @@ sources:
     location: "https://arxiv.org/abs/2602.18719"
     relationship: "formalizes"
     note: >-
-      Theorem 3 is the sparsification theorem formalized here and Corollary 4 the
+      Theorem 3 is the discretization theorem formalized here and Corollary 4 the
       discretization inequality; its proof is the one followed. The source states
       Theorem 3 for an at most countable second index set, and both cases are
       formalized: a finite one with a Gram matrix, and an infinite one with the Gram

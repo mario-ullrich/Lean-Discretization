@@ -30,7 +30,7 @@ This dictionary is what brings convexity to bear on designs, and it is used twic
 
 The sharper count `r + 1` of the paper, with `r` the dimension of the span of the products
 `aᵢ conj aⱼ`, would need the real dimension of the Hermitian matrices spanned by the
-rank-one matrices.  Nothing downstream depends on it: the sparsification theorem accepts any
+rank-one matrices.  Nothing downstream depends on it: the discretization theorem accepts any
 finite, indeed any countable, family of points.
 -/
 

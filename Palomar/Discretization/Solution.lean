@@ -11,7 +11,7 @@ public import Discretization.Infinite.GeneralGram
 public import Discretization.Infinite.NormDiscretization
 
 /-!
-# The generalized sparsification theorem: proofs
+# The discretization theorem: proofs
 
 This module is the *Solution* of a Palomar submission. Comparator checks that every
 declaration named in `comparator.json` has, in this module's environment, exactly the same

@@ -24,7 +24,7 @@ matrices `a(x) a(x)*` into statements about the numbers `|f(x)|²`:
   quadratic forms, uniformly in the coefficient vector.
 
 Nothing here mentions integrals, and the points `xᵢ` are drawn from a bare type, so the
-three facts serve both the sparsification theorem and the Kiefer–Wolfowitz theorem.
+three facts serve both the discretization theorem and the Kiefer–Wolfowitz theorem.
 -/
 
 @[expose] public section

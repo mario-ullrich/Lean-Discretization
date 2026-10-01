@@ -11,7 +11,7 @@ public import Discretization.EdgeCases.BothEdgeCases
 /-!
 # The discretization inequality
 
-The sparsification theorem is a statement about matrices.  This file translates it into the
+The discretization theorem is a statement about matrices.  This file translates it into the
 statement about functions that motivates it.  For a function `f` in the span of the first
 family, the integral `∫ |f|² dμ` is bounded by a weighted sum of `|f(xᵢ)|²`.  For a function
 `g` in the span of the second family, the weighted sum is bounded by the squared coefficient

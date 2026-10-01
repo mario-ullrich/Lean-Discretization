@@ -9,7 +9,7 @@ public import Discretization.NormDiscretization
 public import Discretization.Infinite.GeneralGram
 
 /-!
-# The discretization inequality with a countable second family
+# The discretization inequality with a second family in a Hilbert space
 
 The theorems `Discretization.Infinite.bss_generalized_of_hilbertBasis` and
 `Discretization.Infinite.bss_generalized` read as inequalities between norms, the operator

@@ -21,7 +21,7 @@ the Kiefer–Wolfowitz theorem depend on the design only through its Gram matrix
 for the coefficient vector `c` of `f`.  So the two theorems of this file are the earlier two
 with the number of points bounded.
 
-Nothing later needs the bound: the sparsification theorem, which is what the measure is
+Nothing later needs the bound: the discretization theorem, which is what the measure is
 handed to next, accepts any finite and indeed any countable family of points.
 -/
 

@@ -131,7 +131,7 @@ theorem exists_points_weights_of_unique [Unique ι] {B₀ : S} (hB₀ : U.Adm B�
 
 /-! ### The theorem for a single function -/
 
-/-- **Generalized sparsification theorem for a one-element first family and an upper
+/-- **Discretization theorem for a one-element first family and an upper
 barrier.**  For `card ι = 1` the lower frame bound is `1 = (1 - √((m-1)/n))²`, and the upper
 bound is as in `Discretization.UpperBarrier.bss_generalized_of_gram_eq_one`, which needs
 `m ≥ 2`. -/
@@ -181,7 +181,7 @@ end UpperBarrier
 
 /-! ### The theorem for finite families -/
 
-/-- **Generalized sparsification theorem for a one-element first family.**
+/-- **Discretization theorem for a one-element first family.**
 
 For `card ι = 1` the lower frame bound is `1 = (1 - √((m-1)/n))²`, and the upper bound is as
 in `Discretization.bss_generalized_of_gram_eq_one`.  Together with that theorem, which needs

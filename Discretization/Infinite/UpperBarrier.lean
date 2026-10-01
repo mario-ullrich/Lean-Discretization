@@ -82,7 +82,7 @@ noncomputable def operatorUpperBarrier [Nonempty κ] [Countable κ] (hJ : IsFini
   integrable_sq := (memLp_two_iff_integrable_sq_norm hb.aestronglyMeasurable).1 hb
   integral_sq := integral_norm_sq_eq_traceAlong hJ hb hgramb
 
-/-- **Generalized sparsification theorem for a normalized first family and a countable
+/-- **Discretization theorem for a normalized first family and a countable
 second family**, with no side condition beyond `n ≥ m`: the theorem
 `Discretization.UpperBarrier.bss_generalized_of_gram_eq_one'` for the upper barrier
 `Discretization.Infinite.operatorUpperBarrier`. -/

@@ -34,10 +34,10 @@ exactly as it does without it. Build these modules with `lake build Palomar`.
 * `Palomar/BSS/`: the sparsification theorem of Batson, Spielman and Srivastava, that is
   the two-sided frame bound for a single family whose Gram matrix is the identity,
   advertising `Discretization.bss`.
-* `Palomar/Discretization/`: its generalization by Chkifa, Dolbeault, Krieg and Ullrich,
-  which allows a second family and depends on its effective dimension, with the `L₂`-norm
-  discretization inequality it yields, for a finite and for a countably infinite second
-  family; advertising `Discretization.bss_generalized`,
+* `Palomar/Discretization/`: the discretization theorem of Chkifa, Dolbeault, Krieg and
+  Ullrich, which generalizes it to a second family and depends on its effective dimension,
+  with the `L₂`-norm discretization inequality it yields, for a finite second family and for
+  a map into a separable Hilbert space; advertising `Discretization.bss_generalized`,
   `Discretization.exists_discretization`, `Discretization.Infinite.bss_generalized` and
   `Discretization.Infinite.exists_discretization`.
 * `Palomar/KieferWolfowitz/`: the Kiefer–Wolfowitz theorem for sampling projections, with

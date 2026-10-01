@@ -44,14 +44,16 @@ public import Discretization.KieferWolfowitz.PointCount
 
 Two theorems on discretizing a norm by finitely many point evaluations.
 
-The first is a generalization of the sparsification theorem of Batson, Spielman and
-Srivastava.  Given two families of square-integrable functions on a measure space, one can
-select `n` points and positive weights so that the first family stays a frame from below and
-the second stays a frame from above, with bounds `(1 - √((m-1)/n))²` and
-`(1 + √((M-1)/n))² Λ`.  Here `m` is the size of the first family, `Λ` bounds the Gram matrix
-`J` of the second one, and `M = Tr J / Λ` is its **effective dimension**, not its
-cardinality.  This is what makes the upper bound dimension-free, and it allows the second
-family to be countably infinite.
+The first is the discretization theorem of Chkifa, Dolbeault, Krieg and Ullrich, a
+generalization of the sparsification theorem of Batson, Spielman and Srivastava.  Given a
+finite family of square-integrable functions on a measure space and a square-integrable map
+`b` into a Hilbert space, one can select `n` points and positive weights so that the first
+family stays a frame from below and `b` stays a frame from above, with bounds
+`(1 - √((m-1)/n))²` and `(1 + √((M-1)/n))² Λ`.  Here `m` is the size of the first family,
+`Λ` bounds the Gram operator `J = ∫ b(x) b(x)* dμ(x)`, and `M = Tr J / Λ` is its
+**effective dimension**, not a dimension of the space.  This is what makes the upper bound
+dimension-free.  A countable family `b(x) = (b_k(x))_k` and the kernel sections
+`b(x) = K(x, ·)` of a reproducing kernel Hilbert space are the two cases of interest.
 
 The argument is the potential-function argument of Batson–Spielman–Srivastava in the form
 given by Chkifa, Dolbeault, Krieg and Ullrich.  Two matrices are carried along, a small one
@@ -72,7 +74,7 @@ determinants obtained by giving one further point a small weight.
 
 The finite theory lies at the top level, with its three edge cases in
 `Discretization/EdgeCases/`; `Discretization/Infinite/` holds the analysis of the upper
-state for a countably infinite second family and the theorems for it, and
+state for a second family in a Hilbert space and the theorems for it, and
 `Discretization/KieferWolfowitz/` the second theorem.
 
 * `Discretization.Parameters`: the arithmetic of the four parameters `r`, `s`, `δ`, `ζ`
@@ -147,7 +149,7 @@ state for a countably infinite second family and the theorems for it, and
   points and weights, `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz`.
 * `Discretization.KieferWolfowitz.Measure`: the same statement for the measure
   `ϱ = ∑ₖ wₖ δ(xₖ)`, `Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz`,
-  together with the identity `gram a ϱ = G` that hands it to the sparsification theorem.
+  together with the identity `gram a ϱ = G` that hands it to the discretization theorem.
 * `Discretization.KieferWolfowitz.ConvexHull`: the Gram matrices of designs are the convex
   hull of the rank-one matrices `a(y) a(y)*`, and Carathéodory's theorem bounds the number
   of points by `2m² + 1`.

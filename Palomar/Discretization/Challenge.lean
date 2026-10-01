@@ -11,7 +11,7 @@ public import Mathlib.Analysis.Matrix.Order
 public import Mathlib.MeasureTheory.Function.L2Space
 
 /-!
-# The generalized sparsification theorem: statement surface
+# The discretization theorem: statement surface
 
 This module is the *Challenge* of a Palomar submission: the small, auditable surface
 carrying the advertised statements. It imports nothing beyond Mathlib, so every notion it
@@ -107,8 +107,8 @@ section Finite
 variable {ι κ Ω : Type*} [Fintype ι] [Fintype κ] [DecidableEq κ] [MeasurableSpace Ω]
   {μ : Measure Ω} [DecidableEq ι]
 
-/-- **Generalized sparsification theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
-finite families.
+/-- **Discretization theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for finite
+families.
 
 Let `a` be a family of square-integrable functions indexed by a finite nonempty set `ι` of
 `m` elements with positive definite Gram matrix `I = ∫ a a* dμ`, and let `b` be a second
@@ -182,8 +182,8 @@ variable {ι Ω H : Type*} [Fintype ι] [DecidableEq ι] [NormedAddCommGroup H]
   [InnerProductSpace ℂ H] [CompleteSpace H] [MeasurableSpace Ω] {μ : Measure Ω}
   {J : H →L[ℂ] H}
 
-/-- **Generalized sparsification theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
-a second family with values in a separable Hilbert space.
+/-- **Discretization theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for a second
+family with values in a separable Hilbert space.
 
 Let `a` be a family of square-integrable functions indexed by a finite nonempty set `ι` of
 `m` elements with positive definite Gram matrix `I = ∫ a a* dμ`, and let `b : Ω → H` be

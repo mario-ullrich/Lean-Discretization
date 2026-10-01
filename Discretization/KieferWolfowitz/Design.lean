@@ -18,7 +18,7 @@ respect to a family `a₁, …, a_n` of functions is
 `G = ∑ₖ wₖ · a(xₖ) a(xₖ)*`,   that is   `Gᵢⱼ = ∑ₖ wₖ aᵢ(xₖ) conj (aⱼ(xₖ))`,
 
 the matrix of inner products `⟪aᵢ, aⱼ⟫` in `L₂` of that measure.  This is the same weighted
-sum of rank-one matrices that the sparsification theorem accumulates, so the definition
+sum of rank-one matrices that the discretization theorem accumulates, so the definition
 `Discretization.KieferWolfowitz.designGram` agrees with the matrix produced there.  No
 measure appears yet: a finitely supported measure *is* a list of points with weights, and
 keeping it in that form avoids all measurability side conditions.  The passage to an actual

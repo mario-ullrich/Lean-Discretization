@@ -164,7 +164,7 @@ theorem upper_frame_bound {Λ : ℝ} (hΛ : 0 < Λ) (hJΛ : U.J ≤ Λ • (1 : 
 
 /-! ### The theorem for an upper barrier -/
 
-/-- **Generalized sparsification theorem for an upper barrier**, with a normalized first
+/-- **Discretization theorem for an upper barrier**, with a normalized first
 family of `m ≥ 2` functions and an effective dimension `M = Tr J / Λ ≥ 1 + 1/n`: for every
 `n ≥ m` there are `n` points and positive weights with
 
@@ -238,7 +238,7 @@ end UpperBarrier
 
 variable [Fintype κ] [DecidableEq κ] [MeasurableSpace Ω] {μ : Measure Ω}
 
-/-- **Generalized sparsification theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
+/-- **Discretization theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
 finite families and a normalized first family.
 
 Let `a` be a family of square-integrable functions indexed by a finite set `ι` of `m ≥ 2`

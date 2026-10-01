@@ -10,7 +10,7 @@ public import Discretization.Infinite.UpperBarrier
 public import BasicResults.Operator.GramOperator
 
 /-!
-# Removing the normalisation of the first family, with a countable second family
+# Removing the normalisation of the first family, with a second family in a Hilbert space
 
 The first family is finite here as well, and the reduction that removes the normalisation
 does not look at the second one.  It is therefore the lemma
@@ -48,8 +48,8 @@ variable {ι κ Ω H : Type*} [Fintype ι] [DecidableEq ι] [NormedAddCommGroup 
   [InnerProductSpace ℂ H] [CompleteSpace H] [MeasurableSpace Ω] {μ : Measure Ω}
   {e : HilbertBasis κ ℂ H} {J : H →L[ℂ] H}
 
-/-- **Generalized sparsification theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
-a countable second family.
+/-- **Discretization theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), along a countable
+Hilbert basis.
 
 Let `a` be a family of square-integrable functions indexed by a finite nonempty set `ι` of
 `m` elements with positive definite Gram matrix `I = ∫ a a* dμ`, and let `b : Ω → H` be
@@ -81,8 +81,8 @@ theorem bss_generalized_of_hilbertBasis [Nonempty ι] [Nonempty κ] [Countable �
       ≤ ((1 + Real.sqrt ((traceAlong e J / Λ - 1) / n)) ^ 2 * Λ) • (1 : H →L[ℂ] H))
     fun _ ha' hgram' => bss_generalized_of_gram_eq_one' hJ hΛ hJΛ ha' hb hgram' hgramb hmn
 
-/-- **Generalized sparsification theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
-a second family with values in a separable Hilbert space, with no basis in the statement.
+/-- **Discretization theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for a second
+family with values in a separable Hilbert space, with no basis in the statement.
 
 Let `a` be a family of square-integrable functions indexed by a finite nonempty set `ι` of
 `m` elements with positive definite Gram matrix `I = ∫ a a* dμ`, and let `b : Ω → H` be

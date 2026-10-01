@@ -145,7 +145,7 @@ theorem bss_of_gram_eq_one {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => 
           rw [hTS, hST, one_mul, mul_one]
   rwa [hleft, hright] at hconj
 
-/-- **Generalized sparsification theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
+/-- **Discretization theorem** (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), for
 finite families.
 
 Let `a` be a family of square-integrable functions indexed by a finite nonempty set `ι` of

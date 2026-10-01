@@ -29,7 +29,7 @@ measurable, since a Dirac measure only sees a function through its value at one 
 * `Discretization.KieferWolfowitz.gram_designMeasure`: the Gram matrix of `ϱ` in the sense of
   `Discretization.gram` is the Gram matrix of the design.
 
-The second identity is what lets the measure produced here be handed to the sparsification
+The second identity is what lets the measure produced here be handed to the discretization
 theorem, which asks for `Discretization.gram` of a measure.
 -/
 
@@ -70,7 +70,7 @@ theorem integral_designMeasure {E : Type*} [NormedAddCommGroup E] [NormedSpace �
 omit [Fintype ι] [DecidableEq ι] in
 /-- **The Gram matrix of the measure of a design is the Gram matrix of the design.**  This is
 the identity that makes the measure produced by the Kiefer–Wolfowitz theorem usable by the
-sparsification theorem, which is phrased with `Discretization.gram`. -/
+discretization theorem, which is phrased with `Discretization.gram`. -/
 theorem gram_designMeasure {a : Ω → ι → ℂ} (hmeas : ∀ i, Measurable fun y => a y i) {n : ℕ}
     (x : Fin n → Ω) {w : Fin n → ℝ} (hw : ∀ k, 0 ≤ w k) :
     gram a (designMeasure x w) = designGram a x w := by

@@ -260,7 +260,7 @@ theorem isFiniteTracePos_gramOp (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 include hbx in
-/-- **Generalized sparsification for a countable family, when every value lies in `ℓ²`.**
+/-- **Discretization theorem for a countable family, when every value lies in `ℓ²`.**
 
 This is `Discretization.Infinite.bss_generalized_of_hilbertBasis` for `H = ℓ²(κ)` with its
 standard basis,
@@ -334,7 +334,7 @@ theorem exists_measurableSet_mem_l2 (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
 
 /-! ### The theorem in the paper's form -/
 
-/-- **Generalized sparsification theorem for a countable second family**
+/-- **Discretization theorem for a countable second family**
 (Chkifa–Dolbeault–Krieg–Ullrich, Theorem 3), in the form of the paper.
 
 Let `a` be a finite family of square-integrable functions with positive definite Gram matrix

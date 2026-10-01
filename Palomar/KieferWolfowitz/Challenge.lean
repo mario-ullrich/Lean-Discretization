@@ -35,7 +35,7 @@ the loss disappears and the constant is the sharp `√m`. In both cases at most 
 points are needed, by Carathéodory's theorem applied to the Gram matrices of designs.
 
 The measure is one whose Gram matrix has an almost maximal determinant. Applying the
-sparsification theorem to such a measure is how one arrives at sampling projections with few
+discretization theorem to such a measure is how one arrives at sampling projections with few
 points and small norm.
 
 ## The definition restated here

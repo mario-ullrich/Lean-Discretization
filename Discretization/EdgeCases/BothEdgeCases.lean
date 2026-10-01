@@ -79,7 +79,7 @@ namespace UpperBarrier
 variable {S : Type*} [AddCommGroup S] [PartialOrder S] [IsOrderedAddMonoid S] [Module ℝ S]
   [IsOrderedModule ℝ S] [One S] (U : UpperBarrier μ S)
 
-/-- **Generalized sparsification theorem for a one-element first family, a small effective
+/-- **Discretization theorem for a one-element first family, a small effective
 dimension and an upper barrier.**  For `card ι = 1` and `M = Tr J / Λ ≤ 1 + 1/n` neither
 potential is needed: one point, used `n` times, makes the lower frame bound the identity
 `1 = (1 - √((m-1)/n))²` and leaves the upper one to the crude estimate. -/
@@ -118,7 +118,7 @@ theorem bss_generalized_of_unique_of_small_dim [Unique ι] {Λ : ℝ} (hΛ : 0 <
       (fun _ => (one_div_pos.2 hLpos).le) hweight).trans
       (smul_le_smul_of_nonneg_right hTΛ U.one_nonneg)
 
-/-- **Generalized sparsification theorem for a normalized first family and an upper
+/-- **Discretization theorem for a normalized first family and an upper
 barrier**, with no side condition beyond `n ≥ m`.
 
 The potential argument of `Discretization.UpperBarrier.bss_generalized_of_gram_eq_one` needs
@@ -157,7 +157,7 @@ end UpperBarrier
 
 /-! ### The theorems for finite families -/
 
-/-- **Generalized sparsification theorem for a one-element first family and a small effective
+/-- **Discretization theorem for a one-element first family and a small effective
 dimension.**
 
 For `card ι = 1` and `M = Tr J / Λ ≤ 1 + 1/n` neither potential is needed: one point, used
@@ -179,7 +179,7 @@ theorem bss_generalized_of_unique_of_small_dim [Unique ι] [Nonempty κ]
             • (1 : Matrix κ κ ℂ) :=
   (matrixUpperBarrier hJ hb hgramb).bss_generalized_of_unique_of_small_dim hΛ ha hgrama hn hMlt
 
-/-- **Generalized sparsification theorem for a normalized first family**, with no side
+/-- **Discretization theorem for a normalized first family**, with no side
 condition beyond `n ≥ m`.
 
 This is `Discretization.UpperBarrier.bss_generalized_of_gram_eq_one'` for a finite second

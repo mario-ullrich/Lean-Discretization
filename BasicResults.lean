@@ -35,7 +35,7 @@ In Lean this order is switched on by the command `open scoped MatrixOrder`, and 
 
 The files at the top level are general; `BasicResults/Matrix/` holds the matrix facts
 and `BasicResults/Operator/` their counterparts for operators on a Hilbert space, which
-the countably infinite second family needs.
+a second family in a Hilbert space needs.
 
 * `BasicResults.SqrtConjugation`: a bound on the conjugate of `X` by the inverse square root
   of `B` is a bound on `X` itself, in any C⋆-algebra.  This is the step that turns a bound on
@@ -65,7 +65,7 @@ the countably infinite second family needs.
   `det (β A + α u u*)`, which is affine in `α` because `u u*` has rank one, and the crude
   bound `|det A| ≤ n! Cⁿ` by the size of the entries.
 * `BasicResults.Operator.Trace`: the trace of an operator along a Hilbert basis, for the
-  passage to a countably infinite second family.  For a positive operator
+  passage to a second family in a Hilbert space.  For a positive operator
   `Re ⟪x, T x⟫ = ‖√T x‖²`, so the trace is a squared Hilbert–Schmidt norm, and the crude
   bound `T ≤ Tr(T) • 1` holds.
 * `BasicResults.Operator.ShermanMorrison`: rank-one updates of an operator, with the

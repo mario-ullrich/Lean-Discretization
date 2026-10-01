@@ -12,7 +12,7 @@ project:
     For continuous functions on a compact domain the loss disappears and the constant
     is the sharp √m. In both cases at most 2m² + 1 points are needed. The measure
     is one whose Gram matrix has an almost maximal determinant; applying a
-    sparsification theorem to such a measure is how one arrives at sampling projections
+    discretization theorem to such a measure is how one arrives at sampling projections
     with few points and small norm.
   authors:
     - "Mario Ullrich"
@@ -68,7 +68,7 @@ status:
     exists_design_kieferWolfowitz_of_compact); the statement for the measure
     ϱ = ∑ₖ wₖ δ(xₖ) itself
     (exists_probabilityMeasure_kieferWolfowitz), together with the identity
-    gram a ϱ = designGram a x w that hands it to the sparsification theorem; the
+    gram a ϱ = designGram a x w that hands it to the discretization theorem; the
     reduction of any design to one with at most 2m² + 1 points and the same Gram
     matrix (exists_design_card_le), by Carathéodory's theorem; and John's
     decomposition of the identity over the design points
