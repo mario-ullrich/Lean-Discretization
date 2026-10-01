@@ -1107,14 +1107,13 @@ $e' = (e'_j)_{j \in \kappa'}$ of $H$,
 (a) Take real parts in Mathlib's Parseval identity
 $\sum_k \langle x, e_k \rangle \langle e_k, x \rangle = \langle x, x \rangle$.
 
-(b) Expanding both sides by (a) gives the same double series
-$\sum_{j,k} |\langle e_j, T e_k \rangle|^2$ with the two indices exchanged. The
-rearrangement is carried out in $[0, \infty]$, where every sum is defined and the
-interchange needs no hypothesis; summability is then read off the value being finite.
+(c) Expanding $\|T e_k\|^2$ by (a) along $e'$ and $\|T^* e'_j\|^2$ along $e$ gives the
+same double series $\sum_{j,k} |\langle e'_j, T e_k \rangle|^2$ with the two summations
+exchanged. The rearrangement is carried out in $[0, \infty]$, where every sum is defined and
+the interchange needs no hypothesis. For a self-adjoint $T$ it says that the
+Hilbert--Schmidt sum does not depend on the basis.
 
-(c) The same computation, expanding $\|T e_k\|^2$ by (a) along $e'$ and
-$\|T^* e'_j\|^2$ along $e$. For a self-adjoint $T$ it says that the Hilbert--Schmidt sum
-does not depend on the basis.
+(b) The case $e' = e$ of (c); summability is read off the value being finite.
 \end{proof}
 
 Part (b) is the hinge of the whole trace layer: it is what supplies the summability of

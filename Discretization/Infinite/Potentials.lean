@@ -131,11 +131,6 @@ relative to a positive operator `J` of finite trace. -/
 noncomputable def upperPotential (e : HilbertBasis κ ℂ H) (J B : H →L[ℂ] H) : ℝ :=
   traceAlong e (J * Ring.inverse B)
 
-/-- The upper potential is nonnegative. -/
-theorem upperPotential_nonneg (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}
-    (hB : IsStrictlyPositive B) : 0 ≤ upperPotential e J B :=
-  traceAlong_mul_nonneg e hJ.nonneg (hB.ringInverse).nonneg hJ.summableTrace
-
 /-- **The upper potential is positive.**  It vanishes only if `J` does, which injectivity
 forbids as soon as the space is nonzero. -/
 theorem upperPotential_pos [Nonempty κ] (hJ : IsFiniteTracePos e J) {B : H →L[ℂ] H}

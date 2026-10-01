@@ -214,24 +214,32 @@ theorem tsum_ofReal_norm_sq_inner (e : HilbertBasis κ ℂ H) (x : H) :
   rw [← ENNReal.ofReal_tsum_of_nonneg (fun k => by positivity) (e.summable_norm_sq_inner x),
     (e.hasSum_norm_sq_inner x).tsum_eq]
 
-/-- **The Hilbert–Schmidt sum of an operator equals that of its adjoint**, as an identity in
-`ℝ≥0∞`.
+/-- **The Hilbert–Schmidt sum of an operator along one basis equals that of its adjoint along
+any other basis**, as an identity in `ℝ≥0∞`.  The two bases may have different index sets.
 
-Expanding `‖S eₖ‖²` by Parseval turns the sum into the double sum of `|⟪eⱼ, S eₖ⟫|²`, which is
-symmetric in the two indices once `⟪eⱼ, S eₖ⟫` is read as `⟪S* eⱼ, eₖ⟫`.  Interchanging the
-two summations is unconditional in `ℝ≥0∞`. -/
-theorem tsum_ofReal_norm_sq_adjoint (e : HilbertBasis κ ℂ H) (S : H →L[ℂ] H) :
+Expanding `‖S eₖ‖²` by Parseval along `e'` turns the sum into the double sum of
+`|⟪e'ⱼ, S eₖ⟫|²`, and reading `⟪e'ⱼ, S eₖ⟫` as `⟪S* e'ⱼ, eₖ⟫` and expanding back along `e`
+gives the sum for `S*`.  Interchanging the two summations is unconditional in `ℝ≥0∞`. -/
+theorem tsum_ofReal_norm_sq_adjoint_of_basis {κ' : Type*} (e : HilbertBasis κ ℂ H)
+    (e' : HilbertBasis κ' ℂ H) (S : H →L[ℂ] H) :
     ∑' k, ENNReal.ofReal (‖S (e k)‖ ^ 2)
-      = ∑' k, ENNReal.ofReal (‖ContinuousLinearMap.adjoint S (e k)‖ ^ 2) := by
+      = ∑' j, ENNReal.ofReal (‖ContinuousLinearMap.adjoint S (e' j)‖ ^ 2) := by
   calc ∑' k, ENNReal.ofReal (‖S (e k)‖ ^ 2)
-      = ∑' k, ∑' j, ENNReal.ofReal (‖⟪e j, S (e k)⟫_ℂ‖ ^ 2) :=
-        tsum_congr fun k => (tsum_ofReal_norm_sq_inner e (S (e k))).symm
-    _ = ∑' j, ∑' k, ENNReal.ofReal (‖⟪e j, S (e k)⟫_ℂ‖ ^ 2) := ENNReal.tsum_comm
-    _ = ∑' j, ∑' k, ENNReal.ofReal (‖⟪e k, ContinuousLinearMap.adjoint S (e j)⟫_ℂ‖ ^ 2) := by
+      = ∑' k, ∑' j, ENNReal.ofReal (‖⟪e' j, S (e k)⟫_ℂ‖ ^ 2) :=
+        tsum_congr fun k => (tsum_ofReal_norm_sq_inner e' (S (e k))).symm
+    _ = ∑' j, ∑' k, ENNReal.ofReal (‖⟪e' j, S (e k)⟫_ℂ‖ ^ 2) := ENNReal.tsum_comm
+    _ = ∑' j, ∑' k, ENNReal.ofReal (‖⟪e k, ContinuousLinearMap.adjoint S (e' j)⟫_ℂ‖ ^ 2) := by
         refine tsum_congr fun j => tsum_congr fun k => ?_
         rw [← ContinuousLinearMap.adjoint_inner_left, norm_inner_symm]
-    _ = ∑' j, ENNReal.ofReal (‖ContinuousLinearMap.adjoint S (e j)‖ ^ 2) :=
+    _ = ∑' j, ENNReal.ofReal (‖ContinuousLinearMap.adjoint S (e' j)‖ ^ 2) :=
         tsum_congr fun j => tsum_ofReal_norm_sq_inner e _
+
+/-- **The Hilbert–Schmidt sum of an operator equals that of its adjoint**, as an identity in
+`ℝ≥0∞`: the case `e' = e` of `ContinuousLinearMap.tsum_ofReal_norm_sq_adjoint_of_basis`. -/
+theorem tsum_ofReal_norm_sq_adjoint (e : HilbertBasis κ ℂ H) (S : H →L[ℂ] H) :
+    ∑' k, ENNReal.ofReal (‖S (e k)‖ ^ 2)
+      = ∑' k, ENNReal.ofReal (‖ContinuousLinearMap.adjoint S (e k)‖ ^ 2) :=
+  tsum_ofReal_norm_sq_adjoint_of_basis e e S
 
 /-- **An operator is Hilbert–Schmidt exactly when its adjoint is.** -/
 theorem summable_norm_sq_adjoint_iff (e : HilbertBasis κ ℂ H) (S : H →L[ℂ] H) :
@@ -259,26 +267,10 @@ theorem tsum_norm_sq_adjoint (e : HilbertBasis κ ℂ H) (S : H →L[ℂ] H)
 
 /-! ### Independence of the basis
 
-The two-basis form of the Hilbert–Schmidt identity: expanding `‖S eₖ‖²` by Parseval along a
-second basis `e'` and interchanging the two sums turns the Hilbert–Schmidt sum of `S` along
-`e` into that of `S*` along `e'`.  For a positive operator, applied to its square root, this
+For a self-adjoint operator the two-basis form of the Hilbert–Schmidt identity,
+`ContinuousLinearMap.tsum_ofReal_norm_sq_adjoint_of_basis`, says that the Hilbert–Schmidt
+sum does not depend on the basis.  For a positive operator, applied to its square root, it
 says that the trace does not depend on the basis. -/
-
-/-- **The Hilbert–Schmidt sum of an operator along one basis equals that of its adjoint along
-any other basis**, as an identity in `ℝ≥0∞`.  The two bases may have different index sets. -/
-theorem tsum_ofReal_norm_sq_adjoint_of_basis {κ' : Type*} (e : HilbertBasis κ ℂ H)
-    (e' : HilbertBasis κ' ℂ H) (S : H →L[ℂ] H) :
-    ∑' k, ENNReal.ofReal (‖S (e k)‖ ^ 2)
-      = ∑' j, ENNReal.ofReal (‖ContinuousLinearMap.adjoint S (e' j)‖ ^ 2) := by
-  calc ∑' k, ENNReal.ofReal (‖S (e k)‖ ^ 2)
-      = ∑' k, ∑' j, ENNReal.ofReal (‖⟪e' j, S (e k)⟫_ℂ‖ ^ 2) :=
-        tsum_congr fun k => (tsum_ofReal_norm_sq_inner e' (S (e k))).symm
-    _ = ∑' j, ∑' k, ENNReal.ofReal (‖⟪e' j, S (e k)⟫_ℂ‖ ^ 2) := ENNReal.tsum_comm
-    _ = ∑' j, ∑' k, ENNReal.ofReal (‖⟪e k, ContinuousLinearMap.adjoint S (e' j)⟫_ℂ‖ ^ 2) := by
-        refine tsum_congr fun j => tsum_congr fun k => ?_
-        rw [← ContinuousLinearMap.adjoint_inner_left, norm_inner_symm]
-    _ = ∑' j, ENNReal.ofReal (‖ContinuousLinearMap.adjoint S (e' j)‖ ^ 2) :=
-        tsum_congr fun j => tsum_ofReal_norm_sq_inner e _
 
 /-- **The Hilbert–Schmidt sum of a self-adjoint operator does not depend on the basis**, as
 an identity in `ℝ≥0∞`. -/
