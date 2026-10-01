@@ -602,10 +602,10 @@ shrunk by $\delta \cdot 1$, which raises the potential by an amount that is comp
 exactly, and that amount is the budget one new sampling point is allowed to consume. The
 verifier decides pointwise, without recomputing any inverse, whether a candidate point
 stays within that budget. The upper potential $\Psi_J(B) = \Tr (J B^{-1})$ and its verifier
-play the same role for the second family (\Cref{def:operator-upper-potential}).
+play the same role for the second family (\Cref{def:upper-potential}).
 
 \begin{lemma}[How the lower potential changes]
-\label{lem:potential-change}
+\label{lem:lower-potential-change}
 \lean{Discretization.lowerPotential_sub_eq, Discretization.lowerPotential_add_smul_vecMulVec}
 \leanok
 \uses{def:lower-potential}
@@ -638,8 +638,8 @@ matrices.
 traces.
 \end{proof}
 
-\begin{lemma}[Barrier lemma]
-\label{lem:barrier}
+\begin{lemma}[Barrier lemma for the lower potential]
+\label{lem:lower-barrier}
 \lean{Discretization.lowerPotential_update_le}
 \leanok
 \uses{def:lower-potential}
@@ -654,11 +654,11 @@ definite and
 
 \begin{proof}
 \leanok
-\uses{lem:potential-change, lem:rank-one-updates, lem:inverse-trace-bounds}
+\uses{lem:lower-potential-change, lem:rank-one-updates, lem:inverse-trace-bounds}
 The matrix $A - \delta \cdot 1$ is positive definite by \Cref{lem:inverse-trace-bounds}(b),
 and adding $w \, v v^*$ keeps it so by \Cref{lem:rank-one-updates}(b). The closed form of
-\Cref{lem:potential-change}(b) for $N = A - \delta \cdot 1$, together with the positive
-gain of \Cref{lem:potential-change}(a), reduces the inequality to one between real
+\Cref{lem:lower-potential-change}(b) for $N = A - \delta \cdot 1$, together with the positive
+gain of \Cref{lem:lower-potential-change}(a), reduces the inequality to one between real
 numbers, which is the hypothesis $1/w \leq L_A^{\delta}(v)$ multiplied out.
 \end{proof}
 
@@ -668,7 +668,7 @@ A point may be used if the upper verifier stays below the lower one. Such a poin
 because the lower verifier is large on average.
 
 \begin{lemma}[The lower verifier passes on average]
-\label{lem:verifiers-on-average}
+\label{lem:lower-verifier-on-average}
 \lean{Discretization.integral_lowerVerifier_gt,
       Discretization.UpperBarrier.exists_admissible_point}
 \leanok
@@ -690,11 +690,11 @@ $U(x) < L_A^{\delta}\bigl( a(x) \bigr)$.
 
 \begin{proof}
 \leanok
-\uses{lem:gram-identities, lem:trace-inequalities, lem:potential-change,
+\uses{lem:gram-identities, lem:trace-inequalities, lem:lower-potential-change,
       lem:point-from-averages}
 (a) Write $Y = A^{-1}$ and $Z = (A - \delta \cdot 1)^{-1}$. \Cref{lem:gram-identities}(a)
 turns the average into $\Tr (Z^2) / (\delta \Tr (Y Z)) - \Tr Z$, the denominator being the
-gain of \Cref{lem:potential-change}(a). Writing $t = \Tr (Y Z)$ and $u = \Tr (Y Z^2)$, the
+gain of \Cref{lem:lower-potential-change}(a). Writing $t = \Tr (Y Z)$ and $u = \Tr (Y Z^2)$, the
 claim reduces to $\delta t^2 < u$, which is what \Cref{lem:trace-inequalities}(b) gives
 together with $\delta \Phi(A) < 1$.
 
@@ -704,13 +704,43 @@ average exceeds $1/\delta - \Phi(A) \geq \int_\Omega U \, d\mu$, and
 \end{proof}
 
 In the construction $U$ is the upper verifier along the second family, whose average is
-below $1/\zeta + \Psi_J(B)$ by \Cref{lem:operator-barrier}(f); the gap condition
+below $1/\zeta + \Psi_J(B)$ by \Cref{lem:upper-verifier-on-average}; the gap condition
 $1/\zeta + \Psi_J(B) \leq 1/\delta - \Phi(A)$ then makes (b) applicable. Any weight $w$
-between the two reciprocals is admissible for \Cref{lem:barrier} and for
-\Cref{lem:operator-barrier}(c), and the construction takes the largest one,
+between the two reciprocals is admissible for \Cref{lem:lower-barrier} and for
+\Cref{lem:upper-barrier}, and the construction takes the largest one,
 $w = 1/L_A^{\delta}$. Part (b) compares two averages of real functions and nothing else; in
 Lean it is proved once for every upper state,
 \texttt{Discretization.UpperBarrier.exists\_admissible\_point}.
+
+\section{From the potential to the frame bound}
+
+\begin{lemma}[From the potential to the lower frame bound]
+\label{lem:lower-frame-bound}
+\lean{Discretization.lower_bound_of_state, Discretization.lower_frame_bound}
+\leanok
+\uses{def:lower-potential}
+Let $\iota$ be a finite nonempty set, let $n \geq 1$, and let
+$v_1, \dots, v_n \in \mathbb{C}^{\iota}$ and $w_1, \dots, w_n \in \mathbb{R}$. Let $r > 0$
+with $r \neq 1$, put $\delta = (1 - r)/n$ and $c_0 = \delta (n r^2 + 1)/r$, and let
+$A_n = c_0 \cdot 1 - n \delta \cdot 1 + \sum_{i=1}^n w_i \, v_i v_i^*$. If $A_n$ is
+positive definite and $\Phi(A_n) \leq r / \delta$, then
+\[
+  (1 - r)^2 \cdot 1 \; \preceq \; \sum_{i=1}^n w_i \, v_i v_i^* .
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:inverse-trace-bounds}
+By \Cref{lem:inverse-trace-bounds}(a), $\Phi(A_n) \leq r/\delta$ gives
+$(\delta / r) \cdot 1 \preceq A_n$; inserting the definition of $A_n$ gives
+$(\delta/r + n\delta - c_0) \cdot 1 \preceq \sum_i w_i \, v_i v_i^*$, and
+$\delta/r + n\delta - c_0 = n \delta (1 - r) = (1 - r)^2$. The arithmetic is in
+\texttt{Discretization/Parameters.lean}.
+\end{proof}
+
+For $r = \sqrt{(m-1)/n}$ one has $n r^2 + 1 = m$; the lemma is stated in $r$ because its
+proof never unfolds the square root.
 
 \chapter{Operators on a Hilbert space}
 \label{ch:infinite}
@@ -966,7 +996,7 @@ $Q^{1/2} J^{1/2}$, once read through the operator and once through its adjoint, 
 the index set of the basis enters here, in the interchange.
 \end{proof}
 
-\section{The upper potential of an operator}
+\section{The upper potential and the verifier}
 
 For the operator the construction moves, the right notion is positivity together with
 invertibility; it is Mathlib's \texttt{IsStrictlyPositive}, and the inverse is
@@ -974,7 +1004,7 @@ invertibility; it is Mathlib's \texttt{IsStrictlyPositive}, and the inverse is
 invertible ones.
 
 \begin{definition}[Upper potential and verifier of an operator]
-\label{def:operator-upper-potential}
+\label{def:upper-potential}
 \lean{Discretization.Infinite.upperPotential, Discretization.Infinite.upperVerifier,
       Discretization.upperPotential, Discretization.upperVerifier}
 \leanok
@@ -996,27 +1026,21 @@ each step $B$ is grown by $\zeta \cdot J$, which lowers the potential by an amou
 computed exactly, and the verifier decides whether a candidate point stays within that
 budget, as $\Phi$ and $L_A^{\delta}$ do for the first family (\Cref{def:lower-potential}).
 In Lean both notions are also defined directly for matrices
-(\texttt{Discretization.upperPotential}, \texttt{Discretization.upperVerifier}), which is
-what the finite case uses.
+(\texttt{Discretization.upperPotential}, \texttt{Discretization.upperVerifier}). Lean
+proves the lemmas below a second time for matrices, where the trace is the matrix trace,
+and the read-off of \Cref{lem:upper-frame-bound}(b) once for every upper state; the matrix
+proofs serve the finite case and keep the sparsification theorem elementary.
 
-\begin{lemma}[Barrier lemma for operators]
-\label{lem:operator-barrier}
+\begin{lemma}[How the upper potential changes]
+\label{lem:upper-potential-change}
 \lean{Discretization.Infinite.upperPotential_sub_eq,
       Discretization.Infinite.upperPotential_add_smul_lt,
       ContinuousLinearMap.isStrictlyPositive_add_smul,
       Discretization.Infinite.upperPotential_sub_smul_rankOne,
-      Discretization.Infinite.upperPotential_update_le,
-      Discretization.Infinite.inv_upperPotential_smul_le,
-      Discretization.UpperBarrier.upper_bound_of_state,
-      Discretization.UpperBarrier.upper_frame_bound,
-      Discretization.Infinite.integrable_upperVerifier,
-      Discretization.Infinite.integral_upperVerifier_lt,
       Discretization.upperPotential_sub_eq, Discretization.upperPotential_add_smul_lt,
-      Matrix.PosDef.add_smul, Discretization.upperPotential_sub_smul_vecMulVec,
-      Discretization.upperPotential_update_le, Matrix.PosDef.inv_re_trace_mul_smul_le,
-      Discretization.integrable_upperVerifier, Discretization.integral_upperVerifier_lt}
+      Matrix.PosDef.add_smul, Discretization.upperPotential_sub_smul_vecMulVec}
 \leanok
-\uses{def:operator-upper-potential}
+\uses{def:upper-potential}
 Let $H$ be a nonzero complex Hilbert space, let $J$ be a positive injective operator on $H$
 of finite trace, and let $B$ be a strictly positive operator on $H$.
 
@@ -1035,38 +1059,11 @@ $w \re \langle u, C^{-1} u \rangle < 1$. Then
       + \frac{w}{1 - w \re \langle u, C^{-1} u \rangle} \,
         \re \langle u, C^{-1} J C^{-1} u \rangle .
 \]
-
-(c) Let $\zeta > 0$, $u \in H$ and $w > 0$ satisfy $U_B^{\zeta}(u) \leq 1/w$. Then
-$B + \zeta \cdot J - w \, u u^*$ is strictly positive and
-$\Psi_J \bigl( B + \zeta \cdot J - w \, u u^* \bigr) \leq \Psi_J(B)$.
-
-(d) $\Psi_J(B)^{-1} \cdot J \preceq B$.
-
-(e) Let $\Lambda > 0$ with $J \preceq \Lambda \cdot 1$, let $n \geq 1$, let $s \geq 1/n$
-with $\Tr J = \Lambda (n s^2 + 1)$, put $\zeta = (1 + s)/n$ and $d_0 = \zeta \Tr J / s$, let
-$u_1, \dots, u_n \in H$ and $w_1, \dots, w_n \in \mathbb{R}$, and let
-$B_n = d_0 \cdot 1 + n \zeta \cdot J - \sum_{i=1}^n w_i \, u_i u_i^*$. If $B_n$ is
-strictly positive and $\Psi_J(B_n) \leq s / \zeta$, then
-\[
-  \sum_{i=1}^n w_i \, u_i u_i^* \; \preceq \; (1 + s)^2 \Lambda \cdot 1 .
-\]
-
-(f) Let $H$ be separable, let $(\Omega, \mu)$ be a measure space and $b : \Omega \to H$
-square-integrable with $J = \int_\Omega b(x) b(x)^* \, d\mu(x)$, and let $\zeta > 0$. Then
-$x \mapsto U_B^{\zeta}(b(x))$ is integrable and
-\[
-  \int_\Omega U_B^{\zeta} \bigl( b(x) \bigr) d\mu(x) < \frac{1}{\zeta} + \Psi_J(B).
-\]
 \end{lemma}
-
-Parts (a)--(d) and (f) are proved in Lean a second time for matrices, where the trace is
-the matrix trace, and (e) is proved once for both. The matrix proofs serve the finite case
-and keep the sparsification theorem elementary.
 
 \begin{proof}
 \leanok
-\uses{lem:operator-traces, lem:operator-rank-one-updates, lem:sqrt-conjugation,
-      lem:loewner-basic-bounds, lem:potential-change, lem:barrier, lem:gram-operator}
+\uses{lem:operator-traces, lem:operator-rank-one-updates}
 (a) The operator $B + \zeta \cdot J$ dominates $B$, so it is positive, and invertible
 because it dominates an invertible positive operator. The identity is the resolvent
 identity, which holds in any ring. The right-hand side is the trace of a product of two
@@ -1075,23 +1072,111 @@ positive; \Cref{lem:operator-traces}(b) gives the sign, and injectivity of $J$ m
 strict.
 
 (b) Insert the Sherman--Morrison formula of \Cref{lem:operator-rank-one-updates}(a) with
-$t = -w$ and take traces, as for the lower potential in \Cref{lem:potential-change}(b).
+$t = -w$ and take traces, as for the lower potential in
+\Cref{lem:lower-potential-change}(b).
+\end{proof}
 
-(c) Write $X = (B + \zeta \cdot J)^{-1}$. The first summand of $U_B^{\zeta}(u)$ is positive
+\begin{lemma}[Barrier lemma for the upper potential]
+\label{lem:upper-barrier}
+\lean{Discretization.Infinite.upperPotential_update_le,
+      Discretization.upperPotential_update_le}
+\leanok
+\uses{def:upper-potential}
+Let $H$ be a nonzero complex Hilbert space, let $J$ be a positive injective operator on $H$
+of finite trace, let $B$ be a strictly positive operator on $H$, let $\zeta > 0$,
+$u \in H$, and let $w > 0$ satisfy $U_B^{\zeta}(u) \leq 1/w$. Then
+$B + \zeta \cdot J - w \, u u^*$ is strictly positive and
+\[
+  \Psi_J \bigl( B + \zeta \cdot J - w \, u u^* \bigr) \leq \Psi_J(B).
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:upper-potential-change, lem:operator-rank-one-updates}
+Write $X = (B + \zeta \cdot J)^{-1}$. The first summand of $U_B^{\zeta}(u)$ is positive
 for $u \neq 0$, because $\re \langle u, X J X u \rangle = \|J^{1/2} X u\|^2$ and $J$ is
 injective, so the hypothesis gives $w \re \langle u, X u \rangle < 1$: the
 Sherman--Morrison denominator is positive. The inverse of
 \Cref{lem:operator-rank-one-updates}(a) is then positive, which makes
-$B + \zeta \cdot J - w \, u u^*$ strictly positive. Finally (b) for
-$C = B + \zeta \cdot J$ and (a) reduce the inequality to the hypothesis
-$U_B^{\zeta}(u) \leq 1/w$ multiplied out, as in the proof of \Cref{lem:barrier}.
+$B + \zeta \cdot J - w \, u u^*$ strictly positive. Finally
+\Cref{lem:upper-potential-change}(b) for $C = B + \zeta \cdot J$ and (a) reduce the
+inequality to the hypothesis $U_B^{\zeta}(u) \leq 1/w$ multiplied out, as in the proof of
+\Cref{lem:lower-barrier}.
+\end{proof}
 
-(d) The operator $B^{-1/2} J B^{-1/2}$ is positive and of finite trace, and its trace is
+\section{The upper verifier passes on average}
+
+For a square-integrable $b$ with values in a separable space, the Gram operator
+$J = \int_\Omega b(x) b(x)^* \, d\mu(x)$ is positive and of finite trace
+(\Cref{lem:gram-operator}(d)), so its upper potential is defined.
+
+\begin{lemma}[The upper verifier passes on average]
+\label{lem:upper-verifier-on-average}
+\lean{Discretization.Infinite.integrable_upperVerifier,
+      Discretization.Infinite.integral_upperVerifier_lt,
+      Discretization.integrable_upperVerifier, Discretization.integral_upperVerifier_lt}
+\leanok
+\uses{def:upper-potential}
+Let $(\Omega, \mu)$ be a measure space, let $H$ be a nonzero separable complex Hilbert
+space, let $b : \Omega \to H$ be square-integrable with injective Gram operator
+$J = \int_\Omega b(x) b(x)^* \, d\mu(x)$, let $B$ be a strictly positive operator on $H$,
+and let $\zeta > 0$. Then $x \mapsto U_B^{\zeta}(b(x))$ is integrable and
+\[
+  \int_\Omega U_B^{\zeta} \bigl( b(x) \bigr) d\mu(x) < \frac{1}{\zeta} + \Psi_J(B).
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:gram-operator, lem:operator-traces, lem:upper-potential-change,
+      lem:loewner-basic-bounds}
+Both summands of the verifier are quadratic forms in $b(x)$, bounded by a multiple of
+$\|b(x)\|^2$, so the verifier is integrable. Write $W = B^{-1}$ and
+$X = (B + \zeta \cdot J)^{-1}$, and let $E = \Psi_J(B) - \Psi_J(B + \zeta \cdot J)$ be the
+gain of \Cref{lem:upper-potential-change}(a). By \Cref{lem:gram-operator}(e) for
+$Q = X J X$ and $Q = X$ the average equals
+$\Tr (J X J X) / E + \Psi_J(B + \zeta \cdot J)$. Since $X \preceq W$ by the antitonicity of
+the inverse, as in \Cref{lem:loewner-basic-bounds}(c), we have $J X J \preceq J W J$, and
+\Cref{lem:operator-traces}(c) bounds the numerator by $\Tr (J W J X) = E / \zeta$. So the
+first summand is at most $1/\zeta$, and the second is strictly smaller than $\Psi_J(B)$
+by \Cref{lem:upper-potential-change}(a).
+\end{proof}
+
+\section{From the upper potential to the frame bound}
+
+\begin{lemma}[From the potential to the upper frame bound]
+\label{lem:upper-frame-bound}
+\lean{Discretization.Infinite.inv_upperPotential_smul_le,
+      Matrix.PosDef.inv_re_trace_mul_smul_le,
+      Discretization.UpperBarrier.upper_bound_of_state,
+      Discretization.UpperBarrier.upper_frame_bound}
+\leanok
+\uses{def:upper-potential}
+Let $H$ be a nonzero complex Hilbert space, let $J$ be a positive injective operator on $H$
+of finite trace, and let $B$ be a strictly positive operator on $H$.
+
+(a) $\Psi_J(B)^{-1} \cdot J \preceq B$.
+
+(b) Let $\Lambda > 0$ with $J \preceq \Lambda \cdot 1$, let $n \geq 1$, let $s \geq 1/n$
+with $\Tr J = \Lambda (n s^2 + 1)$, put $\zeta = (1 + s)/n$ and $d_0 = \zeta \Tr J / s$, let
+$u_1, \dots, u_n \in H$ and $w_1, \dots, w_n \in \mathbb{R}$, and let
+$B_n = d_0 \cdot 1 + n \zeta \cdot J - \sum_{i=1}^n w_i \, u_i u_i^*$. If $B_n$ is
+strictly positive and $\Psi_J(B_n) \leq s / \zeta$, then
+\[
+  \sum_{i=1}^n w_i \, u_i u_i^* \; \preceq \; (1 + s)^2 \Lambda \cdot 1 .
+\]
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:operator-traces, lem:sqrt-conjugation}
+(a) The operator $B^{-1/2} J B^{-1/2}$ is positive and of finite trace, and its trace is
 again $\Psi_J(B)$ by \Cref{lem:operator-traces}(b), which is positive since $J \neq 0$ on
 the nonzero space $H$. So \Cref{lem:operator-traces}(a) bounds it by $\Psi_J(B) \cdot 1$,
 and \Cref{lem:sqrt-conjugation} carries that back to $J \preceq \Psi_J(B) \cdot B$.
 
-(e) By (d), $\Psi_J(B_n) \leq s/\zeta$ gives $(\zeta / s) \cdot J \preceq B_n$, hence
+(b) By (a), $\Psi_J(B_n) \leq s/\zeta$ gives $(\zeta / s) \cdot J \preceq B_n$, hence
 $\sum_i w_i \, u_i u_i^* \preceq d_0 \cdot 1 + (n\zeta - \zeta/s) \cdot J$. The
 coefficient $n\zeta - \zeta/s = \zeta (n - 1/s)$ is nonnegative exactly because
 $s \geq 1/n$, so $J \preceq \Lambda \cdot 1$ may be applied to it, and
@@ -1099,17 +1184,11 @@ $d_0 + (n\zeta - \zeta/s)\Lambda = \zeta \Lambda (n s + n) = (1 + s)^2 \Lambda$.
 this read-off is proved once for every upper state,
 \texttt{Discretization.UpperBarrier.upper\_bound\_of\_state}; the arithmetic is in
 \texttt{Discretization/Parameters.lean}.
-
-(f) Both summands of the verifier are quadratic forms in $b(x)$, bounded by a multiple of
-$\|b(x)\|^2$, so the verifier is integrable. Write $W = B^{-1}$ and
-$X = (B + \zeta \cdot J)^{-1}$, and let $E = \Psi_J(B) - \Psi_J(B + \zeta \cdot J)$ be the
-gain of (a). By \Cref{lem:gram-operator}(e) for $Q = X J X$ and $Q = X$ the average equals
-$\Tr (J X J X) / E + \Psi_J(B + \zeta \cdot J)$. Since $X \preceq W$ by the antitonicity of
-the inverse, as in \Cref{lem:loewner-basic-bounds}(c), we have $J X J \preceq J W J$, and
-\Cref{lem:operator-traces}(c) bounds the numerator by $\Tr (J W J X) = E / \zeta$. So the
-first summand is at most $1/\zeta$, and the second is strictly smaller than $\Psi_J(B)$
-by (a).
 \end{proof}
+
+For $s = \sqrt{(M-1)/n}$ one has $n s^2 + 1 = M$, and $s \geq 1/n$ is the condition
+$M \geq 1 + 1/n$; the lemma is stated in $s$ because its proof never unfolds the square
+root.
 
 \chapter{The construction and the proof}
 \label{ch:construction}
@@ -1120,17 +1199,13 @@ for the second, each controlled by its potential. This chapter runs it and prove
 
 \section{The barrier iteration}
 
-For a square-integrable $b$ with values in a separable space, the Gram operator
-$J = \int_\Omega b(x) b(x)^* \, d\mu(x)$ is positive and of finite trace
-(\Cref{lem:gram-operator}(d)), so its upper potential is defined.
-
 \begin{proposition}[The barrier iteration]
 \label{prop:barrier-iteration}
 \lean{Discretization.lowerState, Discretization.UpperBarrier.upperState,
       Discretization.UpperBarrier.exists_points_weights, Discretization.UpperBarrier,
       Discretization.matrixUpperBarrier, Discretization.Infinite.operatorUpperBarrier}
 \leanok
-\uses{def:lower-potential, def:operator-upper-potential}
+\uses{def:lower-potential, def:upper-potential}
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let $H$
 be a nonzero separable complex Hilbert space. Let $a : \Omega \to \mathbb{C}^{\iota}$ be
 square-integrable in every coordinate with $\int_\Omega a(x) a(x)^* \, d\mu(x) = 1$, and
@@ -1154,15 +1229,17 @@ $\Phi(A_k) \leq \Phi(A_0)$ and $\Psi_J(B_k) \leq \Psi_J(B_0)$.
 
 \begin{proof}
 \leanok
-\uses{lem:verifiers-on-average, lem:barrier, lem:operator-barrier}
+\uses{lem:lower-verifier-on-average, lem:upper-verifier-on-average, lem:lower-barrier,
+      lem:upper-barrier}
 Induction on $k$; for $k = 0$ there is nothing to show. The invariant keeps the gap open,
 $1/\zeta + \Psi_J(B_k) \leq 1/\zeta + \Psi_J(B_0) \leq 1/\delta - \Phi(A_0)
 \leq 1/\delta - \Phi(A_k)$, and in particular $\delta < \Phi(A_k)^{-1}$. By
-\Cref{lem:operator-barrier}(f) the function $U(x) = U_{B_k}^{\zeta}(b(x))$ is integrable
-with average below $1/\zeta + \Psi_J(B_k)$, so \Cref{lem:verifiers-on-average}(b) produces
-a point $x_{k+1}$ with $U(x_{k+1}) < L_{A_k}^{\delta}(a(x_{k+1}))$. The weight is
+\Cref{lem:upper-verifier-on-average} the function $U(x) = U_{B_k}^{\zeta}(b(x))$ is
+integrable with average below $1/\zeta + \Psi_J(B_k)$, so
+\Cref{lem:lower-verifier-on-average}(b) produces a point $x_{k+1}$ with
+$U(x_{k+1}) < L_{A_k}^{\delta}(a(x_{k+1}))$. The weight is
 $w_{k+1} = 1 / L_{A_k}^{\delta}(a(x_{k+1}))$, positive because $U \geq 0$, and
-\Cref{lem:barrier} and \Cref{lem:operator-barrier}(c) restore the invariant.
+\Cref{lem:lower-barrier} and \Cref{lem:upper-barrier} restore the invariant.
 \end{proof}
 
 The number of steps is arbitrary; only the initial gap condition drives it. What ties the
@@ -1170,49 +1247,16 @@ number of points to the frame bounds is the choice of the initial states and of 
 shifts, made in the proof of \Cref{thm:discretization} below.
 
 The induction and the read-off use only a few properties of the upper state: that
-$\Psi_J(B)$ and $U_B^{\zeta}$ are positive, \Cref{lem:operator-barrier}(c) and (f), the
-bound $\Psi_J(B)^{-1} \cdot J \preceq B$ with the potential of a multiple of the identity,
-and the crude bound $b(y) b(y)^* \preceq \|b(y)\|^2 \cdot 1$ with
-$\int_\Omega \|b\|^2 \, d\mu = \Tr J$. In Lean they are collected in
-\texttt{Discretization.UpperBarrier}, and the construction, the read-off of the upper frame
-bound and the theorem with its edge cases are proved once for every such upper state. The
-operators of \Cref{ch:infinite} are one instance
+$\Psi_J(B)$ and $U_B^{\zeta}$ are positive, \Cref{lem:upper-barrier} and
+\Cref{lem:upper-verifier-on-average}, the bound $\Psi_J(B)^{-1} \cdot J \preceq B$ with the
+potential of a multiple of the identity, and the crude bound
+$b(y) b(y)^* \preceq \|b(y)\|^2 \cdot 1$ with $\int_\Omega \|b\|^2 \, d\mu = \Tr J$. In
+Lean they are collected in \texttt{Discretization.UpperBarrier}, and the construction, the
+read-off of the upper frame bound and the theorem with its edge cases are proved once for
+every such upper state. The operators of \Cref{ch:infinite} are one instance
 (\texttt{Discretization.Infinite.operatorUpperBarrier}); the matrices over a finite set
-$\kappa$, with the matrix proofs of \Cref{lem:operator-barrier}, are another
+$\kappa$, with the matrix proofs of the upper lemmas, are another
 (\texttt{Discretization.matrixUpperBarrier}).
-
-The next lemma turns the final lower potential into the lower frame bound;
-\Cref{lem:operator-barrier}(e) does the same on the upper side.
-
-\begin{lemma}[From the final potential to the lower frame bound]
-\label{lem:frame-bounds-from-potentials}
-\lean{Discretization.lower_bound_of_state, Discretization.lower_frame_bound}
-\leanok
-\uses{def:lower-potential}
-Let $\iota$ be a finite nonempty set, let $n \geq 1$, and let
-$v_1, \dots, v_n \in \mathbb{C}^{\iota}$ and $w_1, \dots, w_n \in \mathbb{R}$. Let $r > 0$
-with $r \neq 1$, put $\delta = (1 - r)/n$ and $c_0 = \delta (n r^2 + 1)/r$, and let
-$A_n = c_0 \cdot 1 - n \delta \cdot 1 + \sum_{i=1}^n w_i \, v_i v_i^*$. If $A_n$ is
-positive definite and $\Phi(A_n) \leq r / \delta$, then
-\[
-  (1 - r)^2 \cdot 1 \; \preceq \; \sum_{i=1}^n w_i \, v_i v_i^* .
-\]
-\end{lemma}
-
-\begin{proof}
-\leanok
-\uses{lem:inverse-trace-bounds}
-By \Cref{lem:inverse-trace-bounds}(a), $\Phi(A_n) \leq r/\delta$ gives
-$(\delta / r) \cdot 1 \preceq A_n$; inserting the definition of $A_n$ gives
-$(\delta/r + n\delta - c_0) \cdot 1 \preceq \sum_i w_i \, v_i v_i^*$, and
-$\delta/r + n\delta - c_0 = n \delta (1 - r) = (1 - r)^2$. The arithmetic is in
-\texttt{Discretization/Parameters.lean}.
-\end{proof}
-
-For $r = \sqrt{(m-1)/n}$ and $s = \sqrt{(M-1)/n}$ one has $n r^2 + 1 = m$ and
-$n s^2 + 1 = M$, and $s \geq 1/n$ is the condition $M \geq 1 + 1/n$. The lemma and
-\Cref{lem:operator-barrier}(e) are stated in $r$ and $s$ because their proofs never unfold
-the square roots.
 
 \section{Proof of the discretization theorem}
 
@@ -1220,8 +1264,9 @@ the square roots.
 \proves{thm:discretization}
 \leanok
 \uses{lem:gram-identities, lem:gram-operator, prop:barrier-iteration,
-      lem:frame-bounds-from-potentials, lem:barrier, lem:verifiers-on-average,
-      lem:point-from-averages, lem:operator-barrier, lem:operator-rank-one-updates}
+      lem:lower-frame-bound, lem:upper-frame-bound, lem:lower-barrier, lem:upper-barrier,
+      lem:lower-verifier-on-average, lem:upper-verifier-on-average,
+      lem:point-from-averages, lem:operator-rank-one-updates}
 The first family is normalized first. Replace $a$ by $I^{-1/2} a$, whose Gram matrix is
 $I^{-1/2} I \, I^{-1/2} = 1$ by \Cref{lem:gram-identities}(b). Once points and weights are
 found for it, conjugating the lower bound by $I^{1/2}$ preserves the Loewner order and
@@ -1231,7 +1276,7 @@ $\int_\Omega a(x) a(x)^* \, d\mu(x) = 1$.
 
 By \Cref{lem:gram-operator}(d), $J$ is positive and of finite trace with
 $\Tr J = \int_\Omega \|b\|^2 \, d\mu = M \Lambda$, so the upper potential and verifier of
-\Cref{def:operator-upper-potential} are defined. Put $r = \sqrt{(m-1)/n}$, so that
+\Cref{def:upper-potential} are defined. Put $r = \sqrt{(m-1)/n}$, so that
 $n r^2 + 1 = m$, and for $M \geq 1$ put $s = \sqrt{(M-1)/n}$, so that $n s^2 + 1 = M$.
 
 Case $m \geq 2$, $M \geq 1 + 1/n$ (\texttt{Discretization.bss\_generalized\_of\_gram\_eq\_one}),
@@ -1245,7 +1290,7 @@ Then $\Phi(A_0) = r/\delta$ and $\Psi_J(B_0) = s/\zeta$, so the initial gap clos
 exactly, $1/\delta - \Phi(A_0) = n = 1/\zeta + \Psi_J(B_0)$.
 \Cref{prop:barrier-iteration} with $k = n$ gives points and weights with
 $\Phi(A_n) \leq r/\delta$ and $\Psi_J(B_n) \leq s/\zeta$, and
-\Cref{lem:frame-bounds-from-potentials} and \Cref{lem:operator-barrier}(e) turn them into
+\Cref{lem:lower-frame-bound} and \Cref{lem:upper-frame-bound}(b) turn them into
 the two bounds. The remaining three cases need one potential only: the verifier on the
 other side is replaced by a constant, whose average is again $n$. For $m = 1$ the lower
 constant $(1 - r)^2$ is $1$.
@@ -1253,17 +1298,17 @@ constant $(1 - r)^2$ is $1$.
 Case $m = 1$, $M \geq 1 + 1/n$ (\texttt{Discretization.bss\_generalized\_of\_unique}). The
 lower verifier is replaced by $L(x) = n |a(x)|^2$, whose average is $n$ because the single
 function is normalized. The induction then tracks only the upper state, using
-\Cref{lem:operator-barrier}(c) and the average of \Cref{lem:operator-barrier}(f) with
+\Cref{lem:upper-barrier} and the average of \Cref{lem:upper-verifier-on-average} with
 \Cref{lem:point-from-averages}(a), and takes the largest weight the constant allows,
 $1/w_i = L(x_i)$. Each point therefore contributes exactly $1/n$ to the lower bound, which
 becomes the identity $\sum_i w_i |a(x_i)|^2 = 1$. The upper bound is
-\Cref{lem:operator-barrier}(e).
+\Cref{lem:upper-frame-bound}(b).
 
 Case $m \geq 2$, $M \leq 1 + 1/n$
 (\texttt{Discretization.bss\_generalized\_of\_small\_dim}). The upper verifier is replaced
 by $U(x) = n \|b(x)\|^2 / \Tr J$, whose average is $n$. The induction tracks only the lower
-matrix, with \Cref{lem:barrier}, and the lower bound is
-\Cref{lem:frame-bounds-from-potentials}. The weights it produces satisfy
+matrix, with \Cref{lem:lower-barrier}, and the lower bound is
+\Cref{lem:lower-frame-bound}. The weights it produces satisfy
 $w_i U(x_i) \leq 1$, that is $w_i \|b(x_i)\|^2 \leq \Tr J / n$. Summing over the $n$
 points and using \Cref{lem:operator-rank-one-updates}(b) gives
 $\sum_i w_i \, b(x_i) b(x_i)^* \preceq \Tr J \cdot 1 = M \Lambda \cdot 1$, and
