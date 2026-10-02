@@ -727,7 +727,7 @@ For a square-integrable map $b : \Omega \to H$ into a Hilbert space the Gram mat
 the Gram operator $J = \int_\Omega b(x) b(x)^* \, d\mu(x)$. It is positive, since its
 quadratic form is nonnegative, and on a separable space its trace is
 $\int_\Omega \|b\|^2 \, d\mu$, by Parseval and monotone convergence
-(\Cref{lem:gram-operator}(d)). The only genuine assumption on $J$ is therefore that it is
+(\Cref{lem:gram-operator-trace}(a)). The only genuine assumption on $J$ is therefore that it is
 injective, which is what positive definiteness of the Gram matrix says for a finite family,
 and \Cref{thm:discretization} assumes nothing else.
 
@@ -735,24 +735,17 @@ and \Cref{thm:discretization} assumes nothing else.
 \label{lem:gram-operator}
 \lean{ContinuousLinearMap.integrable_rankOne_self,
       ContinuousLinearMap.inner_integral_rankOne_self,
-      ContinuousLinearMap.le_smul_one_iff_of_inner_eq_integral,
-      ContinuousLinearMap.injective_iff_of_inner_eq_integral,
-      ContinuousLinearMap.integral_rankOne_self_le_iff,
-      ContinuousLinearMap.integral_rankOne_self_injective_iff,
-      ContinuousLinearMap.nonneg_of_inner_eq_integral,
-      ContinuousLinearMap.re_inner_eq_integral,
-      ContinuousLinearMap.summable_re_inner_of_gram,
-      ContinuousLinearMap.integral_re_inner_apply,
       Discretization.Infinite.inner_eq_integral_of_integral_rankOne,
-      Discretization.Infinite.isFiniteTracePos_of_integral_rankOne,
-      Discretization.Infinite.integral_norm_sq_eq_trace,
-      Discretization.Infinite.integral_norm_sq_eq_traceAlong}
+      ContinuousLinearMap.re_inner_eq_integral, ContinuousLinearMap.nonneg_of_inner_eq_integral,
+      ContinuousLinearMap.le_smul_one_iff_of_inner_eq_integral,
+      ContinuousLinearMap.integral_rankOne_self_le_iff,
+      ContinuousLinearMap.injective_iff_of_inner_eq_integral,
+      ContinuousLinearMap.integral_rankOne_self_injective_iff}
 \leanok
-\uses{def:trace}
 Let $(\Omega, \mu)$ be a measure space, let $H$ be a complex Hilbert space, let
 $b : \Omega \to H$ be square-integrable, and let $J = \int_\Omega b(x) b(x)^* \, d\mu(x)$.
 
-(a) The operators $b(x) b(x)^*$ are Bochner integrable, and
+(a) The operators $b(x) b(x)^*$ are Bochner integrable, and $J$ is positive with
 $\langle u, J u \rangle = \int_\Omega |\langle u, b(x) \rangle|^2 \, d\mu(x)$ for every
 $u \in H$.
 
@@ -762,11 +755,38 @@ $u \in H$.
 
 (c) $J$ is injective if and only if every $u \in H$ with $\langle u, b(x) \rangle = 0$ for
 almost every $x$ is zero.
+\end{lemma}
 
-(d) Let $H$ be separable. Then $J$ is positive and of finite trace, and
-$\Tr J = \int_\Omega \|b(x)\|^2 \, d\mu(x)$.
+\begin{proof}
+\leanok
+(a) The operator $b(x) b(x)^*$ has norm $\|b(x)\|^2$, which is integrable. Evaluation at
+$u$ and the inner product with $u$ are continuous linear maps, so both pass under the
+integral, and $\langle u, b(x) b(x)^* u \rangle = |\langle u, b(x) \rangle|^2$. This
+quadratic form is real and nonnegative, so $J$ is positive.
 
-(e) Let $H$ be separable and let $Q$ be a positive bounded operator on $H$. Then
+(b) By (a) both sides say that the quadratic form of the self-adjoint operator
+$\Lambda \cdot 1 - J$ is nonnegative.
+
+(c) The quadratic form vanishes at $u$ exactly when $\langle u, b(\cdot) \rangle$ vanishes
+almost everywhere. If $J u = 0$ it vanishes. Conversely, $J$ is positive, and
+$\langle u, J u \rangle = \|J^{1/2} u\|^2 = 0$ gives $J^{1/2} u = 0$ and hence $J u = 0$.
+\end{proof}
+
+\begin{lemma}[The trace of the Gram operator]
+\label{lem:gram-operator-trace}
+\lean{ContinuousLinearMap.summable_re_inner_of_gram,
+      ContinuousLinearMap.integral_re_inner_apply,
+      Discretization.Infinite.isFiniteTracePos_of_integral_rankOne,
+      Discretization.Infinite.integral_norm_sq_eq_trace,
+      Discretization.Infinite.integral_norm_sq_eq_traceAlong}
+\leanok
+\uses{def:trace, lem:gram-operator}
+Let $(\Omega, \mu)$ be a measure space, let $H$ be a separable complex Hilbert space, let
+$b : \Omega \to H$ be square-integrable, and let $J = \int_\Omega b(x) b(x)^* \, d\mu(x)$.
+
+(a) $J$ is of finite trace, and $\Tr J = \int_\Omega \|b(x)\|^2 \, d\mu(x)$.
+
+(b) For every positive bounded operator $Q$ on $H$,
 \[
   \int_\Omega \re \bigl\langle b(x), Q \, b(x) \bigr\rangle \, d\mu(x) = \Tr (J Q).
 \]
@@ -775,26 +795,14 @@ $\Tr J = \int_\Omega \|b(x)\|^2 \, d\mu(x)$.
 \begin{proof}
 \leanok
 \uses{lem:hilbert-schmidt-adjoint, lem:operator-traces}
-(a) The operator $b(x) b(x)^*$ has norm $\|b(x)\|^2$, which is integrable. Evaluation at
-$u$ and the inner product with $u$ are continuous linear maps, so both pass under the
-integral, and $\langle u, b(x) b(x)^* u \rangle = |\langle u, b(x) \rangle|^2$.
-
-(b) By (a) both sides say that the quadratic form of the self-adjoint operator
-$\Lambda \cdot 1 - J$ is nonnegative.
-
-(c) The quadratic form vanishes at $u$ exactly when $\langle u, b(\cdot) \rangle$ vanishes
-almost everywhere. If $J u = 0$ it vanishes. Conversely, $J$ is positive, and
-$\langle u, J u \rangle = \|J^{1/2} u\|^2 = 0$ gives $J^{1/2} u = 0$ and hence $J u = 0$.
-
-(d) Choose a Hilbert basis $(e_k)$ of $H$. Its index set is countable, because the open
+(a) Choose a Hilbert basis $(e_k)$ of $H$. Its index set is countable, because the open
 balls of radius $1/2$ around the basis vectors are pairwise disjoint and a separable space
-holds only countably many pairwise disjoint nonempty open sets. The quadratic form of (a) is
-real and nonnegative, so $J$ is positive. By Tonelli and
+holds only countably many pairwise disjoint nonempty open sets. By Tonelli and
 \Cref{lem:hilbert-schmidt-adjoint}(a),
 $\sum_k \langle e_k, J e_k \rangle = \sum_k \int_\Omega |\langle e_k, b \rangle|^2 \, d\mu
 = \int_\Omega \|b\|^2 \, d\mu < \infty$, which is the finite trace and its value.
 
-(e) Choose a countable Hilbert basis $(e_k)$ as in (d). Pointwise
+(b) Choose a countable Hilbert basis $(e_k)$ as in (a). Pointwise
 $\re \langle b, Q b \rangle = \|Q^{1/2} b\|^2$, which
 \Cref{lem:hilbert-schmidt-adjoint}(a) turns into
 $\sum_k |\langle Q^{1/2} e_k, b \rangle|^2$. Sum and integral may be exchanged because all
@@ -1133,7 +1141,7 @@ inequality to the hypothesis $U_B^{\zeta}(u) \leq 1/w$ multiplied out, as in the
 
 For a square-integrable $b$ with values in a separable space, the Gram operator
 $J = \int_\Omega b(x) b(x)^* \, d\mu(x)$ is positive and of finite trace
-(\Cref{lem:gram-operator}(d)), so its upper potential is defined.
+(\Cref{lem:gram-operator-trace}(a)), so its upper potential is defined.
 
 \begin{lemma}[The upper verifier passes on average]
 \label{lem:upper-verifier-on-average}
@@ -1153,12 +1161,12 @@ and let $\zeta > 0$. Then $x \mapsto U_B^{\zeta}(b(x))$ is integrable and
 
 \begin{proof}
 \leanok
-\uses{lem:gram-operator, lem:operator-traces, lem:upper-potential-change,
+\uses{lem:gram-operator-trace, lem:operator-traces, lem:upper-potential-change,
       lem:loewner-basic-bounds}
 Both summands of the verifier are quadratic forms in $b(x)$, bounded by a multiple of
 $\|b(x)\|^2$, so the verifier is integrable. Write $W = B^{-1}$ and
 $X = (B + \zeta \cdot J)^{-1}$, and let $E = \Psi_J(B) - \Psi_J(B + \zeta \cdot J)$ be the
-gain of \Cref{lem:upper-potential-change}(a). By \Cref{lem:gram-operator}(e) for
+gain of \Cref{lem:upper-potential-change}(a). By \Cref{lem:gram-operator-trace}(b) for
 $Q = X J X$ and $Q = X$ the average equals
 $\Tr (J X J X) / E + \Psi_J(B + \zeta \cdot J)$. Since $X \preceq W$ by the antitonicity of
 the inverse, as in \Cref{lem:loewner-basic-bounds}(c), we have $J X J \preceq J W J$, and
@@ -1278,7 +1286,8 @@ $\kappa$, with the matrix proofs of the upper lemmas, are another
 \begin{proof}[Proof of \Cref{thm:discretization}]
 \proves{thm:discretization}
 \leanok
-\uses{lem:gram-identities, lem:gram-operator, prop:barrier-iteration,
+\uses{lem:gram-identities, lem:gram-operator, lem:gram-operator-trace,
+      prop:barrier-iteration,
       lem:lower-frame-bound, lem:upper-frame-bound, lem:lower-barrier, lem:upper-barrier,
       lem:lower-verifier-on-average, lem:upper-verifier-on-average,
       lem:point-from-averages, lem:rank-one-updates}
@@ -1289,7 +1298,8 @@ turns $(1 - r)^2 \cdot 1$, with $r = \sqrt{(m-1)/n}$, into $(1 - r)^2 \cdot I$; 
 bound does not involve the first family. From now on
 $\int_\Omega a(x) a(x)^* \, d\mu(x) = 1$.
 
-By \Cref{lem:gram-operator}(d), $J$ is positive and of finite trace with
+By \Cref{lem:gram-operator}(a) and \Cref{lem:gram-operator-trace}(a), $J$ is positive and
+of finite trace with
 $\Tr J = \int_\Omega \|b\|^2 \, d\mu = M \Lambda$, so the upper potential and verifier of
 \Cref{def:upper-potential} are defined. Put $r = \sqrt{(m-1)/n}$, so that
 $n r^2 + 1 = m$, and for $M \geq 1$ put $s = \sqrt{(M-1)/n}$, so that $n s^2 + 1 = M$.
@@ -1566,13 +1576,13 @@ weight of \Cref{lem:mixing-gain} would make it at least $1 + \eta$.
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
 $a = (a_k)_{k \in \iota}$ be bounded functions on a set $D$ with linearly independent
 coordinate functions, and let $\varepsilon > 0$. Then there are points
-$x_1, \dots, x_n \in D$ and weights $w_1, \dots, w_n \geq 0$ with $\sum_k w_k = 1$ such
-that
+$x_1, \dots, x_n \in D$ with $n \leq 2m^2 + 1$ and weights $w_1, \dots, w_n \geq 0$ with
+$\sum_k w_k = 1$ whose Gram matrix $\sum_k w_k \, a(x_k) a(x_k)^*$ is positive definite and
+such that
 \[
   |f(y)|^2 \; \leq \; (m + \varepsilon) \sum_{k=1}^n w_k \, |f(x_k)|^2
 \]
-for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$. The points can be taken
-to number at most $2m^2 + 1$.
+for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$.
 \end{theorem}
 
 \begin{proof}
@@ -1597,13 +1607,13 @@ design down to $2m^2 + 1$ points.
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let $D$ be a
 compact space and let $a = (a_k)_{k \in \iota}$ be continuous functions on it with
 linearly independent coordinate functions. Then there are points
-$x_1, \dots, x_n \in D$ and weights $w_1, \dots, w_n \geq 0$ with $\sum_k w_k = 1$ such
-that
+$x_1, \dots, x_n \in D$ with $n \leq 2m^2 + 1$ and weights $w_1, \dots, w_n \geq 0$ with
+$\sum_k w_k = 1$ whose Gram matrix $\sum_k w_k \, a(x_k) a(x_k)^*$ is positive definite and
+such that
 \[
   |f(y)|^2 \; \leq \; m \sum_{k=1}^n w_k \, |f(x_k)|^2
 \]
-for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$. The points can be taken
-to number at most $2m^2 + 1$.
+for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$.
 \end{theorem}
 
 \begin{proof}
