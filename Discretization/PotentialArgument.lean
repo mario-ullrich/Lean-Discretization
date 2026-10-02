@@ -22,6 +22,10 @@ ingredients are the initial data and the final read-off:
   the sum of rank-one pieces that has been accumulated
   (`Discretization.lower_bound_of_state`, `Discretization.UpperBarrier.upper_bound_of_state`).
 
+The lower half of both, the initial data together with the read-off, is packaged as
+`Discretization.exists_lower_initial_data`, which the constructions tracking only the lower
+matrix use.
+
 The parameters are those of the paper: with `m = card ι`, `M = Tr J / Λ` the effective
 dimension of the second family, and
 
@@ -109,6 +113,51 @@ theorem lower_frame_bound [Nonempty ι] {n : ℕ} (hn0 : (0 : ℝ) < n) {m r δ 
   rw [hc₀, hδ, hm]
   field_simp
   ring
+
+/-- **The initial data of the lower half of the construction**, for `2 ≤ m ≤ n`.
+
+There are a shift `δ > 0` and a positive definite start `A₀ = c₀ • 1` with the gap
+`n ≤ 1/δ - Φ(A₀)`, such that every final state after `n` steps, started from `A₀`, that is
+positive definite and whose potential has not grown carries the frame bound
+`(1 - √((m-1)/n))² • 1`.
+
+The numbers are those of the potential argument, `r = √((m-1)/n)`, `δ = (1-r)/n` and
+`c₀ = δ m / r`; the lemma hides them, so that the constructions which track only the lower
+matrix can use them without repeating the arithmetic. -/
+theorem exists_lower_initial_data [Nonempty ι] {n : ℕ} (hm : 2 ≤ Fintype.card ι)
+    (hmn : Fintype.card ι ≤ n) :
+    ∃ δ c₀ : ℝ, 0 < δ ∧ (c₀ • (1 : Matrix ι ι ℂ)).PosDef ∧
+      (n : ℝ) ≤ 1 / δ - lowerPotential (c₀ • (1 : Matrix ι ι ℂ)) ∧
+      ∀ {a : Ω → ι → ℂ} {x : Fin n → Ω} {w : Fin n → ℝ},
+        (lowerState (c₀ • (1 : Matrix ι ι ℂ)) δ a x w).PosDef →
+        lowerPotential (lowerState (c₀ • (1 : Matrix ι ι ℂ)) δ a x w)
+          ≤ lowerPotential (c₀ • (1 : Matrix ι ι ℂ)) →
+        (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 • (1 : Matrix ι ι ℂ)
+          ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) := by
+  have hn0 : (0 : ℝ) < n := by
+    have h : 0 < n := lt_of_lt_of_le (by norm_num) (le_trans hm hmn)
+    exact_mod_cast h
+  set m : ℝ := (Fintype.card ι : ℝ) with hmdef
+  have hm2 : (2 : ℝ) ≤ m := by rw [hmdef]; exact_mod_cast hm
+  have hmn' : m ≤ (n : ℝ) := by rw [hmdef]; exact_mod_cast hmn
+  set r : ℝ := Real.sqrt ((m - 1) / n) with hrdef
+  have hr0 : 0 < r := sqrt_div_pos hn0 (by linarith)
+  have hr1 : r < 1 := sqrt_div_lt_one hn0 hmn'
+  have hm_eq : m = (n : ℝ) * r ^ 2 + 1 := eq_mul_sq_sqrt_div_add_one hn0 (by linarith)
+  set δ : ℝ := (1 - r) / n with hδdef
+  have hδ0 : 0 < δ := div_pos (by linarith) hn0
+  clear_value m r
+  set c₀ : ℝ := δ * m / r with hc₀def
+  have hc₀0 : 0 < c₀ := div_pos (by positivity) hr0
+  have hA₀ : (c₀ • (1 : Matrix ι ι ℂ)).PosDef := Matrix.PosDef.one.smul hc₀0
+  clear_value δ c₀
+  have hΦ₀ : lowerPotential (c₀ • (1 : Matrix ι ι ℂ)) = r / δ := by
+    rw [lowerPotential_smul_one hc₀0.ne', ← hmdef, hc₀def]
+    field_simp
+  have h1r : (1 : ℝ) - r ≠ 0 := by linarith
+  refine ⟨δ, c₀, hδ0, hA₀, ?_, fun hAn hΦn => ?_⟩
+  · rw [hΦ₀, hδdef, one_div_sub_div_eq hn0 h1r]
+  · exact lower_frame_bound hn0 hr0 h1r hm_eq hδdef hc₀def hAn (hΦ₀ ▸ hΦn)
 
 namespace UpperBarrier
 

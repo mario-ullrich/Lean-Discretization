@@ -73,7 +73,7 @@ of `J` and the finiteness of its trace follow from its definition, and both hypo
 `J` can be checked on `b`: `J ≤ Λ • 1` says `∫ |⟪u, b⟫|² dμ ≤ Λ ‖u‖²` for every `u ∈ H`,
 and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0`
 (`ContinuousLinearMap.integral_rankOne_self_le_iff`,
-`.integral_rankOne_self_injective_iff`). Four statements go with it:
+`.integral_rankOne_self_injective_iff`). Five statements go with it:
 
 * **A family of functions**, in the form of the paper. Let `b = (b_k)_{k ∈ κ}` be
   square-integrable functions indexed by a finite or countable set with
@@ -95,6 +95,18 @@ and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0
   `v_y ∈ ℂ^m` with `∑ v_y v_y* = 1`, the form of the original theorem, it gives weights
   `s_y ≥ 0`, at most `n` of them nonzero, with `∑ s_y v_y v_y*` between the same two
   constants (`Discretization.bss_of_sum_eq_one`).
+* **One-sided discretization.** On a probability space the lower frame bound holds with
+  weights at most `1/n`: for every `n ≥ m` there are points `x₁, …, xₙ ∈ Ω`, not necessarily distinct, and
+  weights `0 < wᵢ ≤ 1/n` with `(1 - √((m-1)/n))² • I ≤ ∑ wᵢ a(xᵢ) a(xᵢ)*`
+  (`Discretization.bss_lower_le_one_div`), hence
+  `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ (1/n) ∑ |f(xᵢ)|²` for every `f` in the span of the first
+  family (`Discretization.exists_one_sided_discretization`). This is the theorem for the
+  constant second family `b ≡ 1` in `H = ℂ`, with `M = 1`: the construction for a small
+  effective dimension compares the lower verifier with the constant `n` and so keeps every
+  weight below `1/n`, while the upper bound of the theorem records the sum `∑ wᵢ ≤ 1`.
+  Limonova and Temlyakov prove such a bound for spaces satisfying a Nikol'skii-type
+  inequality, Bartel, Schäfer and Ullrich for arbitrary spaces up to constants; the form here
+  is the case `p = 2` of Proposition 8 of the paper.
 * **Discretization of the `L₂`-norm**, Corollary 4 of the paper. Let `H` be a separable
   Hilbert space of measurable functions on `Ω` with continuous point evaluations and
   reproducing kernel `K`, with `∫ K(x, x) dμ < ∞`; let `∫ |g|² dμ ≤ Λ ‖g‖²_H` for every
@@ -190,6 +202,22 @@ sparsification theorem (`Discretization.bss_lower`, `Discretization.exists_spars
 For `n = 2m` the factor is below `12 (m + ε)`: `2m` weighted point evaluations control the
 uniform norm on the span with a constant of order `√m`.
 
+With equal weights the same thinning gives points `x₁, …, xₙ ∈ D`, not necessarily distinct,
+with
+
+```
+|f(y)|²  ≤  (m + ε) / (1 − √((m−1)/n))² · (1/n) ∑ |f(xᵢ)|²
+```
+
+(`Discretization.exists_uniform_discretization_equal_weights`, and with `ε = 0` on a compact
+space `Discretization.exists_uniform_discretization_of_compact_equal_weights`). For `n = 2m`
+this is `|f(y)|² ≤ 6 (1 + ε/m) ∑ᵢ₌₁²ᵐ |f(xᵢ)|²`: the uniform norm on the span is dominated by
+the Euclidean norm of `2m` sample values. This is Theorem 2 of Krieg, Pozharska, Ullrich and
+Ullrich with the constant `42` replaced by `√(6 (1 + ε/m))`, and the case `p = ∞` of
+Proposition 8 of Chkifa, Dolbeault, Krieg and Ullrich. For `n = m` points the bound is due to
+Novak, who obtains `‖f‖_∞ ≤ (m + ε) ((1/m) ∑ᵢ₌₁ᵐ |f(xᵢ)|²)^{1/2}` from a form of Auerbach's
+lemma.
+
 ## The proofs
 
 The first proof is the potential-function argument of BSS, with the second potential
@@ -231,6 +259,12 @@ The steps the two arguments are built from:
   admissible point exists because the lower verifier exceeds the upper one on average
   (`Discretization.integral_lowerVerifier_gt`, `.integral_upperVerifier_lt`,
   `.UpperBarrier.exists_admissible_point`).
+* **One-sided constructions.** When one frame bound comes for free, the verifier on that side
+  is replaced by a constant of average `n`, and only the other state is tracked
+  (`Discretization.exists_points_weights_of_small_dim`,
+  `.UpperBarrier.exists_points_weights_of_unique`, with the initial data of the lower half in
+  `.exists_lower_initial_data`). The constant `n` as upper verifier is what bounds every
+  weight by `1/n`.
 * **A bound on a potential is a bound on the matrix**: `Φ(A)⁻¹ • 1 ≼ A` and
   `Ψ_J(B)⁻¹ • J ≼ B` (`Matrix.PosDef.inv_re_trace_smul_one_le`,
   `.inv_re_trace_mul_smul_le`, `Discretization.Infinite.inv_upperPotential_smul_le`).
@@ -272,10 +306,10 @@ Everything else is in the blueprint, with its Lean name at every statement.
 Two libraries. `Discretization` holds the arguments: the arithmetic of the parameters,
 the two potentials and the verifiers, the barrier lemma, the averaging step, the
 `n`-step iteration, the potential argument with its edge cases under
-`Discretization/EdgeCases/`, the discretization inequality, under
-`Discretization/Infinite/` the analysis of the upper state for a second family in a
-Hilbert space with the theorem for it, a countable family and a reproducing kernel
-Hilbert space, and under `Discretization/KieferWolfowitz/` the
+`Discretization/EdgeCases/`, the discretization inequality, one-sided discretization
+with equal weights, under `Discretization/Infinite/` the analysis of the upper state for a
+second family in a Hilbert space with the theorem for it, a countable family and a
+reproducing kernel Hilbert space, and under `Discretization/KieferWolfowitz/` the
 maximisation of the determinant of a Gram matrix, the theorem it yields and John's
 decomposition of the identity beside it, with its thinning to `n ≥ m` points by the
 sparsification theorem at the top level. `BasicResults` holds what the arguments need and
@@ -358,6 +392,17 @@ Apache 2.0, the same as Mathlib. See [LICENSE](LICENSE).
   [doi](https://doi.org/10.1016/j.jmaa.2025.129873),
   [arxiv](https://arxiv.org/abs/2401.02220). Proposition 9 is the Kiefer–Wolfowitz
   theorem formalised here, and its proof the one followed in
-  `Discretization/KieferWolfowitz/`; the discretization of the uniform norm with
-  `n ≥ m` points that the paper obtains from it is in
-  `Discretization/UniformDiscretization.lean`.
+  `Discretization/KieferWolfowitz/`. The discretization of the uniform norm with
+  `n ≥ m` points that the paper obtains from it, with equal weights and `2m` points its
+  Theorem 2, is in `Discretization/UniformDiscretization.lean`.
+* F. Bartel, M. Schäfer, T. Ullrich, *Constructive subsampling of finite frames with
+  applications in optimal function recovery*, Appl. Comput. Harmon. Anal. **65** (2023),
+  209–248, [doi](https://doi.org/10.1016/j.acha.2023.02.004). One-sided discretization of
+  the `L₂`-norm with equal weights on arbitrary spaces.
+* I. Limonova, V. Temlyakov, *On sampling discretization in `L₂`*, J. Math. Anal. Appl.
+  **515** (2022), no. 2, Paper No. 126457, [arxiv](https://arxiv.org/abs/2009.10789).
+  Theorem 1.1 is a discretization of the `L₂`-norm with equal weights under a Nikol'skii-type
+  inequality.
+* E. Novak, *Deterministic and stochastic error bounds in numerical analysis*, Lecture Notes
+  in Mathematics **1349**, Springer-Verlag, 1988. Lemma 1.2.2, Auerbach's lemma with
+  function values, discretizes the uniform norm with `n = m` points.

@@ -19,6 +19,7 @@ public import Discretization.EdgeCases.BothEdgeCases
 public import Discretization.GeneralGram
 public import Discretization.NormDiscretization
 public import Discretization.BSS
+public import Discretization.OneSidedDiscretization
 public import Discretization.Infinite.Potentials
 public import Discretization.Infinite.Barrier
 public import Discretization.Infinite.Averages
@@ -113,6 +114,11 @@ again at the top level.
 * `Discretization.BSS`: the case of a single family, which is the sparsification theorem
   of Batson, Spielman and Srivastava, `Discretization.bss`, and its lower half for any
   positive definite Gram matrix, `Discretization.bss_lower`.
+* `Discretization.OneSidedDiscretization`: one-sided discretization, the lower frame bound
+  on a probability space with weights at most `1/n` and hence with equal weights, from the
+  one-sided construction with the constant upper verifier `n`:
+  `Discretization.bss_lower_le_one_div`,
+  `Discretization.exists_one_sided_discretization`.
 * `Discretization.Infinite.Potentials`: the upper potential `Ψ_J(B) = Tr (J B⁻¹)` for a
   positive operator `J` of finite trace.
 * `Discretization.Infinite.Barrier`: the upper verifier and the barrier lemma for
@@ -170,5 +176,7 @@ again at the top level.
 * `Discretization.UniformDiscretization`: the Kiefer–Wolfowitz design thinned by the
   sparsification theorem, which gives the uniform norm with any `n ≥ m` points,
   `Discretization.exists_uniform_discretization` and
-  `Discretization.exists_uniform_discretization_of_compact`.
+  `Discretization.exists_uniform_discretization_of_compact`, and with equal weights,
+  `Discretization.exists_uniform_discretization_equal_weights` and
+  `Discretization.exists_uniform_discretization_of_compact_equal_weights`.
 -/

@@ -61,7 +61,8 @@ discretization of the norm of the space,
 $\sum_i w_i |g(x_i)|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \|g\|_H^2$ for every $g \in H$
 (\Cref{cor:l2-discretization}). Taking for $b$ the first family itself, with Gram matrix
 the identity, gives $M = m$ and the sparsification theorem of Batson, Spielman and
-Srivastava~\cite{BSS}, which is \Cref{cor:bss}.
+Srivastava~\cite{BSS}, which is \Cref{cor:bss}. On a probability space the lower bound holds with
+equal weights $1/n$, a one-sided discretization (\Cref{cor:one-sided-discretization}).
 
 The last chapter answers which measure to discretize in the first place. There $D$ is an
 arbitrary set carrying $m$ bounded, linearly independent functions, and Kiefer and
@@ -70,7 +71,8 @@ $|f(y)|^2 \leq (m + \varepsilon) \sum_k w_k |f(x_k)|^2$ for every $y \in D$ and 
 in their span: the uniform norm is dominated by the $L_2$ norm of that measure. Thinning
 such a measure with the sparsification theorem gives the same bound with any $n \geq m$
 points, at the price of the factor $(1 - \sqrt{(m-1)/n})^{-2}$
-(\Cref{thm:uniform-discretization-optimal}).
+(\Cref{thm:uniform-discretization-optimal}). With equal weights the right-hand side becomes
+$\frac{1}{n} \sum_i |f(x_i)|^2$ (\Cref{cor:uniform-discretization-equal-weights}).
 
 A statement about these weighted sums is a statement about the matrix
 $\sum_i w_i \, a(x_i) a(x_i)^*$ and the operator $\sum_i w_i \, b(x_i) b(x_i)^*$, compared
@@ -326,6 +328,71 @@ $\sum_k \|e_k\|_{L_2}^2 = \int_\Omega K(x, x) \, d\mu$, the second bound is that
 \Cref{cor:countable-discretization} for the family $(e_k)$. Conversely, on the set where
 $\sum_k |b_k(x)|^2 < \infty$, the functions $\sum_k c_k \, b_k$ of a countable family with
 injective Gram operator form such a space, with orthonormal basis $(b_k)$.
+
+On a probability space the lower bound of \Cref{thm:discretization} holds with equal
+weights, a one-sided discretization of the $L_2$-norm. Limonova and
+Temlyakov~\cite[Theorem~1.1]{LT} prove such a discretization with equal weights and of the
+order of $m$ points for spaces satisfying a Nikol'skii-type inequality, and Bartel, Sch\"afer
+and Ullrich~\cite{BSU} for arbitrary spaces, up to constants. The form below is the case
+$p = 2$ of Proposition~8 of~\cite{CDKU}, whose argument is followed here. Take for $b$ the constant function $1$, with values in $H = \mathbb{C}$: its
+Gram operator is $J = 1$, so $\Lambda = 1$ and $M = 1$, and the upper bound of the theorem
+reads $\sum_i w_i \leq 1$. The construction behind it, in the case $M \leq 1 + 1/n$ of the
+proof, bounds every single weight by $1/n$.
+
+\begin{corollary}[One-sided discretization]
+\label{cor:one-sided-discretization}
+\lean{Discretization.exists_one_sided_discretization,
+      Discretization.bss_lower_le_one_div,
+      Discretization.bss_lower_le_one_div_of_gram_eq_one,
+      Discretization.bss_lower_le_one_div_of_gram_eq_one_of_two_le,
+      Discretization.bss_lower_le_one_div_of_gram_eq_one_of_unique,
+      Discretization.bss_lower_equal_weights,
+      Discretization.exists_lower_initial_data,
+      Discretization.exists_points_weights_of_small_dim,
+      Discretization.integral_const_natCast}
+\leanok
+Let $(\Omega, \mu)$ be a probability space, let $\iota$ be a finite nonempty set with
+$m = \#\iota$ elements, and let $a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in
+every coordinate with $I = \int_\Omega a(x) a(x)^* \, d\mu(x)$ positive definite. Then for
+every $n \geq m$ there are points $x_1, \dots, x_n \in \Omega$, not necessarily distinct,
+with
+\[
+  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \int_\Omega |f|^2 \, d\mu
+    \; \leq \; \frac{1}{n} \sum_{i=1}^n |f(x_i)|^2
+  \qquad \text{for every } f \in \operatorname{span}\{a_k\}.
+\]
+\end{corollary}
+
+\begin{proof}
+\leanok
+\uses{thm:discretization, lem:lower-barrier, lem:lower-verifier-on-average,
+      lem:point-from-averages, lem:lower-frame-bound, lem:gram-identities}
+Put $r = \sqrt{(m-1)/n}$. It suffices to find weights $0 < w_i \leq 1/n$ with
+$(1 - r)^2 \cdot I \preceq \sum_i w_i \, a(x_i) a(x_i)^*$: the quadratic form of this
+inequality at the coefficient vector of $f$ is
+$(1 - r)^2 \int_\Omega |f|^2 \, d\mu \leq \sum_i w_i |f(x_i)|^2$ by
+\Cref{lem:gram-identities}(a), and raising each $w_i$ to $1/n$ only enlarges the right-hand
+side. The first family is normalized as in the proof of \Cref{thm:discretization}, which
+leaves the weights unchanged, so let $I = 1$.
+
+For $m \geq 2$, run the construction of the case $M \leq 1 + 1/n$ in the proof of
+\Cref{thm:discretization} with the constant upper verifier $U \equiv n$, whose average is
+$n$ because $\mu$ is a probability measure. It starts from $A_0 = (\delta m / r) \cdot 1$
+with $\delta = (1-r)/n$, tracks only the lower matrix with \Cref{lem:lower-barrier}, finds
+each point with \Cref{lem:lower-verifier-on-average}(b), and gives the lower bound by
+\Cref{lem:lower-frame-bound}. Each point $x_i$ satisfies $U(x_i) < L(x_i)$ for the lower
+verifier $L$ and receives the weight $w_i = 1/L(x_i)$, so $w_i \, n \leq 1$.
+
+For $m = 1$ the lower constant is $1$. The lower verifier $L(x) = n |a(x)|^2$ and
+$U \equiv n$ have the same average $n$, so \Cref{lem:point-from-averages}(b) gives a point
+$y$ with $n \leq n |a(y)|^2$. Used $n$ times with the weight $1/(n |a(y)|^2) \leq 1/n$, it
+makes $\sum_i w_i |a(x_i)|^2 = 1$.
+\end{proof}
+
+In the Loewner order the corollary reads
+$(1 - r)^2 \cdot I \preceq \frac{1}{n} \sum_i a(x_i) a(x_i)^*$
+(\texttt{Discretization.bss\_lower\_equal\_weights}), and the weights of the proof are
+\texttt{Discretization.bss\_lower\_le\_one\_div}.
 
 \chapter{Matrices and operators in the Loewner order}
 \label{ch:loewner}
@@ -1630,6 +1697,50 @@ For $n = 2m$ one has $r < 1/\sqrt{2}$, so the constant is below $12 (m + \vareps
 uniform norm on the span is controlled by $2m$ weighted point evaluations with a constant
 of order $\sqrt{m}$.
 
+With \Cref{cor:one-sided-discretization} in place of the lower half of the sparsification
+theorem, the thinning produces points without weights. For $n = m$ points such a bound is
+due to Novak~\cite[Lemma~1.2.2]{N88}, a form of Auerbach's lemma, which gives points with
+$\|f\|_\infty \leq (m + \varepsilon) \bigl( \frac{1}{m} \sum_{i=1}^m |f(x_i)|^2 \bigr)^{1/2}$.
+For $n = 2m$ points Krieg, Pozharska, Ullrich and Ullrich~\cite[Theorem~2]{KPUU} prove
+$\|f\|_\infty \leq 42 \bigl( \sum_{i=1}^{2m} |f(x_i)|^2 \bigr)^{1/2}$. The corollary below
+is the case $p = \infty$ of Proposition~8 of~\cite{CDKU}.
+
+\begin{corollary}[The uniform norm with $n \geq m$ points and equal weights]
+\label{cor:uniform-discretization-equal-weights}
+\lean{Discretization.exists_uniform_discretization_equal_weights,
+      Discretization.exists_uniform_discretization_of_compact_equal_weights,
+      Discretization.exists_uniform_discretization_of_design_equal_weights,
+      Discretization.exists_sparse_design_equal_weights,
+      Discretization.le_div_sq_mul_of_le_mul}
+\leanok
+Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
+$a = (a_k)_{k \in \iota}$ be bounded functions on a set $D$ with linearly independent
+coordinate functions, and let $\varepsilon > 0$. Then for every $n \geq m$ there are points
+$x_1, \dots, x_n \in D$, not necessarily distinct, such that
+\[
+  |f(y)|^2 \; \leq \; \frac{m + \varepsilon}{\bigl( 1 - \sqrt{(m-1)/n} \bigr)^2}
+    \cdot \frac{1}{n} \sum_{i=1}^n |f(x_i)|^2
+\]
+for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$. If $D$ is a compact space
+and the $a_k$ are continuous, the same holds with $\varepsilon = 0$.
+\end{corollary}
+
+\begin{proof}
+\leanok
+\uses{thm:uniform-discretization, cor:one-sided-discretization, lem:gram-identities}
+As in the proof of \Cref{thm:uniform-discretization-optimal}, with \Cref{cor:one-sided-discretization}
+for the family $k \mapsto a(x'_k)$ on the probability space $\{1, \dots, N\}$ with the
+measure $\varrho = \sum_k w'_k \delta_k$, whose Gram matrix is that of the design. It gives
+$n$ indices, that is design points $x_1, \dots, x_n$, with
+$(1 - r)^2 \sum_k w'_k |f(x'_k)|^2 \leq \frac{1}{n} \sum_i |f(x_i)|^2$, and the bound of the
+design finishes.
+\end{proof}
+
+For $n = 2m$ one has $r < 1/\sqrt{2}$ and $(1 - r)^{-2} / (2m) < 6/m$, so
+$|f(y)|^2 \leq 6 (1 + \varepsilon/m) \sum_{i=1}^{2m} |f(x_i)|^2$: the uniform norm on the span
+is dominated by the Euclidean norm of $2m$ sample values. This is Theorem~2
+of~\cite{KPUU} with the constant $42$ replaced by $\sqrt{6 (1 + \varepsilon/m)}$.
+
 \begin{lemma}[Few points suffice]
 \label{lem:few-design-points}
 \lean{Discretization.KieferWolfowitz.exists_design_card_le,
@@ -1694,6 +1805,13 @@ SIAM Review \textbf{56} (2014), no.~2, 315--334,
 \href{https://doi.org/10.1137/130949117}{doi},
 \href{https://arxiv.org/abs/0808.0163}{arxiv}.
 
+\bibitem{BSU}
+F.~Bartel, M.~Sch\"afer, T.~Ullrich,
+\emph{Constructive subsampling of finite frames with applications in optimal function
+recovery},
+Appl. Comput. Harmon. Anal. \textbf{65} (2023), 209--248,
+\href{https://doi.org/10.1016/j.acha.2023.02.004}{doi}.
+
 \bibitem{CDKU}
 A.~Chkifa, M.~Dolbeault, D.~Krieg, M.~Ullrich,
 \emph{Constructive discretization and approximation in reproducing kernel Hilbert
@@ -1712,5 +1830,16 @@ D.~Krieg, K.~Pozharska, M.~Ullrich, T.~Ullrich,
 \emph{Sampling projections in the uniform norm},
 J. Math. Anal. Appl. \textbf{553} (2026), no.~2, Paper No.~129873,
 \href{https://arxiv.org/abs/2401.02220}{arxiv}.
+
+\bibitem{LT}
+I.~Limonova, V.~Temlyakov,
+\emph{On sampling discretization in $L_2$},
+J. Math. Anal. Appl. \textbf{515} (2022), no.~2, Paper No.~126457,
+\href{https://arxiv.org/abs/2009.10789}{arxiv}.
+
+\bibitem{N88}
+E.~Novak,
+\emph{Deterministic and stochastic error bounds in numerical analysis},
+Lecture Notes in Mathematics \textbf{1349}, Springer-Verlag, Berlin, 1988.
 
 \end{thebibliography}

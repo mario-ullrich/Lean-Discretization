@@ -155,31 +155,12 @@ theorem bss_generalized_of_small_dim [Nonempty ι] {Λ : ℝ} (hΛ : 0 < Λ) {a 
       (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 • (1 : Matrix ι ι ℂ)
         ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) ∧
       ∑ i, w i • U.R (x i) ≤ ((1 + Real.sqrt ((U.tr / Λ - 1) / n)) ^ 2 * Λ) • (1 : S) := by
-  -- the parameters of the lower half of the construction
+  -- the initial data of the lower half of the construction
   have hn0 : (0 : ℝ) < n := by
     have h : 0 < n := lt_of_lt_of_le (by norm_num) (le_trans hm hmn)
     exact_mod_cast h
   have hn : 0 < n := by exact_mod_cast hn0
-  set m : ℝ := (Fintype.card ι : ℝ) with hmdef
-  have hm2 : (2 : ℝ) ≤ m := by rw [hmdef]; exact_mod_cast hm
-  have hmn' : m ≤ (n : ℝ) := by rw [hmdef]; exact_mod_cast hmn
-  set r : ℝ := Real.sqrt ((m - 1) / n) with hrdef
-  have hr0 : 0 < r := sqrt_div_pos hn0 (by linarith)
-  have hr1 : r < 1 := sqrt_div_lt_one hn0 hmn'
-  have hm_eq : m = (n : ℝ) * r ^ 2 + 1 := eq_mul_sq_sqrt_div_add_one hn0 (by linarith)
-  set δ : ℝ := (1 - r) / n with hδdef
-  have hδ0 : 0 < δ := div_pos (by linarith) hn0
-  clear_value m r
-  set c₀ : ℝ := δ * m / r with hc₀def
-  have hc₀0 : 0 < c₀ := div_pos (by positivity) hr0
-  have hA₀ : (c₀ • (1 : Matrix ι ι ℂ)).PosDef := Matrix.PosDef.one.smul hc₀0
-  clear_value δ c₀
-  have hΦ₀ : lowerPotential (c₀ • (1 : Matrix ι ι ℂ)) = r / δ := by
-    rw [lowerPotential_smul_one hc₀0.ne', ← hmdef, hc₀def]
-    field_simp
-  have h1r : (1 : ℝ) - r ≠ 0 := by linarith
-  have hgap : (n : ℝ) ≤ 1 / δ - lowerPotential (c₀ • (1 : Matrix ι ι ℂ)) := by
-    rw [hΦ₀, hδdef, one_div_sub_div_eq hn0 h1r]
+  obtain ⟨δ, c₀, hδ0, hA₀, hgap, hframe⟩ := exists_lower_initial_data (Ω := Ω) hm hmn
   -- run the one-sided construction with the constant upper verifier
   have hT0 := U.tr_pos
   obtain ⟨x, w, hwpos, hAn, hΦn, hwk⟩ :=
@@ -187,9 +168,7 @@ theorem bss_generalized_of_small_dim [Nonempty ι] {Λ : ℝ} (hΛ : 0 < Λ) {a 
       (U := fun y => (n : ℝ) / U.tr * U.sq y)
       (fun y => mul_nonneg (by positivity) (U.sq_nonneg y))
       (U.integrable_sq.const_mul _) hn (U.integral_div_tr_mul_sq n) hgap n
-  refine ⟨x, w, hwpos, ?_, ?_⟩
-  · -- the lower frame bound, exactly as in the potential argument
-    exact lower_frame_bound hn0 hr0 h1r hm_eq hδdef hc₀def hAn (hΦ₀ ▸ hΦn)
+  refine ⟨x, w, hwpos, hframe hAn hΦn, ?_⟩
   · -- the upper frame bound from the crude rank-one estimate
     set T : ℝ := U.tr with hTdef
     have hweight : ∀ i : Fin n, w i * U.sq (x i) ≤ T / n := by

@@ -6,6 +6,7 @@ Authors: Mario Ullrich
 module
 
 public import Discretization.BSS
+public import Discretization.OneSidedDiscretization
 public import Discretization.NormDiscretization
 public import Discretization.KieferWolfowitz.Measure
 public import Discretization.KieferWolfowitz.Compact
@@ -31,6 +32,20 @@ handed to the lower half of the sparsification theorem, `Discretization.bss_lowe
 picks `n` of the design points and positive weights with `(1 - r)² • G ≤ ∑ᵢ wᵢ a(xᵢ) a(xᵢ)*`
 for `r = √((m-1)/n)`.  Evaluated at the coefficient vector of `f`, this bounds the sum over
 the design by `(1 - r)⁻²` times the sum over the `n` points, and `r < 1` because `n ≥ m`.
+With the lower frame bound with weights at most `1/n` in place of the lower half of the
+sparsification theorem (`Discretization.exists_one_sided_discretization`), the same
+thinning gives points without weights:
+
+`|f(y)|² ≤ (m + ε) / (1 - √((m-1)/n))² · (1/n) ∑ᵢ |f(xᵢ)|²`,
+
+so the uniform norm on the span is dominated by the Euclidean norm of the `n` sample values
+(`Discretization.exists_uniform_discretization_equal_weights`).  This is the case `p = ∞`
+of Proposition 8 of Chkifa, Dolbeault, Krieg and Ullrich.  For `n = m` points Novak
+(*Deterministic and stochastic error bounds in numerical analysis*, Lemma 1.2.2, a form of
+Auerbach's lemma) gives `‖f‖_∞ ≤ (m + ε) ((1/m) ∑ᵢ |f(xᵢ)|²)^{1/2}`.  For `n = 2m` points
+Krieg, Pozharska, Ullrich and Ullrich (Theorem 2) prove
+`‖f‖_∞ ≤ 42 (∑ᵢ |f(xᵢ)|²)^{1/2}`; here the squared factor in front of `∑ᵢ |f(xᵢ)|²` is below
+`6 (1 + ε/m)`.
 -/
 
 @[expose] public section
@@ -76,6 +91,25 @@ theorem exists_sparse_design [Nonempty ι] (a : Ω → ι → ℂ) {N : ℕ} (x 
   simp only [smul_eq_mul, id] at h
   exact h
 
+/-- **A design bound and a thinning combine.**  If `t ≤ K T` and the thinning keeps
+`(1 - √((m-1)/n))² T ≤ S`, then `t ≤ K / (1 - √((m-1)/n))² · S`.
+
+Pure arithmetic: for `0 < m ≤ n` the number `√((m-1)/n)` is below one
+(`Discretization.sqrt_div_lt_one`), so the factor `(1 - √((m-1)/n))²` may be divided by. -/
+theorem le_div_sq_mul_of_le_mul {m n : ℕ} (hm : 0 < m) (hmn : m ≤ n) {K T S t : ℝ}
+    (hK : 0 ≤ K) (hbound : t ≤ K * T)
+    (hlow : (1 - Real.sqrt (((m : ℝ) - 1) / n)) ^ 2 * T ≤ S) :
+    t ≤ K / (1 - Real.sqrt (((m : ℝ) - 1) / n)) ^ 2 * S := by
+  have hn : (0 : ℝ) < n := by exact_mod_cast lt_of_lt_of_le hm hmn
+  have hr : 0 < (1 - Real.sqrt (((m : ℝ) - 1) / n)) ^ 2 :=
+    pow_pos (sub_pos.2 (sqrt_div_lt_one hn (by exact_mod_cast hmn))) 2
+  calc t ≤ K * T := hbound
+    _ ≤ K * (S / (1 - Real.sqrt (((m : ℝ) - 1) / n)) ^ 2) := by
+        refine mul_le_mul_of_nonneg_left ?_ hK
+        rw [le_div_iff₀ hr]
+        linarith
+    _ = K / (1 - Real.sqrt (((m : ℝ) - 1) / n)) ^ 2 * S := by ring
+
 /-- **From a design to `n ≥ m` points.**
 
 Let `x₁, …, x_N` be points with nonnegative weights summing to one and positive definite
@@ -85,7 +119,7 @@ Gram matrix, for which `|f(y)|² ≤ K · ∑ₖ wₖ |f(xₖ)|²` holds for eve
 `|f(y)|² ≤ K / (1 - √((m-1)/n))² · ∑ᵢ wᵢ |f(xᵢ)|²`.
 
 The points are those of `Discretization.exists_sparse_design`; the factor is finite because
-`√((m-1)/n) < 1` for `n ≥ m` (`Discretization.sqrt_div_lt_one`). -/
+`√((m-1)/n) < 1` for `n ≥ m` (`Discretization.le_div_sq_mul_of_le_mul`). -/
 theorem exists_uniform_discretization_of_design [Nonempty ι] (a : Ω → ι → ℂ) {K : ℝ}
     (hK : 0 ≤ K) {N : ℕ} (x : Fin N → Ω) {w : Fin N → ℝ} (hw : ∀ k, 0 ≤ w k)
     (hw1 : ∑ k, w k = 1) (hpd : (KieferWolfowitz.designGram a x w).PosDef)
@@ -96,21 +130,8 @@ theorem exists_uniform_discretization_of_design [Nonempty ι] (a : Ω → ι →
       ‖star c ⬝ᵥ a y‖ ^ 2 ≤ K / (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
         * ∑ i, w' i * ‖star c ⬝ᵥ a (x' i)‖ ^ 2 := by
   obtain ⟨j, v, hv, hlow⟩ := exists_sparse_design a x hw hw1 hpd hmn
-  -- `n ≥ m ≥ 1`, so `r = √((m-1)/n) < 1`
-  have hn : (0 : ℝ) < n := by
-    have hm : 0 < Fintype.card ι := Fintype.card_pos
-    exact_mod_cast lt_of_lt_of_le hm hmn
-  have hr : 0 < (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 :=
-    pow_pos (sub_pos.2 (sqrt_div_lt_one hn (by exact_mod_cast hmn))) 2
-  refine ⟨fun i => x (j i), v, hv, fun c y => ?_⟩
-  calc ‖star c ⬝ᵥ a y‖ ^ 2 ≤ K * ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2 := hbound c y
-    _ ≤ K * ((∑ i, v i * ‖star c ⬝ᵥ a (x (j i))‖ ^ 2)
-          / (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2) := by
-        refine mul_le_mul_of_nonneg_left ?_ hK
-        rw [le_div_iff₀ hr]
-        linarith [hlow c]
-    _ = K / (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
-          * ∑ i, v i * ‖star c ⬝ᵥ a (x (j i))‖ ^ 2 := by ring
+  exact ⟨fun i => x (j i), v, hv, fun c y =>
+    le_div_sq_mul_of_le_mul Fintype.card_pos hmn hK (hbound c y) (hlow c)⟩
 
 /-- **Discretization of the uniform norm with `n ≥ m` points**
 (Krieg–Pozharska–Ullrich–Ullrich).
@@ -154,5 +175,104 @@ theorem exists_uniform_discretization_of_compact [Nonempty ι] [TopologicalSpace
   obtain ⟨N, x, w, hw, hw1, hpd, hbound⟩ :=
     KieferWolfowitz.exists_design_kieferWolfowitz_of_compact a hcont hli
   exact exists_uniform_discretization_of_design a (Nat.cast_nonneg _) x hw hw1 hpd hbound hmn
+
+/-! ### Equal weights -/
+
+/-- **A design can be thinned to `n ≥ m` of its points with equal weights.**
+
+Let `x₁, …, x_N` be points with nonnegative weights `wₖ` summing to one whose Gram matrix is
+positive definite.  Then for every `n ≥ m` there are `n` of these points,
+`x_{j(1)}, …, x_{j(n)}`, not necessarily distinct, with
+
+`(1 - √((m-1)/n))² · ∑ₖ wₖ |f(xₖ)|² ≤ (1/n) ∑ᵢ |f(x_{j(i)})|²`
+
+for every `f` in the span.  The design is read as the probability measure `∑ₖ wₖ δₖ` on its
+index set, and `Discretization.exists_one_sided_discretization` is applied to it. -/
+theorem exists_sparse_design_equal_weights [Nonempty ι] (a : Ω → ι → ℂ) {N : ℕ}
+    (x : Fin N → Ω) {w : Fin N → ℝ} (hw : ∀ k, 0 ≤ w k) (hw1 : ∑ k, w k = 1)
+    (hpd : (KieferWolfowitz.designGram a x w).PosDef) {n : ℕ} (hmn : Fintype.card ι ≤ n) :
+    ∃ j : Fin n → Fin N, ∀ c : ι → ℂ,
+      (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 * ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2
+        ≤ 1 / (n : ℝ) * ∑ i, ‖star c ⬝ᵥ a (x (j i))‖ ^ 2 := by
+  -- the design as a probability measure on its index set
+  have := KieferWolfowitz.isProbabilityMeasure_designMeasure (id : Fin N → Fin N) hw hw1
+  have ha : ∀ i, MemLp (fun k => a (x k) i) 2
+      (KieferWolfowitz.designMeasure (id : Fin N → Fin N) w) := fun _ => MemLp.of_discrete
+  have hgram : gram (fun k => a (x k)) (KieferWolfowitz.designMeasure (id : Fin N → Fin N) w)
+      = KieferWolfowitz.designGram a x w :=
+    KieferWolfowitz.gram_designMeasure (a := fun k => a (x k))
+      (fun _ => Measurable.of_discrete) id hw
+  -- the lower frame bound with equal weights on that measure
+  obtain ⟨j, hlow⟩ := exists_one_sided_discretization ha (by rw [hgram]; exact hpd) hmn
+  refine ⟨j, fun c => ?_⟩
+  have h := hlow c
+  rw [KieferWolfowitz.integral_designMeasure id hw StronglyMeasurable.of_discrete] at h
+  simp only [smul_eq_mul, id] at h
+  exact h
+
+/-- **From a design to `n ≥ m` points with equal weights.**
+
+Let `x₁, …, x_N` be points with nonnegative weights summing to one and positive definite
+Gram matrix, for which `|f(y)|² ≤ K · ∑ₖ wₖ |f(xₖ)|²` holds for every point `y` and every
+`f` in the span.  Then for every `n ≥ m` there are `n` points, not necessarily distinct, with
+
+`|f(y)|² ≤ K / (1 - √((m-1)/n))² · (1/n) ∑ᵢ |f(xᵢ)|²`. -/
+theorem exists_uniform_discretization_of_design_equal_weights [Nonempty ι] (a : Ω → ι → ℂ)
+    {K : ℝ} (hK : 0 ≤ K) {N : ℕ} (x : Fin N → Ω) {w : Fin N → ℝ} (hw : ∀ k, 0 ≤ w k)
+    (hw1 : ∑ k, w k = 1) (hpd : (KieferWolfowitz.designGram a x w).PosDef)
+    (hbound : ∀ (c : ι → ℂ) (y : Ω),
+      ‖star c ⬝ᵥ a y‖ ^ 2 ≤ K * ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2)
+    {n : ℕ} (hmn : Fintype.card ι ≤ n) :
+    ∃ x' : Fin n → Ω, ∀ (c : ι → ℂ) (y : Ω),
+      ‖star c ⬝ᵥ a y‖ ^ 2 ≤ K / (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
+        * (1 / (n : ℝ) * ∑ i, ‖star c ⬝ᵥ a (x' i)‖ ^ 2) := by
+  obtain ⟨j, hlow⟩ := exists_sparse_design_equal_weights a x hw hw1 hpd hmn
+  exact ⟨fun i => x (j i), fun c y =>
+    le_div_sq_mul_of_le_mul Fintype.card_pos hmn hK (hbound c y) (hlow c)⟩
+
+/-- **Discretization of the uniform norm with `n ≥ m` points and equal weights.**
+
+For linearly independent bounded functions `a₁, …, a_m` on an arbitrary set, every `ε > 0`
+and every `n ≥ m` there are `n` points, not necessarily distinct, such that
+
+`|f(y)|² ≤ (m + ε) / (1 - √((m-1)/n))² · (1/n) ∑ᵢ |f(xᵢ)|²`
+
+for every point `y` and every function `f(y) = ⟪c, a(y)⟫` in the span: the uniform norm is
+dominated by the Euclidean norm of the `n` sample values.  For `n = 2m` the factor in front
+of `∑ᵢ |f(xᵢ)|²` is below `6 (1 + ε/m)`; with the constant `42²` this case is Theorem 2 of
+Krieg, Pozharska, Ullrich and Ullrich.  The case `n = m` is due to Novak, with the constant
+`(m + ε)² / m` from Auerbach's lemma. -/
+theorem exists_uniform_discretization_equal_weights [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
+    (hC : ∀ y i, ‖a y i‖ ≤ C) (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0)
+    {ε : ℝ} (hε : 0 < ε) {n : ℕ} (hmn : Fintype.card ι ≤ n) :
+    ∃ x : Fin n → Ω, ∀ (c : ι → ℂ) (y : Ω),
+      ‖star c ⬝ᵥ a y‖ ^ 2 ≤ (Fintype.card ι + ε) / (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
+        * (1 / (n : ℝ) * ∑ i, ‖star c ⬝ᵥ a (x i)‖ ^ 2) := by
+  obtain ⟨N, x, w, hw, hw1, hpd, hbound⟩ :=
+    KieferWolfowitz.exists_design_kieferWolfowitz a hC hli hε
+  exact exists_uniform_discretization_of_design_equal_weights a (by positivity) x hw hw1 hpd
+    hbound hmn
+
+/-- **Discretization of the uniform norm with `n ≥ m` points and equal weights on a compact
+domain.**
+
+For linearly independent continuous functions `a₁, …, a_m` on a compact space and every
+`n ≥ m` there are `n` points, not necessarily distinct, such that
+
+`|f(y)|² ≤ m / (1 - √((m-1)/n))² · (1/n) ∑ᵢ |f(xᵢ)|²`
+
+for every point `y` and every `f` in the span: the bound above with `ε = 0`. -/
+theorem exists_uniform_discretization_of_compact_equal_weights [Nonempty ι]
+    [TopologicalSpace Ω] [CompactSpace Ω] (a : Ω → ι → ℂ)
+    (hcont : ∀ i, Continuous fun y => a y i)
+    (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) {n : ℕ}
+    (hmn : Fintype.card ι ≤ n) :
+    ∃ x : Fin n → Ω, ∀ (c : ι → ℂ) (y : Ω),
+      ‖star c ⬝ᵥ a y‖ ^ 2 ≤ Fintype.card ι / (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
+        * (1 / (n : ℝ) * ∑ i, ‖star c ⬝ᵥ a (x i)‖ ^ 2) := by
+  obtain ⟨N, x, w, hw, hw1, hpd, hbound⟩ :=
+    KieferWolfowitz.exists_design_kieferWolfowitz_of_compact a hcont hli
+  exact exists_uniform_discretization_of_design_equal_weights a (Nat.cast_nonneg _) x hw hw1
+    hpd hbound hmn
 
 end Discretization
