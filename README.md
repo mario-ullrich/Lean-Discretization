@@ -73,17 +73,20 @@ of `J` and the finiteness of its trace follow from its definition, and both hypo
 `J` can be checked on `b`: `J ≤ Λ • 1` says `∫ |⟪u, b⟫|² dμ ≤ Λ ‖u‖²` for every `u ∈ H`,
 and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0`
 (`ContinuousLinearMap.integral_rankOne_self_le_iff`,
-`.integral_rankOne_self_injective_iff`). Five statements go with it:
+`.integral_rankOne_self_injective_iff`). Four statements go with it:
 
 * **A family of functions**, in the form of the paper. Let `b = (b_k)_{k ∈ κ}` be
   square-integrable functions indexed by a finite or countable set with
   `∑_k ‖b_k‖²_{L₂} < ∞`, whose Gram matrix `J = (∫ b_k b̄_l dμ)` is injective on `ℓ²(κ)`
   and bounded by `Λ • 1`, and put `M = ∑_k ‖b_k‖² / Λ`. Then the same two bounds hold,
-  the second one as `∑ wᵢ |∑_k c_k b_k(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖c‖²` for every
-  `c ∈ ℓ²(κ)` (`Discretization.bss_generalized` for finite `κ`, proved with matrices;
-  `Discretization.Countable.bss_generalized` for countable `κ`, the case `H = ℓ²(κ)`).
-  Nothing pointwise is assumed: `∑_k |b_k(x)|² < ∞` holds almost everywhere, and the
-  points are chosen where it holds.
+  the second one as `∑ wᵢ |g(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖c‖²` for every `c ∈ ℓ²(κ)` and
+  `g = ∑_k c_k b_k` (`Discretization.bss_generalized` for finite `κ`, proved with
+  matrices; `Discretization.Countable.bss_generalized` for countable `κ`, the case
+  `H = ℓ²(κ)`). Nothing pointwise is assumed: `∑_k |b_k(x)|² < ∞` holds almost
+  everywhere, and the points are chosen where it holds. With `I = 1` the first bound
+  reads `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²` for every `f` in the span of the
+  first family (`Discretization.exists_discretization`,
+  `Discretization.Countable.exists_discretization`).
 * **The special case `a = b`** is the sparsification theorem of Batson, Spielman and
   Srivastava (`Discretization.bss`): one family with Gram matrix the identity, squeezed
   between `(1 - √((m-1)/n))² • 1` and `(1 + √((m-1)/n))² • 1`. With the original
@@ -92,20 +95,20 @@ and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0
   `v_y ∈ ℂ^m` with `∑ v_y v_y* = 1`, the form of the original theorem, it gives weights
   `s_y ≥ 0`, at most `n` of them nonzero, with `∑ s_y v_y v_y*` between the same two
   constants (`Discretization.bss_of_sum_eq_one`).
-* **The discretization inequality.** For `I = 1` and every `f` in the span of the first
-  family, `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²`, and
-  `∑ wᵢ |⟪u, b(xᵢ)⟫|² ≤ (1 + √((M-1)/n))² Λ ‖u‖²` for every `u ∈ H`
-  (`Discretization.Infinite.exists_discretization`; for a family, in its coefficients
-  `c`, `Discretization.exists_discretization` and
-  `Discretization.Countable.exists_discretization`). This is Corollary 4 of the paper.
-* **A reproducing kernel Hilbert space.** Let `H` be a separable Hilbert space of
-  measurable functions on `Ω` with continuous point evaluations and reproducing kernel
-  `K`, with `∫ K(x, x) dμ < ∞`; let `∫ |f|² dμ ≤ Λ ‖f‖²_H` for every `f ∈ H`, and let
-  `f = 0` be the only function of `H` vanishing almost everywhere. With the kernel
-  sections `b(x) = K(x, ·)` as second family and `M = ∫ K(x, x) dμ / Λ`, the upper bound
-  reads `∑ wᵢ |f(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖f‖²_H` for every `f ∈ H`
-  (`Discretization.RKHS.exists_discretization`). No basis of `H` and no singular value
-  decomposition of the embedding into `L₂` enter.
+* **Discretization of the `L₂`-norm**, Corollary 4 of the paper. Let `H` be a separable
+  Hilbert space of measurable functions on `Ω` with continuous point evaluations and
+  reproducing kernel `K`, with `∫ K(x, x) dμ < ∞`; let `∫ |g|² dμ ≤ Λ ‖g‖²_H` for every
+  `g ∈ H`, and let `g = 0` be the only function of `H` vanishing almost everywhere. With
+  `I = 1` and `M = ∫ K(x, x) dμ / Λ`, the points and weights satisfy
+  `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²` for every `f` in the span of the first
+  family and `∑ wᵢ |g(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖g‖²_H` for every `g ∈ H`
+  (`Discretization.RKHS.exists_discretization`). The second family is the kernel
+  sections `K(x, ·)`, so no basis of `H` and no singular value decomposition of the
+  embedding into `L₂` enter. Every `b` with injective Gram operator leads to such a
+  space: the functions `⟪u, b(·)⟫` with norm `‖u‖` and kernel `⟪b(x), b(y)⟫`. For it the
+  bound reads `∑ wᵢ |⟪u, b(xᵢ)⟫|² ≤ (1 + √((M-1)/n))² Λ ‖u‖²` for every `u ∈ H`
+  (`Discretization.Infinite.exists_discretization`). In the coordinates of an
+  orthonormal basis of `H` it is the family form above.
 * **The four cases underneath.** The potential argument gives the theorem under the two
   side conditions `m ≥ 2` and `M ≥ 1 + 1/n` (`Discretization.bss_generalized_of_gram_eq_one`
   for matrices, `Discretization.UpperBarrier.bss_generalized_of_gram_eq_one` for every

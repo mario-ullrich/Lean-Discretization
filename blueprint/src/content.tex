@@ -15,7 +15,7 @@ below and $b$ stays a frame from above. Two cases of $b$ are the ones to keep in
     for $c \in \ell_2(\kappa)$, form the span of the family.
   \item A reproducing kernel Hilbert space $H$ of functions on $\Omega$ with kernel $K$,
     and $b(x) = K(x, \cdot)$, the kernel section at $x$. Then
-    $\langle b(x), f \rangle = f(x)$ for every $f \in H$.
+    $\langle b(x), g \rangle = g(x)$ for every $g \in H$.
 \end{itemize}
 
 For a family $a : \Omega \to \mathbb{C}^{\iota}$ that is square-integrable in every
@@ -47,16 +47,19 @@ $w_1, \dots, w_n > 0$ with
 \]
 and
 \[
-  \sum_{i=1}^n w_i \, |\langle u, b(x_i) \rangle|^2
+  \sum_{i=1}^n w_i \, |g(x_i)|^2
     \; \leq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \, \|u\|^2
-  \qquad \text{for all } u \in H .
+  \qquad \text{for all } u \in H \text{ and } g = \langle u, b(\cdot) \rangle .
 \]
-This is \Cref{thm:discretization}, read through quadratic forms in
-\Cref{cor:l2-discretization}. The two families enter asymmetrically: the first through its
-size $m$, the second only through $M$, which is at most $\dim H$ and much smaller as soon
-as the eigenvalues of $J$ decay. For the kernel the second bound reads
-$\sum_i w_i |f(x_i)|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \|f\|_H^2$
-(\Cref{cor:rkhs-discretization}). Taking for $b$ the first family itself, with Gram matrix
+This is \Cref{thm:discretization}, read through quadratic forms. The two families enter
+asymmetrically: the first through its size $m$, the second only through $M$, which is at
+most $\dim H$ and much smaller as soon as the eigenvalues of $J$ decay. For the family,
+$g$ runs through the functions $\sum_k c_k \, b_k$ with $c \in \ell_2(\kappa)$ and
+$\|u\| = \|c\|$ (\Cref{cor:countable-discretization}). For the kernel,
+$|\langle g, b(x) \rangle| = |g(x)|$ for $g \in H$, and the second bound becomes the
+discretization of the norm of the space,
+$\sum_i w_i |g(x_i)|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \|g\|_H^2$ for every $g \in H$
+(\Cref{cor:l2-discretization}). Taking for $b$ the first family itself, with Gram matrix
 the identity, gives $M = m$ and the sparsification theorem of Batson, Spielman and
 Srivastava~\cite{BSS}, which is \Cref{cor:bss}.
 
@@ -137,7 +140,8 @@ Theorem 3, with the Gram matrix of the family in place of the Gram operator.
 
 \begin{corollary}[Discretization for a countable second family]
 \label{cor:countable-discretization}
-\lean{Discretization.bss_generalized, Discretization.Countable.bss_generalized}
+\lean{Discretization.bss_generalized, Discretization.Countable.bss_generalized,
+      Discretization.exists_discretization, Discretization.Countable.exists_discretization}
 \leanok
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let
 $\kappa$ be a nonempty set that is finite or countably infinite. Let
@@ -156,9 +160,9 @@ $\sum_k |b_k(x_i)|^2 < \infty$ and weights $w_1, \dots, w_n > 0$ with
 \]
 and
 \[
-  \sum_{i=1}^n w_i \, \Bigl| \sum_{k \in \kappa} c_k \, b_k(x_i) \Bigr|^2
+  \sum_{i=1}^n w_i \, |g(x_i)|^2
     \; \leq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \sum_{k \in \kappa} |c_k|^2
-  \qquad \text{for every } c \in \ell_2(\kappa).
+  \qquad \text{for every } c \in \ell_2(\kappa), \text{ where } g = \sum_{k \in \kappa} c_k \, b_k .
 \]
 \end{corollary}
 
@@ -187,7 +191,12 @@ $c \in \ell_2(\kappa)$, and injectivity says that this integral vanishes only fo
 For finite
 $\kappa$ the corollary is \texttt{Discretization.bss\_generalized}, where injectivity is
 positive definiteness and both finiteness conditions are automatic; for countable
-$\kappa$ it is \texttt{Discretization.Countable.bss\_generalized}.
+$\kappa$ it is \texttt{Discretization.Countable.bss\_generalized}. With $I = 1$ the first
+bound reads, as in \Cref{cor:l2-discretization},
+$(1 - \sqrt{(m-1)/n})^2 \int_\Omega |f|^2 \, d\mu \leq \sum_i w_i |f(x_i)|^2$ for every
+$f \in \operatorname{span}\{a_k\}$ (\texttt{Discretization.exists\_discretization} for
+finite $\kappa$, \texttt{Discretization.Countable.exists\_discretization} for countable
+$\kappa$).
 
 For $b = a$, \Cref{cor:countable-discretization} gives the sparsification theorem of Batson,
 Spielman and Srivastava~\cite{BSS} in a slightly stronger form: $\sqrt{(m-1)/n}$ in place
@@ -238,99 +247,74 @@ to one of the $n$ chosen points.
 With the constant $\sqrt{m/n}$ of~\cite{BSS} and $n = d\,m$, the ratio of the upper to
 the lower constant, the condition number, is $\bigl((\sqrt{d}+1)/(\sqrt{d}-1)\bigr)^2$.
 
-Read through quadratic forms, the theorem becomes a statement about norms, Corollary 4
-of~\cite{CDKU}.
+Read through quadratic forms, with the kernel sections of a reproducing kernel Hilbert
+space as second family, the theorem becomes a statement about norms, Corollary 4
+of~\cite{CDKU}: the $L_2$-norm on the span of the first family is discretized from below,
+and the norm of the space from above.
 
 \begin{corollary}[Discretization of the $L_2$-norm]
 \label{cor:l2-discretization}
-\lean{Discretization.Infinite.exists_discretization, Discretization.exists_discretization,
-      Discretization.Countable.exists_discretization,
+\lean{Discretization.RKHS.exists_discretization,
+      Discretization.Infinite.exists_discretization,
       Discretization.mul_integral_norm_sq_le_sum,
       Discretization.Infinite.sum_mul_norm_sq_inner_le}
-\leanok
-Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let $H$
-be a nonzero separable complex Hilbert space. Let $a : \Omega \to \mathbb{C}^{\iota}$ be
-square-integrable in every coordinate with $\int_\Omega a(x) a(x)^* \, d\mu(x) = 1$, and let
-$b : \Omega \to H$ be square-integrable with injective Gram operator
-$J = \int_\Omega b(x) b(x)^* \, d\mu(x)$. Let $\Lambda > 0$ satisfy
-$J \preceq \Lambda \cdot 1$, and put $m = \#\iota$ and
-$M = \int_\Omega \|b(x)\|^2 \, d\mu(x) / \Lambda$. Then for every $n \geq m$ there are points
-$x_1, \dots, x_n \in \Omega$ and weights $w_1, \dots, w_n > 0$ with
-\[
-  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \int_\Omega |f|^2 \, d\mu
-  \; \leq \; \sum_{i=1}^n w_i \, |f(x_i)|^2
-\]
-for every $f \in \operatorname{span}\{a_k\}$, and with
-\[
-  \sum_{i=1}^n w_i \, |\langle u, b(x_i) \rangle|^2
-  \; \leq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \, \|u\|^2
-\]
-for every $u \in H$.
-\end{corollary}
-
-\begin{proof}
-\leanok
-\uses{thm:discretization, lem:gram-identities}
-A Loewner inequality is an inequality between quadratic forms. For $f = \sum_k c_k a_k$ one
-has $\sum_i w_i |f(x_i)|^2 = c^* G c$ with $G$ the accumulated matrix, and
-$\int_\Omega |f|^2 d\mu = c^* G(a) c = \|c\|^2$ by \Cref{lem:gram-identities}(a) and
-$G(a) = 1$. On the other side,
-$\langle u, \sum_i w_i \, b(x_i) b(x_i)^* u \rangle = \sum_i w_i |\langle u, b(x_i) \rangle|^2$.
-Both bounds are therefore those of \Cref{thm:discretization} with $I = 1$.
-\end{proof}
-
-For a countable family, with $b(x) = (b_k(x))_k$ and $u = c \in \ell_2(\kappa)$, the second
-bound reads $\sum_i w_i |g(x_i)|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \sum_k |c_k|^2$ for
-$g = \sum_k c_k \, b_k$, with $M = \sum_k \|b_k\|_{L_2}^2 / \Lambda$
-(\texttt{Discretization.exists\_discretization} for finite $\kappa$,
-\texttt{Discretization.Countable.exists\_discretization} for countable $\kappa$). It is
-stated for the coefficient vector, because its right-hand side is the coefficient norm and
-the family is not assumed linearly independent, so a function of its span need not
-determine the coefficients.
-
-For the kernel sections of a reproducing kernel Hilbert space the second bound is a
-discretization of the norm of the space itself.
-
-\begin{corollary}[Discretization in a reproducing kernel Hilbert space]
-\label{cor:rkhs-discretization}
-\lean{Discretization.RKHS.exists_discretization}
 \leanok
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let
 $a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in every coordinate with
 $\int_\Omega a(x) a(x)^* \, d\mu(x) = 1$. Let $H$ be a nonzero separable complex Hilbert
 space of measurable functions on $\Omega$ on which every point evaluation is continuous,
 let $K$ be its reproducing kernel, and assume $\int_\Omega K(x, x) \, d\mu(x) < \infty$. Let
-$\Lambda > 0$ satisfy $\int_\Omega |f|^2 \, d\mu \leq \Lambda \|f\|_H^2$ for every
-$f \in H$, and assume that the only $f \in H$ vanishing almost everywhere is $f = 0$. Put
+$\Lambda > 0$ satisfy $\int_\Omega |g|^2 \, d\mu \leq \Lambda \|g\|_H^2$ for every
+$g \in H$, and assume that the only $g \in H$ vanishing almost everywhere is $g = 0$. Put
 $m = \#\iota$ and $M = \int_\Omega K(x, x) \, d\mu(x) / \Lambda$. Then for every $n \geq m$
 there are points $x_1, \dots, x_n \in \Omega$ and weights $w_1, \dots, w_n > 0$ with
 \[
-  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \int_\Omega |g|^2 \, d\mu
-  \; \leq \; \sum_{i=1}^n w_i \, |g(x_i)|^2
+  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \int_\Omega |f|^2 \, d\mu
+  \; \leq \; \sum_{i=1}^n w_i \, |f(x_i)|^2
 \]
-for every $g \in \operatorname{span}\{a_k\}$, and with
+for every $f \in \operatorname{span}\{a_k\}$, and with
 \[
-  \sum_{i=1}^n w_i \, |f(x_i)|^2
-  \; \leq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \, \|f\|_H^2
+  \sum_{i=1}^n w_i \, |g(x_i)|^2
+  \; \leq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \, \|g\|_H^2
 \]
-for every $f \in H$.
+for every $g \in H$.
 \end{corollary}
 
 \begin{proof}
 \leanok
-\uses{cor:l2-discretization, lem:kernel-sections, lem:gram-operator}
+\uses{thm:discretization, lem:kernel-sections, lem:gram-operator, lem:gram-identities}
 Take for $b(x)$ the kernel section $k_x$ of \Cref{lem:kernel-sections}: $b$ is
-square-integrable, $|\langle f, k_x \rangle| = |f(x)|$ and $\|k_x\|^2 = K(x, x)$. By
+square-integrable, $|\langle g, k_x \rangle| = |g(x)|$ and $\|k_x\|^2 = K(x, x)$. By
 \Cref{lem:gram-operator}(b) and (c) the two assumptions on $H$ say that the Gram operator
 of $b$ satisfies $J \preceq \Lambda \cdot 1$ and is injective, and
-$\int_\Omega \|b\|^2 \, d\mu = \int_\Omega K(x, x) \, d\mu$. \Cref{cor:l2-discretization}
-gives the claim.
+$\int_\Omega \|b\|^2 \, d\mu = \int_\Omega K(x, x) \, d\mu$, so \Cref{thm:discretization}
+applies with $I = 1$. Its two bounds are inequalities between quadratic forms. For
+$f = \sum_k c_k a_k$ one has $\sum_i w_i |f(x_i)|^2 = c^* A c$ with
+$A = \sum_i w_i \, a(x_i) a(x_i)^*$, and $\int_\Omega |f|^2 \, d\mu = c^* G(a) c = \|c\|^2$
+by \Cref{lem:gram-identities}(a) and $G(a) = 1$; this is the first bound. For $g \in H$,
+$\langle g, \sum_i w_i \, k_{x_i} k_{x_i}^* \, g \rangle
+= \sum_i w_i |\langle g, k_{x_i} \rangle|^2 = \sum_i w_i |g(x_i)|^2$; this is the second.
 \end{proof}
 
 The constant $\Lambda$ is the squared norm of the embedding $H \hookrightarrow L_2(\mu)$, and
 the assumption on vanishing functions says that this embedding is injective. The kernel
 sections themselves are the second family, so no basis of $H$ and no singular value
 decomposition of the embedding enter.
+
+Every square-integrable map $b : \Omega \to H$ with injective Gram operator leads to such a
+space. Since $J$ is injective, $g = \langle u, b(\cdot) \rangle$ determines $u$, and these
+functions form a reproducing kernel Hilbert space $H_b$ with $\|g\|_{H_b} = \|u\|$, kernel
+$K(x, y) = \langle b(x), b(y) \rangle$ and
+$\int_\Omega K(x, x) \, d\mu = \int_\Omega \|b\|^2 \, d\mu$. For $H_b$ the second bound
+reads $\sum_i w_i |\langle u, b(x_i) \rangle|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \|u\|^2$
+for every $u \in H$; Lean proves the corollary in this form
+(\texttt{Discretization.Infinite.exists\_discretization}) and reads it off for
+$b(x) = k_x$. In the coordinates of an orthonormal basis $(e_k)$ of $H$, with
+$\|g\|_H^2 = \sum_k |c_k|^2$ for $g = \sum_k c_k \, e_k$ and
+$\sum_k \|e_k\|_{L_2}^2 = \int_\Omega K(x, x) \, d\mu$, the second bound is that of
+\Cref{cor:countable-discretization} for the family $(e_k)$. Conversely, on the set where
+$\sum_k |b_k(x)|^2 < \infty$, the functions $\sum_k c_k \, b_k$ of a countable family with
+injective Gram operator form such a space, with orthonormal basis $(b_k)$.
 
 \chapter{Matrices and operators in the Loewner order}
 \label{ch:loewner}
@@ -1459,7 +1443,7 @@ of finite sums of measurable maps. Its squared norm is $K(x, x)$.
 
 In Lean a Hilbert space of functions is a Hilbert space $H$ together with a linear map
 $\varphi : H \to \mathbb{C}^{\Omega}$, $\varphi(f)(x)$ being the value of $f$ at $x$.
-Injectivity of $\varphi$ is not required; in \Cref{cor:rkhs-discretization} it follows from
+Injectivity of $\varphi$ is not required; in \Cref{cor:l2-discretization} it follows from
 the assumption on vanishing functions.
 
 \chapter{Discretization of the uniform norm}
@@ -1669,9 +1653,12 @@ $\varepsilon = 0$ in the compact case, and positive definite Gram matrix $G$. On
 index set $\{1, \dots, N\}$ with the probability measure $\varrho = \sum_k w'_k \delta_k$, the
 family $k \mapsto G^{-1/2} a(x'_k)$ has Gram matrix $1$ by \Cref{lem:gram-identities}(b),
 and its span consists of the functions $k \mapsto f(x'_k)$ with
-$f \in \operatorname{span}\{a_k\}$. \Cref{cor:l2-discretization}, with this family as both
-families and $\Lambda = 1$, gives $n$ indices, that is design points $x_1, \dots, x_n$, and
-weights $w_i > 0$ whose first bound reads
+$f \in \operatorname{span}\{a_k\}$. Since the Gram matrix is $1$, the norm of $L_2(\varrho)$
+on this span is the norm of the coefficient vector, so the span is a Hilbert space $H$ of
+functions on $\{1, \dots, N\}$ of dimension $m$ with $\Lambda = 1$, in which only $g = 0$
+vanishes almost everywhere. \Cref{cor:l2-discretization}, with this family as first family
+and this $H$, gives $n$ indices, that is design points $x_1, \dots, x_n$, and weights
+$w_i > 0$ whose first bound reads
 \[
   (1 - r)^2 \sum_k w'_k |f(x'_k)|^2 \; \leq \; \sum_i w_i |f(x_i)|^2,
   \qquad r = \sqrt{(m-1)/n},

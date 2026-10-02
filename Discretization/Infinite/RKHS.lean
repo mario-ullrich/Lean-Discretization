@@ -24,12 +24,12 @@ and `K(x, y) = ⟪k_y, kₓ⟫ = kₓ(y)` is the reproducing kernel, so that `k�
 `K(x, x) = ‖kₓ‖²`.
 
 The map `x ↦ kₓ` is the second family `b(x) = K(x, ·)` of the discretization theorem.  Its
-coefficients are the functions themselves, `|⟪f, kₓ⟫| = |f(x)|`, so every hypothesis on the
+coefficients are the functions themselves, `|⟪g, kₓ⟫| = |g(x)|`, so every hypothesis on the
 Gram operator becomes a statement about `H` and `L₂(μ)`:
 
-* `J ≤ Λ • 1` says `∫ |f|² dμ ≤ Λ ‖f‖²` for every `f ∈ H`: `Λ` bounds the squared norm of the
+* `J ≤ Λ • 1` says `∫ |g|² dμ ≤ Λ ‖g‖²` for every `g ∈ H`: `Λ` bounds the squared norm of the
   embedding `H → L₂(μ)`;
-* injectivity of `J` says that this embedding is injective: an `f ∈ H` that vanishes almost
+* injectivity of `J` says that this embedding is injective: a `g ∈ H` that vanishes almost
   everywhere is zero;
 * the effective dimension is `M = ∫ K(x, x) dμ(x) / Λ`.
 
@@ -39,7 +39,7 @@ basis `(e_j)` of the separable space `H`, `kₓ = ∑_j conj(e_j(x)) e_j`.
 The conclusion, `Discretization.RKHS.exists_discretization`, is the discretization inequality
 for the norm of `H`,
 
-`∑ᵢ wᵢ |f(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖f‖²`   for every `f ∈ H`,
+`∑ᵢ wᵢ |g(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖g‖²`   for every `g ∈ H`,
 
 together with the lower bound for the finite first family.  This is Corollary 4 of
 Chkifa, Dolbeault, Krieg and Ullrich in the form of its title.  No basis of `H` and no
@@ -147,13 +147,13 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 Let `a` be a family of square-integrable functions indexed by a finite nonempty set `ι` of
 `m` elements with Gram matrix `1`.  Let `H` be a nonzero separable Hilbert space of
 measurable functions on `Ω` with continuous point evaluations and reproducing kernel `K`,
-with `∫ K(x, x) dμ(x) < ∞`, let `Λ > 0` satisfy `∫ |f|² dμ ≤ Λ ‖f‖²` for every `f ∈ H`, and
-assume that the only `f ∈ H` vanishing almost everywhere is `f = 0`.  Put
+with `∫ K(x, x) dμ(x) < ∞`, let `Λ > 0` satisfy `∫ |g|² dμ ≤ Λ ‖g‖²` for every `g ∈ H`, and
+assume that the only `g ∈ H` vanishing almost everywhere is `g = 0`.  Put
 `M = ∫ K(x, x) dμ(x) / Λ`.  Then for every `n ≥ m` there are `n` points and positive weights
 with
 
-`(1 - √((m-1)/n))² ∫ |g|² dμ ≤ ∑ᵢ wᵢ |g(xᵢ)|²`  for every `g` in the span of `a`, and
-`∑ᵢ wᵢ |f(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖f‖²`  for every `f ∈ H`.
+`(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ᵢ wᵢ |f(xᵢ)|²`  for every `f` in the span of `a`, and
+`∑ᵢ wᵢ |g(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖g‖²`  for every `g ∈ H`.
 
 The kernel appears through `K(x, x) = ‖kₓ‖²` (`Discretization.RKHS.kernel_self`).  This is
 `Discretization.Infinite.exists_discretization` for the kernel sections `b(x) = kₓ`, whose
@@ -161,17 +161,17 @@ coefficients `⟪f, kₓ⟫` have modulus `|f(x)|`. -/
 theorem exists_discretization [Nonempty ι] [TopologicalSpace.SeparableSpace H] [Nontrivial H]
     (hmeas : ∀ f, AEStronglyMeasurable (φ f) μ)
     (hK : Integrable (fun x => ‖kernelSection φ hφ x‖ ^ 2) μ)
-    {Λ : ℝ} (hΛ : 0 < Λ) (hHΛ : ∀ f, ∫ x, ‖φ f x‖ ^ 2 ∂μ ≤ Λ * ‖f‖ ^ 2)
-    (hinj : ∀ f, (∀ᵐ x ∂μ, φ f x = 0) → f = 0)
+    {Λ : ℝ} (hΛ : 0 < Λ) (hHΛ : ∀ g, ∫ x, ‖φ g x‖ ^ 2 ∂μ ≤ Λ * ‖g‖ ^ 2)
+    (hinj : ∀ g, (∀ᵐ x ∂μ, φ g x = 0) → g = 0)
     {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hgrama : gram a μ = 1)
     {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
       (∀ c : ι → ℂ, (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
             * ∫ y, ‖star c ⬝ᵥ a y‖ ^ 2 ∂μ
           ≤ ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2) ∧
-      (∀ f : H, ∑ i, w i * ‖φ f (x i)‖ ^ 2
+      (∀ g : H, ∑ i, w i * ‖φ g (x i)‖ ^ 2
           ≤ (1 + Real.sqrt (((∫ y, ‖kernelSection φ hφ y‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2
-              * Λ * ‖f‖ ^ 2) := by
+              * Λ * ‖g‖ ^ 2) := by
   have hb := memLp_kernelSection φ hφ hmeas hK
   have hcoef := norm_inner_kernelSection φ hφ
   -- the two hypotheses on the Gram operator, read on `H`

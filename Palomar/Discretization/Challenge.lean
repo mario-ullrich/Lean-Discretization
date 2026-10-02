@@ -147,10 +147,9 @@ and bound the weighted sum for every function in the span of the second family f
 
 `∑ wᵢ |g(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ · ‖c‖²`,
 
-where `c` is the coefficient vector of `g`.  If the second family is the singular basis of
-the embedding of a reproducing kernel Hilbert space `H` into `L₂`, that is, an orthonormal
-basis of `H` that is orthogonal in `L₂`, then the coefficient norm on the right is the
-`H`-norm of `g` and `Λ` is the squared norm of the embedding. -/
+where `c` is the coefficient vector of `g`.  If the second family is an orthonormal basis of
+a reproducing kernel Hilbert space `H`, then the coefficient norm on the right is the
+`H`-norm of `g`, and `Λ` bounds the squared norm of the embedding `H → L₂`. -/
 theorem exists_discretization [Nonempty ι] [Nonempty κ]
     {J : Matrix κ κ ℂ} (hJ : J.PosDef) {Λ : ℝ} (hΛ : 0 < Λ)
     (hJΛ : J ≤ Λ • (1 : Matrix κ κ ℂ)) {a : Ω → ι → ℂ} {b : Ω → κ → ℂ}
