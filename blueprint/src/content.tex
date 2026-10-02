@@ -141,7 +141,13 @@ Theorem 3, with the Gram matrix of the family in place of the Gram operator.
 \begin{corollary}[Discretization for a countable second family]
 \label{cor:countable-discretization}
 \lean{Discretization.bss_generalized, Discretization.Countable.bss_generalized,
-      Discretization.exists_discretization, Discretization.Countable.exists_discretization}
+      Discretization.exists_discretization, Discretization.Countable.exists_discretization,
+      Discretization.Countable.ae_mem_l2, Discretization.Countable.exists_measurableSet_mem_l2,
+      Discretization.Countable.toLp, Discretization.Countable.memLp_toLp,
+      Discretization.Countable.inner_toLp, Discretization.Countable.integral_norm_sq_toLp,
+      Discretization.Countable.gramOp, Discretization.Countable.gramOp_injective,
+      Discretization.Countable.gramOp_le, Discretization.Countable.integral_comap_val,
+      Discretization.Countable.gram_comap_val, HilbertBasis.separableSpace}
 \leanok
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let
 $\kappa$ be a nonempty set that is finite or countably infinite. Let
@@ -168,16 +174,21 @@ and
 
 \begin{proof}
 \leanok
-\uses{thm:discretization, lem:countable-gram-operator}
-For countably infinite $\kappa$, \Cref{lem:countable-gram-operator}(a) gives a measurable
-set $S \subseteq \Omega$ of full measure on which $b(x) = (b_k(x))_k$ lies in
-$\ell_2(\kappa)$. Restricted to $S$, which changes neither $I$ nor any of the integrals,
-$b$ is a square-integrable map into the separable space $\ell_2(\kappa)$, with
-$\int_S \|b\|^2 \, d\mu = \sum_k \|b_k\|^2$; its Gram operator is $J$, injective and bounded
-by $\Lambda \cdot 1$ (\Cref{lem:countable-gram-operator}(b), (c)).
-\Cref{thm:discretization} on $S$ gives the points,
-which therefore lie in $S$, and the weights; its upper bound in the order of operators,
-evaluated at $\bar c$, is the bound claimed.
+\uses{thm:discretization, lem:gram-operator}
+For countably infinite $\kappa$, Tonelli gives
+$\int_\Omega \sum_k |b_k|^2 \, d\mu = \sum_k \|b_k\|^2 < \infty$, so the sum is finite
+almost everywhere, and the complement of a measurable null set containing the exceptional
+points is a measurable set $S \subseteq \Omega$ of full measure on which
+$b(x) = (b_k(x))_k$ lies in $\ell_2(\kappa)$. Restricting the measure space to $S$ changes
+neither $I$ nor any of the integrals. On $S$ the finite partial sums
+$\sum_{k \in F} b_k(x) e_k$ converge to $b(x)$ in $\ell_2(\kappa)$, so $b$ is strongly
+measurable, and $\int_S \|b\|^2 \, d\mu = \sum_k \|b_k\|^2$ by Tonelli again; the space
+$\ell_2(\kappa)$ is separable, since its standard basis is countable. As
+$\langle c, b(x) \rangle = \sum_k \overline{c_k} \, b_k(x)$, the Gram operator of $b$ has
+the quadratic form $\int_S |\sum_k \overline{c_k} \, b_k|^2 \, d\mu$ of $J$ by
+\Cref{lem:gram-operator}(a), so it is $J$. \Cref{thm:discretization} on $S$ gives the
+points, which therefore lie in $S$, and the weights; its upper bound in the order of
+operators, evaluated at $\bar c$, is the bound claimed.
 
 For finite $\kappa$ the same argument works with $\mathbb{C}^{\kappa}$ in place of
 $\ell_2(\kappa)$. The formalisation proves this case with the matrix form of the upper
@@ -185,7 +196,7 @@ side (the end of the proof of \Cref{thm:discretization}).
 \end{proof}
 
 In the formalisation the two hypotheses on $J$ are stated on the family, as in
-\Cref{lem:countable-gram-operator}(c): $J \preceq \Lambda \cdot 1$ is the bound
+\Cref{lem:gram-operator}(b) and (c): $J \preceq \Lambda \cdot 1$ is the bound
 $\int_\Omega |\sum_k \overline{c_k} \, b_k|^2 \, d\mu \leq \Lambda \|c\|^2$ for every
 $c \in \ell_2(\kappa)$, and injectivity says that this integral vanishes only for $c = 0$.
 For finite
@@ -1343,68 +1354,13 @@ for every upper state of \texttt{Discretization.UpperBarrier}. A finite second f
 $H = \mathbb{C}^{\kappa}$, is proved with the matrix instance, which keeps \Cref{cor:bss}
 free of operators.
 
-\chapter{A countable family and a reproducing kernel Hilbert space}
+\chapter{A reproducing kernel Hilbert space}
 \label{ch:applications}
 
-The two cases of $b$ named in \Cref{ch:problem} supply the separable Hilbert space and the
-square-integrable map to which \Cref{thm:discretization} applies: a countable family, with
-$H = \ell_2(\kappa)$, and the kernel sections of a reproducing kernel Hilbert space.
-
-\section{A countable family}
-
-\begin{lemma}[A countable family as a map into $\ell_2$]
-\label{lem:countable-gram-operator}
-\lean{Discretization.Countable.ae_mem_l2, Discretization.Countable.exists_measurableSet_mem_l2,
-      Discretization.Countable.toLp, Discretization.Countable.memLp_toLp,
-      Discretization.Countable.inner_toLp, Discretization.Countable.integral_norm_sq_toLp,
-      Discretization.Countable.gramOp, Discretization.Countable.gramOp_injective,
-      Discretization.Countable.gramOp_le, Discretization.Countable.integral_comap_val,
-      Discretization.Countable.gram_comap_val, HilbertBasis.separableSpace}
-\leanok
-Let $(\Omega, \mu)$ be a measure space, let $\kappa$ be a countable set, and let
-$b = (b_k)_{k \in \kappa}$ be square-integrable functions on $\Omega$ with
-$\sum_k \|b_k\|_{L_2}^2 < \infty$.
-
-(a) There is a measurable set $S \subseteq \Omega$ of full measure with
-$\sum_k |b_k(x)|^2 < \infty$ for every $x \in S$.
-
-(b) If $\sum_k |b_k(x)|^2 < \infty$ for every $x \in \Omega$, then
-$x \mapsto b(x) = (b_k(x))_k$ is a square-integrable map into the separable space
-$\ell_2(\kappa)$ with $\int_\Omega \|b(x)\|^2 \, d\mu(x) = \sum_k \|b_k\|_{L_2}^2$, and
-$\langle c, b(x) \rangle = \sum_k \overline{c_k} \, b_k(x)$ for every $c \in \ell_2(\kappa)$
-and every $x \in \Omega$.
-
-(c) Under the hypothesis of (b), the Gram operator $J = \int_\Omega b(x) b(x)^* \, d\mu(x)$
-satisfies $J \preceq \Lambda \cdot 1$ if
-$\int_\Omega |\sum_k \overline{c_k} \, b_k(x)|^2 \, d\mu(x) \leq \Lambda \|c\|^2$ for every
-$c \in \ell_2(\kappa)$, and it is injective if this integral vanishes only for $c = 0$.
-\end{lemma}
-
-\begin{proof}
-\leanok
-\uses{lem:gram-operator}
-(a) By Tonelli, $\int_\Omega \sum_k |b_k|^2 \, d\mu = \sum_k \|b_k\|^2 < \infty$, so the
-sum is finite almost everywhere, and the complement of a measurable null set containing
-the exceptional points is a set $S$ as required.
-
-(b) The finite partial sums $\sum_{k \in F} b_k(x) e_k$ converge to $b(x)$ in
-$\ell_2(\kappa)$, so $b$ is strongly measurable, and $\int_\Omega \|b\|^2 \, d\mu =
-\sum_k \|b_k\|^2$ by Tonelli. The inner product of $\ell_2(\kappa)$ is
-$\langle c, v \rangle = \sum_k \overline{c_k} \, v_k$. The space is separable because its
-standard basis $(e_k)$ is countable: the span of a countable set is separable, and the span
-of a Hilbert basis is dense.
-
-(c) By (b) the integral is $\int_\Omega |\langle c, b(x) \rangle|^2 \, d\mu(x)$, so the two
-claims are \Cref{lem:gram-operator}(b) and (c); the integral vanishes exactly when
-$\langle c, b(\cdot) \rangle = 0$ almost everywhere.
-\end{proof}
-
-Restricting the measure space to the set $S$ of (a) changes no integral and no Gram
-matrix, because $S$ has full measure, and it makes (b) applicable. This is how the proof of
-\Cref{cor:countable-discretization} chooses its points inside $S$: the construction runs in
-$S$.
-
-\section{A reproducing kernel Hilbert space}
+The kernel sections of a reproducing kernel Hilbert space, the second case of $b$ named in
+\Cref{ch:problem}, form a square-integrable map into a separable Hilbert space, to which
+\Cref{thm:discretization} applies. The first case, a countable family, needs only
+Tonelli's theorem and is treated in the proof of \Cref{cor:countable-discretization}.
 
 \begin{lemma}[Kernel sections]
 \label{lem:kernel-sections}
