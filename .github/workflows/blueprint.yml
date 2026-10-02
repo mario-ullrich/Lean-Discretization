@@ -125,14 +125,17 @@ jobs:
       #     the Kiefer–Wolfowitz block sits directly above that theorem instead
       #     of being pulled up by its single edge from the rank-one updates.
       #   * Set the nodes of the uniform-norm chapter apart: they form a cluster
-      #     with a thin grey rounded frame and a wide margin, appended
-      #     before the closing brace of the graph source "}`)" (unique on the
-      #     page), so that the nodes keep the default attributes declared at
-      #     the top. Every name listed must be a node of the graph; a missing
-      #     one would appear as an empty node.
-      - name: Tidy dependency graph (recolor sorry-nodes white, drop unused legend rows, draw all edges solid, set the uniform block apart)
+      #     labelled with the chapter title, with a thin grey rounded frame and
+      #     a wide margin, appended before the closing brace of the graph source
+      #     "}`)" (unique on the page), so that the nodes keep the default
+      #     attributes declared at the top. Three invisible edges from
+      #     cor:rkhs-discretization, in the bottom row of the rest, to the
+      #     sources of the cluster place it underneath the rest. Every name
+      #     listed must be a node of the graph; a missing one would appear as
+      #     an empty node.
+      - name: Tidy dependency graph (recolor sorry-nodes white, drop unused legend rows, draw all edges solid, set the uniform block apart below the rest)
         run: |
-          sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\[style=dashed\]//g; s/"thm:uniform-discretization" -> "thm:uniform-discretization-optimal"/& [weight=2]/; s/}`)/ subgraph cluster_uniform { color="#b0b0b0"; style=rounded; penwidth=1; margin=28; "lem:rank-one-determinant"; "lem:mixing-gain"; "prop:almost-maximal-determinant"; "lem:few-design-points"; "thm:uniform-discretization"; "cor:design-as-measure"; "thm:uniform-discretization-optimal"; }}`)/' blueprint/web/dep_graph_document.html
+          sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\[style=dashed\]//g; s/"thm:uniform-discretization" -> "thm:uniform-discretization-optimal"/& [weight=2]/; s/}`)/ subgraph cluster_uniform { label="Discretization of the uniform norm"; labeljust=l; fontcolor="#808080"; color="#b0b0b0"; style=rounded; penwidth=1; margin=28; "lem:rank-one-determinant"; "lem:mixing-gain"; "prop:almost-maximal-determinant"; "lem:few-design-points"; "thm:uniform-discretization"; "cor:optimal-design"; "thm:uniform-discretization-optimal"; } "cor:rkhs-discretization" -> "lem:rank-one-determinant" [style=invis]; "cor:rkhs-discretization" -> "lem:mixing-gain" [style=invis]; "cor:rkhs-discretization" -> "lem:few-design-points" [style=invis]; }`)/' blueprint/web/dep_graph_document.html
 
       # Point the `\lean{...}` links at this repository. leanblueprint builds
       # them as `{dochome}/find/#doc/Decl` and, with no `\dochome` set, falls
