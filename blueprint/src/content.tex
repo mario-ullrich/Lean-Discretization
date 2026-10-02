@@ -1569,7 +1569,10 @@ weight of \Cref{lem:mixing-gain} would make it at least $1 + \eta$.
 \begin{theorem}[Discretization of the uniform norm]
 \label{thm:uniform-discretization}
 \lean{Discretization.KieferWolfowitz.exists_design_kieferWolfowitz,
-      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le}
+      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le,
+      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact,
+      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le,
+      IsCompact.convexHull}
 \leanok
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
 $a = (a_k)_{k \in \iota}$ be bounded functions on a set $D$ with linearly independent
@@ -1580,58 +1583,39 @@ such that
 \[
   |f(y)|^2 \; \leq \; (m + \varepsilon) \sum_{k=1}^n w_k \, |f(x_k)|^2
 \]
-for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$.
+for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$. If $D$ is a compact space
+and the $a_k$ are continuous, the same holds with $\varepsilon = 0$.
 \end{theorem}
 
 \begin{proof}
 \leanok
-\uses{prop:almost-maximal-determinant, lem:rank-one-updates, lem:few-design-points}
-Take the design of \Cref{prop:almost-maximal-determinant} for $\varepsilon/2$. For $s = m + \varepsilon$
-the bound $s^{-1} a(y)^* G^{-1} a(y) < 1$ is strict, so subtracting $s^{-1} a(y) a(y)^*$
-from $G$ leaves a positive definite matrix by \Cref{lem:rank-one-updates}(b), that is
-$a(y) a(y)^* \preceq s \cdot G$. Evaluating this at the coefficient vector $c$ of $f$, with
-$c^* G c = \sum_k w_k |f(x_k)|^2$, gives the claim. The inequality depends on the design
-only through its Gram matrix, which \Cref{lem:few-design-points} preserves while cutting the
-design down to $2m^2 + 1$ points.
+\uses{prop:almost-maximal-determinant, lem:rank-one-updates, lem:mixing-gain,
+      lem:few-design-points}
+Take the design of \Cref{prop:almost-maximal-determinant} for $\varepsilon/2$. For
+$s = m + \varepsilon$ the bound $s^{-1} a(y)^* G^{-1} a(y) < 1$ is strict, so subtracting
+$s^{-1} a(y) a(y)^*$ from $G$ leaves a positive definite matrix by
+\Cref{lem:rank-one-updates}(b), that is $a(y) a(y)^* \preceq s \cdot G$. Evaluating this at
+the coefficient vector $c$ of $f$, with $c^* G c = \sum_k w_k |f(x_k)|^2$, gives the claim.
+The inequality depends on the design only through its Gram matrix, which
+\Cref{lem:few-design-points} preserves while cutting the design down to $2m^2 + 1$ points.
+
+For $\varepsilon = 0$ on a compact space, the matrices $a(y) a(y)^*$ form a compact set,
+whose convex hull is compact as well and consists exactly of the Gram matrices of designs.
+The determinant is continuous, so it attains its maximum at a design. No mixture can then
+increase the determinant at all, and \Cref{lem:mixing-gain} applied with the factor $1$
+gives $a(y)^* G^{-1} a(y) \leq m$ without slack. The passage to the norm inequality is the
+one above for every constant $s > m$, followed by the limit $s \to m$, which is a limit of
+real numbers, and the point count is again \Cref{lem:few-design-points}.
 \end{proof}
 
-\begin{theorem}[The sharp constant on a compact domain]
-\label{thm:uniform-discretization-compact}
-\lean{Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact,
-      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le,
-      IsCompact.convexHull}
-\leanok
-Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let $D$ be a
-compact space and let $a = (a_k)_{k \in \iota}$ be continuous functions on it with
-linearly independent coordinate functions. Then there are points
-$x_1, \dots, x_n \in D$ with $n \leq 2m^2 + 1$ and weights $w_1, \dots, w_n \geq 0$ with
-$\sum_k w_k = 1$ whose Gram matrix $\sum_k w_k \, a(x_k) a(x_k)^*$ is positive definite and
-such that
-\[
-  |f(y)|^2 \; \leq \; m \sum_{k=1}^n w_k \, |f(x_k)|^2
-\]
-for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$.
-\end{theorem}
-
-\begin{proof}
-\leanok
-\uses{prop:almost-maximal-determinant, lem:mixing-gain, lem:few-design-points}
-The matrices $a(y) a(y)^*$ form a compact set, whose convex hull is compact as well and
-consists exactly of the Gram matrices of designs. The determinant is continuous, so it
-attains its maximum at a design. No mixture can then increase the determinant at all,
-and \Cref{lem:mixing-gain} applied with the factor $1$ gives $a(y)^* G^{-1} a(y) \leq m$ without
-slack. The passage to the norm inequality is that of
-\Cref{thm:uniform-discretization} for every constant $s > m$, followed by the limit
-$s \to m$, which is a limit of real numbers, and the point count is again
-\Cref{lem:few-design-points}.
-\end{proof}
-
-Both theorems produce a list of points with weights. Read as a measure, that list is
+The theorem produces a list of points with weights. Read as a measure, that list is
 the object the discretization theorem asks for.
 
 \begin{corollary}[The design as a measure]
 \label{cor:design-as-measure}
-\lean{Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz}
+\lean{Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz,
+      Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz_of_compact,
+      Discretization.KieferWolfowitz.exists_probabilityMeasure_of_design}
 \leanok
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let $D$ carry a
 measurable structure, let $a = (a_k)_{k \in \iota}$ be bounded measurable functions on it
@@ -1642,7 +1626,9 @@ $\sum_k w_k \, a(x_k) a(x_k)^*$, and
 \[
   |f(y)|^2 \; \leq \; (m + \varepsilon) \int_D |f|^2 \, d\varrho
 \]
-for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$.
+for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$. If $D$ is a compact
+space whose $\sigma$-algebra contains the open sets and the $a_k$ are continuous, the same
+holds with $\varepsilon = 0$.
 \end{corollary}
 
 \begin{proof}
@@ -1671,16 +1657,15 @@ $x_1, \dots, x_n \in D$ and weights $w_1, \dots, w_n > 0$ such that
     \sum_{i=1}^n w_i \, |f(x_i)|^2
 \]
 for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$. If $D$ is a compact space
-and the $a_k$ are continuous, the same holds with $m$ in place of $m + \varepsilon$.
+and the $a_k$ are continuous, the same holds with $\varepsilon = 0$.
 \end{theorem}
 
 \begin{proof}
 \leanok
-\uses{thm:uniform-discretization, thm:uniform-discretization-compact,
-      cor:l2-discretization, lem:gram-identities}
+\uses{thm:uniform-discretization, cor:l2-discretization, lem:gram-identities}
 Take a design $x'_1, \dots, x'_N$ with weights $w'_k$ from
-\Cref{thm:uniform-discretization}, or from \Cref{thm:uniform-discretization-compact}, with
-the constant $K = m + \varepsilon$, or $K = m$, and positive definite Gram matrix $G$. On the
+\Cref{thm:uniform-discretization}, with the constant $K = m + \varepsilon$, where
+$\varepsilon = 0$ in the compact case, and positive definite Gram matrix $G$. On the
 index set $\{1, \dots, N\}$ with the probability measure $\varrho = \sum_k w'_k \delta_k$, the
 family $k \mapsto G^{-1/2} a(x'_k)$ has Gram matrix $1$ by \Cref{lem:gram-identities}(b),
 and its span consists of the functions $k \mapsto f(x'_k)$ with
@@ -1726,7 +1711,7 @@ whose real dimension is $2m^2$, has at most $2m^2 + 1$ members.
 \begin{remark}[What the count is good for]
 \label{rem:point-count}
 \leanok
-\uses{lem:few-design-points, thm:uniform-discretization, thm:uniform-discretization-compact}
+\uses{lem:few-design-points, thm:uniform-discretization}
 The sharper count
 $r + 1$, with $r$ the dimension of the span of the products $a_k \overline{a_l}$, is not
 formalised, and nothing needs it.
@@ -1736,7 +1721,7 @@ formalised, and nothing needs it.
 \label{rem:identity-decomposition}
 \lean{Discretization.KieferWolfowitz.sum_weight_quadForm_inv_eq_card, Discretization.KieferWolfowitz.sum_weight_smul_quadForm_inv_eq_self}
 \leanok
-\uses{prop:almost-maximal-determinant, thm:uniform-discretization-compact}
+\uses{prop:almost-maximal-determinant, thm:uniform-discretization}
 For a design with points $x_1, \dots, x_n$, weights $w_1, \dots, w_n$ and invertible Gram
 matrix $G$, and with $m = \#\iota$,
 \[
@@ -1749,7 +1734,7 @@ $G G^{-1} z = z$ written out. With $c_k = w_k \, a(x_k)^* G^{-1} a(x_k)$ this is
 decomposition of the identity over the design points, in the inner product
 $\langle u, z \rangle = u^* G^{-1} z$ of the ellipsoid of $G$, and it is the condition
 dual to the bound of \Cref{prop:almost-maximal-determinant}. Under
-\Cref{thm:uniform-discretization-compact} the average forces
+\Cref{thm:uniform-discretization} with $\varepsilon = 0$ the average forces
 $a(x_k)^* G^{-1} a(x_k) = m$ at every design point, which makes the points contact
 points. For an arbitrary convex body the theorem is proved in the companion project
 \href{https://mario-ullrich.github.io/Lean-SNumbers/}{Lean-SNumbers}

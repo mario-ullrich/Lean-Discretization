@@ -31,8 +31,9 @@ small loss on a general domain:
   `|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²`
 
 for every point `y ∈ D` and every `f ∈ V`. On a compact domain and for continuous functions
-the loss disappears and the constant is the sharp `√m`. In both cases at most `2m² + 1`
-points are needed, by Carathéodory's theorem applied to the Gram matrices of designs.
+the bound holds with `ε = 0`, that is with the sharp constant `√m`. In both cases at most
+`2m² + 1` points are needed, by Carathéodory's theorem applied to the Gram matrices of
+designs.
 
 The measure is one whose Gram matrix has an almost maximal determinant. Applying the
 discretization theorem to such a measure is how one arrives at sampling projections with few
@@ -44,7 +45,7 @@ the sharpened form of Chkifa, Dolbeault, Krieg and Ullrich, gives for every `n �
 
   `|f(y)|² ≤ (m + ε) / (1 - √((m-1)/n))² · ∑ᵢ wᵢ |f(xᵢ)|²`,
 
-with `m` in place of `m + ε` on a compact domain. For `n = 2m` the factor is below
+with `ε = 0` on a compact domain. For `n = 2m` the factor is below
 `12 (m + ε)`.
 
 ## The definition restated here

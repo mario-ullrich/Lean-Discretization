@@ -19,7 +19,7 @@ there are `n` points `x₁, …, xₙ` with positive weights such that
 `|f(y)|² ≤ (m + ε) / (1 - √((m-1)/n))² · ∑ᵢ wᵢ |f(xᵢ)|²`
 
 for every `f` in the space and every point `y`; for continuous functions on a compact space
-the same holds with `m` in place of `m + ε`.  This is the discretization of the uniform
+the same holds with `ε = 0`.  This is the discretization of the uniform
 norm of Krieg, Pozharska, Ullrich and Ullrich (*Sampling projections in the uniform norm*),
 with the constant `√((m-1)/n)` of the sparsification theorem in the form of Chkifa,
 Dolbeault, Krieg and Ullrich.
@@ -140,7 +140,8 @@ For linearly independent continuous functions `a₁, …, a_m` on a compact spac
 
 `|f(y)|² ≤ m / (1 - √((m-1)/n))² · ∑ᵢ wᵢ |f(xᵢ)|²`
 
-for every point `y` and every `f` in the span.  It is the design with the sharp constant,
+for every point `y` and every `f` in the span: the bound above with `ε = 0`.  It is the
+design with the sharp constant,
 `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`, thinned to `n` of
 its points by the sparsification theorem. -/
 theorem exists_uniform_discretization_of_compact [Nonempty ι] [TopologicalSpace Ω]

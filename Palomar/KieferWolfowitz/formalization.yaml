@@ -9,14 +9,14 @@ project:
     every ε > 0, there is a finitely supported probability measure ϱ = ∑ₖ wₖ δ(xₖ) for
     which the uniform norm on V is dominated by the L₂(ϱ) norm with the constant
     √(m + ε): |f(y)|² ≤ (m + ε) ∑ₖ wₖ |f(xₖ)|² for every y ∈ D and every f ∈ V.
-    For continuous functions on a compact domain the loss disappears and the constant
-    is the sharp √m. In both cases at most 2m² + 1 points are needed. The measure
-    is one whose Gram matrix has an almost maximal determinant; applying a
+    For continuous functions on a compact domain the bound holds with ε = 0, that is
+    with the sharp constant √m. In both cases at most 2m² + 1 points are needed. The
+    measure is one whose Gram matrix has an almost maximal determinant; applying a
     discretization theorem to such a measure is how one arrives at sampling projections
     with few points and small norm. Thinned by the sparsification theorem, the measure
     gives for every n ≥ m exactly n points with positive weights and
-    |f(y)|² ≤ (m + ε) / (1 − √((m−1)/n))² ∑ᵢ wᵢ |f(xᵢ)|², with m in place of m + ε on
-    a compact domain.
+    |f(y)|² ≤ (m + ε) / (1 − √((m−1)/n))² ∑ᵢ wᵢ |f(xᵢ)|², with ε = 0 on a compact
+    domain.
   authors:
     - "Mario Ullrich"
   license: "Apache-2.0"

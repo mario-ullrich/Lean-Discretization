@@ -153,6 +153,8 @@ again at the top level.
   points and weights, `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz`.
 * `Discretization.KieferWolfowitz.Measure`: the same statement for the measure
   `ϱ = ∑ₖ wₖ δ(xₖ)`, `Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz`,
+  and with `ε = 0` on a compact domain,
+  `Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz_of_compact`,
   together with the identity `gram a ϱ = G` that hands it to the discretization theorem.
 * `Discretization.KieferWolfowitz.ConvexHull`: the Gram matrices of designs are the convex
   hull of the rank-one matrices `a(y) a(y)*`, and Carathéodory's theorem bounds the number

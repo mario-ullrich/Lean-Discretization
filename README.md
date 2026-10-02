@@ -142,10 +142,12 @@ of it are proved:
   (`Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz`). The Gram
   matrix of `ϱ` in the sense of `Discretization.gram` is the one of the points and
   weights (`.gram_designMeasure`), which is what lets the measure be handed to the
-  discretization theorem.
+  discretization theorem. On a compact domain this holds with `ε = 0` as well
+  (`.exists_probabilityMeasure_kieferWolfowitz_of_compact`).
 * **The sharp constant on a compact domain.** For continuous functions on a compact
-  space the maximum of the determinant is attained, the `ε` disappears, and the constant
-  is `√m` (`Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`).
+  space the maximum of the determinant is attained, and the bound holds with `ε = 0`,
+  that is with the constant `√m`
+  (`Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`).
 * **At most `2m² + 1` points.** Every design can be replaced by one with at most
   `2m² + 1` points and the same Gram matrix, so both statements hold with that many
   points (`Discretization.KieferWolfowitz.exists_design_card_le`,
@@ -175,7 +177,7 @@ Under the same hypotheses, for every `ε > 0` and every `n ≥ m` there are poin
 
 for every point `y ∈ D` and every `f` in the span of the family
 (`Discretization.exists_uniform_discretization`). For continuous functions on a compact
-space the same holds with `m` in place of `m + ε`
+space the same holds with `ε = 0`
 (`Discretization.exists_uniform_discretization_of_compact`). This is the discretization of
 the uniform norm of
 [Krieg, Pozharska, Ullrich and Ullrich](https://arxiv.org/abs/2401.02220), with the
