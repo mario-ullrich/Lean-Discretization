@@ -178,7 +178,7 @@ jobs:
         run: echo "name=blueprint-$(date -u +%Y%m%d)" >> "$GITHUB_OUTPUT"
 
       - name: Upload blueprint (HTML site with blueprint.pdf)
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ steps.stamp.outputs.name }}
           path: blueprint/web/
@@ -187,7 +187,7 @@ jobs:
       # Same directory again, packaged in the special format deploy-pages
       # expects (upload-artifact ZIPs are not compatible with Pages).
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: blueprint/web
 
@@ -212,10 +212,10 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Enable and configure Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
         with:
           enablement: true
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
