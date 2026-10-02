@@ -1462,7 +1462,7 @@ $\varphi : H \to \mathbb{C}^{\Omega}$, $\varphi(f)(x)$ being the value of $f$ at
 Injectivity of $\varphi$ is not required; in \Cref{cor:rkhs-discretization} it follows from
 the assumption on vanishing functions.
 
-\chapter{Discretizing the uniform norm}
+\chapter{Discretization of the uniform norm}
 \label{ch:design}
 
 The discretization theorem starts from a measure; this chapter produces one. Let $D$ be
@@ -1483,7 +1483,7 @@ theorem then gives the bound with any $n \geq m$ points
 
 No topology and no measurable structure on $D$ are used: a finitely supported measure is
 a finite list of points with weights, and it is kept in that form until
-\Cref{cor:design-as-measure}.
+\Cref{cor:optimal-design}.
 
 A \emph{design} consists of finitely many points $x_1, \dots, x_N \in D$ and weights
 $w_1, \dots, w_N \geq 0$ with $\sum_k w_k = 1$, and its \emph{Gram matrix} is
@@ -1611,8 +1611,8 @@ real numbers, and the point count is again \Cref{lem:few-design-points}.
 The theorem produces a list of points with weights. Read as a measure, that list is
 the object the discretization theorem asks for.
 
-\begin{corollary}[The design as a measure]
-\label{cor:design-as-measure}
+\begin{corollary}[Optimal design (Kiefer--Wolfowitz)]
+\label{cor:optimal-design}
 \lean{Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz,
       Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz_of_compact,
       Discretization.KieferWolfowitz.exists_probabilityMeasure_of_design}

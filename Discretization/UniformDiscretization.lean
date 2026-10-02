@@ -11,7 +11,7 @@ public import Discretization.KieferWolfowitz.Measure
 public import Discretization.KieferWolfowitz.Compact
 
 /-!
-# Discretizing the uniform norm with `n ≥ m` points
+# Discretization of the uniform norm with `n ≥ m` points
 
 For an `m`-dimensional space of bounded functions on an arbitrary set and every `n ≥ m`
 there are `n` points `x₁, …, xₙ` with positive weights such that
