@@ -108,6 +108,13 @@ jobs:
       - name: Build blueprint web
         run: leanblueprint web
 
+      # plastexdepgraph writes the nodes and edges of the dependency graph in an
+      # order that changes from run to run, and Graphviz then draws the same
+      # blueprint mirrored in some builds. The script sorts them, so that the
+      # layout rules below give the same picture in every build.
+      - name: Sort the dependency graph
+        run: python blueprint/scripts/sort_dep_graph.py
+
       # Tidy the dependency graph. plastexdepgraph exposes no options for
       # this, so we post-process the generated page:
       #   * Recolor the "ready to formalize" nodes from blue (#A3D6FF) to white,
