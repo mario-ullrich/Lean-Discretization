@@ -120,9 +120,13 @@ jobs:
       #   * Draw every edge solid. plastexdepgraph dashes the edges that come
       #     from a `\uses` inside a statement; here these say only that a
       #     statement uses a definition, so one kind of arrow suffices.
-      - name: Tidy dependency graph (recolor sorry-nodes white, drop unused legend rows, draw all edges solid)
+      #   * Give the edge from the Kiefer–Wolfowitz theorem to its thinning to
+      #     n ≥ m points the weight 2. Graphviz keeps weighted edges short, so
+      #     the Kiefer–Wolfowitz block sits directly above that theorem instead
+      #     of being pulled up by its single edge from the rank-one updates.
+      - name: Tidy dependency graph (recolor sorry-nodes white, drop unused legend rows, draw all edges solid, keep the uniform block together)
         run: |
-          sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\[style=dashed\]//g' blueprint/web/dep_graph_document.html
+          sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\[style=dashed\]//g; s/"thm:uniform-discretization" -> "thm:uniform-discretization-optimal"/& [weight=2]/' blueprint/web/dep_graph_document.html
 
       # Point the `\lean{...}` links at this repository. leanblueprint builds
       # them as `{dochome}/find/#doc/Decl` and, with no `\dochome` set, falls
