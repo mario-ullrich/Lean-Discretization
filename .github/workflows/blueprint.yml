@@ -121,21 +121,26 @@ jobs:
       #     from a `\uses` inside a statement; here these say only that a
       #     statement uses a definition, so one kind of arrow suffices.
       #   * Give the edge from the Kiefer–Wolfowitz theorem to its thinning to
-      #     n ≥ m points the weight 2. Graphviz keeps weighted edges short, so
-      #     the Kiefer–Wolfowitz block sits directly above that theorem instead
-      #     of being pulled up by its single edge from the rank-one updates.
+      #     n ≥ m points the weight 2, and the edge from the L2 discretization
+      #     to it the weight 3. Graphviz keeps weighted edges short and
+      #     straight, so the Kiefer–Wolfowitz block sits directly above that
+      #     theorem, at the height of the bottom rows and to the left of them.
       #   * Set the nodes of the uniform-norm chapter apart: they form a cluster
       #     labelled with the chapter title, with a thin grey rounded frame and
       #     a wide margin, appended before the closing brace of the graph source
       #     "}`)" (unique on the page), so that the nodes keep the default
-      #     attributes declared at the top. Three invisible edges from
-      #     cor:rkhs-discretization, in the bottom row of the rest, to the
-      #     sources of the cluster place it underneath the rest. Every name
+      #     attributes declared at the top. Two invisible edges of minimal
+      #     length 2 from lem:lower-barrier to the sources of the cluster keep
+      #     its frame a row clear of the rest and on the left, next to
+      #     cor:l2-discretization. Inside one rank, invisible edges order an
+      #     invisible spacer node, cor:l2-discretization and
+      #     cor:countable-discretization from left to right; the spacer keeps
+      #     the nodes right of the frame some way off it. Every other name
       #     listed must be a node of the graph; a missing one would appear as
       #     an empty node.
-      - name: Tidy dependency graph (recolor sorry-nodes white, drop unused legend rows, draw all edges solid, set the uniform block apart below the rest)
+      - name: Tidy dependency graph (recolor sorry-nodes white, drop unused legend rows, draw all edges solid, set the uniform block apart)
         run: |
-          sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\[style=dashed\]//g; s/"thm:uniform-discretization" -> "thm:uniform-discretization-optimal"/& [weight=2]/; s/}`)/ subgraph cluster_uniform { label="Discretization of the uniform norm"; labeljust=l; fontcolor="#808080"; color="#b0b0b0"; style=rounded; penwidth=1; margin=28; "lem:rank-one-determinant"; "lem:mixing-gain"; "prop:almost-maximal-determinant"; "lem:few-design-points"; "thm:uniform-discretization"; "cor:optimal-design"; "thm:uniform-discretization-optimal"; } "cor:rkhs-discretization" -> "lem:rank-one-determinant" [style=invis]; "cor:rkhs-discretization" -> "lem:mixing-gain" [style=invis]; "cor:rkhs-discretization" -> "lem:few-design-points" [style=invis]; }`)/' blueprint/web/dep_graph_document.html
+          sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\[style=dashed\]//g; s/"thm:uniform-discretization" -> "thm:uniform-discretization-optimal"/& [weight=2]/; s/"cor:l2-discretization" -> "thm:uniform-discretization-optimal"/& [weight=3]/; s/}`)/ subgraph cluster_uniform { label="Discretization of the uniform norm"; labeljust=l; fontcolor="#808080"; color="#b0b0b0"; style=rounded; penwidth=1; margin=28; "lem:rank-one-determinant"; "lem:mixing-gain"; "prop:almost-maximal-determinant"; "lem:few-design-points"; "thm:uniform-discretization"; "cor:optimal-design"; "thm:uniform-discretization-optimal"; } "lem:lower-barrier" -> "lem:mixing-gain" [style=invis, minlen=2]; "lem:lower-barrier" -> "lem:rank-one-determinant" [style=invis, minlen=2]; "spacer" [style=invis, label="", width=0.8]; subgraph { rank=same; "spacer" -> "cor:l2-discretization" -> "cor:countable-discretization" [style=invis]; } }`)/' blueprint/web/dep_graph_document.html
 
       # Point the `\lean{...}` links at this repository. leanblueprint builds
       # them as `{dochome}/find/#doc/Decl` and, with no `\dochome` set, falls
