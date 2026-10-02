@@ -1489,24 +1489,16 @@ A \emph{design} consists of finitely many points $x_1, \dots, x_N \in D$ and wei
 $w_1, \dots, w_N \geq 0$ with $\sum_k w_k = 1$, and its \emph{Gram matrix} is
 $G = \sum_k w_k \, a(x_k) a(x_k)^*$, the Gram matrix of $a$ in $L_2$ of the measure
 $\sum_k w_k \delta_{x_k}$; in Lean it is
-\texttt{Discretization.KieferWolfowitz.designGram}. The statements below spell both out.
+\texttt{Discretization.KieferWolfowitz.designGram}. Its quadratic form is the weighted sum
+of squares,
+\[
+  c^* G c = \sum_k w_k \, |\langle c, a(x_k) \rangle|^2
+  \qquad \text{for every } c \in \mathbb{C}^{\iota},
+\]
+since the quadratic form of a rank-one matrix $u u^*$ at $c$ is $|\langle c, u \rangle|^2$
+(\texttt{Discretization.KieferWolfowitz.re\_quadForm\_designGram}). The statements below
+spell out points, weights and Gram matrix.
 
-\begin{lemma}[Quadratic form of the Gram matrix of a design]
-\label{lem:design-quadratic-form}
-\lean{Discretization.KieferWolfowitz.designGram,
-      Discretization.KieferWolfowitz.re_quadForm_designGram}
-\leanok
-Let $D$ be a set, let $\iota$ be a finite set and let $a : D \to \mathbb{C}^{\iota}$. For
-points $x_1, \dots, x_N \in D$, weights $w_1, \dots, w_N \geq 0$ with $\sum_k w_k = 1$
-and $G = \sum_k w_k \, a(x_k) a(x_k)^*$, and for every $c \in \mathbb{C}^{\iota}$, one has
-$c^* G c = \sum_k w_k |\langle c, a(x_k) \rangle|^2$.
-\end{lemma}
-
-\begin{proof}
-\leanok
-The quadratic form of a rank-one matrix $u u^*$ at $c$ is $|\langle c, u \rangle|^2$,
-and both sides are additive in the summands.
-\end{proof}
 
 \begin{lemma}[Gain from mixing in one point]
 \label{lem:mixing-gain}
@@ -1531,7 +1523,9 @@ survives.
 \begin{proposition}[Almost maximal determinant]
 \label{prop:almost-maximal-determinant}
 \lean{Discretization.KieferWolfowitz.exists_design_quadForm_inv_le,
-      Discretization.KieferWolfowitz.exists_design_posDef}
+      Discretization.KieferWolfowitz.exists_design_posDef,
+      Discretization.KieferWolfowitz.designGram,
+      Discretization.KieferWolfowitz.re_quadForm_designGram}
 \leanok
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
 $a = (a_k)_{k \in \iota}$ be bounded functions on a set $D$ whose coordinate functions
@@ -1545,13 +1539,13 @@ that $G = \sum_k w_k \, a(x_k) a(x_k)^*$ is positive definite and
 
 \begin{proof}
 \leanok
-\uses{lem:design-quadratic-form, lem:rank-one-determinant, lem:mixing-gain}
+\uses{lem:rank-one-determinant, lem:mixing-gain}
 First, some design has a positive definite Gram matrix
 (\texttt{Discretization.KieferWolfowitz.exists\_design\_posDef}). Linear independence of
 the coordinate functions says that $c = 0$ is the only coefficient vector with
 $\langle c, a(y) \rangle = 0$ for all $y \in D$. It therefore suffices to find points
 annihilating no nonzero coefficient vector, for then the uniform distribution on them has
-$c^* G c > 0$ for every $c \neq 0$ by \Cref{lem:design-quadratic-form}. Descending
+$c^* G c > 0$ for every $c \neq 0$ by the formula for $c^* G c$. Descending
 induction on dimension supplies them: while some nonzero vector survives the points
 chosen so far, the hypothesis gives a point at which it does not vanish, and adding that
 point lowers the dimension.
@@ -1591,13 +1585,12 @@ for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$.
 
 \begin{proof}
 \leanok
-\uses{prop:almost-maximal-determinant, lem:design-quadratic-form, lem:rank-one-updates,
-      lem:few-design-points}
+\uses{prop:almost-maximal-determinant, lem:rank-one-updates, lem:few-design-points}
 Take the design of \Cref{prop:almost-maximal-determinant} for $\varepsilon/2$. For $s = m + \varepsilon$
 the bound $s^{-1} a(y)^* G^{-1} a(y) < 1$ is strict, so subtracting $s^{-1} a(y) a(y)^*$
 from $G$ leaves a positive definite matrix by \Cref{lem:rank-one-updates}(b), that is
-$a(y) a(y)^* \preceq s \cdot G$. Evaluating this at the coefficient vector of $f$ and
-using \Cref{lem:design-quadratic-form} gives the claim. The inequality depends on the design
+$a(y) a(y)^* \preceq s \cdot G$. Evaluating this at the coefficient vector $c$ of $f$, with
+$c^* G c = \sum_k w_k |f(x_k)|^2$, gives the claim. The inequality depends on the design
 only through its Gram matrix, which \Cref{lem:few-design-points} preserves while cutting the
 design down to $2m^2 + 1$ points.
 \end{proof}
@@ -1622,8 +1615,7 @@ for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$.
 
 \begin{proof}
 \leanok
-\uses{prop:almost-maximal-determinant, lem:mixing-gain, lem:design-quadratic-form,
-      lem:few-design-points}
+\uses{prop:almost-maximal-determinant, lem:mixing-gain, lem:few-design-points}
 The matrices $a(y) a(y)^*$ form a compact set, whose convex hull is compact as well and
 consists exactly of the Gram matrices of designs. The determinant is continuous, so it
 attains its maximum at a design. No mixture can then increase the determinant at all,
