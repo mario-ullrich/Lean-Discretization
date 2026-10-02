@@ -10,7 +10,9 @@ of the second family rather than on its size. The second is the **Kiefer–Wolfo
 theorem** in the form used by Krieg, Pozharska, Ullrich and Ullrich for sampling
 projections: on an `m`-dimensional space of bounded functions the uniform norm is
 dominated by the `L₂` norm of a finitely supported probability measure, with the
-constant `√(m+ε)`. The project builds without `sorry`, and every theorem uses only the
+constant `√(m+ε)`. Thinned by the first theorem, the measure can be replaced by any
+`n ≥ m` points, at the price of the factor `(1 − √((m−1)/n))⁻²`. The project builds
+without `sorry`, and every theorem uses only the
 three axioms Mathlib relies on throughout (`propext`, `Classical.choice`, `Quot.sound`).
 
 * **Blueprint** (a webpage explaining the mathematics):
@@ -162,6 +164,27 @@ the points contact points. The theorem for a general convex body is proved in th
 companion project [Lean-SNumbers](https://github.com/mario-ullrich/Lean-SNumbers) as
 `John.john_decomposition`.
 
+### The uniform norm with `n ≥ m` points
+
+Under the same hypotheses, for every `ε > 0` and every `n ≥ m` there are points
+`x₁, …, xₙ ∈ D` and weights `w₁, …, wₙ > 0` such that
+
+```
+|f(y)|²  ≤  (m + ε) / (1 − √((m−1)/n))² · ∑ wᵢ |f(xᵢ)|²
+```
+
+for every point `y ∈ D` and every `f` in the span of the family
+(`Discretization.exists_uniform_discretization`). For continuous functions on a compact
+space the same holds with `m` in place of `m + ε`
+(`Discretization.exists_uniform_discretization_of_compact`). This is the discretization of
+the uniform norm of
+[Krieg, Pozharska, Ullrich and Ullrich](https://arxiv.org/abs/2401.02220), with the
+constant of the sparsification theorem in the form of Chkifa, Dolbeault, Krieg and Ullrich.
+The proof thins the Kiefer–Wolfowitz design to `n` of its points by the lower half of the
+sparsification theorem (`Discretization.bss_lower`, `Discretization.exists_sparse_design`).
+For `n = 2m` the factor is below `12 (m + ε)`: `2m` weighted point evaluations control the
+uniform norm on the span with a constant of order `√m`.
+
 ## The proofs
 
 The first proof is the potential-function argument of BSS, with the second potential
@@ -249,7 +272,8 @@ the two potentials and the verifiers, the barrier lemma, the averaging step, the
 Hilbert space with the theorem for it, a countable family and a reproducing kernel
 Hilbert space, and under `Discretization/KieferWolfowitz/` the
 maximisation of the determinant of a Gram matrix, the theorem it yields and John's
-decomposition of the identity beside it. `BasicResults` holds what the arguments need and
+decomposition of the identity beside it, with its thinning to `n ≥ m` points by the
+sparsification theorem at the top level. `BasicResults` holds what the arguments need and
 Mathlib lacks: comparisons in the Loewner order, traces of products and Cauchy–Schwarz for
 them, Sherman–Morrison for rank-one updates of a matrix and of an operator, the trace of
 a positive operator on a Hilbert space, the Gram operator as a Bochner integral, the matrix
@@ -269,9 +293,8 @@ library sits outside `defaultTargets`; build it with `lake build Palomar`.
 
 ## What is left to do
 
-* **Sampling projections in the uniform norm**: handing the Kiefer–Wolfowitz measure to
-  the discretization theorem, which is what yields a projection using `2m` points with
-  norm of order `√m`.
+* **Sampling projections in the uniform norm**: the weighted least-squares projection on
+  the `2m` points of the uniform discretization, with norm of order `√m`.
 * **The applications of the paper**: least-squares recovery and sampling numbers.
 
 ## Building
@@ -330,4 +353,6 @@ Apache 2.0, the same as Mathlib. See [LICENSE](LICENSE).
   [doi](https://doi.org/10.1016/j.jmaa.2025.129873),
   [arxiv](https://arxiv.org/abs/2401.02220). Proposition 9 is the Kiefer–Wolfowitz
   theorem formalised here, and its proof the one followed in
-  `Discretization/KieferWolfowitz/`.
+  `Discretization/KieferWolfowitz/`; the discretization of the uniform norm with
+  `n ≥ m` points that the paper obtains from it is in
+  `Discretization/UniformDiscretization.lean`.

@@ -38,6 +38,7 @@ public import Discretization.KieferWolfowitz.ConvexHull
 public import Discretization.KieferWolfowitz.Compact
 public import Discretization.KieferWolfowitz.JohnDecomposition
 public import Discretization.KieferWolfowitz.PointCount
+public import Discretization.UniformDiscretization
 
 /-!
 # Norm discretization
@@ -68,14 +69,17 @@ every `ε > 0`, the uniform norm is dominated by the `L₂` norm of a finitely s
 probability measure with the constant `√(m+ε)`, and by `√m` if the functions are continuous
 on a compact domain.  The measure is one whose Gram matrix has an almost maximal
 determinant, and the whole argument consists of comparing that determinant with the
-determinants obtained by giving one further point a small weight.
+determinants obtained by giving one further point a small weight.  Thinned by the
+sparsification theorem, the measure can be replaced by any `n ≥ m` points, at the price of
+the factor `(1 - √((m-1)/n))⁻²`.
 
 ## Layout
 
 The finite theory lies at the top level, with its three edge cases in
 `Discretization/EdgeCases/`; `Discretization/Infinite/` holds the analysis of the upper
 state for a second family in a Hilbert space and the theorems for it, and
-`Discretization/KieferWolfowitz/` the second theorem.
+`Discretization/KieferWolfowitz/` the second theorem, whose thinning to `n ≥ m` points is
+again at the top level.
 
 * `Discretization.Parameters`: the arithmetic of the four parameters `r`, `s`, `δ`, `ζ`
   that drive the construction.
@@ -107,7 +111,8 @@ state for a second family in a Hilbert space and the theorems for it, and
 * `Discretization.NormDiscretization`: the same statement read as a discretization
   inequality for the `L₂`-norm, `Discretization.exists_discretization`.
 * `Discretization.BSS`: the case of a single family, which is the sparsification theorem
-  of Batson, Spielman and Srivastava, `Discretization.bss`.
+  of Batson, Spielman and Srivastava, `Discretization.bss`, and its lower half for any
+  positive definite Gram matrix, `Discretization.bss_lower`.
 * `Discretization.Infinite.Potentials`: the upper potential `Ψ_J(B) = Tr (J B⁻¹)` for a
   positive operator `J` of finite trace.
 * `Discretization.Infinite.Barrier`: the upper verifier and the barrier lemma for
@@ -160,4 +165,8 @@ state for a second family in a Hilbert space and the theorems for it, and
   decomposition of the identity, the condition dual to the Kiefer–Wolfowitz bound.
 * `Discretization.KieferWolfowitz.PointCount`: the two theorems with the number of points
   bounded.
+* `Discretization.UniformDiscretization`: the Kiefer–Wolfowitz design thinned by the
+  sparsification theorem, which gives the uniform norm with any `n ≥ m` points,
+  `Discretization.exists_uniform_discretization` and
+  `Discretization.exists_uniform_discretization_of_compact`.
 -/

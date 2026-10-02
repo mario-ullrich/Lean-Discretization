@@ -64,8 +64,10 @@ The last chapter answers which measure to discretize in the first place. There $
 arbitrary set carrying $m$ bounded, linearly independent functions, and Kiefer and
 Wolfowitz give, for every $\varepsilon > 0$, finitely many points and weights with
 $|f(y)|^2 \leq (m + \varepsilon) \sum_k w_k |f(x_k)|^2$ for every $y \in D$ and every $f$
-in their span: the uniform norm is dominated by the $L_2$ norm of that measure. Feeding
-such a measure to \Cref{thm:discretization} is how one reaches sampling projections.
+in their span: the uniform norm is dominated by the $L_2$ norm of that measure. Thinning
+such a measure with the sparsification theorem gives the same bound with any $n \geq m$
+points, at the price of the factor $(1 - \sqrt{(m-1)/n})^{-2}$
+(\Cref{thm:uniform-discretization-n-points}).
 
 A statement about these weighted sums is a statement about the matrix
 $\sum_i w_i \, a(x_i) a(x_i)^*$ and the operator $\sum_i w_i \, b(x_i) b(x_i)^*$, compared
@@ -1475,7 +1477,9 @@ finitely many points $x_k \in D$ with weights $w_k \geq 0$ summing to one for wh
 that is, the uniform norm is dominated by the $L_2$ norm of that measure with the
 constant $\sqrt{m + \varepsilon}$. The answer of Kiefer and Wolfowitz~\cite{KW} is that a
 measure whose Gram matrix has an almost maximal determinant does this. The complex and
-non-compact case is treated in~\cite{KPUU}.
+non-compact case is treated in~\cite{KPUU}. Thinning the measure with the sparsification
+theorem then gives the bound with any $n \geq m$ points
+(\Cref{thm:uniform-discretization-n-points}), also from~\cite{KPUU}.
 
 No topology and no measurable structure on $D$ are used: a finitely supported measure is
 a finite list of points with weights, and it is kept in that form until
@@ -1655,6 +1659,52 @@ for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$.
 This is \Cref{thm:uniform-discretization} read through the measure: integration against $\sum_k w_k \delta_{x_k}$ is the weighted sum over the points, for
 every strongly measurable integrand.
 \end{proof}
+
+Thinning the design with the sparsification theorem gives the bound with any number
+$n \geq m$ of points; this is the discretization of the uniform norm of~\cite{KPUU}, with
+the constant of \Cref{cor:bss}.
+
+\begin{theorem}[Discretization of the uniform norm with $n \geq m$ points]
+\label{thm:uniform-discretization-n-points}
+\lean{Discretization.exists_uniform_discretization,
+      Discretization.exists_uniform_discretization_of_compact,
+      Discretization.exists_uniform_discretization_of_design,
+      Discretization.exists_sparse_design, Discretization.bss_lower}
+\leanok
+Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
+$a = (a_k)_{k \in \iota}$ be bounded functions on a set $D$ with linearly independent
+coordinate functions, and let $\varepsilon > 0$. Then for every $n \geq m$ there are points
+$x_1, \dots, x_n \in D$ and weights $w_1, \dots, w_n > 0$ such that
+\[
+  |f(y)|^2 \; \leq \; \frac{m + \varepsilon}{\bigl( 1 - \sqrt{(m-1)/n} \bigr)^2}
+    \sum_{i=1}^n w_i \, |f(x_i)|^2
+\]
+for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$. If $D$ is a compact space
+and the $a_k$ are continuous, the same holds with $m$ in place of $m + \varepsilon$.
+\end{theorem}
+
+\begin{proof}
+\leanok
+\uses{thm:uniform-discretization, thm:uniform-discretization-compact, cor:bss,
+      lem:gram-identities, lem:design-quadratic-form}
+Take a design $x'_1, \dots, x'_N$ with weights $w'_k$ from
+\Cref{thm:uniform-discretization}, or from \Cref{thm:uniform-discretization-compact}, with
+the constant $K = m + \varepsilon$, or $K = m$, and positive definite Gram matrix $G$. On the
+index set $\{1, \dots, N\}$ with the probability measure $\sum_k w'_k \delta_k$, the family
+$k \mapsto a(x'_k)$ has Gram matrix $G$. \Cref{cor:bss}(a) for the normalized family
+$G^{-1/2} a(x'_k)$, whose Gram matrix is $1$ by \Cref{lem:gram-identities}(b), conjugated
+back by $G^{1/2}$, gives $n$ indices and weights $w_i > 0$ with
+$(1 - r)^2 \cdot G \preceq \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*$, where
+$r = \sqrt{(m-1)/n}$ and the $x_i$ are design points. Evaluated at the coefficient vector of
+$f$ with \Cref{lem:design-quadratic-form} this reads
+$(1 - r)^2 \sum_k w'_k |f(x'_k)|^2 \leq \sum_i w_i |f(x_i)|^2$, and $r < 1$ because
+$n \geq m$. The bound of the design finishes:
+$|f(y)|^2 \leq K \sum_k w'_k |f(x'_k)|^2 \leq K (1 - r)^{-2} \sum_i w_i |f(x_i)|^2$.
+\end{proof}
+
+For $n = 2m$ one has $r < 1/\sqrt{2}$, so the constant is below $12 (m + \varepsilon)$: the
+uniform norm on the span is controlled by $2m$ weighted point evaluations with a constant
+of order $\sqrt{m}$.
 
 \begin{lemma}[Few points suffice]
 \label{lem:few-design-points}
