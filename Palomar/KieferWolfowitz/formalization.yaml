@@ -13,7 +13,10 @@ project:
     is the sharp √m. In both cases at most 2m² + 1 points are needed. The measure
     is one whose Gram matrix has an almost maximal determinant; applying a
     discretization theorem to such a measure is how one arrives at sampling projections
-    with few points and small norm.
+    with few points and small norm. Thinned by the sparsification theorem, the measure
+    gives for every n ≥ m exactly n points with positive weights and
+    |f(y)|² ≤ (m + ε) / (1 − √((m−1)/n))² ∑ᵢ wᵢ |f(xᵢ)|², with m in place of m + ε on
+    a compact domain.
   authors:
     - "Mario Ullrich"
   license: "Apache-2.0"
@@ -38,8 +41,10 @@ sources:
     note: >-
       J. Math. Anal. Appl. 553 (2026), no. 2, Paper No. 129873. Proposition 9 is the
       statement formalized here, in the form the paper uses it for sampling
-      projections, and its proof is the one followed. The sampling projections built
-      from it are not formalized.
+      projections, and its proof is the one followed. The discretization of the
+      uniform norm with n ≥ m points that the paper obtains from it by the
+      sparsification theorem is formalized as well, with the constant √((m−1)/n). The
+      sampling projections built from it are not formalized.
     author_endorsement: "participated"
   - title: "The equivalence of two extremum problems"
     authors:
@@ -51,6 +56,20 @@ sources:
     note: >-
       Canad. J. Math. 12 (1960), 363–366. The original equivalence theorem for
       optimal designs, of which the advertised bound is the half used here.
+  - title: "Constructive discretization and approximation in reproducing kernel Hilbert spaces"
+    authors:
+      - "Abdellah Chkifa"
+      - "Matthieu Dolbeault"
+      - "David Krieg"
+      - "Mario Ullrich"
+    id: "arXiv:2602.18719"
+    type: "preprint"
+    location: "https://arxiv.org/abs/2602.18719"
+    relationship: "background"
+    note: >-
+      Its sparsification theorem, with √((m−1)/n) in place of the √(m/n) of Batson,
+      Spielman and Srivastava, thins the design to n ≥ m points; it is formalized in
+      the companion Discretization entry of this repository.
 
 related_formalizations: []
 
@@ -61,7 +80,12 @@ status:
     with the constant m + ε on an arbitrary set, and
     Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le,
     the sharp constant m for continuous functions on a compact domain. Both give a
-    design of at most 2m² + 1 points whose Gram matrix is positive definite.
+    design of at most 2m² + 1 points whose Gram matrix is positive definite. Also
+    advertised: Discretization.exists_uniform_discretization and
+    Discretization.exists_uniform_discretization_of_compact, the same two bounds with
+    any n ≥ m points with positive weights at the price of the factor
+    (1 − √((m−1)/n))⁻², obtained by thinning the design with the sparsification
+    theorem.
 
     Proved in the repository but not advertised here: the same two theorems without
     the bound on the number of points (exists_design_kieferWolfowitz,
@@ -70,9 +94,14 @@ status:
     (exists_probabilityMeasure_kieferWolfowitz), together with the identity
     gram a ϱ = designGram a x w that hands it to the discretization theorem; the
     reduction of any design to one with at most 2m² + 1 points and the same Gram
-    matrix (exists_design_card_le), by Carathéodory's theorem; and John's
-    decomposition of the identity over the design points
-    (sum_weight_quadForm_inv_eq_card, sum_weight_smul_quadForm_inv_eq_self).
+    matrix (exists_design_card_le), by Carathéodory's theorem; the thinning of any
+    design with positive definite Gram matrix to n ≥ m of its points
+    (Discretization.exists_sparse_design,
+    Discretization.exists_uniform_discretization_of_design), which rests on the lower
+    half of the sparsification theorem for a positive definite Gram matrix
+    (Discretization.bss_lower); and John's decomposition of the identity over the
+    design points (sum_weight_quadForm_inv_eq_card,
+    sum_weight_smul_quadForm_inv_eq_self).
 
     Not formalized: the sampling projections the source builds from this theorem.
   sorry_count: 0

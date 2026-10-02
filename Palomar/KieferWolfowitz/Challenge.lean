@@ -38,13 +38,22 @@ The measure is one whose Gram matrix has an almost maximal determinant. Applying
 discretization theorem to such a measure is how one arrives at sampling projections with few
 points and small norm.
 
+Thinning the design with the sparsification theorem of Batson, Spielman and Srivastava, in
+the sharpened form of Chkifa, Dolbeault, Krieg and Ullrich, gives for every `n ≥ m` exactly
+`n` points with positive weights and
+
+  `|f(y)|² ≤ (m + ε) / (1 - √((m-1)/n))² · ∑ᵢ wᵢ |f(xᵢ)|²`,
+
+with `m` in place of `m + ε` on a compact domain. For `n = 2m` the factor is below
+`12 (m + ε)`.
+
 ## The definition restated here
 
 * `Discretization.KieferWolfowitz.designGram`: the Gram matrix
   `∑ₖ wₖ a(xₖ) a(xₖ)*` of a design.
 
 It is reproduced verbatim from the development, under the same name, so that Comparator can
-match it against its counterpart there. The two theorems likewise carry the names they have
+match it against its counterpart there. The four theorems likewise carry the names they have
 in the development, so the names Palomar records are the ones a reader will find in the
 proof files.
 -/
@@ -119,5 +128,46 @@ theorem exists_design_kieferWolfowitz_of_compact_card_le [Nonempty ι] [Topologi
 end Theorems
 
 end KieferWolfowitz
+
+section UniformDiscretization
+
+variable {Ω ι : Type*} [Fintype ι] [DecidableEq ι]
+
+/-- **Discretization of the uniform norm with `n ≥ m` points**
+(Krieg–Pozharska–Ullrich–Ullrich).
+
+For linearly independent bounded functions `a₁, …, a_m` on an arbitrary set, every `ε > 0`
+and every `n ≥ m` there are `n` points with positive weights such that
+
+`|f(y)|² ≤ (m + ε) / (1 - √((m-1)/n))² · ∑ᵢ wᵢ |f(xᵢ)|²`
+
+for every point `y` and every function `f(y) = ⟪c, a(y)⟫` in the span.  It is the
+Kiefer–Wolfowitz design thinned to `n` of its points by the sparsification theorem. -/
+theorem exists_uniform_discretization [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
+    (hC : ∀ y i, ‖a y i‖ ≤ C) (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0)
+    {ε : ℝ} (hε : 0 < ε) {n : ℕ} (hmn : Fintype.card ι ≤ n) :
+    ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧ ∀ (c : ι → ℂ) (y : Ω),
+      ‖star c ⬝ᵥ a y‖ ^ 2 ≤ (Fintype.card ι + ε) / (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
+        * ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2 :=
+  sorry
+
+/-- **Discretization of the uniform norm with `n ≥ m` points on a compact domain.**
+
+For linearly independent continuous functions `a₁, …, a_m` on a compact space and every
+`n ≥ m` there are `n` points with positive weights such that
+
+`|f(y)|² ≤ m / (1 - √((m-1)/n))² · ∑ᵢ wᵢ |f(xᵢ)|²`
+
+for every point `y` and every `f` in the span. -/
+theorem exists_uniform_discretization_of_compact [Nonempty ι] [TopologicalSpace Ω]
+    [CompactSpace Ω] (a : Ω → ι → ℂ) (hcont : ∀ i, Continuous fun y => a y i)
+    (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) {n : ℕ}
+    (hmn : Fintype.card ι ≤ n) :
+    ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧ ∀ (c : ι → ℂ) (y : Ω),
+      ‖star c ⬝ᵥ a y‖ ^ 2 ≤ Fintype.card ι / (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
+        * ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2 :=
+  sorry
+
+end UniformDiscretization
 
 end Discretization

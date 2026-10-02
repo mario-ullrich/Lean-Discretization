@@ -3,7 +3,9 @@
   "solution_module": "Palomar.KieferWolfowitz.Solution",
   "theorem_names": [
     "Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le",
-    "Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le"
+    "Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le",
+    "Discretization.exists_uniform_discretization",
+    "Discretization.exists_uniform_discretization_of_compact"
   ],
   "definition_names": [
     "Discretization.KieferWolfowitz.designGram"
