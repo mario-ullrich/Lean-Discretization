@@ -157,12 +157,14 @@ jobs:
       # Make the title page reachable from every page and the repository from
       # the title page. The menu of each chapter page gains a first entry
       # "Home" that leads to index.html, as the dependency graph page already
-      # has, and the title page a link to the GitHub repository below the
+      # has, followed by the entry for the dependency graph, which
+      # leanblueprint puts at the end; the title page gains a link to the
+      # GitHub repository below the
       # author. plasTeX renders neither: `\home` and `\github` in web.tex only
       # feed other templates.
       - name: Link the title page from every page and the repository from it
         run: |
-          sed -i 's#<ul class="sub-toc-0">#&\n<li ><a href="index.html">Home</a></li>#' blueprint/web/*.html
+          sed -i '/^<li ><a href="dep_graph_document.html">Dependency graph<\/a><\/li>$/d; s#<ul class="sub-toc-0">#&\n<li ><a href="index.html">Home</a></li>\n<li ><a href="dep_graph_document.html">Dependency graph</a></li>#' blueprint/web/*.html
           sed -i 's#<span class="author">Mario Ullrich</span>#&</p>\n<p class="repo-link">GitHub: <a href="https://github.com/mario-ullrich/Lean-Discretization">Lean-Discretization</a>#' blueprint/web/index.html
 
       # Point the `\lean{...}` links at this repository. leanblueprint builds
