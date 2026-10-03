@@ -321,8 +321,8 @@ from Bochner integrals to Gram matrices. The matrix facts lie under
 `BasicResults/Matrix/`, their operator counterparts under `BasicResults/Operator/`, and
 the general ones at the top level;
 [MathlibCandidates.md](MathlibCandidates.md) lists what could be upstreamed.
-`blueprint/` holds the LaTeX source of the blueprint and the script that points its
-`\lean` links at this repository. `Palomar/` holds the submission surfaces for the
+`blueprint/` holds the LaTeX source of the blueprint and the scripts that point its
+`\lean` links at this repository and order its dependency graph. `Palomar/` holds the submission surfaces for the
 [Palomar registry](https://palomar-registry.org), one directory per registered result,
 each with a `Challenge` module stating the advertised theorems and a `Solution` module
 supplying their proofs from the development. The placeholder `sorry`s in the `Challenge`
