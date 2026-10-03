@@ -55,7 +55,7 @@ This is \Cref{thm:discretization}, read through quadratic forms. The two familie
 asymmetrically: the first through its size $m$, the second only through $M$, which is at
 most $\dim H$ and much smaller as soon as the eigenvalues of $J$ decay. For the family,
 $g$ runs through the functions $\sum_k c_k \, b_k$ with $c \in \ell_2(\kappa)$ and
-$\|u\| = \|c\|$ (\Cref{cor:countable-discretization}). For the kernel,
+$\|u\| = \|c\|$. For the kernel,
 $|\langle g, b(x) \rangle| = |g(x)|$ for $g \in H$, and the second bound becomes the
 discretization of the norm of the space,
 $\sum_i w_i |g(x_i)|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \|g\|_H^2$ for every $g \in H$
@@ -103,7 +103,15 @@ $(1 - \sqrt{(m-1)/n})^2 \lambda_{\min}(I)$ in Loewner form.
       Discretization.bss_generalized_of_small_dim,
       Discretization.UpperBarrier.bss_generalized_of_small_dim,
       Discretization.bss_generalized_of_unique_of_small_dim,
-      Discretization.UpperBarrier.bss_generalized_of_unique_of_small_dim}
+      Discretization.UpperBarrier.bss_generalized_of_unique_of_small_dim,
+      Discretization.bss_generalized, Discretization.Countable.bss_generalized,
+      Discretization.exists_discretization, Discretization.Countable.exists_discretization,
+      Discretization.Countable.ae_mem_l2, Discretization.Countable.exists_measurableSet_mem_l2,
+      Discretization.Countable.toLp, Discretization.Countable.memLp_toLp,
+      Discretization.Countable.inner_toLp, Discretization.Countable.integral_norm_sq_toLp,
+      Discretization.Countable.gramOp, Discretization.Countable.gramOp_injective,
+      Discretization.Countable.gramOp_le, Discretization.Countable.integral_comap_val,
+      Discretization.Countable.gram_comap_val, HilbertBasis.separableSpace}
 \leanok
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let $H$
 be a nonzero separable complex Hilbert space. Let $a : \Omega \to \mathbb{C}^{\iota}$ be
@@ -137,81 +145,25 @@ $J$ is injective exactly when $\langle u, b(\cdot) \rangle = 0$ almost everywher
 $u = 0$. Equivalently, $J = T^* T$ for the operator $T : H \to L_2(\mu)$,
 $u \mapsto \langle b(\cdot), u \rangle$, and $\Lambda$ bounds $\|T\|^2$.
 
-For a countable family the theorem takes the form in which~\cite{CDKU} state their
-Theorem 3, with the Gram matrix of the family in place of the Gram operator.
-
-\begin{corollary}[Discretization for a countable second family]
-\label{cor:countable-discretization}
-\lean{Discretization.bss_generalized, Discretization.Countable.bss_generalized,
-      Discretization.exists_discretization, Discretization.Countable.exists_discretization,
-      Discretization.Countable.ae_mem_l2, Discretization.Countable.exists_measurableSet_mem_l2,
-      Discretization.Countable.toLp, Discretization.Countable.memLp_toLp,
-      Discretization.Countable.inner_toLp, Discretization.Countable.integral_norm_sq_toLp,
-      Discretization.Countable.gramOp, Discretization.Countable.gramOp_injective,
-      Discretization.Countable.gramOp_le, Discretization.Countable.integral_comap_val,
-      Discretization.Countable.gram_comap_val, HilbertBasis.separableSpace}
-\leanok
-Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let
-$\kappa$ be a nonempty set that is finite or countably infinite. Let
-$a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in every coordinate with
-$I = \int_\Omega a(x) a(x)^* \, d\mu(x)$ positive definite, and let
-$b = (b_k)_{k \in \kappa}$ be square-integrable functions on $\Omega$ with
-$\sum_k \|b_k\|_{L_2}^2 < \infty$. Let $J$ be their Gram matrix, with entries
-$J_{kl} = \int_\Omega b_k \overline{b_l} \, d\mu$, as an operator on $\ell_2(\kappa)$;
-assume that $J$ is injective, let $\Lambda > 0$ satisfy $J \preceq \Lambda \cdot 1$, and
-put $m = \#\iota$ and $M = \Tr J / \Lambda = \sum_k \|b_k\|_{L_2}^2 / \Lambda$. Then for
-every $n \geq m$ there are points $x_1, \dots, x_n \in \Omega$ with
-$\sum_k |b_k(x_i)|^2 < \infty$ and weights $w_1, \dots, w_n > 0$ with
-\[
-  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \cdot I
-    \; \preceq \; \sum_{i=1}^n w_i \, a(x_i) a(x_i)^*
-\]
-and
-\[
-  \sum_{i=1}^n w_i \, |g(x_i)|^2
-    \; \leq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \sum_{k \in \kappa} |c_k|^2
-  \qquad \text{for every } c \in \ell_2(\kappa), \text{ where } g = \sum_{k \in \kappa} c_k \, b_k .
-\]
-\end{corollary}
-
-\begin{proof}
-\leanok
-\uses{thm:discretization, lem:gram-operator}
-For countably infinite $\kappa$, Tonelli gives
-$\int_\Omega \sum_k |b_k|^2 \, d\mu = \sum_k \|b_k\|^2 < \infty$, so the sum is finite
-almost everywhere, and the complement of a measurable null set containing the exceptional
-points is a measurable set $S \subseteq \Omega$ of full measure on which
-$b(x) = (b_k(x))_k$ lies in $\ell_2(\kappa)$. Restricting the measure space to $S$ changes
-neither $I$ nor any of the integrals. On $S$ the finite partial sums
-$\sum_{k \in F} b_k(x) e_k$ converge to $b(x)$ in $\ell_2(\kappa)$, so $b$ is strongly
-measurable, and $\int_S \|b\|^2 \, d\mu = \sum_k \|b_k\|^2$ by Tonelli again; the space
-$\ell_2(\kappa)$ is separable, since its standard basis is countable. As
-$\langle c, b(x) \rangle = \sum_k \overline{c_k} \, b_k(x)$, the Gram operator of $b$ has
-the quadratic form $\int_S |\sum_k \overline{c_k} \, b_k|^2 \, d\mu$ of $J$ by
-\Cref{lem:gram-operator}(a), so it is $J$. \Cref{thm:discretization} on $S$ gives the
-points, which therefore lie in $S$, and the weights; its upper bound in the order of
-operators, evaluated at $\bar c$, is the bound claimed.
-
-For finite $\kappa$ the same argument works with $\mathbb{C}^{\kappa}$ in place of
-$\ell_2(\kappa)$. The formalisation proves this case with the matrix form of the upper
-side (the end of the proof of \Cref{thm:discretization}).
-\end{proof}
-
-In the formalisation the two hypotheses on $J$ are stated on the family, as in
-\Cref{lem:gram-operator}(b) and (c): $J \preceq \Lambda \cdot 1$ is the bound
-$\int_\Omega |\sum_k \overline{c_k} \, b_k|^2 \, d\mu \leq \Lambda \|c\|^2$ for every
-$c \in \ell_2(\kappa)$, and injectivity says that this integral vanishes only for $c = 0$.
-For finite
-$\kappa$ the corollary is \texttt{Discretization.bss\_generalized}, where injectivity is
-positive definiteness and both finiteness conditions are automatic; for countable
-$\kappa$ it is \texttt{Discretization.Countable.bss\_generalized}. With $I = 1$ the first
-bound reads, as in \Cref{cor:l2-discretization},
+For a countable family $b = (b_k)_{k \in \kappa}$ of square-integrable functions with
+$\sum_k \|b_k\|_{L_2}^2 < \infty$ the theorem takes the form in which~\cite{CDKU} state
+their Theorem 3: the Gram matrix $J = (\int_\Omega b_k \overline{b_l} \, d\mu)_{k,l}$, an
+operator on $\ell_2(\kappa)$, replaces the Gram operator,
+$M = \sum_k \|b_k\|_{L_2}^2 / \Lambda$, and the upper bound, evaluated at
+$c \in \ell_2(\kappa)$, reads
+$\sum_i w_i |\sum_k c_k \, b_k(x_i)|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \|c\|^2$.
+Nothing pointwise is assumed: by Tonelli, $\sum_k |b_k(x)|^2 < \infty$ almost everywhere,
+and on that set $b(x) = (b_k(x))_k$ is a square-integrable map into $\ell_2(\kappa)$ with
+Gram operator $J$, to which the theorem applies; the points are chosen there. In Lean this
+is \texttt{Discretization.bss\_generalized} for finite $\kappa$, proved with matrices, and
+\texttt{Discretization.Countable.bss\_generalized} for countable $\kappa$, with the
+hypotheses on $J$ stated on the family as in \Cref{lem:gram-operator}(b) and (c); for
+$I = 1$ the lower bound reads
 $(1 - \sqrt{(m-1)/n})^2 \int_\Omega |f|^2 \, d\mu \leq \sum_i w_i |f(x_i)|^2$ for every
-$f \in \operatorname{span}\{a_k\}$ (\texttt{Discretization.exists\_discretization} for
-finite $\kappa$, \texttt{Discretization.Countable.exists\_discretization} for countable
-$\kappa$).
+$f \in \operatorname{span}\{a_k\}$ (\texttt{Discretization.exists\_discretization},
+\texttt{Discretization.Countable.exists\_discretization}).
 
-For $b = a$, \Cref{cor:countable-discretization} gives the sparsification theorem of Batson,
+For $b = a$, \Cref{thm:discretization} gives the sparsification theorem of Batson,
 Spielman and Srivastava~\cite{BSS} in a slightly stronger form: $\sqrt{(m-1)/n}$ in place
 of their $\sqrt{m/n}$, which comes from~\cite{CDKU}. Part (b) below is their statement for
 finitely many vectors, over $\mathbb{C}$.
@@ -246,9 +198,10 @@ $s_y \geq 0$, at most $n$ of them nonzero, with
 
 \begin{proof}
 \leanok
-\uses{cor:countable-discretization}
-(a) This is \Cref{cor:countable-discretization} for $b = a$ and $I = 1$: the Gram matrix of the
-second family is then the identity, $\Lambda = 1$ bounds it, and its effective dimension is
+\uses{thm:discretization}
+(a) This is \Cref{thm:discretization} for $b = a$, $H = \mathbb{C}^{\iota}$ and $I = 1$: the
+Gram operator of the second family is then the identity, $\Lambda = 1$ bounds it, and its
+effective dimension is
 $\Tr 1 / 1 = m$, so both frame constants are built from the same $r = \sqrt{(m-1)/n}$.
 
 (b) The counting measure on $Y$ has Gram matrix $\sum_y v_y v_y^* = 1$, so (a) applies to
@@ -324,8 +277,8 @@ for every $u \in H$; Lean proves the corollary in this form
 (\texttt{Discretization.Infinite.exists\_discretization}) and reads it off for
 $b(x) = k_x$. In the coordinates of an orthonormal basis $(e_k)$ of $H$, with
 $\|g\|_H^2 = \sum_k |c_k|^2$ for $g = \sum_k c_k \, e_k$ and
-$\sum_k \|e_k\|_{L_2}^2 = \int_\Omega K(x, x) \, d\mu$, the second bound is that of
-\Cref{cor:countable-discretization} for the family $(e_k)$. Conversely, on the set where
+$\sum_k \|e_k\|_{L_2}^2 = \int_\Omega K(x, x) \, d\mu$, the second bound is the family form
+stated after \Cref{thm:discretization}, for $(e_k)$. Conversely, on the set where
 $\sum_k |b_k(x)|^2 < \infty$, the functions $\sum_k c_k \, b_k$ of a countable family with
 injective Gram operator form such a space, with orthonormal basis $(b_k)$.
 
@@ -1427,7 +1380,7 @@ free of operators.
 The kernel sections of a reproducing kernel Hilbert space, the second case of $b$ named in
 \Cref{ch:problem}, form a square-integrable map into a separable Hilbert space, to which
 \Cref{thm:discretization} applies. The first case, a countable family, needs only
-Tonelli's theorem and is treated in the proof of \Cref{cor:countable-discretization}.
+Tonelli's theorem and is treated after \Cref{thm:discretization}.
 
 \begin{lemma}[Kernel sections]
 \label{lem:kernel-sections}
