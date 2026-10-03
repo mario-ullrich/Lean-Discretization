@@ -127,6 +127,10 @@ jobs:
       #   * Draw every edge solid. plastexdepgraph dashes the edges that come
       #     from a `\uses` inside a statement; here these say only that a
       #     statement uses a definition, so one kind of arrow suffices.
+      #   * Inside the row below the discretization theorem, invisible edges
+      #     order cor:one-sided-discretization, cor:bss and cor:l2-discretization
+      #     from left to right, so that none of the edges from the theorem and
+      #     from lem:kernel-sections cross.
       #   * Let two edges span two rows (minlen=2): the one from
       #     lem:rank-one-updates to lem:lower-potential-change, and the one from
       #     the Kiefer–Wolfowitz theorem to its thinning with equal weights.
@@ -134,15 +138,18 @@ jobs:
       #     of 18.
       #   * Set the nodes of the uniform-norm chapter apart: they form a cluster
       #     labelled with the chapter title, with a thin grey rounded frame and
-      #     a wide margin, appended before the closing brace of the graph source
+      #     a narrow margin, appended before the closing brace of the graph source
       #     "}`)" (unique on the page), so that the nodes keep the default
       #     attributes declared at the top. Two invisible edges of minimal
       #     length 2 from lem:lower-barrier to the sources of the cluster keep
-      #     its frame a row clear of the rest. Every name listed must be a node
+      #     its frame a row clear of the rest, and a rank separation of 0.75
+      #     inch, instead of 0.5, leaves some air above the frame. An invisible
+      #     spacer node right of lem:kernel-sections, in one row with it, keeps
+      #     the frame some way off the nodes to its left. Every name listed must be a node
       #     of the graph; a missing one would appear as an empty node.
-      - name: Tidy dependency graph (recolor sorry-nodes white, drop unused legend rows, draw all edges solid, set the uniform block apart)
+      - name: Tidy dependency graph (recolor sorry-nodes white, drop unused legend rows, draw all edges solid, order the bss row, set the uniform block apart)
         run: |
-          sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\[style=dashed\]//g; s/"lem:rank-one-updates" -> "lem:lower-potential-change"/& [minlen=2]/; s/"thm:uniform-discretization" -> "cor:uniform-discretization-equal-weights"/& [minlen=2]/; s/}`)/ subgraph cluster_uniform { label="Discretization of the uniform norm"; labeljust=l; fontcolor="#808080"; color="#b0b0b0"; style=rounded; penwidth=1; margin=28; "lem:rank-one-determinant"; "lem:mixing-gain"; "prop:almost-maximal-determinant"; "lem:few-design-points"; "thm:uniform-discretization"; "cor:optimal-design"; "thm:uniform-discretization-optimal"; "cor:uniform-discretization-equal-weights"; } "lem:lower-barrier" -> "lem:mixing-gain" [style=invis, minlen=2]; "lem:lower-barrier" -> "lem:rank-one-determinant" [style=invis, minlen=2]; }`)/' blueprint/web/dep_graph_document.html
+          sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\[style=dashed\]//g; s/"lem:rank-one-updates" -> "lem:lower-potential-change"/& [minlen=2]/; s/"thm:uniform-discretization" -> "cor:uniform-discretization-equal-weights"/& [minlen=2]/; s/}`)/ ranksep=0.75; subgraph cluster_uniform { label="Discretization of the uniform norm"; labeljust=l; fontcolor="#808080"; color="#b0b0b0"; style=rounded; penwidth=1; margin=12; "lem:rank-one-determinant"; "lem:mixing-gain"; "prop:almost-maximal-determinant"; "lem:few-design-points"; "thm:uniform-discretization"; "cor:optimal-design"; "thm:uniform-discretization-optimal"; "cor:uniform-discretization-equal-weights"; } "lem:lower-barrier" -> "lem:mixing-gain" [style=invis, minlen=2]; "lem:lower-barrier" -> "lem:rank-one-determinant" [style=invis, minlen=2]; subgraph { rank=same; "cor:one-sided-discretization" -> "cor:bss" -> "cor:l2-discretization" [style=invis]; } "spacer" [style=invis, label="", width=1.0]; subgraph { rank=same; "lem:kernel-sections" -> "spacer" [style=invis]; } }`)/' blueprint/web/dep_graph_document.html
 
       # Point the `\lean{...}` links at this repository. leanblueprint builds
       # them as `{dochome}/find/#doc/Decl` and, with no `\dochome` set, falls

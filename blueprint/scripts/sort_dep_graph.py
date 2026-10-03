@@ -4,9 +4,10 @@ plastexdepgraph writes the nodes and edges of the dependency graph in the iterat
 of Python sets, and that order changes from one run to the next, because Python hashes
 strings with a random seed per process.  Graphviz lays a graph out partly according to the
 order of its statements, so the same blueprint gave mirrored pictures in consecutive
-builds.  This script sorts the node statements by name and the edge statements by their
-endpoints, so that the graph source, and with it the picture, depends only on the
-blueprint.
+builds.  This script sorts the node statements by name, in descending order, and the edge
+statements by their endpoints, so that the graph source, and with it the picture, depends
+only on the blueprint.  Either direction gives a fixed picture; the descending one is the
+one whose layout was chosen for this blueprint.
 
 The graph source is the DOT text that the page passes to `renderDot`.  The default
 statements for the graph, the nodes and the edges stay in front and subgraphs at the end,
@@ -67,7 +68,7 @@ def sort_graph(dot):
     defaults = [s for s, k in zip(statements, keyword) if k in DEFAULTS]
     subgraphs = [s for s, k in zip(statements, keyword) if k == "subgraph"]
     others = [s for s, k in zip(statements, keyword) if k not in DEFAULTS + ("subgraph",)]
-    nodes = sorted((s for s in others if " -> " not in head(s)), key=head)
+    nodes = sorted((s for s in others if " -> " not in head(s)), key=head, reverse=True)
     edges = sorted((s for s in others if " -> " in head(s)), key=head)
     ordered = defaults + nodes + edges + subgraphs
     assert len(ordered) == len(statements)
