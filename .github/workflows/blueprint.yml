@@ -154,6 +154,17 @@ jobs:
         run: |
           sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\[style=dashed\]//g; s/<h1 id="doc_title">Dependencies<\/h1>/<h1 id="doc_title">Norm Discretization: Dependencies<\/h1>/; s/"lem:rank-one-updates" -> "lem:lower-potential-change"/& [minlen=2]/; s/"thm:uniform-discretization" -> "cor:uniform-discretization-equal-weights"/& [minlen=2]/; s/}`)/ ranksep=0.6; subgraph cluster_uniform { label="Discretization of the uniform norm"; labeljust=l; fontcolor="#808080"; color="#b0b0b0"; style=rounded; penwidth=1; margin=12; "lem:rank-one-determinant"; "lem:mixing-gain"; "prop:almost-maximal-determinant"; "lem:few-design-points"; "thm:uniform-discretization"; "cor:optimal-design"; "thm:uniform-discretization-optimal"; "cor:uniform-discretization-equal-weights"; } "lem:lower-barrier" -> "lem:mixing-gain" [style=invis, minlen=2]; "lem:lower-barrier" -> "lem:rank-one-determinant" [style=invis, minlen=2]; subgraph { rank=same; "cor:one-sided-discretization" -> "cor:bss" -> "cor:l2-discretization" [style=invis]; } "spacer" [style=invis, label="", width=3.4]; subgraph { rank=same; "lem:kernel-sections" -> "spacer" [style=invis]; } }`)/' blueprint/web/dep_graph_document.html
 
+      # Make the title page reachable from every page and the repository from
+      # the title page. The menu of each chapter page gains a first entry
+      # "Home" that leads to index.html, as the dependency graph page already
+      # has, and the title page a link to the GitHub repository below the
+      # author. plasTeX renders neither: `\home` and `\github` in web.tex only
+      # feed other templates.
+      - name: Link the title page from every page and the repository from it
+        run: |
+          sed -i 's#<ul class="sub-toc-0">#&\n<li ><a href="index.html">Home</a></li>#' blueprint/web/*.html
+          sed -i 's#<span class="author">Mario Ullrich</span>#&</p>\n<p class="repo-link">GitHub: <a href="https://github.com/mario-ullrich/Lean-Discretization">Lean-Discretization</a>#' blueprint/web/index.html
+
       # Point the `\lean{...}` links at this repository. leanblueprint builds
       # them as `{dochome}/find/#doc/Decl` and, with no `\dochome` set, falls
       # back to Mathlib's documentation site, where none of this project's
