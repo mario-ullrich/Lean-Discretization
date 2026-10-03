@@ -131,6 +131,8 @@ jobs:
       #     order cor:one-sided-discretization, cor:bss and cor:l2-discretization
       #     from left to right, so that none of the edges from the theorem and
       #     from lem:kernel-sections cross.
+      #   * Head the page with the project title, "Norm Discretization:
+      #     Dependencies".
       #   * Let two edges span two rows (minlen=2): the one from
       #     lem:rank-one-updates to lem:lower-potential-change, and the one from
       #     the Kiefer–Wolfowitz theorem to its thinning with equal weights.
@@ -147,9 +149,9 @@ jobs:
       #     spacer node right of lem:kernel-sections, in one row with it, keeps
       #     the frame some way off the nodes to its left. Every name listed must be a node
       #     of the graph; a missing one would appear as an empty node.
-      - name: Tidy dependency graph (recolor sorry-nodes white, drop unused legend rows, draw all edges solid, order the bss row, set the uniform block apart)
+      - name: Tidy dependency graph (recolor sorry-nodes white, drop unused legend rows, draw all edges solid, order the bss row, title the page, set the uniform block apart)
         run: |
-          sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\[style=dashed\]//g; s/"lem:rank-one-updates" -> "lem:lower-potential-change"/& [minlen=2]/; s/"thm:uniform-discretization" -> "cor:uniform-discretization-equal-weights"/& [minlen=2]/; s/}`)/ ranksep=0.75; subgraph cluster_uniform { label="Discretization of the uniform norm"; labeljust=l; fontcolor="#808080"; color="#b0b0b0"; style=rounded; penwidth=1; margin=12; "lem:rank-one-determinant"; "lem:mixing-gain"; "prop:almost-maximal-determinant"; "lem:few-design-points"; "thm:uniform-discretization"; "cor:optimal-design"; "thm:uniform-discretization-optimal"; "cor:uniform-discretization-equal-weights"; } "lem:lower-barrier" -> "lem:mixing-gain" [style=invis, minlen=2]; "lem:lower-barrier" -> "lem:rank-one-determinant" [style=invis, minlen=2]; subgraph { rank=same; "cor:one-sided-discretization" -> "cor:bss" -> "cor:l2-discretization" [style=invis]; } "spacer" [style=invis, label="", width=1.0]; subgraph { rank=same; "lem:kernel-sections" -> "spacer" [style=invis]; } }`)/' blueprint/web/dep_graph_document.html
+          sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\[style=dashed\]//g; s/<h1 id="doc_title">Dependencies<\/h1>/<h1 id="doc_title">Norm Discretization: Dependencies<\/h1>/; s/"lem:rank-one-updates" -> "lem:lower-potential-change"/& [minlen=2]/; s/"thm:uniform-discretization" -> "cor:uniform-discretization-equal-weights"/& [minlen=2]/; s/}`)/ ranksep=0.75; subgraph cluster_uniform { label="Discretization of the uniform norm"; labeljust=l; fontcolor="#808080"; color="#b0b0b0"; style=rounded; penwidth=1; margin=12; "lem:rank-one-determinant"; "lem:mixing-gain"; "prop:almost-maximal-determinant"; "lem:few-design-points"; "thm:uniform-discretization"; "cor:optimal-design"; "thm:uniform-discretization-optimal"; "cor:uniform-discretization-equal-weights"; } "lem:lower-barrier" -> "lem:mixing-gain" [style=invis, minlen=2]; "lem:lower-barrier" -> "lem:rank-one-determinant" [style=invis, minlen=2]; subgraph { rank=same; "cor:one-sided-discretization" -> "cor:bss" -> "cor:l2-discretization" [style=invis]; } "spacer" [style=invis, label="", width=1.0]; subgraph { rank=same; "lem:kernel-sections" -> "spacer" [style=invis]; } }`)/' blueprint/web/dep_graph_document.html
 
       # Point the `\lean{...}` links at this repository. leanblueprint builds
       # them as `{dochome}/find/#doc/Decl` and, with no `\dochome` set, falls
