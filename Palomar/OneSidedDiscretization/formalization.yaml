@@ -92,9 +92,9 @@ status:
     every n ≥ m and with no further hypothesis.
 
     Proved in the repository but not advertised here: the weighted form with weights
-    0 < wᵢ ≤ 1/n produced by the construction (Discretization.bss_lower_le_one_div), and
-    its normalized cases (Discretization.bss_lower_le_one_div_of_gram_eq_one,
-    Discretization.bss_lower_le_one_div_of_gram_eq_one_of_two_le,
+    0 < wᵢ ≤ 1/n that the construction produces for a normalized family
+    (Discretization.bss_lower_le_one_div_of_gram_eq_one, with its cases
+    Discretization.bss_lower_le_one_div_of_gram_eq_one_of_two_le and
     Discretization.bss_lower_le_one_div_of_gram_eq_one_of_unique).
 
     Not formalized: the cases 2 < p < ∞ of Proposition 8 of the source.

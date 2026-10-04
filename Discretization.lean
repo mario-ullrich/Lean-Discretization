@@ -115,9 +115,9 @@ again at the top level.
 * `Discretization.BSS`: the case of a single family, which is the sparsification theorem
   of Batson, Spielman and Srivastava, `Discretization.bss`.
 * `Discretization.OneSidedDiscretization`: one-sided discretization, the lower frame bound
-  on a probability space with weights at most `1/n` and hence with equal weights, from the
-  one-sided construction with the constant upper verifier `n`:
-  `Discretization.bss_lower_le_one_div`,
+  on a probability space with equal weights, from the one-sided construction with the
+  constant upper verifier `n`:
+  `Discretization.bss_lower_equal_weights`,
   `Discretization.exists_one_sided_discretization`.
 * `Discretization.Infinite.Potentials`: the upper potential `Ψ_J(B) = Tr (J B⁻¹)` for a
   positive operator `J` of finite trace.

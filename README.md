@@ -94,9 +94,9 @@ and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0
   weights `s_k ≥ 0`, at most `n` of them nonzero, with `∑ s_k v_k v_k*` between the same two
   constants (`Discretization.bss_of_sum_eq_one`).
 * **One-sided discretization.** On a probability space the lower frame bound holds with
-  weights at most `1/n`: for every `n ≥ m` there are points `x₁, …, xₙ ∈ Ω`, not necessarily distinct, and
-  weights `0 < wᵢ ≤ 1/n` with `(1 - √((m-1)/n))² • I ≤ ∑ wᵢ a(xᵢ) a(xᵢ)*`
-  (`Discretization.bss_lower_le_one_div`), hence
+  equal weights: for every `n ≥ m` there are points `x₁, …, xₙ ∈ Ω`, not necessarily
+  distinct, with `(1 - √((m-1)/n))² • I ≤ (1/n) ∑ a(xᵢ) a(xᵢ)*`
+  (`Discretization.bss_lower_equal_weights`), hence
   `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ (1/n) ∑ |f(xᵢ)|²` for every `f` in the span of the first
   family (`Discretization.exists_one_sided_discretization`). This is the theorem for the
   constant second family `b ≡ 1` in `H = ℂ`, with `M = 1`: the construction for a small

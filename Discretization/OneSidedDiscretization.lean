@@ -40,8 +40,7 @@ is `wᵢ ≤ 1/n`.  The upper frame bound of the theorem records only the sum `�
 bound on each weight is read off the construction.  For a one-element family a single point
 serves, as in `Discretization.bss_generalized_of_unique_of_small_dim`.
 
-The results are `Discretization.bss_lower_le_one_div` for the weights,
-`Discretization.bss_lower_equal_weights` in the Loewner order and
+The results are `Discretization.bss_lower_equal_weights` in the Loewner order and
 `Discretization.exists_one_sided_discretization` for the norm.
 -/
 
@@ -136,47 +135,30 @@ theorem bss_lower_le_one_div_of_gram_eq_one [Fintype ι] [Nonempty ι] [IsProbab
 
 /-! ### A positive definite Gram matrix -/
 
-/-- **The lower half of the sparsification theorem with weights at most `1/n`.**
+/-- **The lower half of the sparsification theorem with equal weights.**
 
 Let `μ` be a probability measure and `a` a family of square-integrable functions indexed by a
 finite nonempty set `ι` of `m` elements whose Gram matrix `I = ∫ a a* dμ` is positive
-definite.  Then for every `n ≥ m` there are `n` points, not necessarily distinct, and weights
-`0 < wᵢ ≤ 1/n` with
-
-`(1 - √((m-1)/n))² • I ≤ ∑ wᵢ a(xᵢ) a(xᵢ)*`.
-
-This is `Discretization.bss_lower_le_one_div_of_gram_eq_one` for the normalized family
-`I^{-1/2} a`, conjugated back by `Discretization.bss_of_gram_eq_one`, which carries the bound
-on the weights along. -/
-theorem bss_lower_le_one_div [Fintype ι] [Nonempty ι] [IsProbabilityMeasure μ]
-    {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hI : (gram a μ).PosDef)
-    {n : ℕ} (hmn : Fintype.card ι ≤ n) :
-    ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧ (∀ i, w i ≤ 1 / n) ∧
-      (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 • gram a μ
-        ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) := by
-  obtain ⟨x, w, hw, hlow, hle⟩ := bss_of_gram_eq_one ha hI
-    (C := (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2)
-    (P := fun _ w => ∀ i, w i ≤ 1 / (n : ℝ))
-    fun _ ha' hgram' => by
-      obtain ⟨x, w, hw, hle, hlow⟩ := bss_lower_le_one_div_of_gram_eq_one ha' hgram' hmn
-      exact ⟨x, w, hw, hlow, hle⟩
-  exact ⟨x, w, hw, hle, hlow⟩
-
-/-- **The lower half of the sparsification theorem with equal weights.**
-
-Under the hypotheses of `Discretization.bss_lower_le_one_div` there are `n` points, not
-necessarily distinct, with
+definite.  Then for every `n ≥ m` there are `n` points, not necessarily distinct, with
 
 `(1 - √((m-1)/n))² • I ≤ (1/n) • ∑ᵢ a(xᵢ) a(xᵢ)*`.
 
-Each weight `wᵢ ≤ 1/n` may be raised to `1/n`, since the matrices `a(xᵢ) a(xᵢ)*` are positive
-semidefinite. -/
+The construction `Discretization.bss_lower_le_one_div_of_gram_eq_one` for the normalized
+family `I^{-1/2} a`, conjugated back by `Discretization.bss_of_gram_eq_one`, gives weights
+`0 < wᵢ ≤ 1/n`.  Each weight may be raised to `1/n`, since the matrices `a(xᵢ) a(xᵢ)*` are
+positive semidefinite. -/
 theorem bss_lower_equal_weights [Fintype ι] [Nonempty ι] [IsProbabilityMeasure μ]
     {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hI : (gram a μ).PosDef)
     {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ x : Fin n → Ω, (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 • gram a μ
       ≤ (1 / (n : ℝ)) • ∑ i, vecMulVec (a (x i)) (star (a (x i))) := by
-  obtain ⟨x, w, -, hle, hlow⟩ := bss_lower_le_one_div ha hI hmn
+  -- the construction for the normalized family, with the bound on the weights carried along
+  obtain ⟨x, w, -, hlow, hle⟩ := bss_of_gram_eq_one ha hI
+    (C := (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2)
+    (P := fun _ w => ∀ i, w i ≤ 1 / (n : ℝ))
+    fun _ ha' hgram' => by
+      obtain ⟨x, w, hw, hle, hlow⟩ := bss_lower_le_one_div_of_gram_eq_one ha' hgram' hmn
+      exact ⟨x, w, hw, hlow, hle⟩
   refine ⟨x, hlow.trans ?_⟩
   rw [Finset.smul_sum]
   exact Finset.sum_le_sum fun i _ =>
@@ -192,20 +174,18 @@ finite nonempty set `ι` of `m` elements with positive definite Gram matrix.  Th
 `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ (1/n) ∑ᵢ |f(xᵢ)|²`
 
 for every function `f(y) = ⟪c, a(y)⟫` in the span.  This is
-`Discretization.bss_lower_le_one_div` read through quadratic forms
-(`Discretization.mul_integral_norm_sq_le_sum`), with each weight raised to `1/n`. -/
+`Discretization.bss_lower_equal_weights` read through quadratic forms
+(`Discretization.mul_integral_norm_sq_le_sum`) with the constant weights `1/n`. -/
 theorem exists_one_sided_discretization [Fintype ι] [Nonempty ι] [IsProbabilityMeasure μ]
     {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hI : (gram a μ).PosDef)
     {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ x : Fin n → Ω, ∀ c : ι → ℂ,
       (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 * ∫ y, ‖star c ⬝ᵥ a y‖ ^ 2 ∂μ
         ≤ 1 / (n : ℝ) * ∑ i, ‖star c ⬝ᵥ a (x i)‖ ^ 2 := by
-  obtain ⟨x, w, -, hle, hlow⟩ := bss_lower_le_one_div ha hI hmn
+  obtain ⟨x, hlow⟩ := bss_lower_equal_weights ha hI hmn
+  rw [Finset.smul_sum] at hlow
   refine ⟨x, fun c => ?_⟩
-  calc (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 * ∫ y, ‖star c ⬝ᵥ a y‖ ^ 2 ∂μ
-      ≤ ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2 := mul_integral_norm_sq_le_sum ha hlow c
-    _ ≤ ∑ i, 1 / (n : ℝ) * ‖star c ⬝ᵥ a (x i)‖ ^ 2 :=
-        Finset.sum_le_sum fun i _ => mul_le_mul_of_nonneg_right (hle i) (by positivity)
-    _ = 1 / (n : ℝ) * ∑ i, ‖star c ⬝ᵥ a (x i)‖ ^ 2 := (Finset.mul_sum _ _ _).symm
+  rw [Finset.mul_sum]
+  exact mul_integral_norm_sq_le_sum (w := fun _ => 1 / (n : ℝ)) ha hlow c
 
 end Discretization

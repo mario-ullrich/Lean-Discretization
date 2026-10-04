@@ -35,7 +35,8 @@ Srivastava in the form of Chkifa, Dolbeault, Krieg and Ullrich. Only the matrix 
 lower frame bound is carried along, and the upper verifier is the constant `n`, whose
 average is `n` because `μ` is a probability measure. A point passes when its lower verifier
 exceeds `n`, and the weight it receives, the reciprocal of that verifier, is then at most
-`1/n` (`Discretization.bss_lower_le_one_div`). Raising every weight to `1/n` only enlarges
+`1/n` (`Discretization.bss_lower_le_one_div_of_gram_eq_one`, for the normalized family).
+Raising every weight to `1/n` only enlarges
 the sum, since the matrices `a(xᵢ) a(xᵢ)*` are positive semidefinite.
 -/
 
