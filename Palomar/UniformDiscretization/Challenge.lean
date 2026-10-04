@@ -37,8 +37,8 @@ On a compact domain and for continuous functions both hold with `ε = 0`.
 For `n = 2m` one has `√((m-1)/n) < 1/√2`, so the first bound gives
 `‖f‖_∞ ≤ (1 + √2) √(1 + ε/m) (∑ᵢ |f(xᵢ)|²)^{1/2}`, where Theorem 2 of Krieg, Pozharska,
 Ullrich and Ullrich has the constant `42`, and the second gives
-`‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)|`. For `n = m` the first bound is of the kind Novak
-obtains from a form of Auerbach's lemma.
+`‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)|`. For `n = m` points Novak obtains a bound of the
+second kind, `‖f‖_∞ ≤ (m + ε) maxᵢ |f(xᵢ)|`, from a form of Auerbach's lemma.
 
 The proof takes a measure from the theorem of Kiefer and Wolfowitz, a finitely supported
 probability measure `ϱ` with `|f(y)|² ≤ (m + ε) ∫ |f|² dϱ`, and thins it to `n` of its

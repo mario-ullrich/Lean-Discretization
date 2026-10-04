@@ -70,7 +70,7 @@ sources:
     relationship: "background"
     note: >-
       Lemma 1.2.2, a form of Auerbach's lemma with function values, bounds the uniform
-      norm by n = m sample values.
+      norm by the largest of n = m sample values, ‖f‖_∞ ≤ (m + ε) maxᵢ |f(xᵢ)|.
   - title: "The equivalence of two extremum problems"
     authors:
       - "Jack Kiefer"
