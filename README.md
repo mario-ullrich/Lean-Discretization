@@ -89,9 +89,7 @@ and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0
   `Discretization.Countable.exists_discretization`).
 * **The special case `a = b`** is the sparsification theorem of Batson, Spielman and
   Srivastava (`Discretization.bss`): one family with Gram matrix the identity, squeezed
-  between `(1 - √((m-1)/n))² • 1` and `(1 + √((m-1)/n))² • 1`. With the original
-  `√(m/n)` and `n = d·m`, the ratio of the upper to the lower constant, the condition
-  number, is `((√d + 1)/(√d - 1))²`. For finitely many vectors
+  between `(1 - √((m-1)/n))² • 1` and `(1 + √((m-1)/n))² • 1`. For finitely many vectors
   `v_k ∈ ℂ^m`, `k ∈ Ω`, with `∑ v_k v_k* = 1`, the form of the original theorem, it gives
   weights `s_k ≥ 0`, at most `n` of them nonzero, with `∑ s_k v_k v_k*` between the same two
   constants (`Discretization.bss_of_sum_eq_one`).

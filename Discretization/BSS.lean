@@ -21,10 +21,9 @@ and the one weighted sum is squeezed between them:
 
 `(1 - r)² • 1 ≤ ∑ wᵢ a(xᵢ) a(xᵢ)* ≤ (1 + r)² • 1`.
 
-The original theorem of Batson, Spielman and Srivastava has `√(m/n)` in place of `r`, so
-for `n = d·m` the ratio of the upper to the lower constant, the condition number, is
-`((√d + 1)/(√d - 1))²`.  With `m - 1` in place of `m`, following Chkifa, Dolbeault, Krieg
-and Ullrich, the statement here is slightly stronger.
+The original theorem of Batson, Spielman and Srivastava has `√(m/n)` in place of `r`; with
+`m - 1` in place of `m`, following Chkifa, Dolbeault, Krieg and Ullrich, the statement here is
+slightly stronger.
 
 The result is `Discretization.bss`.  Taking `μ` the counting measure on a finite set gives
 the statement for finitely many vectors that Batson, Spielman and Srivastava prove: for

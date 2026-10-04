@@ -39,9 +39,8 @@ weights `s_k ≥ 0`, at most `n` of them nonzero, with
 The reweighted vectors are a spectral sparsifier of their sum.
 
 The original theorem of Batson, Spielman and Srivastava has `√(m/n)` in place of
-`√((m-1)/n)`, so for `n = d·m` the ratio of the upper to the lower constant, the condition
-number, is `((√d + 1)/(√d - 1))²`. With `m - 1` in place of `m`, following Chkifa,
-Dolbeault, Krieg and Ullrich, the statements here are slightly stronger.
+`√((m-1)/n)`; with `m - 1` in place of `m`, following Chkifa, Dolbeault, Krieg and Ullrich,
+the statements here are slightly stronger.
 
 ## The definition restated here
 
@@ -96,9 +95,7 @@ Let `v_k ∈ ℂ^ι`, for `k` in a finite set `Ω`, be vectors with `∑ v_k v_k
 `m = card ι` be the dimension.  Then for every `n ≥ m` there are weights `s_k ≥ 0`, at most
 `n` of them nonzero, with
 
-`(1 - √((m-1)/n))² • 1 ≤ ∑ s_k v_k v_k* ≤ (1 + √((m-1)/n))² • 1`.
-
-For `n = d·m` the ratio of the two constants is at most `((√d + 1)/(√d - 1))²`. -/
+`(1 - √((m-1)/n))² • 1 ≤ ∑ s_k v_k v_k* ≤ (1 + √((m-1)/n))² • 1`. -/
 theorem bss_of_sum_eq_one [Fintype Ω] [Nonempty ι] {v : Ω → ι → ℂ}
     (hv : ∑ k, vecMulVec (v k) (star (v k)) = 1) {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ s : Ω → ℝ, (∀ k, 0 ≤ s k) ∧ (Finset.univ.filter fun k => s k ≠ 0).card ≤ n ∧

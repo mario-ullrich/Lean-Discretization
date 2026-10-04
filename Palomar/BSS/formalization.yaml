@@ -15,9 +15,8 @@ project:
     (1 − √((m−1)/n))² I ≼ ∑_k s_k v_k v_k* ≼ (1 + √((m−1)/n))² I,
     so a reweighted subset of at most n of the vectors is a spectral sparsifier of their
     sum. The original theorem of Batson, Spielman and Srivastava has the constants
-    (1 ∓ √(m/n))², so for n = d·m the ratio of the upper to the lower constant, the
-    condition number, is ((√d + 1)/(√d − 1))². With m − 1 in place of m, following Chkifa,
-    Dolbeault, Krieg and Ullrich, the statements here are slightly stronger.
+    (1 ∓ √(m/n))²; with m − 1 in place of m, following Chkifa, Dolbeault, Krieg and
+    Ullrich, the statements here are slightly stronger.
   authors:
     - "Mario Ullrich"
   license: "Apache-2.0"
