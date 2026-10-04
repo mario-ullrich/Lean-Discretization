@@ -92,8 +92,8 @@ and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0
   between `(1 - √((m-1)/n))² • 1` and `(1 + √((m-1)/n))² • 1`. With the original
   `√(m/n)` and `n = d·m`, the ratio of the upper to the lower constant, the condition
   number, is `((√d + 1)/(√d - 1))²`. For finitely many vectors
-  `v_y ∈ ℂ^m` with `∑ v_y v_y* = 1`, the form of the original theorem, it gives weights
-  `s_y ≥ 0`, at most `n` of them nonzero, with `∑ s_y v_y v_y*` between the same two
+  `v_k ∈ ℂ^m`, `k ∈ Ω`, with `∑ v_k v_k* = 1`, the form of the original theorem, it gives
+  weights `s_k ≥ 0`, at most `n` of them nonzero, with `∑ s_k v_k v_k*` between the same two
   constants (`Discretization.bss_of_sum_eq_one`).
 * **One-sided discretization.** On a probability space the lower frame bound holds with
   weights at most `1/n`: for every `n ≥ m` there are points `x₁, …, xₙ ∈ Ω`, not necessarily distinct, and
@@ -135,16 +135,16 @@ and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0
 
 ### The Kiefer–Wolfowitz theorem
 
-Let `D` be any set, `ι` a finite nonempty index set with `m = card ι` elements, and
-`a : D → ι → ℂ` a bounded family whose coordinate functions are linearly independent.
-Then for every `ε > 0` there are points `x₁, …, xₙ ∈ D` and weights `w₁, …, wₙ ≥ 0`
+Let `Ω` be any set, `ι` a finite nonempty index set with `m = card ι` elements, and
+`a : Ω → ι → ℂ` a bounded family whose coordinate functions are linearly independent.
+Then for every `ε > 0` there are points `x₁, …, xₙ ∈ Ω` and weights `w₁, …, wₙ ≥ 0`
 summing to one such that
 
 ```
 |f(y)|²  ≤  (m + ε) · ∑ wₖ |f(xₖ)|²
 ```
 
-for every point `y ∈ D` and every `f` in the span of the family
+for every point `y ∈ Ω` and every `f` in the span of the family
 (`Discretization.KieferWolfowitz.exists_design_kieferWolfowitz`). This is the theorem of
 [Kiefer and Wolfowitz](https://doi.org/10.4153/CJM-1960-030-4), in the complex and
 non-compact form of Proposition 9 of
@@ -184,24 +184,37 @@ companion project [Lean-SNumbers](https://github.com/mario-ullrich/Lean-SNumbers
 ### The uniform norm with `n ≥ m` points
 
 Under the same hypotheses, for every `ε > 0` and every `n ≥ m` there are points
-`x₁, …, xₙ ∈ D`, not necessarily distinct, such that
+`x₁, …, xₙ ∈ Ω`, not necessarily distinct, such that
 
 ```
 |f(y)|²  ≤  (m + ε) / (1 − √((m−1)/n))² · (1/n) ∑ |f(xᵢ)|²
 ```
 
-for every point `y ∈ D` and every `f` in the span of the family
-(`Discretization.exists_uniform_discretization_equal_weights`). For continuous functions on
-a compact space the same holds with `ε = 0`
-(`Discretization.exists_uniform_discretization_of_compact_equal_weights`). The proof thins
-the Kiefer–Wolfowitz design to `n` of its points by the one-sided discretization
-(`Discretization.exists_one_sided_discretization`). For `n = 2m` this is
-`|f(y)|² ≤ 6 (1 + ε/m) ∑ᵢ₌₁²ᵐ |f(xᵢ)|²`: the uniform norm on the span is dominated by the
-Euclidean norm of `2m` sample values. This is Theorem 2 of
-[Krieg, Pozharska, Ullrich and Ullrich](https://arxiv.org/abs/2401.02220) with the constant
-`42` replaced by `√(6 (1 + ε/m))`, and the case `p = ∞` of Proposition 8 of Chkifa,
-Dolbeault, Krieg and Ullrich. For `n = m` points the bound is due to Novak, who obtains
-`‖f‖_∞ ≤ (m + ε) ((1/m) ∑ᵢ₌₁ᵐ |f(xᵢ)|²)^{1/2}` from a form of Auerbach's lemma.
+for every point `y ∈ Ω` and every `f` in the span of the family
+(`Discretization.exists_uniform_discretization_by_l2`). For continuous functions on a compact
+space the same holds with `ε = 0`
+(`Discretization.exists_uniform_discretization_of_compact_by_l2`). The proof thins the
+Kiefer–Wolfowitz design to `n` of its points by the one-sided discretization
+(`Discretization.exists_one_sided_discretization`). This is the case `p = ∞` of
+Proposition 8 of Chkifa, Dolbeault, Krieg and Ullrich. For `n = 2m` it gives
+`‖f‖_∞ ≤ (1 + √2) √(1 + ε/m) (∑ᵢ₌₁²ᵐ |f(xᵢ)|²)^{1/2}`: the uniform norm on the span is
+dominated by the Euclidean norm of `2m` sample values. Theorem 2 of
+[Krieg, Pozharska, Ullrich and Ullrich](https://arxiv.org/abs/2401.02220) proves this with
+the constant `42`, and Proposition 8 improves it to `1 + √2`. For `n = m` points the bound is
+due to Novak, who obtains `‖f‖_∞ ≤ (m + ε) ((1/m) ∑ᵢ₌₁ᵐ |f(xᵢ)|²)^{1/2}` from a form of
+Auerbach's lemma.
+
+An average is at most its largest term, so the same points bound the uniform norm by the
+largest sample value:
+
+```
+|f(y)|²  ≤  (m + ε) / (1 − √((m−1)/n))² · maxᵢ |f(xᵢ)|²
+```
+
+(`Discretization.exists_uniform_discretization_by_max`, and with `ε = 0` on a compact space
+`Discretization.exists_uniform_discretization_of_compact_by_max`). For `n = 2m` this is
+`‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)|`, the bound that Chkifa, Dolbeault, Krieg and
+Ullrich state with `√m`.
 
 ## The proofs
 
@@ -368,7 +381,8 @@ Apache 2.0, the same as Mathlib. See [LICENSE](LICENSE).
   approximation in reproducing kernel Hilbert spaces*, preprint, 2026,
   [arxiv](https://arxiv.org/abs/2602.18719). Theorem 3 is the result formalised here,
   Corollary 4 the discretization inequality, and its proof the one followed in
-  `Discretization/`.
+  `Discretization/`. Proposition 8 is the one-sided discretization for `p = 2` and the
+  discretization of the uniform norm with `n ≥ m` points for `p = ∞`.
 * J. Kiefer, J. Wolfowitz, *The equivalence of two extremum problems*, Canad. J. Math.
   **12** (1960), 363–366, [doi](https://doi.org/10.4153/CJM-1960-030-4). The original
   equivalence theorem for optimal designs.
@@ -377,9 +391,9 @@ Apache 2.0, the same as Mathlib. See [LICENSE](LICENSE).
   [doi](https://doi.org/10.1016/j.jmaa.2025.129873),
   [arxiv](https://arxiv.org/abs/2401.02220). Proposition 9 is the Kiefer–Wolfowitz
   theorem formalised here, and its proof the one followed in
-  `Discretization/KieferWolfowitz/`. The discretization of the uniform norm with
-  `n ≥ m` points that the paper obtains from it, with equal weights and `2m` points its
-  Theorem 2, is in `Discretization/UniformDiscretization.lean`.
+  `Discretization/KieferWolfowitz/`. Its Theorem 2 bounds the uniform norm by `2m` sample
+  values with the constant `42`; the form with any `n ≥ m` points and the constant of
+  Chkifa, Dolbeault, Krieg and Ullrich is in `Discretization/UniformDiscretization.lean`.
 * F. Bartel, M. Schäfer, T. Ullrich, *Constructive subsampling of finite frames with
   applications in optimal function recovery*, Appl. Comput. Harmon. Anal. **65** (2023),
   209–248, [doi](https://doi.org/10.1016/j.acha.2023.02.004). One-sided discretization of

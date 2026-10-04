@@ -71,8 +71,9 @@ probability measure with the constant `√(m+ε)`, and by `√m` if the function
 on a compact domain.  The measure is one whose Gram matrix has an almost maximal
 determinant, and the whole argument consists of comparing that determinant with the
 determinants obtained by giving one further point a small weight.  Thinned by the
-sparsification theorem, the measure can be replaced by any `n ≥ m` points, at the price of
-the factor `(1 - √((m-1)/n))⁻²`.
+one-sided discretization, the measure can be replaced by any `n ≥ m` equally weighted
+points, at the price of the factor `(1 - √((m-1)/n))⁻²`, and the discrete `ℓ₂` norm of the
+sample values by their maximum.
 
 ## Layout
 
@@ -173,7 +174,9 @@ again at the top level.
 * `Discretization.KieferWolfowitz.PointCount`: the two theorems with the number of points
   bounded.
 * `Discretization.UniformDiscretization`: the Kiefer–Wolfowitz design thinned by the
-  one-sided discretization, which gives the uniform norm with any `n ≥ m` equally weighted
-  points, `Discretization.exists_uniform_discretization_equal_weights` and
-  `Discretization.exists_uniform_discretization_of_compact_equal_weights`.
+  one-sided discretization, which bounds the uniform norm by the discrete `ℓ₂` norm of any
+  `n ≥ m` sample values, `Discretization.exists_uniform_discretization_by_l2` and
+  `Discretization.exists_uniform_discretization_of_compact_by_l2`, and hence by their
+  maximum, `Discretization.exists_uniform_discretization_by_max` and
+  `Discretization.exists_uniform_discretization_of_compact_by_max`.
 -/

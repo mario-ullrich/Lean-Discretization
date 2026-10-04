@@ -18,13 +18,23 @@ there are `n` points `x₁, …, xₙ`, not necessarily distinct, such that
 `|f(y)|² ≤ (m + ε) / (1 - √((m-1)/n))² · (1/n) ∑ᵢ |f(xᵢ)|²`
 
 for every `f` in the space and every point `y`; for continuous functions on a compact space
-the same holds with `ε = 0`.  The uniform norm on the span is dominated by the Euclidean
-norm of the `n` sample values.  This is the case `p = ∞` of Proposition 8 of Chkifa,
-Dolbeault, Krieg and Ullrich.  For `n = m` points Novak (*Deterministic and stochastic error
-bounds in numerical analysis*, Lemma 1.2.2, a form of Auerbach's lemma) gives
-`‖f‖_∞ ≤ (m + ε) ((1/m) ∑ᵢ |f(xᵢ)|²)^{1/2}`.  For `n = 2m` points Krieg, Pozharska, Ullrich
-and Ullrich (Theorem 2) prove `‖f‖_∞ ≤ 42 (∑ᵢ |f(xᵢ)|²)^{1/2}`; here the squared factor in
-front of `∑ᵢ |f(xᵢ)|²` is below `6 (1 + ε/m)`.
+the same holds with `ε = 0`.  The uniform norm on the span is dominated by the discrete
+`ℓ₂` norm of the `n` sample values.  This is the case `p = ∞` of Proposition 8 of Chkifa,
+Dolbeault, Krieg and Ullrich.  For `n = 2m` points Krieg, Pozharska, Ullrich and Ullrich
+(Theorem 2) prove `‖f‖_∞ ≤ 42 (∑ᵢ |f(xᵢ)|²)^{1/2}`, and Proposition 8 improves the constant
+`42` to `1 + √2`; in the form here the squared factor in front of `∑ᵢ |f(xᵢ)|²` is below
+`6 (1 + ε/m)`.  For `n = m` points Novak (*Deterministic and stochastic error bounds in
+numerical analysis*, Lemma 1.2.2, a form of Auerbach's lemma) gives
+`‖f‖_∞ ≤ (m + ε) ((1/m) ∑ᵢ |f(xᵢ)|²)^{1/2}`.
+
+An average is at most the largest of its terms, so the same points also give
+
+`|f(y)|² ≤ (m + ε) / (1 - √((m-1)/n))² · maxᵢ |f(xᵢ)|²`,
+
+the uniform norm on the span dominated by the largest sample value
+(`Discretization.exists_uniform_discretization_by_max`).  For `n = 2m` this is
+`‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)|`, the bound that Chkifa, Dolbeault, Krieg and
+Ullrich state with `√m`.
 
 The proof thins the Kiefer–Wolfowitz design.  That design, a list of `N` points with
 weights, satisfies the bound with `∑ₖ wₖ |f(xₖ)|²` on the right and has a positive definite
@@ -62,6 +72,24 @@ theorem le_div_sq_mul_of_le_mul {m n : ℕ} (hm : 0 < m) (hmn : m ≤ n) {K T S 
         linarith
     _ = K / (1 - Real.sqrt (((m : ℝ) - 1) / n)) ^ 2 * S := by ring
 
+/-- **An average is at most the largest term.**  For finitely many real numbers
+`s₁, …, sₙ`, with `n ≥ 1`,
+
+`(1/n) ∑ᵢ sᵢ ≤ maxᵢ sᵢ`.
+
+The maximum is written as the supremum `⨆ i, s i` over `Fin n`, which a finite family
+attains. -/
+theorem inv_mul_sum_le_iSup {n : ℕ} (hn : 0 < n) (s : Fin n → ℝ) :
+    1 / (n : ℝ) * ∑ i, s i ≤ ⨆ i, s i := by
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  -- every term is at most the supremum, so the sum is at most `n` times it
+  have hsum : ∑ i, s i ≤ n * ⨆ i, s i := by
+    have h := Finset.sum_le_card_nsmul Finset.univ s (⨆ i, s i)
+      fun i _ => le_ciSup (Set.finite_range s).bddAbove i
+    simpa [Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] using h
+  rw [one_div_mul_eq_div, div_le_iff₀ hn0, mul_comm]
+  exact hsum
+
 /-- **A design can be thinned to `n ≥ m` of its points with equal weights.**
 
 Let `x₁, …, x_N` be points with nonnegative weights `wₖ` summing to one whose Gram matrix is
@@ -94,14 +122,14 @@ theorem exists_sparse_design_equal_weights [Nonempty ι] (a : Ω → ι → ℂ)
   simp only [smul_eq_mul, id] at h
   exact h
 
-/-- **From a design to `n ≥ m` points with equal weights.**
+/-- **From a design to `n ≥ m` points: the uniform norm by the discrete `ℓ₂` norm.**
 
 Let `x₁, …, x_N` be points with nonnegative weights summing to one and positive definite
 Gram matrix, for which `|f(y)|² ≤ K · ∑ₖ wₖ |f(xₖ)|²` holds for every point `y` and every
 `f` in the span.  Then for every `n ≥ m` there are `n` points, not necessarily distinct, with
 
 `|f(y)|² ≤ K / (1 - √((m-1)/n))² · (1/n) ∑ᵢ |f(xᵢ)|²`. -/
-theorem exists_uniform_discretization_of_design_equal_weights [Nonempty ι] (a : Ω → ι → ℂ)
+theorem exists_uniform_discretization_of_design_by_l2 [Nonempty ι] (a : Ω → ι → ℂ)
     {K : ℝ} (hK : 0 ≤ K) {N : ℕ} (x : Fin N → Ω) {w : Fin N → ℝ} (hw : ∀ k, 0 ≤ w k)
     (hw1 : ∑ k, w k = 1) (hpd : (KieferWolfowitz.designGram a x w).PosDef)
     (hbound : ∀ (c : ι → ℂ) (y : Ω),
@@ -114,7 +142,7 @@ theorem exists_uniform_discretization_of_design_equal_weights [Nonempty ι] (a :
   exact ⟨fun i => x (j i), fun c y =>
     le_div_sq_mul_of_le_mul Fintype.card_pos hmn hK (hbound c y) (hlow c)⟩
 
-/-- **Discretization of the uniform norm with `n ≥ m` points and equal weights.**
+/-- **Discretization of the uniform norm with `n ≥ m` points, by the discrete `ℓ₂` norm.**
 
 For linearly independent bounded functions `a₁, …, a_m` on an arbitrary set, every `ε > 0`
 and every `n ≥ m` there are `n` points, not necessarily distinct, such that
@@ -122,11 +150,12 @@ and every `n ≥ m` there are `n` points, not necessarily distinct, such that
 `|f(y)|² ≤ (m + ε) / (1 - √((m-1)/n))² · (1/n) ∑ᵢ |f(xᵢ)|²`
 
 for every point `y` and every function `f(y) = ⟪c, a(y)⟫` in the span: the uniform norm is
-dominated by the Euclidean norm of the `n` sample values.  For `n = 2m` the factor in front
-of `∑ᵢ |f(xᵢ)|²` is below `6 (1 + ε/m)`; with the constant `42²` this case is Theorem 2 of
-Krieg, Pozharska, Ullrich and Ullrich.  The case `n = m` is due to Novak, with the constant
-`(m + ε)² / m` from Auerbach's lemma. -/
-theorem exists_uniform_discretization_equal_weights [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
+dominated by the discrete `ℓ₂` norm of the `n` sample values.  This is Proposition 8 of
+Chkifa, Dolbeault, Krieg and Ullrich for `p = ∞`.  For `n = 2m` the factor in front of
+`∑ᵢ |f(xᵢ)|²` is below `6 (1 + ε/m)`, where Theorem 2 of Krieg, Pozharska, Ullrich and
+Ullrich has `42²`.  The case `n = m` is due to Novak, with the constant `(m + ε)² / m` from
+Auerbach's lemma. -/
+theorem exists_uniform_discretization_by_l2 [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
     (hC : ∀ y i, ‖a y i‖ ≤ C) (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0)
     {ε : ℝ} (hε : 0 < ε) {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ x : Fin n → Ω, ∀ (c : ι → ℂ) (y : Ω),
@@ -134,11 +163,11 @@ theorem exists_uniform_discretization_equal_weights [Nonempty ι] (a : Ω → ι
         * (1 / (n : ℝ) * ∑ i, ‖star c ⬝ᵥ a (x i)‖ ^ 2) := by
   obtain ⟨N, x, w, hw, hw1, hpd, hbound⟩ :=
     KieferWolfowitz.exists_design_kieferWolfowitz a hC hli hε
-  exact exists_uniform_discretization_of_design_equal_weights a (by positivity) x hw hw1 hpd
+  exact exists_uniform_discretization_of_design_by_l2 a (by positivity) x hw hw1 hpd
     hbound hmn
 
-/-- **Discretization of the uniform norm with `n ≥ m` points and equal weights on a compact
-domain.**
+/-- **Discretization of the uniform norm with `n ≥ m` points on a compact domain, by the
+discrete `ℓ₂` norm.**
 
 For linearly independent continuous functions `a₁, …, a_m` on a compact space and every
 `n ≥ m` there are `n` points, not necessarily distinct, such that
@@ -146,7 +175,7 @@ For linearly independent continuous functions `a₁, …, a_m` on a compact spac
 `|f(y)|² ≤ m / (1 - √((m-1)/n))² · (1/n) ∑ᵢ |f(xᵢ)|²`
 
 for every point `y` and every `f` in the span: the bound above with `ε = 0`. -/
-theorem exists_uniform_discretization_of_compact_equal_weights [Nonempty ι]
+theorem exists_uniform_discretization_of_compact_by_l2 [Nonempty ι]
     [TopologicalSpace Ω] [CompactSpace Ω] (a : Ω → ι → ℂ)
     (hcont : ∀ i, Continuous fun y => a y i)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) {n : ℕ}
@@ -156,7 +185,54 @@ theorem exists_uniform_discretization_of_compact_equal_weights [Nonempty ι]
         * (1 / (n : ℝ) * ∑ i, ‖star c ⬝ᵥ a (x i)‖ ^ 2) := by
   obtain ⟨N, x, w, hw, hw1, hpd, hbound⟩ :=
     KieferWolfowitz.exists_design_kieferWolfowitz_of_compact a hcont hli
-  exact exists_uniform_discretization_of_design_equal_weights a (Nat.cast_nonneg _) x hw hw1
+  exact exists_uniform_discretization_of_design_by_l2 a (Nat.cast_nonneg _) x hw hw1
     hpd hbound hmn
+
+/-! ### The largest sample value -/
+
+/-- **The uniform norm by the largest sample value.**
+
+For linearly independent bounded functions `a₁, …, a_m` on an arbitrary set, every `ε > 0`
+and every `n ≥ m` there are `n` points, not necessarily distinct, such that
+
+`|f(y)|² ≤ (m + ε) / (1 - √((m-1)/n))² · maxᵢ |f(xᵢ)|²`
+
+for every point `y` and every function `f(y) = ⟪c, a(y)⟫` in the span.  The points are those
+of `Discretization.exists_uniform_discretization_by_l2`, whose average is at most its largest
+term (`Discretization.inv_mul_sum_le_iSup`).  For `n = 2m` this is
+`‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)|`, the bound that Chkifa, Dolbeault, Krieg and Ullrich
+state with `√m`; Krieg, Pozharska, Ullrich and Ullrich read their Theorem 2 as
+`‖f‖_∞ ≤ c √m maxᵢ |f(xᵢ)|` with `c = 42 √2`. -/
+theorem exists_uniform_discretization_by_max [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
+    (hC : ∀ y i, ‖a y i‖ ≤ C) (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0)
+    {ε : ℝ} (hε : 0 < ε) {n : ℕ} (hmn : Fintype.card ι ≤ n) :
+    ∃ x : Fin n → Ω, ∀ (c : ι → ℂ) (y : Ω),
+      ‖star c ⬝ᵥ a y‖ ^ 2 ≤ (Fintype.card ι + ε) / (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
+        * ⨆ i, ‖star c ⬝ᵥ a (x i)‖ ^ 2 := by
+  have hn : 0 < n := Fintype.card_pos.trans_le hmn
+  obtain ⟨x, hx⟩ := exists_uniform_discretization_by_l2 a hC hli hε hmn
+  refine ⟨x, fun c y => (hx c y).trans ?_⟩
+  exact mul_le_mul_of_nonneg_left (inv_mul_sum_le_iSup hn _) (by positivity)
+
+/-- **The uniform norm by the largest sample value on a compact domain.**
+
+For linearly independent continuous functions `a₁, …, a_m` on a compact space and every
+`n ≥ m` there are `n` points, not necessarily distinct, such that
+
+`|f(y)|² ≤ m / (1 - √((m-1)/n))² · maxᵢ |f(xᵢ)|²`
+
+for every point `y` and every `f` in the span: the bound above with `ε = 0`. -/
+theorem exists_uniform_discretization_of_compact_by_max [Nonempty ι]
+    [TopologicalSpace Ω] [CompactSpace Ω] (a : Ω → ι → ℂ)
+    (hcont : ∀ i, Continuous fun y => a y i)
+    (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) {n : ℕ}
+    (hmn : Fintype.card ι ≤ n) :
+    ∃ x : Fin n → Ω, ∀ (c : ι → ℂ) (y : Ω),
+      ‖star c ⬝ᵥ a y‖ ^ 2 ≤ Fintype.card ι / (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
+        * ⨆ i, ‖star c ⬝ᵥ a (x i)‖ ^ 2 := by
+  have hn : 0 < n := Fintype.card_pos.trans_le hmn
+  obtain ⟨x, hx⟩ := exists_uniform_discretization_of_compact_by_l2 a hcont hli hmn
+  refine ⟨x, fun c y => (hx c y).trans ?_⟩
+  exact mul_le_mul_of_nonneg_left (inv_mul_sum_le_iSup hn _) (by positivity)
 
 end Discretization
