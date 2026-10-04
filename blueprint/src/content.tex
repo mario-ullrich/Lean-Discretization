@@ -5,49 +5,26 @@
 
 Let $(\Omega, \mu)$ be a measure space and $\iota$ a finite nonempty index set with
 $m = \#\iota$ elements. Two objects are given: a finite family $a = (a_k)_{k \in \iota}$ of
-square-integrable functions on $\Omega$, and a square-integrable map $b : \Omega \to H$
-into a separable complex Hilbert space $H$. We ask whether the integral of $|f|^2$ can be
-replaced by finitely many weighted point evaluations, so that the first family stays a
-frame from below and $b$ stays a frame from above.
-
-For a family $a : \Omega \to \mathbb{C}^{\iota}$ that is square-integrable in every
-coordinate, the \emph{Gram matrix} is
-\[
-  G(a) = \int_\Omega a(x) a(x)^* \, d\mu(x) \in \mathbb{C}^{\iota \times \iota},
-\]
-in Lean \texttt{Discretization.gram}. The same formula defines the \emph{Gram operator}
-\[
-  J = \int_\Omega b(x) b(x)^* \, d\mu(x)
-\]
-of $b$, a Bochner integral of the rank-one operators
-$b(x) b(x)^* = \langle b(x), \cdot \rangle \, b(x)$ on $H$. For $\Lambda > 0$ with
-$J \preceq \Lambda \cdot 1$, the number $M = \Tr J / \Lambda$ is the \emph{effective
-dimension} of $J$ relative to $\Lambda$; it is at most $\dim H$, and much smaller as soon
-as the eigenvalues of $J$ decay.
-
-\Cref{thm:discretization} gives, for every $n \geq m$, points $x_1, \dots, x_n$ and weights
-$w_i > 0$ that keep the first family a frame from below, with a constant depending only on
-$m$, and $b$ a frame from above, with a constant depending only on $M$. For the kernel
-sections of a reproducing kernel Hilbert space this discretizes the $L_2$-norm on the span
-of the first family from below and the norm of the space from above
-(\Cref{cor:l2-discretization}). For $b = a$ it is the sparsification theorem of Batson,
-Spielman and Srivastava~\cite{BSS} (\Cref{cor:bss}), and on a probability space the lower
-bound holds with equal weights $1/n$ (\Cref{cor:one-sided-discretization}). The last
-chapter produces a measure to start from: by Kiefer and Wolfowitz, finitely many points with
-weights for which the uniform norm on an $m$-dimensional space of bounded functions is
-dominated by the $L_2$ norm of that measure with the constant $\sqrt{m + \varepsilon}$
-(\Cref{thm:uniform-discretization}). Thinning it gives the same with any $n \geq m$ equally
-weighted points, at the price of the factor $(1 - \sqrt{(m-1)/n})^{-2}$
-(\Cref{thm:uniform-discretization-optimal}).
-
-A statement about weighted sums of $|f(x_i)|^2$ is a statement about the matrix
+square-integrable functions on $\Omega$, read as a map $a : \Omega \to \mathbb{C}^{\iota}$,
+and a square-integrable map $b : \Omega \to H$ into a separable complex Hilbert space $H$.
+We ask whether the integral of $|f|^2$ can be replaced by finitely many weighted point
+evaluations, so that the first family stays a frame from below and $b$ stays a frame from
+above. A statement about weighted sums of $|f(x_i)|^2$ is a statement about the matrix
 $\sum_i w_i \, a(x_i) a(x_i)^*$ or the operator $\sum_i w_i \, b(x_i) b(x_i)^*$, compared in
 the Loewner order: $A \preceq B$ means that $B - A$ is positive semidefinite. That is the
-form the argument takes. The formalisation takes real parts wherever a real number is
-needed, and it writes a function of a span as $f = \langle c, a(\cdot) \rangle$, which
-conjugates the coefficient vector; since $c$ runs over all of $\mathbb{C}^{\iota}$ that is
-the same set of functions. Every statement and every proof is formalised, without
-\texttt{sorry}, and each statement names the Lean declaration that formalises it.
+form the argument takes.
+
+The \emph{Gram operator} of $b$ is
+\[
+  G(b) = \int_\Omega b(x) b(x)^* \, d\mu(x),
+\]
+a Bochner integral of the rank-one operators
+$b(x) b(x)^* = \langle b(x), \cdot \rangle \, b(x)$ on $H$. For $H = \mathbb{C}^{\iota}$ it
+is a matrix, so the family $a$ has the \emph{Gram matrix} $G(a)$, in Lean
+\texttt{Discretization.gram}. For $\Lambda > 0$ with $G(b) \preceq \Lambda \cdot 1$, the
+number $M = \Tr G(b) / \Lambda$ is the \emph{effective dimension} of $G(b)$ relative to
+$\Lambda$; it is at most $\dim H$, and much smaller as soon as the eigenvalues of $G(b)$
+decay.
 
 The following theorem is Theorem 3 of Chkifa, Dolbeault, Krieg and Ullrich~\cite{CDKU}, for
 a second family with values in a separable Hilbert space. Its first bound is their factor
@@ -59,9 +36,9 @@ $(1 - \sqrt{(m-1)/n})^2 \lambda_{\min}(I)$ in Loewner form.
 \leanok
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let $H$
 be a nonzero separable complex Hilbert space. Let $a : \Omega \to \mathbb{C}^{\iota}$ be
-square-integrable in every coordinate with $I = \int_\Omega a(x) a(x)^* \, d\mu(x)$
+square-integrable in every coordinate with $I = G(a) = \int_\Omega a(x) a(x)^* \, d\mu(x)$
 positive definite, let $b : \Omega \to H$ be square-integrable, and let
-$J = \int_\Omega b(x) b(x)^* \, d\mu(x)$ be its Gram operator; assume that $J$ is
+$J = G(b) = \int_\Omega b(x) b(x)^* \, d\mu(x)$ be its Gram operator; assume that $J$ is
 injective. Let $\Lambda > 0$ satisfy $J \preceq \Lambda \cdot 1$, and put $m = \#\iota$ and
 $M = \int_\Omega \|b(x)\|^2 \, d\mu(x) / \Lambda$. Then for every $n \geq m$ there are points
 $x_1, \dots, x_n \in \Omega$ and weights $w_1, \dots, w_n > 0$ with
@@ -79,22 +56,15 @@ in the order of operators.
 
 The proof is given in \Cref{ch:construction}, after the construction it rests on. No side
 condition on $m$ or on $M$ is needed; the potential argument there needs two, and three
-further cases of the proof remove them. In the formalisation the Gram operator enters as
-the hypothesis $\int_\Omega b(x) b(x)^* \, d\mu(x) = J$, the counterpart of $G(b) = J$ for a
-finite family.
-Both hypotheses on $J$ can be read on $b$ (\Cref{lem:gram-operator}):
-$J \preceq \Lambda \cdot 1$ is the bound
+further cases of the proof remove them. Both hypotheses on $J$ can be read on $b$
+(\Cref{lem:gram-operator}): $J \preceq \Lambda \cdot 1$ is the bound
 $\int_\Omega |\langle u, b \rangle|^2 \, d\mu \leq \Lambda \|u\|^2$ for every $u \in H$, and
 $J$ is injective exactly when $\langle u, b(\cdot) \rangle = 0$ almost everywhere only for
-$u = 0$. Equivalently, $J = T^* T$ for the operator $T : H \to L_2(\mu)$,
-$u \mapsto \langle b(\cdot), u \rangle$, and $\Lambda$ bounds $\|T\|^2$.
+$u = 0$.
 
-The theorem takes several forms, according to how the second family is given and whether
-its bounds are read through quadratic forms.
-
-\begin{remark}[Forms of the theorem]
+\begin{remark}[A countable family]
 \label{rem:discretization-forms}
-(a) A countable family $b = (b_k)_{k \in \kappa}$ of square-integrable functions with
+A countable family $b = (b_k)_{k \in \kappa}$ of square-integrable functions with
 $\sum_k \|b_k\|_{L_2}^2 < \infty$ is the case $H = \ell_2(\kappa)$ and
 $b(x) = (b_k(x))_k$. The Gram operator is the Gram matrix
 $(\int_\Omega b_k \overline{b_l} \, d\mu)_{k,l}$, $M = \sum_k \|b_k\|_{L_2}^2 / \Lambda$, and
@@ -104,18 +74,11 @@ $c \in \ell_2(\kappa)$. Nothing pointwise is assumed: by Tonelli,
 $\sum_k |b_k(x)|^2 < \infty$ almost everywhere, and the points are chosen there. This is
 the form of Theorem~3 of~\cite{CDKU}; in Lean it is
 \texttt{Discretization.Countable.bss\_generalized}, and for finite $\kappa$, proved with
-matrices, \texttt{Discretization.bss\_generalized}.
-
-(b) For $I = 1$, read through quadratic forms, the lower bound is
-$(1 - \sqrt{(m-1)/n})^2 \int_\Omega |f|^2 \, d\mu \leq \sum_i w_i |f(x_i)|^2$ for every
-$f \in \operatorname{span}\{a_k\}$, and the upper bound is
-$\sum_i w_i |\langle u, b(x_i) \rangle|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \|u\|^2$ for
-every $u \in H$. In Lean this is \texttt{Discretization.Infinite.exists\_discretization},
-and for a family \texttt{Discretization.exists\_discretization} and
-\texttt{Discretization.Countable.exists\_discretization}.
-
-(c) For the kernel sections of a reproducing kernel Hilbert space the upper bound is a bound
-by the norm of the space, \Cref{cor:l2-discretization}.
+matrices, \texttt{Discretization.bss\_generalized}. With $I = 1$, read through quadratic
+forms, the two bounds are inequalities for $\sum_i w_i |f(x_i)|^2$ and
+$\sum_i w_i |\sum_k c_k \, b_k(x_i)|^2$, in Lean
+\texttt{Discretization.Countable.exists\_discretization}, and for finite $\kappa$
+\texttt{Discretization.exists\_discretization}.
 \end{remark}
 
 For $b = a$, \Cref{thm:discretization} gives the sparsification theorem of Batson,
@@ -211,27 +174,23 @@ $\langle g, \sum_i w_i \, k_{x_i} k_{x_i}^* \, g \rangle
 \end{proof}
 
 The constant $\Lambda$ is the squared norm of the embedding $H \hookrightarrow L_2(\mu)$, and
-the assumption on vanishing functions says that this embedding is injective. The kernel
-sections themselves are the second family, so no basis of $H$ and no singular value
-decomposition of the embedding enter.
+the assumption on vanishing functions says that this embedding is injective.
 
-Every square-integrable map $b : \Omega \to H$ with injective Gram operator leads to such a
-space. Since $J$ is injective, $g = \langle u, b(\cdot) \rangle$ determines $u$, and these
-functions form a reproducing kernel Hilbert space with $\|g\| = \|u\|$, kernel
-$K(x, y) = \langle b(x), b(y) \rangle$ and
-$\int_\Omega K(x, x) \, d\mu = \int_\Omega \|b\|^2 \, d\mu$, so the corollary covers every
-such $b$. Lean proves it in that form, \Cref{rem:discretization-forms}(b), and reads it off
-for $b(x) = k_x$.
+Every square-integrable map $b : \Omega \to H$ with injective Gram operator gives such a
+space: the functions $\langle u, b(\cdot) \rangle$, with norm $\|u\|$ and kernel
+$K(x, y) = \langle b(x), b(y) \rangle$, for which
+$\int_\Omega K(x, x) \, d\mu = \int_\Omega \|b\|^2 \, d\mu$. So the corollary covers every
+such $b$; in Lean this form is \texttt{Discretization.Infinite.exists\_discretization}.
 
 On a probability space the lower bound of \Cref{thm:discretization} holds with equal
-weights, a one-sided discretization of the $L_2$-norm. Limonova and
-Temlyakov~\cite[Theorem~1.1]{LT} prove such a discretization with equal weights and of the
-order of $m$ points for spaces satisfying a Nikol'skii-type inequality, and Bartel, Sch\"afer
-and Ullrich~\cite{BSU} for arbitrary spaces, up to constants. The form below is the case
-$p = 2$ of Proposition~8 of~\cite{CDKU}, whose argument is followed here. Take for $b$ the constant function $1$, with values in $H = \mathbb{C}$: its
-Gram operator is $J = 1$, so $\Lambda = 1$ and $M = 1$, and the upper bound of the theorem
-reads $\sum_i w_i \leq 1$. The construction behind it, in the case $M \leq 1 + 1/n$ of the
-proof, bounds every single weight by $1/n$.
+weights, a one-sided discretization of the $L_2$-norm. With equal weights and of the order
+of $m$ points, Limonova and Temlyakov~\cite[Theorem~1.1]{LT} prove such a discretization
+for spaces satisfying a Nikol'skii-type inequality, and Bartel, Sch\"afer and
+Ullrich~\cite{BSU} for arbitrary spaces, up to constants. The form below is the case
+$p = 2$ of Proposition~8 of~\cite{CDKU}, whose argument is followed here: for
+$b \equiv 1$ in $H = \mathbb{C}$ one has $J = 1$ and $\Lambda = M = 1$, and the upper
+bound $\sum_i w_i \leq 1$ of the theorem comes, in the case $M \leq 1 + 1/n$ of the
+proof, from a construction that bounds every single weight by $1/n$.
 
 \begin{corollary}[One-sided discretization]
 \label{cor:one-sided-discretization}
