@@ -1350,25 +1350,140 @@ the assumption on vanishing functions.
 \chapter{Discretization of the uniform norm}
 \label{ch:design}
 
-The discretization theorem starts from a measure; this chapter produces one. Let $\Omega$ be
-an arbitrary set, $\iota$ a finite nonempty index set with $m = \#\iota$ elements, and
-$a = (a_k)_{k \in \iota}$ a family of bounded functions $\Omega \to \mathbb{C}$ whose
-coordinate functions are linearly independent. For every $\varepsilon > 0$ we look for
-finitely many points $x_k \in \Omega$ with weights $w_k \geq 0$ summing to one for which
-\[
-  |f(y)|^2 \; \leq \; (m + \varepsilon) \sum_k w_k |f(x_k)|^2
-  \qquad \text{for all } y \in \Omega \text{ and all } f \in \operatorname{span}\{a_k\},
-\]
-that is, the uniform norm is dominated by the $L_2$ norm of that measure with the
-constant $\sqrt{m + \varepsilon}$. The answer of Kiefer and Wolfowitz~\cite{KW} is that a
-measure whose Gram matrix has an almost maximal determinant does this. The complex and
-non-compact case is treated in~\cite{KPUU}. Thinning the measure with the one-sided
-discretization then gives the bound with any $n \geq m$ equally weighted points
-(\Cref{thm:uniform-discretization-optimal}).
+Let $\Omega$ be an arbitrary set, $\iota$ a finite nonempty index set with $m = \#\iota$
+elements, and $a = (a_k)_{k \in \iota}$ a family of bounded functions
+$\Omega \to \mathbb{C}$ whose coordinate functions are linearly independent. The theorem of
+Kiefer and Wolfowitz~\cite{KW} gives a finitely supported probability measure on $\Omega$
+whose $L_2$ norm dominates the uniform norm on the span with the constant
+$\sqrt{m + \varepsilon}$ (\Cref{thm:uniform-discretization}); the complex and non-compact
+case is treated in~\cite{KPUU}. Thinned with the one-sided discretization, the measure
+becomes $n \geq m$ equally weighted points (\Cref{thm:uniform-discretization-optimal}).
 
-No topology and no measurable structure on $\Omega$ are used: a finitely supported measure is
-a finite list of points with weights, and it is kept in that form until
-\Cref{cor:optimal-design}.
+\begin{theorem}[Optimal design (Kiefer--Wolfowitz)]
+\label{thm:uniform-discretization}
+\lean{Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz,
+      Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz_of_compact,
+      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le,
+      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le}
+\leanok
+Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let $\Omega$ carry
+a measurable structure, let $a = (a_k)_{k \in \iota}$ be bounded measurable functions on it
+with linearly independent coordinate functions, and let $\varepsilon > 0$. Then there is a
+finitely supported probability measure $\varrho = \sum_{k=1}^N w_k \delta_{x_k}$ on
+$\Omega$ whose Gram matrix $\int_\Omega a(y) a(y)^* \, d\varrho(y)
+= \sum_k w_k \, a(x_k) a(x_k)^*$ is positive definite and such that
+\[
+  |f(y)|^2 \; \leq \; (m + \varepsilon) \int_\Omega |f|^2 \, d\varrho
+\]
+for every $y \in \Omega$ and every $f \in \operatorname{span}\{a_k\}$. If $\Omega$ is a
+compact space whose $\sigma$-algebra contains the open sets and the $a_k$ are continuous,
+the same holds with $\varepsilon = 0$. In both cases $\varrho$ can be taken with at most
+$N = 2m^2 + 1$ atoms.
+\end{theorem}
+
+The proof is given in \Cref{sec:kiefer-wolfowitz-proof}. Thinning the measure with
+\Cref{cor:one-sided-discretization} gives the bound with any number $n \geq m$ of equally
+weighted points, the case $p = \infty$ of Proposition~8 of~\cite{CDKU}. For $n = m$ points
+such a bound is due to Novak~\cite[Lemma~1.2.2]{N88}, a form of Auerbach's lemma, which
+gives points with
+$\|f\|_\infty \leq (m + \varepsilon) \bigl( \frac{1}{m} \sum_{i=1}^m |f(x_i)|^2 \bigr)^{1/2}$.
+For $n = 2m$ points Krieg, Pozharska, Ullrich and Ullrich~\cite[Theorem~2]{KPUU} prove
+$\|f\|_\infty \leq 42 \bigl( \sum_{i=1}^{2m} |f(x_i)|^2 \bigr)^{1/2}$, and Proposition~8
+of~\cite{CDKU} improves the constant $42$ to $1 + \sqrt{2}$.
+
+\begin{theorem}[Discretization of the uniform norm with $n \geq m$ points]
+\label{thm:uniform-discretization-optimal}
+\lean{Discretization.exists_uniform_discretization_by_l2,
+      Discretization.exists_uniform_discretization_of_compact_by_l2}
+\leanok
+Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
+$a = (a_k)_{k \in \iota}$ be bounded functions on a set $\Omega$ with linearly independent
+coordinate functions, and let $\varepsilon > 0$. Then for every $n \geq m$ there are points
+$x_1, \dots, x_n \in \Omega$, not necessarily distinct, such that
+\[
+  |f(y)|^2 \; \leq \; \frac{m + \varepsilon}{\bigl( 1 - \sqrt{(m-1)/n} \bigr)^2}
+    \cdot \frac{1}{n} \sum_{i=1}^n |f(x_i)|^2
+\]
+for every $y \in \Omega$ and every $f \in \operatorname{span}\{a_k\}$. If $\Omega$ is a
+compact space and the $a_k$ are continuous, the same holds with $\varepsilon = 0$.
+\end{theorem}
+
+\begin{proof}
+\leanok
+\uses{thm:uniform-discretization, cor:one-sided-discretization}
+Give $\Omega$ the $\sigma$-algebra of all its subsets, or the Borel sets in the compact
+case, and take the measure $\varrho = \sum_k w'_k \delta_{x'_k}$ of
+\Cref{thm:uniform-discretization}, with the constant $K = m + \varepsilon$, where
+$\varepsilon = 0$ in the compact case, and positive definite Gram matrix $G$. On the index
+set $\{1, \dots, N\}$ the weights define the probability measure $\sum_k w'_k \delta_k$,
+with respect to which the family $k \mapsto a(x'_k)$ has Gram matrix $G$ and
+$|f(x'_k)|^2$ has integral $\sum_k w'_k |f(x'_k)|^2 = \int_\Omega |f|^2 \, d\varrho$.
+\Cref{cor:one-sided-discretization} for this family gives $n$ indices, that is points
+$x_1, \dots, x_n$ of $\varrho$, with
+\[
+  (1 - r)^2 \int_\Omega |f|^2 \, d\varrho \; \leq \; \frac{1}{n} \sum_{i=1}^n |f(x_i)|^2,
+  \qquad r = \sqrt{(m-1)/n},
+\]
+for every $f \in \operatorname{span}\{a_k\}$, and $r < 1$ because $n \geq m$. The bound of
+\Cref{thm:uniform-discretization} finishes:
+$|f(y)|^2 \leq K \int_\Omega |f|^2 \, d\varrho \leq K (1 - r)^{-2} \frac{1}{n} \sum_i |f(x_i)|^2$.
+\end{proof}
+
+For $n = 2m$ one has $r < 1/\sqrt{2}$, hence $(1 - r)^{-2} / (2m) < (1 + \sqrt{2})^2 / m$,
+and
+\[
+  \|f\|_\infty \; \leq \; (1 + \sqrt{2}) \sqrt{1 + \varepsilon/m} \,
+    \Bigl( \sum_{i=1}^{2m} |f(x_i)|^2 \Bigr)^{1/2}
+  \qquad \text{for every } f \in \operatorname{span}\{a_k\}:
+\]
+the uniform norm on the span is dominated by the Euclidean norm of $2m$ sample values. Since
+$r < 1/\sqrt{2}$ is strict, a small enough $\varepsilon$ gives the constant $1 + \sqrt{2}$
+of~\cite{CDKU} itself.
+
+An average is at most the largest of its terms, so the same points control the uniform norm
+by the largest sample value.
+
+\begin{corollary}[The uniform norm by the largest sample value]
+\label{cor:uniform-discretization-by-max}
+\lean{Discretization.exists_uniform_discretization_by_max,
+      Discretization.exists_uniform_discretization_of_compact_by_max}
+\leanok
+Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
+$a = (a_k)_{k \in \iota}$ be bounded functions on a set $\Omega$ with linearly independent
+coordinate functions, and let $\varepsilon > 0$. Then for every $n \geq m$ there are points
+$x_1, \dots, x_n \in \Omega$, not necessarily distinct, such that
+\[
+  |f(y)|^2 \; \leq \; \frac{m + \varepsilon}{\bigl( 1 - \sqrt{(m-1)/n} \bigr)^2}
+    \cdot \max_{1 \leq i \leq n} |f(x_i)|^2
+\]
+for every $y \in \Omega$ and every $f \in \operatorname{span}\{a_k\}$. If $\Omega$ is a
+compact space and the $a_k$ are continuous, the same holds with $\varepsilon = 0$.
+\end{corollary}
+
+\begin{proof}
+\leanok
+\uses{thm:uniform-discretization-optimal}
+Take the points of \Cref{thm:uniform-discretization-optimal}: the average
+$\frac{1}{n} \sum_{i=1}^n |f(x_i)|^2$ is at most its largest term
+(\texttt{Discretization.inv\_mul\_sum\_le\_iSup}).
+\end{proof}
+
+For $n = 2m$ this is
+$\|f\|_\infty \leq (2 + \sqrt{2}) \sqrt{m + \varepsilon} \, \max_{1 \leq i \leq 2m} |f(x_i)|$,
+and a small enough $\varepsilon$ gives the bound
+$\|f\|_\infty \leq (2 + \sqrt{2}) \sqrt{m} \, \max_i |f(x_i)|$ of~\cite{CDKU}. Krieg,
+Pozharska, Ullrich and Ullrich~\cite{KPUU} read their Theorem~2 as
+$\|f\|_\infty \leq c \sqrt{m} \, \max_{1 \leq i \leq 2m} |f(x_i)|$ with $c = 42 \sqrt{2}$.
+
+\section{The proof of the Kiefer--Wolfowitz theorem}
+\label{sec:kiefer-wolfowitz-proof}
+
+The measure of \Cref{thm:uniform-discretization} is one whose Gram matrix has an almost
+maximal determinant. Mixing in a further point cannot increase that determinant by much,
+and the matrix determinant lemma turns this into the bound $a(y)^* G^{-1} a(y) \leq m +
+\varepsilon$ of \Cref{prop:almost-maximal-determinant}, from which the theorem follows. No
+topology and no measurable structure on $\Omega$ are used until the very end: a finitely
+supported measure is a finite list of points with weights.
 
 A \emph{design} consists of finitely many points $x_1, \dots, x_N \in \Omega$ and weights
 $w_1, \dots, w_N \geq 0$ with $\sum_k w_k = 1$, and its \emph{Gram matrix} is
@@ -1383,27 +1498,6 @@ of squares,
 since the quadratic form of a rank-one matrix $u u^*$ at $c$ is $|\langle c, u \rangle|^2$
 (\texttt{Discretization.KieferWolfowitz.re\_quadForm\_designGram}). The statements below
 spell out points, weights and Gram matrix.
-
-
-\begin{lemma}[Gain from mixing in one point]
-\label{lem:mixing-gain}
-\lean{Discretization.KieferWolfowitz.exists_mix_ge}
-\leanok
-Let $m \geq 1$ and $t > m$ be real. Then $\alpha = (t-m) / (2m(t-1))$ lies in $[0,1)$ and
-\[
-  1 + \frac{(t-m)^2}{4m(t-1)}
-    \; \leq \; (1-\alpha)^{m-1} \bigl( 1 + \alpha (t-1) \bigr).
-\]
-\end{lemma}
-
-\begin{proof}
-\leanok
-By Bernoulli's inequality $(1-\alpha)^{m-1} \geq 1 - (m-1)\alpha$, and the difference of
-the two sides of the claim is then the explicit nonnegative quantity
-$(t-m)^2 / (4m^2(t-1))$. The weight $\alpha$ is the one for which the linear gain
-$\alpha(t-m)$ is twice the quadratic loss $(m-1)(t-1)\alpha^2$, so half of the gain
-survives.
-\end{proof}
 
 \begin{proposition}[Almost maximal determinant]
 \label{prop:almost-maximal-determinant}
@@ -1448,161 +1542,29 @@ cannot exceed $S / \det G < 1 + \eta$. If $t$ were larger than $m + \varepsilon$
 weight of \Cref{lem:mixing-gain} would make it at least $1 + \eta$.
 \end{proof}
 
-\begin{theorem}[Discretization of the uniform norm]
-\label{thm:uniform-discretization}
-\lean{Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le,
-      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le}
+The proof above rests on the following estimate for the gain from mixing in one point.
+
+\begin{lemma}[Gain from mixing in one point]
+\label{lem:mixing-gain}
+\lean{Discretization.KieferWolfowitz.exists_mix_ge}
 \leanok
-Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
-$a = (a_k)_{k \in \iota}$ be bounded functions on a set $\Omega$ with linearly independent
-coordinate functions, and let $\varepsilon > 0$. Then there are points
-$x_1, \dots, x_n \in \Omega$ with $n \leq 2m^2 + 1$ and weights $w_1, \dots, w_n \geq 0$ with
-$\sum_k w_k = 1$ whose Gram matrix $\sum_k w_k \, a(x_k) a(x_k)^*$ is positive definite and
-such that
+Let $m \geq 1$ and $t > m$ be real. Then $\alpha = (t-m) / (2m(t-1))$ lies in $[0,1)$ and
 \[
-  |f(y)|^2 \; \leq \; (m + \varepsilon) \sum_{k=1}^n w_k \, |f(x_k)|^2
+  1 + \frac{(t-m)^2}{4m(t-1)}
+    \; \leq \; (1-\alpha)^{m-1} \bigl( 1 + \alpha (t-1) \bigr).
 \]
-for every $y \in \Omega$ and every $f \in \operatorname{span}\{a_k\}$. If $\Omega$ is a compact space
-and the $a_k$ are continuous, the same holds with $\varepsilon = 0$.
-\end{theorem}
+\end{lemma}
 
 \begin{proof}
 \leanok
-\uses{prop:almost-maximal-determinant, lem:rank-one-updates, lem:mixing-gain,
-      lem:few-design-points}
-Take the design of \Cref{prop:almost-maximal-determinant} for $\varepsilon/2$. For
-$s = m + \varepsilon$ the bound $s^{-1} a(y)^* G^{-1} a(y) < 1$ is strict, so subtracting
-$s^{-1} a(y) a(y)^*$ from $G$ leaves a positive definite matrix by
-\Cref{lem:rank-one-updates}(b), that is $a(y) a(y)^* \preceq s \cdot G$. Evaluating this at
-the coefficient vector $c$ of $f$, with $c^* G c = \sum_k w_k |f(x_k)|^2$, gives the claim.
-The inequality depends on the design only through its Gram matrix, which
-\Cref{lem:few-design-points} preserves while cutting the design down to $2m^2 + 1$ points.
-
-For $\varepsilon = 0$ on a compact space, the matrices $a(y) a(y)^*$ form a compact set,
-whose convex hull is compact as well and consists exactly of the Gram matrices of designs.
-The determinant is continuous, so it attains its maximum at a design. No mixture can then
-increase the determinant at all, and \Cref{lem:mixing-gain} applied with the factor $1$
-gives $a(y)^* G^{-1} a(y) \leq m$ without slack. The passage to the norm inequality is the
-one above for every constant $s > m$, followed by the limit $s \to m$, which is a limit of
-real numbers, and the point count is again \Cref{lem:few-design-points}.
+By Bernoulli's inequality $(1-\alpha)^{m-1} \geq 1 - (m-1)\alpha$, and the difference of
+the two sides of the claim is then the explicit nonnegative quantity
+$(t-m)^2 / (4m^2(t-1))$. The weight $\alpha$ is the one for which the linear gain
+$\alpha(t-m)$ is twice the quadratic loss $(m-1)(t-1)\alpha^2$, so half of the gain
+survives.
 \end{proof}
 
-The theorem produces a list of points with weights. Read as a measure, that list is
-the object the discretization theorem asks for.
-
-\begin{corollary}[Optimal design (Kiefer--Wolfowitz)]
-\label{cor:optimal-design}
-\lean{Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz,
-      Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz_of_compact}
-\leanok
-Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let $\Omega$ carry a
-measurable structure, let $a = (a_k)_{k \in \iota}$ be bounded measurable functions on it
-with linearly independent coordinate functions, and let $\varepsilon > 0$. Then there is
-a finitely supported probability measure $\varrho = \sum_k w_k \delta_{x_k}$ on $\Omega$ whose
-Gram matrix $\int_\Omega a(y) a(y)^* \, d\varrho(y)$ is positive definite and equal to
-$\sum_k w_k \, a(x_k) a(x_k)^*$, and
-\[
-  |f(y)|^2 \; \leq \; (m + \varepsilon) \int_\Omega |f|^2 \, d\varrho
-\]
-for every $y \in \Omega$ and every $f \in \operatorname{span}\{a_k\}$. If $\Omega$ is a compact
-space whose $\sigma$-algebra contains the open sets and the $a_k$ are continuous, the same
-holds with $\varepsilon = 0$.
-\end{corollary}
-
-\begin{proof}
-\leanok
-\uses{thm:uniform-discretization}
-This is \Cref{thm:uniform-discretization} read through the measure: integration against $\sum_k w_k \delta_{x_k}$ is the weighted sum over the points, for
-every strongly measurable integrand.
-\end{proof}
-
-Thinning the design with \Cref{cor:one-sided-discretization} gives the bound with any
-number $n \geq m$ of equally weighted points, the case $p = \infty$ of Proposition~8
-of~\cite{CDKU}. For $n = m$ points such a bound is due to Novak~\cite[Lemma~1.2.2]{N88}, a
-form of Auerbach's lemma, which gives points with
-$\|f\|_\infty \leq (m + \varepsilon) \bigl( \frac{1}{m} \sum_{i=1}^m |f(x_i)|^2 \bigr)^{1/2}$.
-For $n = 2m$ points Krieg, Pozharska, Ullrich and Ullrich~\cite[Theorem~2]{KPUU} prove
-$\|f\|_\infty \leq 42 \bigl( \sum_{i=1}^{2m} |f(x_i)|^2 \bigr)^{1/2}$, and Proposition~8
-of~\cite{CDKU} improves the constant $42$ to $1 + \sqrt{2}$.
-
-\begin{theorem}[Discretization of the uniform norm with $n \geq m$ points]
-\label{thm:uniform-discretization-optimal}
-\lean{Discretization.exists_uniform_discretization_by_l2,
-      Discretization.exists_uniform_discretization_of_compact_by_l2}
-\leanok
-Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
-$a = (a_k)_{k \in \iota}$ be bounded functions on a set $\Omega$ with linearly independent
-coordinate functions, and let $\varepsilon > 0$. Then for every $n \geq m$ there are points
-$x_1, \dots, x_n \in \Omega$, not necessarily distinct, such that
-\[
-  |f(y)|^2 \; \leq \; \frac{m + \varepsilon}{\bigl( 1 - \sqrt{(m-1)/n} \bigr)^2}
-    \cdot \frac{1}{n} \sum_{i=1}^n |f(x_i)|^2
-\]
-for every $y \in \Omega$ and every $f \in \operatorname{span}\{a_k\}$. If $\Omega$ is a compact space
-and the $a_k$ are continuous, the same holds with $\varepsilon = 0$.
-\end{theorem}
-
-\begin{proof}
-\leanok
-\uses{thm:uniform-discretization, cor:one-sided-discretization}
-Take a design $x'_1, \dots, x'_N$ with weights $w'_k$ from
-\Cref{thm:uniform-discretization}, with the constant $K = m + \varepsilon$, where
-$\varepsilon = 0$ in the compact case, and positive definite Gram matrix $G$. On the index
-set $\{1, \dots, N\}$ the weights define the probability measure
-$\varrho = \sum_k w'_k \delta_k$, with respect to which the family $k \mapsto a(x'_k)$ has
-Gram matrix $G$ and $\int |f(x'_k)|^2 \, d\varrho(k) = \sum_k w'_k |f(x'_k)|^2$.
-\Cref{cor:one-sided-discretization} for this family gives $n$ indices, that is design
-points $x_1, \dots, x_n$, with
-\[
-  (1 - r)^2 \sum_k w'_k |f(x'_k)|^2 \; \leq \; \frac{1}{n} \sum_{i=1}^n |f(x_i)|^2,
-  \qquad r = \sqrt{(m-1)/n},
-\]
-for every $f \in \operatorname{span}\{a_k\}$, and $r < 1$ because $n \geq m$. The bound of
-the design finishes:
-$|f(y)|^2 \leq K \sum_k w'_k |f(x'_k)|^2 \leq K (1 - r)^{-2} \frac{1}{n} \sum_i |f(x_i)|^2$.
-\end{proof}
-
-For $n = 2m$ one has $r < 1/\sqrt{2}$, hence $(1 - r)^{-2} / (2m) < (1 + \sqrt{2})^2 / m$,
-which is below $6/m$, and
-$\|f\|_\infty \leq (1 + \sqrt{2}) \sqrt{1 + \varepsilon/m} \,
-\bigl( \sum_{i=1}^{2m} |f(x_i)|^2 \bigr)^{1/2}$: the uniform norm on the span is dominated by
-the Euclidean norm of $2m$ sample values. Since $r < 1/\sqrt{2}$ is strict, a small enough
-$\varepsilon$ gives the constant $1 + \sqrt{2}$ of~\cite{CDKU} itself.
-
-An average is at most the largest of its terms, so the same points control the uniform norm
-by the largest sample value.
-
-\begin{corollary}[The uniform norm by the largest sample value]
-\label{cor:uniform-discretization-by-max}
-\lean{Discretization.exists_uniform_discretization_by_max,
-      Discretization.exists_uniform_discretization_of_compact_by_max}
-\leanok
-Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
-$a = (a_k)_{k \in \iota}$ be bounded functions on a set $\Omega$ with linearly independent
-coordinate functions, and let $\varepsilon > 0$. Then for every $n \geq m$ there are points
-$x_1, \dots, x_n \in \Omega$, not necessarily distinct, such that
-\[
-  |f(y)|^2 \; \leq \; \frac{m + \varepsilon}{\bigl( 1 - \sqrt{(m-1)/n} \bigr)^2}
-    \cdot \max_{1 \leq i \leq n} |f(x_i)|^2
-\]
-for every $y \in \Omega$ and every $f \in \operatorname{span}\{a_k\}$. If $\Omega$ is a
-compact space and the $a_k$ are continuous, the same holds with $\varepsilon = 0$.
-\end{corollary}
-
-\begin{proof}
-\leanok
-\uses{thm:uniform-discretization-optimal}
-Take the points of \Cref{thm:uniform-discretization-optimal}: the average
-$\frac{1}{n} \sum_{i=1}^n |f(x_i)|^2$ is at most its largest term
-(\texttt{Discretization.inv\_mul\_sum\_le\_iSup}).
-\end{proof}
-
-For $n = 2m$ this is
-$\|f\|_\infty \leq (2 + \sqrt{2}) \sqrt{m + \varepsilon} \, \max_{1 \leq i \leq 2m} |f(x_i)|$,
-and a small enough $\varepsilon$ gives the bound
-$\|f\|_\infty \leq (2 + \sqrt{2}) \sqrt{m} \, \max_i |f(x_i)|$ of~\cite{CDKU}. Krieg,
-Pozharska, Ullrich and Ullrich~\cite{KPUU} read their Theorem~2 as
-$\|f\|_\infty \leq c \sqrt{m} \, \max_{1 \leq i \leq 2m} |f(x_i)|$ with $c = 42 \sqrt{2}$.
+The number of points can be cut down without changing the Gram matrix.
 
 \begin{lemma}[Few points suffice]
 \label{lem:few-design-points}
@@ -1621,6 +1583,37 @@ The Gram matrix lies in the convex hull of the matrices $a(y) a(y)^*$, so by
 Carath\'eodory's theorem it is a convex combination of affinely independent ones, and an
 affinely independent family in the real vector space $\mathbb{C}^{\iota \times \iota}$,
 whose real dimension is $2m^2$, has at most $2m^2 + 1$ members.
+\end{proof}
+
+\begin{proof}[Proof of \Cref{thm:uniform-discretization}]
+\proves{thm:uniform-discretization}
+\leanok
+\uses{prop:almost-maximal-determinant, lem:rank-one-updates, lem:mixing-gain,
+      lem:few-design-points}
+Take the design of \Cref{prop:almost-maximal-determinant} for $\varepsilon/2$. For
+$s = m + \varepsilon$ the bound $s^{-1} a(y)^* G^{-1} a(y) < 1$ is strict, so subtracting
+$s^{-1} a(y) a(y)^*$ from $G$ leaves a positive definite matrix by
+\Cref{lem:rank-one-updates}(b), that is $a(y) a(y)^* \preceq s \cdot G$. Evaluating this at
+the coefficient vector $c$ of $f$, with $c^* G c = \sum_k w_k |f(x_k)|^2$, gives
+$|f(y)|^2 \leq s \sum_k w_k |f(x_k)|^2$. This inequality depends on the design only through
+its Gram matrix, which \Cref{lem:few-design-points} preserves while cutting the design down
+to $2m^2 + 1$ points. Read as the measure $\varrho = \sum_k w_k \delta_{x_k}$, the design
+gives the theorem: integration against $\varrho$ is the weighted sum over the points, for
+every measurable integrand.
+
+For $\varepsilon = 0$ on a compact space, the matrices $a(y) a(y)^*$ form a compact set,
+whose convex hull is compact as well and consists exactly of the Gram matrices of designs.
+The determinant is continuous, so it attains its maximum at a design. No mixture can then
+increase the determinant at all, and \Cref{lem:mixing-gain} applied with the factor $1$
+gives $a(y)^* G^{-1} a(y) \leq m$ without slack. The passage to the norm inequality is the
+one above for every constant $s > m$, followed by the limit $s \to m$, which is a limit of
+real numbers, and the point count is again \Cref{lem:few-design-points}.
+
+In Lean the design form is
+\texttt{Discretization.KieferWolfowitz.exists\_design\_kieferWolfowitz\_card\_le} and its
+compact counterpart, and
+\texttt{Discretization.KieferWolfowitz.exists\_probabilityMeasure\_of\_design} turns a
+design into the measure.
 \end{proof}
 
 \begin{remark}[What the count is good for]
