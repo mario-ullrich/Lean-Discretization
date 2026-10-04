@@ -200,9 +200,7 @@ Proposition 8 of Chkifa, Dolbeault, Krieg and Ullrich. For `n = 2m` it gives
 `‖f‖_∞ ≤ (1 + √2) √(1 + ε/m) (∑ᵢ₌₁²ᵐ |f(xᵢ)|²)^{1/2}`: the uniform norm on the span is
 dominated by the Euclidean norm of `2m` sample values. Theorem 2 of
 [Krieg, Pozharska, Ullrich and Ullrich](https://arxiv.org/abs/2401.02220) proves this with
-the constant `42`, and Proposition 8 improves it to `1 + √2`. For `n = m` points the bound is
-due to Novak, who obtains `‖f‖_∞ ≤ (m + ε) ((1/m) ∑ᵢ₌₁ᵐ |f(xᵢ)|²)^{1/2}` from a form of
-Auerbach's lemma.
+the constant `42`, and Proposition 8 improves it to `1 + √2`.
 
 An average is at most its largest term, so the same points bound the uniform norm by the
 largest sample value:
@@ -214,7 +212,8 @@ largest sample value:
 (`Discretization.exists_uniform_discretization_by_max`, and with `ε = 0` on a compact space
 `Discretization.exists_uniform_discretization_of_compact_by_max`). For `n = 2m` this is
 `‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)|`, the bound that Chkifa, Dolbeault, Krieg and
-Ullrich state with `√m`.
+Ullrich state with `√m`. For `n = m` points a bound by the largest sample value is due to
+Novak, who obtains `‖f‖_∞ ≤ (m + ε) maxᵢ₌₁ᵐ |f(xᵢ)|` from a form of Auerbach's lemma.
 
 ## The proofs
 

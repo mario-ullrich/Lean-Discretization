@@ -1383,13 +1383,10 @@ $N = 2m^2 + 1$ atoms.
 
 The proof is given in \Cref{sec:kiefer-wolfowitz-proof}. Thinning the measure with
 \Cref{cor:one-sided-discretization} gives the bound with any number $n \geq m$ of equally
-weighted points, the case $p = \infty$ of Proposition~8 of~\cite{CDKU}. For $n = m$ points
-such a bound is due to Novak~\cite[Lemma~1.2.2]{N88}, a form of Auerbach's lemma, which
-gives points with
-$\|f\|_\infty \leq (m + \varepsilon) \bigl( \frac{1}{m} \sum_{i=1}^m |f(x_i)|^2 \bigr)^{1/2}$.
-For $n = 2m$ points Krieg, Pozharska, Ullrich and Ullrich~\cite[Theorem~2]{KPUU} prove
+weighted points, the case $p = \infty$ of Proposition~8 of~\cite{CDKU}. For $n = 2m$ points
+Krieg, Pozharska, Ullrich and Ullrich~\cite[Theorem~2]{KPUU} prove
 $\|f\|_\infty \leq 42 \bigl( \sum_{i=1}^{2m} |f(x_i)|^2 \bigr)^{1/2}$, and Proposition~8
-of~\cite{CDKU} improves the constant $42$ to $1 + \sqrt{2}$.
+of~\cite{CDKU} improves the constant.
 
 \begin{theorem}[Discretization of the uniform norm with $n \geq m$ points]
 \label{thm:uniform-discretization-optimal}
@@ -1441,7 +1438,9 @@ $r < 1/\sqrt{2}$ is strict, a small enough $\varepsilon$ gives the constant $1 +
 of~\cite{CDKU} itself.
 
 An average is at most the largest of its terms, so the same points control the uniform norm
-by the largest sample value.
+by the largest sample value. For $n = m$ points such a bound is due to
+Novak~\cite[Lemma~1.2.2]{N88}, a form of Auerbach's lemma, which gives points with
+$\|f\|_\infty \leq (m + \varepsilon) \max_{1 \leq i \leq m} |f(x_i)|$.
 
 \begin{corollary}[The uniform norm by the largest sample value]
 \label{cor:uniform-discretization-by-max}
@@ -1468,12 +1467,11 @@ $\frac{1}{n} \sum_{i=1}^n |f(x_i)|^2$ is at most its largest term
 (\texttt{Discretization.inv\_mul\_sum\_le\_iSup}).
 \end{proof}
 
-For $n = 2m$ this is
-$\|f\|_\infty \leq (2 + \sqrt{2}) \sqrt{m + \varepsilon} \, \max_{1 \leq i \leq 2m} |f(x_i)|$,
-and a small enough $\varepsilon$ gives the bound
-$\|f\|_\infty \leq (2 + \sqrt{2}) \sqrt{m} \, \max_i |f(x_i)|$ of~\cite{CDKU}. Krieg,
-Pozharska, Ullrich and Ullrich~\cite{KPUU} read their Theorem~2 as
-$\|f\|_\infty \leq c \sqrt{m} \, \max_{1 \leq i \leq 2m} |f(x_i)|$ with $c = 42 \sqrt{2}$.
+For $n = 2m$ points and a small enough $\varepsilon$ this gives the bound of~\cite{CDKU},
+\[
+  \|f\|_\infty \; \leq \; (2 + \sqrt{2}) \sqrt{m} \, \max_{1 \leq i \leq 2m} |f(x_i)|
+  \qquad \text{for every } f \in \operatorname{span}\{a_k\}.
+\]
 
 \section{The proof of the Kiefer--Wolfowitz theorem}
 \label{sec:kiefer-wolfowitz-proof}

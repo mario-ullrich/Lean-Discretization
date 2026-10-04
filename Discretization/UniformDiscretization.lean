@@ -23,9 +23,7 @@ the same holds with `ε = 0`.  The uniform norm on the span is dominated by the 
 Dolbeault, Krieg and Ullrich.  For `n = 2m` points Krieg, Pozharska, Ullrich and Ullrich
 (Theorem 2) prove `‖f‖_∞ ≤ 42 (∑ᵢ |f(xᵢ)|²)^{1/2}`, and Proposition 8 improves the constant
 `42` to `1 + √2`; in the form here the squared factor in front of `∑ᵢ |f(xᵢ)|²` is below
-`6 (1 + ε/m)`.  For `n = m` points Novak (*Deterministic and stochastic error bounds in
-numerical analysis*, Lemma 1.2.2, a form of Auerbach's lemma) gives
-`‖f‖_∞ ≤ (m + ε) ((1/m) ∑ᵢ |f(xᵢ)|²)^{1/2}`.
+`6 (1 + ε/m)`.
 
 An average is at most the largest of its terms, so the same points also give
 
@@ -34,7 +32,9 @@ An average is at most the largest of its terms, so the same points also give
 the uniform norm on the span dominated by the largest sample value
 (`Discretization.exists_uniform_discretization_by_max`).  For `n = 2m` this is
 `‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)|`, the bound that Chkifa, Dolbeault, Krieg and
-Ullrich state with `√m`.
+Ullrich state with `√m`.  For `n = m` points Novak (*Deterministic and stochastic error
+bounds in numerical analysis*, Lemma 1.2.2, a form of Auerbach's lemma) gives
+`‖f‖_∞ ≤ (m + ε) maxᵢ |f(xᵢ)|`.
 
 The proof thins the Kiefer–Wolfowitz design.  That design, a list of `N` points with
 weights, satisfies the bound with `∑ₖ wₖ |f(xₖ)|²` on the right and has a positive definite
@@ -153,8 +153,7 @@ for every point `y` and every function `f(y) = ⟪c, a(y)⟫` in the span: the u
 dominated by the discrete `ℓ₂` norm of the `n` sample values.  This is Proposition 8 of
 Chkifa, Dolbeault, Krieg and Ullrich for `p = ∞`.  For `n = 2m` the factor in front of
 `∑ᵢ |f(xᵢ)|²` is below `6 (1 + ε/m)`, where Theorem 2 of Krieg, Pozharska, Ullrich and
-Ullrich has `42²`.  The case `n = m` is due to Novak, with the constant `(m + ε)² / m` from
-Auerbach's lemma. -/
+Ullrich has `42²`. -/
 theorem exists_uniform_discretization_by_l2 [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
     (hC : ∀ y i, ‖a y i‖ ≤ C) (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0)
     {ε : ℝ} (hε : 0 < ε) {n : ℕ} (hmn : Fintype.card ι ≤ n) :
@@ -202,7 +201,8 @@ of `Discretization.exists_uniform_discretization_by_l2`, whose average is at mos
 term (`Discretization.inv_mul_sum_le_iSup`).  For `n = 2m` this is
 `‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)|`, the bound that Chkifa, Dolbeault, Krieg and Ullrich
 state with `√m`; Krieg, Pozharska, Ullrich and Ullrich read their Theorem 2 as
-`‖f‖_∞ ≤ c √m maxᵢ |f(xᵢ)|` with `c = 42 √2`. -/
+`‖f‖_∞ ≤ c √m maxᵢ |f(xᵢ)|` with `c = 42 √2`.  For `n = m` points Novak, with a form of
+Auerbach's lemma, gives `‖f‖_∞ ≤ (m + ε) maxᵢ |f(xᵢ)|`. -/
 theorem exists_uniform_discretization_by_max [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
     (hC : ∀ y i, ‖a y i‖ ≤ C) (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0)
     {ε : ℝ} (hε : 0 < ε) {n : ℕ} (hmn : Fintype.card ι ≤ n) :
