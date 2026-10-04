@@ -90,26 +90,7 @@ $(1 - \sqrt{(m-1)/n})^2 \lambda_{\min}(I)$ in Loewner form.
 
 \begin{theorem}[Discretization]
 \label{thm:discretization}
-\lean{Discretization.Infinite.bss_generalized, Discretization.bss_of_gram_eq_one,
-      Discretization.Infinite.bss_generalized_of_gram_eq_one',
-      Discretization.bss_generalized_of_gram_eq_one',
-      Discretization.UpperBarrier.bss_generalized_of_gram_eq_one',
-      Discretization.bss_generalized_of_gram_eq_one,
-      Discretization.UpperBarrier.bss_generalized_of_gram_eq_one,
-      Discretization.bss_generalized_of_unique,
-      Discretization.UpperBarrier.bss_generalized_of_unique,
-      Discretization.bss_generalized_of_small_dim,
-      Discretization.UpperBarrier.bss_generalized_of_small_dim,
-      Discretization.bss_generalized_of_unique_of_small_dim,
-      Discretization.UpperBarrier.bss_generalized_of_unique_of_small_dim,
-      Discretization.bss_generalized, Discretization.Countable.bss_generalized,
-      Discretization.exists_discretization, Discretization.Countable.exists_discretization,
-      Discretization.Countable.ae_mem_l2, Discretization.Countable.exists_measurableSet_mem_l2,
-      Discretization.Countable.toLp, Discretization.Countable.memLp_toLp,
-      Discretization.Countable.inner_toLp, Discretization.Countable.integral_norm_sq_toLp,
-      Discretization.Countable.gramOp, Discretization.Countable.gramOp_injective,
-      Discretization.Countable.gramOp_le, Discretization.Countable.integral_comap_val,
-      Discretization.Countable.gram_comap_val, HilbertBasis.separableSpace}
+\lean{Discretization.Infinite.bss_generalized}
 \leanok
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let $H$
 be a nonzero separable complex Hilbert space. Let $a : \Omega \to \mathbb{C}^{\iota}$ be
@@ -143,23 +124,34 @@ $J$ is injective exactly when $\langle u, b(\cdot) \rangle = 0$ almost everywher
 $u = 0$. Equivalently, $J = T^* T$ for the operator $T : H \to L_2(\mu)$,
 $u \mapsto \langle b(\cdot), u \rangle$, and $\Lambda$ bounds $\|T\|^2$.
 
-For a countable family $b = (b_k)_{k \in \kappa}$ of square-integrable functions with
-$\sum_k \|b_k\|_{L_2}^2 < \infty$ the theorem takes the form in which~\cite{CDKU} state
-their Theorem 3: the Gram matrix $J = (\int_\Omega b_k \overline{b_l} \, d\mu)_{k,l}$, an
-operator on $\ell_2(\kappa)$, replaces the Gram operator,
-$M = \sum_k \|b_k\|_{L_2}^2 / \Lambda$, and the upper bound, evaluated at
-$c \in \ell_2(\kappa)$, reads
-$\sum_i w_i |\sum_k c_k \, b_k(x_i)|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \|c\|^2$.
-Nothing pointwise is assumed: by Tonelli, $\sum_k |b_k(x)|^2 < \infty$ almost everywhere,
-and on that set $b(x) = (b_k(x))_k$ is a square-integrable map into $\ell_2(\kappa)$ with
-Gram operator $J$, to which the theorem applies; the points are chosen there. In Lean this
-is \texttt{Discretization.bss\_generalized} for finite $\kappa$, proved with matrices, and
-\texttt{Discretization.Countable.bss\_generalized} for countable $\kappa$, with the
-hypotheses on $J$ stated on the family as in \Cref{lem:gram-operator}(b) and (c); for
-$I = 1$ the lower bound reads
+The theorem takes several forms, according to how the second family is given and whether
+its bounds are read through quadratic forms.
+
+\begin{remark}[Forms of the theorem]
+\label{rem:discretization-forms}
+(a) A countable family $b = (b_k)_{k \in \kappa}$ of square-integrable functions with
+$\sum_k \|b_k\|_{L_2}^2 < \infty$ is the case $H = \ell_2(\kappa)$ and
+$b(x) = (b_k(x))_k$. The Gram operator is the Gram matrix
+$(\int_\Omega b_k \overline{b_l} \, d\mu)_{k,l}$, $M = \sum_k \|b_k\|_{L_2}^2 / \Lambda$, and
+the upper bound reads
+$\sum_i w_i |\sum_k c_k \, b_k(x_i)|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \|c\|^2$ for every
+$c \in \ell_2(\kappa)$. Nothing pointwise is assumed: by Tonelli,
+$\sum_k |b_k(x)|^2 < \infty$ almost everywhere, and the points are chosen there. This is
+the form of Theorem~3 of~\cite{CDKU}; in Lean it is
+\texttt{Discretization.Countable.bss\_generalized}, and for finite $\kappa$, proved with
+matrices, \texttt{Discretization.bss\_generalized}.
+
+(b) For $I = 1$, read through quadratic forms, the lower bound is
 $(1 - \sqrt{(m-1)/n})^2 \int_\Omega |f|^2 \, d\mu \leq \sum_i w_i |f(x_i)|^2$ for every
-$f \in \operatorname{span}\{a_k\}$ (\texttt{Discretization.exists\_discretization},
-\texttt{Discretization.Countable.exists\_discretization}).
+$f \in \operatorname{span}\{a_k\}$, and the upper bound is
+$\sum_i w_i |\langle u, b(x_i) \rangle|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \|u\|^2$ for
+every $u \in H$. In Lean this is \texttt{Discretization.Infinite.exists\_discretization},
+and for a family \texttt{Discretization.exists\_discretization} and
+\texttt{Discretization.Countable.exists\_discretization}.
+
+(c) For the kernel sections of a reproducing kernel Hilbert space the upper bound is a bound
+by the norm of the space, \Cref{cor:l2-discretization}.
+\end{remark}
 
 For $b = a$, \Cref{thm:discretization} gives the sparsification theorem of Batson,
 Spielman and Srivastava~\cite{BSS} in a slightly stronger form: $\sqrt{(m-1)/n}$ in place
@@ -168,9 +160,8 @@ finitely many vectors, over $\mathbb{C}$.
 
 \begin{corollary}[Sparsification]
 \label{cor:bss}
-\lean{Discretization.bss, Discretization.bss_of_sum_eq_one, Discretization.gram_count,
-      Discretization.sum_fiberwise_smul,
-      Discretization.card_filter_sum_fiberwise_ne_zero_le}
+\lean{Discretization.bss,
+      Discretization.bss_of_sum_eq_one}
 \leanok
 Let $\iota$ be a finite nonempty set and put $m = \#\iota$.
 
@@ -218,10 +209,7 @@ and the norm of the space from above.
 
 \begin{corollary}[Discretization of the $L_2$-norm]
 \label{cor:l2-discretization}
-\lean{Discretization.RKHS.exists_discretization,
-      Discretization.Infinite.exists_discretization,
-      Discretization.mul_integral_norm_sq_le_sum,
-      Discretization.Infinite.sum_mul_norm_sq_inner_le}
+\lean{Discretization.RKHS.exists_discretization}
 \leanok
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let
 $a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in every coordinate with
@@ -267,18 +255,11 @@ decomposition of the embedding enter.
 
 Every square-integrable map $b : \Omega \to H$ with injective Gram operator leads to such a
 space. Since $J$ is injective, $g = \langle u, b(\cdot) \rangle$ determines $u$, and these
-functions form a reproducing kernel Hilbert space $H_b$ with $\|g\|_{H_b} = \|u\|$, kernel
+functions form a reproducing kernel Hilbert space with $\|g\| = \|u\|$, kernel
 $K(x, y) = \langle b(x), b(y) \rangle$ and
-$\int_\Omega K(x, x) \, d\mu = \int_\Omega \|b\|^2 \, d\mu$. For $H_b$ the second bound
-reads $\sum_i w_i |\langle u, b(x_i) \rangle|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \|u\|^2$
-for every $u \in H$; Lean proves the corollary in this form
-(\texttt{Discretization.Infinite.exists\_discretization}) and reads it off for
-$b(x) = k_x$. In the coordinates of an orthonormal basis $(e_k)$ of $H$, with
-$\|g\|_H^2 = \sum_k |c_k|^2$ for $g = \sum_k c_k \, e_k$ and
-$\sum_k \|e_k\|_{L_2}^2 = \int_\Omega K(x, x) \, d\mu$, the second bound is the family form
-stated after \Cref{thm:discretization}, for $(e_k)$. Conversely, on the set where
-$\sum_k |b_k(x)|^2 < \infty$, the functions $\sum_k c_k \, b_k$ of a countable family with
-injective Gram operator form such a space, with orthonormal basis $(b_k)$.
+$\int_\Omega K(x, x) \, d\mu = \int_\Omega \|b\|^2 \, d\mu$, so the corollary covers every
+such $b$. Lean proves it in that form, \Cref{rem:discretization-forms}(b), and reads it off
+for $b(x) = k_x$.
 
 On a probability space the lower bound of \Cref{thm:discretization} holds with equal
 weights, a one-sided discretization of the $L_2$-norm. Limonova and
@@ -292,15 +273,7 @@ proof, bounds every single weight by $1/n$.
 
 \begin{corollary}[One-sided discretization]
 \label{cor:one-sided-discretization}
-\lean{Discretization.exists_one_sided_discretization,
-      Discretization.bss_lower_le_one_div,
-      Discretization.bss_lower_le_one_div_of_gram_eq_one,
-      Discretization.bss_lower_le_one_div_of_gram_eq_one_of_two_le,
-      Discretization.bss_lower_le_one_div_of_gram_eq_one_of_unique,
-      Discretization.bss_lower_equal_weights,
-      Discretization.exists_lower_initial_data,
-      Discretization.exists_points_weights_of_small_dim,
-      Discretization.integral_const_natCast}
+\lean{Discretization.exists_one_sided_discretization}
 \leanok
 Let $(\Omega, \mu)$ be a probability space, let $\iota$ be a finite nonempty set with
 $m = \#\iota$ elements, and let $a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in
@@ -441,10 +414,10 @@ inequality. No commutation of $Y$ and $Z$ is used.
 
 \begin{lemma}[Parseval and Hilbert--Schmidt sums under adjoints]
 \label{lem:hilbert-schmidt-adjoint}
-\lean{HilbertBasis.hasSum_norm_sq_inner, ContinuousLinearMap.tsum_norm_sq_adjoint,
+\lean{HilbertBasis.hasSum_norm_sq_inner,
+      ContinuousLinearMap.tsum_norm_sq_adjoint,
       ContinuousLinearMap.summable_norm_sq_adjoint_iff,
-      ContinuousLinearMap.tsum_ofReal_norm_sq_adjoint_of_basis,
-      ContinuousLinearMap.tsum_ofReal_norm_sq_of_isSelfAdjoint}
+      ContinuousLinearMap.tsum_ofReal_norm_sq_adjoint_of_basis}
 \leanok
 Let $H$ be a complex Hilbert space with a Hilbert basis $e = (e_k)_{k \in \kappa}$.
 
@@ -484,12 +457,8 @@ Hilbert--Schmidt.
 
 \begin{definition}[Trace of a positive operator]
 \label{def:trace}
-\lean{ContinuousLinearMap.traceAlong, ContinuousLinearMap.trace, HilbertBasis.chosen,
-      ContinuousLinearMap.trace_eq_traceAlong, ContinuousLinearMap.traceAlong_eq_of_basis,
-      ContinuousLinearMap.summable_re_inner_iff_of_basis,
-      ContinuousLinearMap.summable_re_inner_chosen_iff,
-      HilbertBasis.countable_of_separableSpace, HilbertBasis.nonempty_of_nontrivial,
-      Discretization.Infinite.IsFiniteTracePos}
+\lean{ContinuousLinearMap.traceAlong,
+      ContinuousLinearMap.trace}
 \leanok
 \uses{lem:hilbert-schmidt-adjoint}
 Let $H$ be a complex Hilbert space, let $T$ be a positive operator on $H$, and let
@@ -750,11 +719,8 @@ and \Cref{thm:discretization} assumes nothing else.
 \label{lem:gram-operator}
 \lean{ContinuousLinearMap.integrable_rankOne_self,
       ContinuousLinearMap.inner_integral_rankOne_self,
-      Discretization.Infinite.inner_eq_integral_of_integral_rankOne,
-      ContinuousLinearMap.re_inner_eq_integral, ContinuousLinearMap.nonneg_of_inner_eq_integral,
-      ContinuousLinearMap.le_smul_one_iff_of_inner_eq_integral,
+      ContinuousLinearMap.nonneg_of_inner_eq_integral,
       ContinuousLinearMap.integral_rankOne_self_le_iff,
-      ContinuousLinearMap.injective_iff_of_inner_eq_integral,
       ContinuousLinearMap.integral_rankOne_self_injective_iff}
 \leanok
 Let $(\Omega, \mu)$ be a measure space, let $H$ be a complex Hilbert space, let
@@ -789,11 +755,9 @@ $\langle u, J u \rangle = \|J^{1/2} u\|^2 = 0$ gives $J^{1/2} u = 0$ and hence $
 
 \begin{lemma}[The trace of the Gram operator]
 \label{lem:gram-operator-trace}
-\lean{ContinuousLinearMap.summable_re_inner_of_gram,
-      ContinuousLinearMap.integral_re_inner_apply,
-      Discretization.Infinite.isFiniteTracePos_of_integral_rankOne,
+\lean{Discretization.Infinite.isFiniteTracePos_of_integral_rankOne,
       Discretization.Infinite.integral_norm_sq_eq_trace,
-      Discretization.Infinite.integral_norm_sq_eq_traceAlong}
+      ContinuousLinearMap.integral_re_inner_apply}
 \leanok
 \uses{def:trace, lem:gram-operator}
 Let $(\Omega, \mu)$ be a measure space, let $H$ be a separable complex Hilbert space, let
@@ -1238,9 +1202,7 @@ for the second, each controlled by its potential. This chapter runs it and prove
 
 \begin{proposition}[The barrier iteration]
 \label{prop:barrier-iteration}
-\lean{Discretization.lowerState, Discretization.UpperBarrier.upperState,
-      Discretization.UpperBarrier.exists_points_weights, Discretization.UpperBarrier,
-      Discretization.matrixUpperBarrier, Discretization.Infinite.operatorUpperBarrier}
+\lean{Discretization.UpperBarrier.exists_points_weights}
 \leanok
 \uses{def:lower-potential, def:upper-potential}
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let $H$
@@ -1378,7 +1340,7 @@ free of operators.
 The kernel sections of a reproducing kernel Hilbert space, the second case of $b$ named in
 \Cref{ch:problem}, form a square-integrable map into a separable Hilbert space, to which
 \Cref{thm:discretization} applies. The first case, a countable family, needs only
-Tonelli's theorem and is treated after \Cref{thm:discretization}.
+Tonelli's theorem and is treated in \Cref{rem:discretization-forms}.
 
 \begin{lemma}[Kernel sections]
 \label{lem:kernel-sections}
@@ -1480,10 +1442,7 @@ survives.
 
 \begin{proposition}[Almost maximal determinant]
 \label{prop:almost-maximal-determinant}
-\lean{Discretization.KieferWolfowitz.exists_design_quadForm_inv_le,
-      Discretization.KieferWolfowitz.exists_design_posDef,
-      Discretization.KieferWolfowitz.designGram,
-      Discretization.KieferWolfowitz.re_quadForm_designGram}
+\lean{Discretization.KieferWolfowitz.exists_design_quadForm_inv_le}
 \leanok
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
 $a = (a_k)_{k \in \iota}$ be bounded functions on a set $D$ whose coordinate functions
@@ -1526,11 +1485,8 @@ weight of \Cref{lem:mixing-gain} would make it at least $1 + \eta$.
 
 \begin{theorem}[Discretization of the uniform norm]
 \label{thm:uniform-discretization}
-\lean{Discretization.KieferWolfowitz.exists_design_kieferWolfowitz,
-      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le,
-      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact,
-      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le,
-      IsCompact.convexHull}
+\lean{Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le,
+      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le}
 \leanok
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
 $a = (a_k)_{k \in \iota}$ be bounded functions on a set $D$ with linearly independent
@@ -1572,8 +1528,7 @@ the object the discretization theorem asks for.
 \begin{corollary}[Optimal design (Kiefer--Wolfowitz)]
 \label{cor:optimal-design}
 \lean{Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz,
-      Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz_of_compact,
-      Discretization.KieferWolfowitz.exists_probabilityMeasure_of_design}
+      Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz_of_compact}
 \leanok
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let $D$ carry a
 measurable structure, let $a = (a_k)_{k \in \iota}$ be bounded measurable functions on it
@@ -1648,9 +1603,7 @@ of~\cite{KPUU} with the constant $42$ replaced by $\sqrt{6 (1 + \varepsilon/m)}$
 
 \begin{lemma}[Few points suffice]
 \label{lem:few-design-points}
-\lean{Discretization.KieferWolfowitz.exists_design_card_le,
-      Discretization.KieferWolfowitz.designGram_mem_convexHull,
-      Discretization.KieferWolfowitz.exists_design_of_mem_convexHull}
+\lean{Discretization.KieferWolfowitz.exists_design_card_le}
 \leanok
 Let $D$ be a set, let $\iota$ be a finite set with $m = \#\iota$ elements and let
 $a : D \to \mathbb{C}^{\iota}$. For all points $x_1, \dots, x_N \in D$ and weights
@@ -1678,7 +1631,6 @@ formalised, and nothing needs it.
 
 \begin{remark}[The identity decomposed over the design]
 \label{rem:identity-decomposition}
-\lean{Discretization.KieferWolfowitz.sum_weight_quadForm_inv_eq_card, Discretization.KieferWolfowitz.sum_weight_smul_quadForm_inv_eq_self}
 \leanok
 \uses{prop:almost-maximal-determinant, thm:uniform-discretization}
 For a design with points $x_1, \dots, x_n$, weights $w_1, \dots, w_n$ and invertible Gram
@@ -1689,7 +1641,9 @@ matrix $G$, and with $m = \#\iota$,
   \sum_{k=1}^n w_k \bigl( a(x_k)^* G^{-1} z \bigr) a(x_k) = z
 \]
 for every $z \in \mathbb{C}^{\iota}$, the first being $\Tr(G^{-1} G)$ and the second
-$G G^{-1} z = z$ written out. With $c_k = w_k \, a(x_k)^* G^{-1} a(x_k)$ this is John's
+$G G^{-1} z = z$ written out
+(\texttt{Discretization.KieferWolfowitz.sum\_weight\_quadForm\_inv\_eq\_card},
+\texttt{Discretization.KieferWolfowitz.sum\_weight\_smul\_quadForm\_inv\_eq\_self}). With $c_k = w_k \, a(x_k)^* G^{-1} a(x_k)$ this is John's
 decomposition of the identity over the design points, in the inner product
 $\langle u, z \rangle = u^* G^{-1} z$ of the ellipsoid of $G$, and it is the condition
 dual to the bound of \Cref{prop:almost-maximal-determinant}. Under

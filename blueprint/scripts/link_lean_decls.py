@@ -15,6 +15,12 @@ numbers stay valid as the sources move.  A declaration that cannot be resolved
 loses its ``href`` altogether: an ``<a>`` without one renders as plain text,
 which is better than a link that 404s.
 
+Lean names in the running text, written ``\\texttt{Decl}``, become the same
+permalinks when they name a declaration of this repository.  That is how a
+remark, which leanblueprint gives no working Lean links, and every sentence of
+the form "in Lean this is ..." link to the sources.  Other ``\\texttt`` text stays
+as it is.
+
 Usage::
 
     python blueprint/scripts/link_lean_decls.py --repo owner/name --rev <sha> \\
@@ -48,6 +54,8 @@ END_RE = re.compile(r"^\s*end\s+([A-Za-z_][A-Za-z0-9_.']*)")
 # The anchor leanblueprint emits, e.g.
 #   href="https://leanprover-community.github.io/mathlib4_docs/find/#doc/Foo.bar"
 LINK_RE = re.compile(r'\s*href="[^"]*/find/#doc/([^"]+)"')
+# A name in the running text, rendered from `\texttt{...}`.
+TT_RE = re.compile(r'<span class="ttfamily">([^<]*)</span>')
 
 
 def declaration_table(root: Path) -> dict[str, tuple[str, int]]:
@@ -98,6 +106,7 @@ def main() -> int:
 
     base = f"https://github.com/{args.repo}/blob/{args.rev}"
     rewritten = 0
+    prose = 0
     dropped: set[str] = set()
 
     for page in sorted(Path(args.web).glob("*.html")):
@@ -114,13 +123,25 @@ def main() -> int:
             path, lineno = target
             return f' href="{base}/{path}#L{lineno}"'
 
+        def link_text(match: re.Match[str]) -> str:
+            nonlocal prose
+            target = table.get(match.group(1))
+            if target is None:
+                return match.group(0)
+            prose += 1
+            path, lineno = target
+            return (f'<span class="ttfamily"><a href="{base}/{path}#L{lineno}" '
+                    f'class="lean_decl">{match.group(1)}</a></span>')
+
         new_text, hits = LINK_RE.subn(replace, text)
-        if hits:
+        new_text = TT_RE.sub(link_text, new_text)
+        if new_text != text:
             page.write_text(new_text, encoding="utf-8")
             print(f"  {page.name}: {hits}")
 
     total = rewritten + len(dropped)
     print(f"links rewritten: {rewritten}")
+    print(f"names in the text linked: {prose}")
     if dropped:
         print(f"declarations not found, href dropped: {len(dropped)}")
         for decl in sorted(dropped):

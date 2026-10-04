@@ -2,7 +2,9 @@
 """Check that every declaration the blueprint cites exists in the compiled project.
 
 Every ``\\lean{Decl}`` tag in ``blueprint/src/content.tex`` names a Lean
-declaration.  This script collects those names, writes a Lean file that imports
+declaration, and so does every ``\\texttt{...}`` in the running text whose content
+is a dotted name such as ``Discretization.gram``; the link script turns the latter
+into links as well.  This script collects both kinds of names, writes a Lean file that imports
 the root module of each library of the project, and asks Lean whether the
 resulting environment contains each name.  A blueprint citing a declaration that
 the project no longer has is wrong, so a missing name fails the run.
@@ -34,14 +36,17 @@ ROOTS = ["BasicResults", "Discretization", "Palomar"]
 CHECK_FILE = Path(".lake/check_lean_decls.lean")
 
 LEAN_TAG = re.compile(r"\\lean\{([^}]*)\}")
+TEXTTT = re.compile(r"\\texttt\{([^}]*)\}")
+# A dotted Lean name; `\texttt` text such as a file name or an expression is skipped.
+DOTTED_NAME = re.compile(r"^[A-Za-z_][A-Za-z0-9_']*(\.[A-Za-z_][A-Za-z0-9_'!?]*)+$")
 
 
 def cited_names(tex: str) -> list[str]:
-    """The declaration names in all `\\lean{...}` tags, each once, sorted."""
-    return sorted(
-        {name.strip() for group in LEAN_TAG.findall(tex) for name in group.split(",")}
-        - {""}
-    )
+    """The declaration names in all `\\lean{...}` tags and the dotted names in
+    `\\texttt{...}`, each once, sorted."""
+    tagged = {name.strip() for group in LEAN_TAG.findall(tex) for name in group.split(",")}
+    in_text = {t.replace("\\_", "_") for t in TEXTTT.findall(tex)}
+    return sorted((tagged | {t for t in in_text if DOTTED_NAME.match(t)}) - {""})
 
 
 def lean_source(names: list[str]) -> str:
