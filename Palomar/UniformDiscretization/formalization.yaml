@@ -1,0 +1,195 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# formalization.yaml v0.4
+version: "v0.4"
+
+project:
+  name: "Discretization of the uniform norm with n ≥ m points"
+  description: >-
+    On an m-dimensional space V of bounded functions on an arbitrary set Ω, for every
+    ε > 0 and every n ≥ m, there are points x₁, …, xₙ ∈ Ω, not necessarily distinct, with
+    |f(y)|² ≤ (m + ε) / (1 − √((m−1)/n))² · (1/n) ∑ᵢ |f(xᵢ)|² for every y ∈ Ω and every
+    f ∈ V: the uniform norm is dominated by the discrete ℓ₂ norm of n sample values. An
+    average is at most its largest term, so the same points give
+    |f(y)|² ≤ (m + ε) / (1 − √((m−1)/n))² · maxᵢ |f(xᵢ)|². For continuous functions on a
+    compact domain both hold with ε = 0. For n = 2m the first bound is
+    ‖f‖_∞ ≤ (1 + √2) √(1 + ε/m) (∑ᵢ |f(xᵢ)|²)^{1/2}, where Krieg, Pozharska, Ullrich and
+    Ullrich have the constant 42, and the second is
+    ‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)|. The points are obtained by thinning the
+    measure of the Kiefer–Wolfowitz theorem with a one-sided discretization of the L₂
+    norm with equal weights.
+  authors:
+    - "Mario Ullrich"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Mario Ullrich"
+
+classification:
+  arxiv: ["math.NA", "math.FA"]
+  msc2020: ["41A17", "46E15", "62K05"]
+
+sources:
+  - title: "Constructive discretization and approximation in reproducing kernel Hilbert spaces"
+    authors:
+      - "Abdellah Chkifa"
+      - "Matthieu Dolbeault"
+      - "David Krieg"
+      - "Mario Ullrich"
+    id: "arXiv:2602.18719"
+    type: "paper"
+    location: "https://arxiv.org/abs/2602.18719"
+    relationship: "formalizes"
+    note: >-
+      Proposition 8 for p = ∞ is the statement formalized here, together with the bound
+      by the largest sample value that the paper derives from it for n = 2m; its proof,
+      the Kiefer–Wolfowitz measure thinned by the one-sided discretization with weights
+      1/n, is the one followed. The case p = 2 is the separate OneSidedDiscretization
+      submission of this repository.
+    author_endorsement: "participated"
+  - title: "Sampling projections in the uniform norm"
+    authors:
+      - "David Krieg"
+      - "Kateryna Pozharska"
+      - "Mario Ullrich"
+      - "Tino Ullrich"
+    id: "arXiv:2401.02220"
+    type: "paper"
+    location: "https://doi.org/10.1016/j.jmaa.2025.129873"
+    relationship: "background"
+    note: >-
+      J. Math. Anal. Appl. 553 (2026), no. 2, Paper No. 129873. Theorem 2 bounds the
+      uniform norm by 2m sample values, ‖f‖_∞ ≤ 42 (∑ᵢ |f(xᵢ)|²)^{1/2}, read there also
+      as ‖f‖_∞ ≤ c √m maxᵢ |f(xᵢ)| with c = 42√2. Proposition 9, the Kiefer–Wolfowitz
+      theorem on an arbitrary set, is the measure the proof starts from; it is the
+      separate KieferWolfowitz submission of this repository.
+    author_endorsement: "participated"
+  - title: "Deterministic and stochastic error bounds in numerical analysis"
+    authors:
+      - "Erich Novak"
+    type: "book"
+    location: "Lecture Notes in Mathematics 1349, Springer-Verlag, Berlin, 1988"
+    relationship: "background"
+    note: >-
+      Lemma 1.2.2, a form of Auerbach's lemma with function values, bounds the uniform
+      norm by n = m sample values.
+  - title: "The equivalence of two extremum problems"
+    authors:
+      - "Jack Kiefer"
+      - "Jacob Wolfowitz"
+    type: "paper"
+    location: "https://doi.org/10.4153/CJM-1960-030-4"
+    relationship: "background"
+    note: >-
+      Canad. J. Math. 12 (1960), 363–366. The equivalence theorem for optimal designs,
+      the source of the measure that is thinned here.
+
+related_formalizations: []
+
+status:
+  scope: >-
+    Formalized and advertised: Discretization.exists_uniform_discretization_by_l2 and
+    Discretization.exists_uniform_discretization_by_max, the bounds by the discrete ℓ₂
+    norm and by the largest of n ≥ m sample values on an arbitrary set, and
+    Discretization.exists_uniform_discretization_of_compact_by_l2 and
+    Discretization.exists_uniform_discretization_of_compact_by_max, the same with ε = 0
+    for continuous functions on a compact domain.
+
+    Proved in the repository but not advertised here: the thinning of any design with
+    positive definite Gram matrix to n ≥ m of its points with equal weights
+    (Discretization.exists_sparse_design_equal_weights) and the resulting bound for any
+    design (Discretization.exists_uniform_discretization_of_design_by_l2); the real
+    inequalities that combine them (Discretization.le_div_sq_mul_of_le_mul,
+    Discretization.inv_mul_sum_le_iSup).
+
+    Not formalized: the cases 2 < p < ∞ of Proposition 8 of the source, and the sampling
+    projections that Krieg, Pozharska, Ullrich and Ullrich build from such points.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models:
+        - "Claude Opus 5 (Anthropic)"
+        - "Claude Fable 5.1 (Anthropic)"
+      framework: "Claude Code"
+      tool_setup: >-
+        VS Code with the Lean 4 extension, and Claude Code driving an agentic loop
+        that edits Lean files and runs `lake build` until the affected files compile.
+        No proof search beyond the tactics of Lean and Mathlib.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: >-
+        Standing instructions for this discretization project, kept in a CLAUDE.md
+        file alongside the project and outside this repository, and applied to every
+        session: prefer many small, self-contained, reusable lemmas over long proofs;
+        search Mathlib first and reuse existing lemmas and canonical spellings;
+        rebuild the affected files after every change and never leave a `sorry`
+        unannounced.
+  spend_usd: "subscription-based"
+  notes: >-
+    Most of the Lean proofs were produced with AI assistance. Throughout, the author
+    designed the structure of the development and checked and revised the statements
+    of all definitions and results. The proofs themselves are guaranteed by the Lean
+    kernel.
+
+fidelity:
+  divergences: >-
+    The source states (1 − √(m/n)) ‖f‖_∞ ≤ √m ((1/n) ∑ᵢ |f(xᵢ)|²)^{1/2}, without ε and
+    with the factor 1/(2m) in place of 1 − √(m/n) for n = m. The formalization keeps the
+    m + ε of the Kiefer–Wolfowitz measure on an arbitrary set and the 1 − √((m−1)/n) of
+    the source's proof, and states the bound for squared values. Since
+    1 − √((m−1)/n) > max(1 − √(m/n), 1/(2m)) strictly, a small enough ε gives the bound
+    of the source for every n ≥ m; on a compact domain ε = 0 is formalized directly.
+
+    The bound by the largest sample value is stated for every n ≥ m, where the source
+    displays it for n = 2m; the maximum is written as the supremum ⨆ i over the n
+    points. The source takes a space V_m of dimension m; the formalization takes m
+    bounded functions whose linear independence is stated as "⟨c, a(y)⟩ = 0 for every y
+    only for c = 0", writes the functions of the span as f(y) = ⟨c, a(y)⟩, bounds the
+    functions by one constant C, and takes complex scalars.
+
+review:
+  status: "self-assessed"
+  reviewers:
+    - "none"
+  notes: >-
+    The statements of all definitions and results were checked and revised by the
+    author; the proof scripts were largely produced with AI assistance and rest on
+    the Lean kernel.
+
+alignment:
+  namespace: "Discretization"
+  statements:
+    - source: "Constructive discretization and approximation in RKHS, Proposition 8, p = ∞"
+      lean: "Discretization.exists_uniform_discretization_by_l2"
+      module: "Discretization.UniformDiscretization"
+      status: "proved"
+      note: >-
+        The uniform norm by the discrete ℓ₂ norm of n ≥ m sample values on an arbitrary
+        set, with the constant (m + ε) / (1 − √((m−1)/n))²; see fidelity.divergences.
+    - source: "Constructive discretization and approximation in RKHS, Proposition 8, p = ∞, compact domain"
+      lean: "Discretization.exists_uniform_discretization_of_compact_by_l2"
+      module: "Discretization.UniformDiscretization"
+      status: "proved"
+      note: >-
+        The same for continuous functions on a compact domain, with ε = 0.
+    - source: "Constructive discretization and approximation in RKHS, Proposition 8, p = ∞, by the largest sample value"
+      lean: "Discretization.exists_uniform_discretization_by_max"
+      module: "Discretization.UniformDiscretization"
+      status: "proved"
+      note: >-
+        The uniform norm by the largest of n ≥ m sample values; for n = 2m it is the
+        bound ‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)| that the source states with √m.
+    - source: "Constructive discretization and approximation in RKHS, Proposition 8, p = ∞, by the largest sample value, compact domain"
+      lean: "Discretization.exists_uniform_discretization_of_compact_by_max"
+      module: "Discretization.UniformDiscretization"
+      status: "proved"
+      note: >-
+        The same for continuous functions on a compact domain, with ε = 0.
+
+acknowledgements: >-
+  Built on Mathlib. The advertised statements use only Mathlib's definitions, so the
+  Challenge module restates none.

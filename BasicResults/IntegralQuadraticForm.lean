@@ -6,8 +6,9 @@ Authors: Mario Ullrich
 module
 
 -- Brings `InnerProductSpace ℝ ℂ` into scope, so that the integral in `gram` elaborates with
--- the same `NormedSpace ℝ ℂ` instance as the restatement of `gram` in
--- `Palomar.Discretization.Challenge`, and the two bodies are the same term.
+-- the same `NormedSpace ℝ ℂ` instance as the restatements of `gram` in the Challenge modules
+-- of `Palomar.BSS`, `Palomar.L2Discretization` and `Palomar.OneSidedDiscretization`, and the
+-- bodies are the same term.
 public import Mathlib.Analysis.InnerProductSpace.Basic
 public import Mathlib.LinearAlgebra.Matrix.Hermitian
 public import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap

@@ -31,18 +31,28 @@ exactly as it does without it. Build these modules with `lake build Palomar`.
 
 ## Registered results
 
-* `Palomar/BSS/`: the sparsification theorem of Batson, Spielman and Srivastava, that is
-  the two-sided frame bound for a single family whose Gram matrix is the identity,
-  advertising `Discretization.bss`.
-* `Palomar/Discretization/`: the discretization theorem of Chkifa, Dolbeault, Krieg and
-  Ullrich, which generalizes it to a second family and depends on its effective dimension,
-  with the `L₂`-norm discretization inequality it yields, for a finite second family and for
-  a map into a separable Hilbert space; advertising `Discretization.bss_generalized`,
+* `Palomar/BSS/`: the sparsification theorem of Batson, Spielman and Srivastava, the
+  two-sided frame bound for a family whose Gram matrix is the identity and for finitely
+  many vectors summing to the identity; advertising `Discretization.bss` and
+  `Discretization.bss_of_sum_eq_one`.
+* `Palomar/L2Discretization/`: the discretization theorem of Chkifa, Dolbeault, Krieg and
+  Ullrich, for a finite second family and for a map into a separable Hilbert space, with
+  the discretization of the `L₂`-norm it yields, for finite families and for a reproducing
+  kernel Hilbert space; advertising `Discretization.bss_generalized`,
   `Discretization.exists_discretization`, `Discretization.Infinite.bss_generalized` and
-  `Discretization.Infinite.exists_discretization`.
-* `Palomar/KieferWolfowitz/`: the Kiefer–Wolfowitz theorem for sampling projections, with
-  at most `2m² + 1` points for an `m`-dimensional space, on an arbitrary set and on a
-  compact domain, advertising
+  `Discretization.RKHS.exists_discretization`.
+* `Palomar/OneSidedDiscretization/`: the `L₂` norm on a probability space bounded from below
+  by the average of `n ≥ m` sample values; advertising
+  `Discretization.bss_lower_equal_weights` and
+  `Discretization.exists_one_sided_discretization`.
+* `Palomar/KieferWolfowitz/`: the Kiefer–Wolfowitz theorem, with at most `2m² + 1` points
+  for an `m`-dimensional space, on an arbitrary set and on a compact domain; advertising
   `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le` and
   `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le`.
+* `Palomar/UniformDiscretization/`: the uniform norm bounded by the discrete `ℓ₂` norm and
+  by the largest of `n ≥ m` sample values, on an arbitrary set and on a compact domain;
+  advertising `Discretization.exists_uniform_discretization_by_l2`,
+  `Discretization.exists_uniform_discretization_of_compact_by_l2`,
+  `Discretization.exists_uniform_discretization_by_max` and
+  `Discretization.exists_uniform_discretization_of_compact_by_max`.
 -/

@@ -1,0 +1,176 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+# formalization.yaml v0.4
+version: "v0.4"
+
+project:
+  name: "One-sided discretization of the L₂ norm with equal weights"
+  description: >-
+    Let (Ω, μ) be a probability space and a = (aₖ) a family of m square-integrable
+    functions with positive definite Gram matrix I = ∫ a a* dμ. Then for every n ≥ m there
+    are points x₁, …, xₙ ∈ Ω, not necessarily distinct, with
+    (1 − √((m−1)/n))² I ≼ (1/n) ∑ᵢ a(xᵢ) a(xᵢ)* in the Loewner order, that is
+    (1 − √((m−1)/n))² ∫ |f|² dμ ≤ (1/n) ∑ᵢ |f(xᵢ)|² for every f in the span of the
+    family. The L₂ norm on an m-dimensional space of functions is thus bounded from below
+    by the plain average of n sample values, with an explicit constant for every n ≥ m and
+    no assumption on the space. Limonova and Temlyakov prove such a bound under a
+    Nikol'skii-type inequality, Bartel, Schäfer and Ullrich for arbitrary spaces up to
+    constants; the form here is Proposition 8 of Chkifa, Dolbeault, Krieg and Ullrich for
+    p = 2.
+  authors:
+    - "Mario Ullrich"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "Mario Ullrich"
+
+classification:
+  arxiv: ["math.NA", "math.FA"]
+  msc2020: ["41A17", "46E30", "42C15"]
+
+sources:
+  - title: "Constructive discretization and approximation in reproducing kernel Hilbert spaces"
+    authors:
+      - "Abdellah Chkifa"
+      - "Matthieu Dolbeault"
+      - "David Krieg"
+      - "Mario Ullrich"
+    id: "arXiv:2602.18719"
+    type: "paper"
+    location: "https://arxiv.org/abs/2602.18719"
+    relationship: "formalizes"
+    note: >-
+      Proposition 8 for p = 2 is the statement formalized here, and its proof, the
+      discretization theorem with the constant function as second family and weights
+      1/n read off the construction for a small effective dimension, is the one followed.
+      The cases 2 < p ≤ ∞ of Proposition 8 combine this bound with the theorem of Kiefer
+      and Wolfowitz; p = ∞ is the separate UniformDiscretization submission of this
+      repository.
+    author_endorsement: "participated"
+  - title: "On sampling discretization in L₂"
+    authors:
+      - "Irina Limonova"
+      - "Vladimir Temlyakov"
+    id: "arXiv:2009.10789"
+    type: "paper"
+    location: "https://arxiv.org/abs/2009.10789"
+    relationship: "background"
+    note: >-
+      J. Math. Anal. Appl. 515 (2022), no. 2, Paper No. 126457. Theorem 1.1 is a
+      one-sided discretization of the L₂ norm with equal weights and of the order of m
+      points, for spaces satisfying a Nikol'skii-type inequality.
+  - title: "Constructive subsampling of finite frames with applications in optimal function recovery"
+    authors:
+      - "Felix Bartel"
+      - "Martin Schäfer"
+      - "Tino Ullrich"
+    type: "paper"
+    location: "https://doi.org/10.1016/j.acha.2023.02.004"
+    relationship: "background"
+    note: >-
+      Appl. Comput. Harmon. Anal. 65 (2023), 209–248. One-sided discretization of the
+      L₂ norm with equal weights on arbitrary spaces, up to constants.
+  - title: "Twice-Ramanujan sparsifiers"
+    authors:
+      - "Joshua Batson"
+      - "Daniel A. Spielman"
+      - "Nikhil Srivastava"
+    id: "arXiv:0808.0163"
+    type: "paper"
+    location: "https://doi.org/10.1137/130949117"
+    relationship: "background"
+    note: >-
+      SIAM Review 56 (2014), no. 2, 315–334. The original potential-function argument,
+      whose lower half is the construction here.
+
+related_formalizations: []
+
+status:
+  scope: >-
+    Formalized and advertised: Discretization.bss_lower_equal_weights, the bound
+    (1 − √((m−1)/n))² I ≼ (1/n) ∑ᵢ a(xᵢ) a(xᵢ)* in the Loewner order, and
+    Discretization.exists_one_sided_discretization, the same as an inequality between
+    the L₂ norm and the average of the sample values, both on a probability space, for
+    every n ≥ m and with no further hypothesis.
+
+    Proved in the repository but not advertised here: the weighted form with weights
+    0 < wᵢ ≤ 1/n produced by the construction (Discretization.bss_lower_le_one_div), and
+    its normalized cases (Discretization.bss_lower_le_one_div_of_gram_eq_one,
+    Discretization.bss_lower_le_one_div_of_gram_eq_one_of_two_le,
+    Discretization.bss_lower_le_one_div_of_gram_eq_one_of_unique).
+
+    Not formalized: the cases 2 < p < ∞ of Proposition 8 of the source.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models:
+        - "Claude Opus 5 (Anthropic)"
+        - "Claude Fable 5.1 (Anthropic)"
+      framework: "Claude Code"
+      tool_setup: >-
+        VS Code with the Lean 4 extension, and Claude Code driving an agentic loop
+        that edits Lean files and runs `lake build` until the affected files compile.
+        No proof search beyond the tactics of Lean and Mathlib.
+      cost:
+        wall_time: "not tracked"
+        spend_usd: "subscription-based"
+        hardware: "local machine"
+      prompting_notes: >-
+        Standing instructions for this discretization project, kept in a CLAUDE.md
+        file alongside the project and outside this repository, and applied to every
+        session: prefer many small, self-contained, reusable lemmas over long proofs;
+        search Mathlib first and reuse existing lemmas and canonical spellings;
+        rebuild the affected files after every change and never leave a `sorry`
+        unannounced.
+  spend_usd: "subscription-based"
+  notes: >-
+    Most of the Lean proofs were produced with AI assistance. Throughout, the author
+    designed the structure of the development and checked and revised the statements
+    of all definitions and results. The proofs themselves are guaranteed by the Lean
+    kernel.
+
+fidelity:
+  divergences: >-
+    The source states (1 − √(m/n)) ‖f‖_{L₂} ≤ ((1/n) ∑ᵢ |f(xᵢ)|²)^{1/2}, with the factor
+    1/(2m) in place of 1 − √(m/n) for n = m. The formalization states the bound with
+    1 − √((m−1)/n), which the source's proof gives and which is larger than both, so it
+    covers n = m without a separate clause; it is stated for squared norms.
+
+    The source takes a space V_m ⊂ L₂ of dimension m; the formalization takes a family
+    of m functions with positive definite Gram matrix, whose span is such a space, and
+    writes the functions of the span as f(y) = ⟨c, a(y)⟩. The points need not be
+    distinct, and the functions are complex-valued.
+
+review:
+  status: "self-assessed"
+  reviewers:
+    - "none"
+  notes: >-
+    The statements of all definitions and results were checked and revised by the
+    author; the proof scripts were largely produced with AI assistance and rest on
+    the Lean kernel.
+
+alignment:
+  namespace: "Discretization"
+  statements:
+    - source: "Constructive discretization and approximation in RKHS, Proposition 8, p = 2, in the Loewner order"
+      lean: "Discretization.bss_lower_equal_weights"
+      module: "Discretization.OneSidedDiscretization"
+      status: "proved"
+      note: >-
+        (1 − √((m−1)/n))² I ≼ (1/n) ∑ᵢ a(xᵢ) a(xᵢ)* on a probability space, for a
+        family with positive definite Gram matrix I.
+    - source: "Constructive discretization and approximation in RKHS, Proposition 8, p = 2"
+      lean: "Discretization.exists_one_sided_discretization"
+      module: "Discretization.OneSidedDiscretization"
+      status: "proved"
+      note: >-
+        (1 − √((m−1)/n))² ∫ |f|² dμ ≤ (1/n) ∑ᵢ |f(xᵢ)|² for every f in the span; see
+        fidelity.divergences.
+
+acknowledgements: >-
+  Built on Mathlib. The Challenge module reproduces the definition Discretization.gram
+  from the development in BasicResults/IntegralQuadraticForm.lean, so that the advertised
+  statements can be read against Mathlib alone.

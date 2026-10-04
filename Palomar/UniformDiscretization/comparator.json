@@ -1,0 +1,13 @@
+{
+  "challenge_module": "Palomar.UniformDiscretization.Challenge",
+  "solution_module": "Palomar.UniformDiscretization.Solution",
+  "theorem_names": [
+    "Discretization.exists_uniform_discretization_by_l2",
+    "Discretization.exists_uniform_discretization_of_compact_by_l2",
+    "Discretization.exists_uniform_discretization_by_max",
+    "Discretization.exists_uniform_discretization_of_compact_by_max"
+  ],
+  "definition_names": [],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}

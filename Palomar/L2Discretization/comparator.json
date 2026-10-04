@@ -1,15 +1,13 @@
 {
-  "challenge_module": "Palomar.Discretization.Challenge",
-  "solution_module": "Palomar.Discretization.Solution",
+  "challenge_module": "Palomar.L2Discretization.Challenge",
+  "solution_module": "Palomar.L2Discretization.Solution",
   "theorem_names": [
     "Discretization.bss_generalized",
     "Discretization.exists_discretization",
     "Discretization.Infinite.bss_generalized",
-    "Discretization.Infinite.exists_discretization"
+    "Discretization.RKHS.exists_discretization"
   ],
-  "definition_names": [
-    "Discretization.gram"
-  ],
+  "definition_names": [],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
   "enable_nanoda": true
 }

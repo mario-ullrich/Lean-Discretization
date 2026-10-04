@@ -5,15 +5,19 @@ version: "v0.4"
 project:
   name: "The sparsification theorem of Batson, Spielman and Srivastava"
   description: >-
-    Let v_y ∈ ℂᵐ, for y in a finite set Ω, be vectors with ∑_y v_y v_y* = I. Then for
-    every n ≥ m there are weights s_y ≥ 0, at most n of them nonzero, with
-    (1 − √((m−1)/n))² I ≼ ∑_y s_y v_y v_y* ≼ (1 + √((m−1)/n))² I
-    in the Loewner order: a reweighted subset of at most n of the vectors is a spectral
-    sparsifier of their sum. The original theorem of Batson, Spielman and Srivastava has
-    the constants (1 ∓ √(m/n))², so for n = d·m the ratio of the upper to the lower
-    constant, the condition number, is ((√d + 1)/(√d − 1))². With m − 1 in place of m,
-    following Chkifa, Dolbeault, Krieg and Ullrich, the statement here is slightly
-    stronger.
+    Let (Ω, μ) be a measure space and a = (a_k) a family of m square-integrable functions
+    whose Gram matrix ∫ a a* dμ is the identity. Then for every n ≥ m there are points
+    x₁, …, xₙ ∈ Ω and weights w₁, …, wₙ > 0 with
+    (1 − √((m−1)/n))² I ≼ ∑ᵢ wᵢ a(xᵢ) a(xᵢ)* ≼ (1 + √((m−1)/n))² I
+    in the Loewner order. For the counting measure on a finite set Ω this is the theorem
+    for finitely many vectors: if v_k ∈ ℂᵐ, k ∈ Ω, satisfy ∑_k v_k v_k* = I, then for every
+    n ≥ m there are weights s_k ≥ 0, at most n of them nonzero, with
+    (1 − √((m−1)/n))² I ≼ ∑_k s_k v_k v_k* ≼ (1 + √((m−1)/n))² I,
+    so a reweighted subset of at most n of the vectors is a spectral sparsifier of their
+    sum. The original theorem of Batson, Spielman and Srivastava has the constants
+    (1 ∓ √(m/n))², so for n = d·m the ratio of the upper to the lower constant, the
+    condition number, is ((√d + 1)/(√d − 1))². With m − 1 in place of m, following Chkifa,
+    Dolbeault, Krieg and Ullrich, the statements here are slightly stronger.
   authors:
     - "Mario Ullrich"
   license: "Apache-2.0"
@@ -31,15 +35,17 @@ sources:
       - "Daniel A. Spielman"
       - "Nikhil Srivastava"
     id: "arXiv:0808.0163"
-    type: "article"
+    type: "paper"
     location: "https://doi.org/10.1137/130949117"
     relationship: "formalizes"
     note: >-
-      SIAM Review 56 (2014), no. 2, 315–334. The source states the theorem for a finite
-      list of vectors summing to the identity and produces a reweighting supported on
-      at most d·m of them, with frame constants (1 ∓ 1/√d)² = (1 ∓ √(m/n))². The
-      formalized statement is that theorem for complex vectors, with m − 1 in place of
-      m, following Chkifa, Dolbeault, Krieg and Ullrich; see fidelity.divergences.
+      SIAM Review 56 (2014), no. 2, 315–334. Theorem 3.1 states the theorem for a finite
+      list of vectors summing to the identity and produces a reweighting supported on at
+      most d·m of them, with frame constants (1 ∓ 1/√d)² = (1 ∓ √(m/n))². The measure-space
+      form is the same statement for an orthonormal family in L₂(μ), the vectors being the
+      values of the family at the points. Both are formalized for complex vectors, with
+      m − 1 in place of m, following Chkifa, Dolbeault, Krieg and Ullrich; see
+      fidelity.divergences.
   - title: "Constructive discretization and approximation in reproducing kernel Hilbert spaces"
     authors:
       - "Abdellah Chkifa"
@@ -47,26 +53,28 @@ sources:
       - "David Krieg"
       - "Mario Ullrich"
     id: "arXiv:2602.18719"
-    type: "preprint"
+    type: "paper"
     location: "https://arxiv.org/abs/2602.18719"
     relationship: "background"
     note: >-
-      The proof followed, and the source of the constants √((m−1)/n) in place of
-      √(m/n). The paper states the theorem over a measure space and for two families
-      at once, with the upper bound in terms of the effective dimension of the second;
-      that form is a separate submission (Palomar/Discretization).
+      Proposition 1 restates the theorem for an orthonormal family on a finite set with
+      the uniform distribution, the measure-space form. The proof followed, and the source
+      of the constants √((m−1)/n) in place of √(m/n). The paper states the theorem over a
+      measure space and for two families at once, with the upper bound in terms of the
+      effective dimension of the second; that form is a separate submission
+      (Palomar/L2Discretization).
     author_endorsement: "participated"
 
 related_formalizations: []
 
 status:
   scope: >-
-    Formalized and advertised: Discretization.bss_of_sum_eq_one, the two-sided
-    bound for a reweighting of finitely many vectors summing to the identity, with at
-    most n nonzero weights, for every n ≥ m and with no further hypothesis. It is
-    derived in the repository from the same bound for a square-integrable family on an
-    arbitrary measure space whose Gram matrix is the identity (Discretization.bss),
-    applied to the counting measure.
+    Formalized and advertised: Discretization.bss, the two-sided bound for a family of m
+    square-integrable functions on an arbitrary measure space whose Gram matrix is the
+    identity, with n points and positive weights; and Discretization.bss_of_sum_eq_one,
+    the two-sided bound for a reweighting of finitely many vectors summing to the
+    identity, with at most n nonzero weights. Both hold for every n ≥ m with no further
+    hypothesis.
 
     Not formalized: the graph-sparsification application of the source, and the
     algorithmic content, that is the running time of the construction. The proof is
@@ -107,11 +115,14 @@ automation:
 
 fidelity:
   divergences: >-
-    The source works with real vectors; the formalized statement takes complex vectors
-    v_y ∈ ℂᵐ and the Loewner order on complex matrices.
+    The source works with real vectors; the formalized statements take complex vectors
+    v_k ∈ ℂᵐ, respectively a complex-valued family, and the Loewner order on complex
+    matrices. The measure-space form is stated for an arbitrary measure space, where the
+    sources take a finite set with the uniform distribution.
+
     The source bounds the number of nonzero weights by d·m for a real d > 1; the
-    formalized statement takes any natural number n ≥ m instead, which is the same
-    with n = d·m.
+    formalized statements take any natural number n ≥ m instead, which is the same with
+    n = d·m.
 
     The constants are (1 − √((m−1)/n))² and (1 + √((m−1)/n))², slightly better than
     the constants (1 ∓ √(m/n))² of the source. The improvement comes from the proof of
@@ -130,7 +141,14 @@ review:
 alignment:
   namespace: "Discretization"
   statements:
-    - source: "Twice-Ramanujan sparsifiers, the sparsification theorem"
+    - source: "Twice-Ramanujan sparsifiers, Theorem 3.1, for an orthonormal family in L₂(μ)"
+      lean: "Discretization.bss"
+      module: "Discretization.BSS"
+      status: "proved"
+      note: >-
+        The two-sided bound for a family of m square-integrable functions on a measure
+        space whose Gram matrix is the identity, with n points and positive weights.
+    - source: "Twice-Ramanujan sparsifiers, Theorem 3.1"
       lean: "Discretization.bss_of_sum_eq_one"
       module: "Discretization.BSS"
       status: "proved"
@@ -139,5 +157,6 @@ alignment:
         to the identity; see fidelity.divergences.
 
 acknowledgements: >-
-  Built on Mathlib. The advertised statement uses only Mathlib's definitions, so the
-  Challenge module restates none.
+  Built on Mathlib. The Challenge module reproduces the definition Discretization.gram
+  from the development in BasicResults/IntegralQuadraticForm.lean, so that the advertised
+  statements can be read against Mathlib alone.

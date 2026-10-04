@@ -2,6 +2,7 @@
   "challenge_module": "Palomar.BSS.Challenge",
   "solution_module": "Palomar.BSS.Solution",
   "theorem_names": [
+    "Discretization.bss",
     "Discretization.bss_of_sum_eq_one"
   ],
   "definition_names": [],

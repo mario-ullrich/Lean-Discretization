@@ -8,28 +8,38 @@ module
 public import Discretization.BSS
 
 /-!
-# The sparsification theorem of Batson, Spielman and Srivastava: proof
+# The sparsification theorem of Batson, Spielman and Srivastava: proofs
 
 This module is the *Solution* of a Palomar submission. Comparator checks that every
 declaration named in `comparator.json` has, in this module's environment, exactly the same
 name and type as its counterpart in `Palomar.BSS.Challenge`, and that it uses no axioms
-beyond `propext`, `Classical.choice` and `Quot.sound`.
+beyond `propext`, `Classical.choice` and `Quot.sound`. The definition the
+statements use, `Discretization.gram`, is not a hole: Comparator checks that it is the
+same declaration, body included, in both modules.
 
-Nothing is declared here. The advertised statement `Discretization.bss_of_sum_eq_one`
-arrives through the import above under its own name in the development, from
-`Discretization/BSS.lean`; it uses only Mathlib's notions, so the Challenge module restates
-no definition. That is why no wrapper is needed and why the name Palomar records is the
-name the development actually uses.
+Nothing is declared here. The advertised statements
+
+* `Discretization.bss`: the two-sided frame bound for a family of `m` square-integrable
+  functions on a measure space whose Gram matrix is the identity,
+* `Discretization.bss_of_sum_eq_one`: the same for finitely many vectors summing to the
+  identity, with at most `n` nonzero weights,
+
+and the definition they rest on, `Discretization.gram`, arrive through the import above,
+under their own names in the development: from `Discretization/BSS.lean` and
+`BasicResults/IntegralQuadraticForm.lean`. The Challenge module restates exactly those,
+which is why no wrapper is needed and why the names Palomar records are the names the
+development actually uses.
 
 The proof is the potential-function argument of Batson, Spielman and Srivastava. Two
 matrices are carried along, one for each frame bound, and two potentials measure how close
 each is to failure. Each of the `n` steps shifts both matrices, which costs an exactly
 computable amount of both potentials, and the barrier lemma names the weights that spend no
-more than that. Averaging the verifiers shows that such a vector exists. The development in
-`Discretization/` runs this argument in the form of Chkifa, Dolbeault, Krieg and Ullrich,
-over an arbitrary measure space and with a second family; `Discretization/BSS.lean` reads
-off the statement for a single family, takes the counting measure on the finite set of
-vectors, and adds up the weights of a vector chosen several times.
+more than that. Averaging the verifiers over `μ` shows that such a point exists. The
+development in `Discretization/` runs this argument in the form of Chkifa, Dolbeault, Krieg
+and Ullrich, over an arbitrary measure space and with a second family;
+`Discretization/BSS.lean` reads off the statement for a single family, and for finitely
+many vectors takes the counting measure and adds up the weights of a vector chosen several
+times.
 -/
 
 @[expose] public section
