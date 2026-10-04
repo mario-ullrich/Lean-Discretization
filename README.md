@@ -11,7 +11,7 @@ theorem** in the form used by Krieg, Pozharska, Ullrich and Ullrich for sampling
 projections: on an `m`-dimensional space of bounded functions the uniform norm is
 dominated by the `L₂` norm of a finitely supported probability measure, with the
 constant `√(m+ε)`. Thinned by the first theorem, the measure can be replaced by any
-`n ≥ m` points, at the price of the factor `(1 − √((m−1)/n))⁻²`. The project builds
+`n ≥ m` equally weighted points, at the price of the factor `(1 − √((m−1)/n))⁻²`. The project builds
 without `sorry`, and every theorem uses only the
 three axioms Mathlib relies on throughout (`propext`, `Classical.choice`, `Quot.sound`).
 
@@ -184,39 +184,24 @@ companion project [Lean-SNumbers](https://github.com/mario-ullrich/Lean-SNumbers
 ### The uniform norm with `n ≥ m` points
 
 Under the same hypotheses, for every `ε > 0` and every `n ≥ m` there are points
-`x₁, …, xₙ ∈ D` and weights `w₁, …, wₙ > 0` such that
-
-```
-|f(y)|²  ≤  (m + ε) / (1 − √((m−1)/n))² · ∑ wᵢ |f(xᵢ)|²
-```
-
-for every point `y ∈ D` and every `f` in the span of the family
-(`Discretization.exists_uniform_discretization`). For continuous functions on a compact
-space the same holds with `ε = 0`
-(`Discretization.exists_uniform_discretization_of_compact`). This is the discretization of
-the uniform norm of
-[Krieg, Pozharska, Ullrich and Ullrich](https://arxiv.org/abs/2401.02220), with the
-constant of the sparsification theorem in the form of Chkifa, Dolbeault, Krieg and Ullrich.
-The proof thins the Kiefer–Wolfowitz design to `n` of its points by the lower half of the
-sparsification theorem (`Discretization.bss_lower`, `Discretization.exists_sparse_design`).
-For `n = 2m` the factor is below `12 (m + ε)`: `2m` weighted point evaluations control the
-uniform norm on the span with a constant of order `√m`.
-
-With equal weights the same thinning gives points `x₁, …, xₙ ∈ D`, not necessarily distinct,
-with
+`x₁, …, xₙ ∈ D`, not necessarily distinct, such that
 
 ```
 |f(y)|²  ≤  (m + ε) / (1 − √((m−1)/n))² · (1/n) ∑ |f(xᵢ)|²
 ```
 
-(`Discretization.exists_uniform_discretization_equal_weights`, and with `ε = 0` on a compact
-space `Discretization.exists_uniform_discretization_of_compact_equal_weights`). For `n = 2m`
-this is `|f(y)|² ≤ 6 (1 + ε/m) ∑ᵢ₌₁²ᵐ |f(xᵢ)|²`: the uniform norm on the span is dominated by
-the Euclidean norm of `2m` sample values. This is Theorem 2 of Krieg, Pozharska, Ullrich and
-Ullrich with the constant `42` replaced by `√(6 (1 + ε/m))`, and the case `p = ∞` of
-Proposition 8 of Chkifa, Dolbeault, Krieg and Ullrich. For `n = m` points the bound is due to
-Novak, who obtains `‖f‖_∞ ≤ (m + ε) ((1/m) ∑ᵢ₌₁ᵐ |f(xᵢ)|²)^{1/2}` from a form of Auerbach's
-lemma.
+for every point `y ∈ D` and every `f` in the span of the family
+(`Discretization.exists_uniform_discretization_equal_weights`). For continuous functions on
+a compact space the same holds with `ε = 0`
+(`Discretization.exists_uniform_discretization_of_compact_equal_weights`). The proof thins
+the Kiefer–Wolfowitz design to `n` of its points by the one-sided discretization
+(`Discretization.exists_one_sided_discretization`). For `n = 2m` this is
+`|f(y)|² ≤ 6 (1 + ε/m) ∑ᵢ₌₁²ᵐ |f(xᵢ)|²`: the uniform norm on the span is dominated by the
+Euclidean norm of `2m` sample values. This is Theorem 2 of
+[Krieg, Pozharska, Ullrich and Ullrich](https://arxiv.org/abs/2401.02220) with the constant
+`42` replaced by `√(6 (1 + ε/m))`, and the case `p = ∞` of Proposition 8 of Chkifa,
+Dolbeault, Krieg and Ullrich. For `n = m` points the bound is due to Novak, who obtains
+`‖f‖_∞ ≤ (m + ε) ((1/m) ∑ᵢ₌₁ᵐ |f(xᵢ)|²)^{1/2}` from a form of Auerbach's lemma.
 
 ## The proofs
 
@@ -312,7 +297,7 @@ second family in a Hilbert space with the theorem for it, a countable family and
 reproducing kernel Hilbert space, and under `Discretization/KieferWolfowitz/` the
 maximisation of the determinant of a Gram matrix, the theorem it yields and John's
 decomposition of the identity beside it, with its thinning to `n ≥ m` points by the
-sparsification theorem at the top level. `BasicResults` holds what the arguments need and
+one-sided discretization at the top level. `BasicResults` holds what the arguments need and
 Mathlib lacks: comparisons in the Loewner order, traces of products and Cauchy–Schwarz for
 them, Sherman–Morrison for rank-one updates of a matrix and of an operator, the trace of
 a positive operator on a Hilbert space, the Gram operator as a Bochner integral, the matrix

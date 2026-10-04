@@ -69,10 +69,8 @@ arbitrary set carrying $m$ bounded, linearly independent functions, and Kiefer a
 Wolfowitz give, for every $\varepsilon > 0$, finitely many points and weights with
 $|f(y)|^2 \leq (m + \varepsilon) \sum_k w_k |f(x_k)|^2$ for every $y \in D$ and every $f$
 in their span: the uniform norm is dominated by the $L_2$ norm of that measure. Thinning
-such a measure with the sparsification theorem gives the same bound with any $n \geq m$
-points, at the price of the factor $(1 - \sqrt{(m-1)/n})^{-2}$
-(\Cref{thm:uniform-discretization-optimal}). With equal weights the right-hand side becomes
-$\frac{1}{n} \sum_i |f(x_i)|^2$ (\Cref{cor:uniform-discretization-equal-weights}).
+such a measure gives the same bound with any $n \geq m$ equally weighted points, at the
+price of the factor $(1 - \sqrt{(m-1)/n})^{-2}$ (\Cref{thm:uniform-discretization-optimal}).
 
 A statement about these weighted sums is a statement about the matrix
 $\sum_i w_i \, a(x_i) a(x_i)^*$ and the operator $\sum_i w_i \, b(x_i) b(x_i)^*$, compared
@@ -1437,9 +1435,9 @@ finitely many points $x_k \in D$ with weights $w_k \geq 0$ summing to one for wh
 that is, the uniform norm is dominated by the $L_2$ norm of that measure with the
 constant $\sqrt{m + \varepsilon}$. The answer of Kiefer and Wolfowitz~\cite{KW} is that a
 measure whose Gram matrix has an almost maximal determinant does this. The complex and
-non-compact case is treated in~\cite{KPUU}. Thinning the measure with the sparsification
-theorem then gives the bound with any $n \geq m$ points
-(\Cref{thm:uniform-discretization-optimal}), also from~\cite{KPUU}.
+non-compact case is treated in~\cite{KPUU}. Thinning the measure with the one-sided
+discretization then gives the bound with any $n \geq m$ equally weighted points
+(\Cref{thm:uniform-discretization-optimal}).
 
 No topology and no measurable structure on $D$ are used: a finitely supported measure is
 a finite list of points with weights, and it is kept in that form until
@@ -1598,73 +1596,18 @@ This is \Cref{thm:uniform-discretization} read through the measure: integration 
 every strongly measurable integrand.
 \end{proof}
 
-Thinning the design with \Cref{cor:l2-discretization} gives the bound with any number
-$n \geq m$ of points; this is the discretization of the uniform norm of~\cite{KPUU}.
+Thinning the design with \Cref{cor:one-sided-discretization} gives the bound with any
+number $n \geq m$ of equally weighted points. For $n = m$ points such a bound is due to
+Novak~\cite[Lemma~1.2.2]{N88}, a form of Auerbach's lemma, which gives points with
+$\|f\|_\infty \leq (m + \varepsilon) \bigl( \frac{1}{m} \sum_{i=1}^m |f(x_i)|^2 \bigr)^{1/2}$.
+For $n = 2m$ points Krieg, Pozharska, Ullrich and Ullrich~\cite[Theorem~2]{KPUU} prove
+$\|f\|_\infty \leq 42 \bigl( \sum_{i=1}^{2m} |f(x_i)|^2 \bigr)^{1/2}$. The theorem below is
+the case $p = \infty$ of Proposition~8 of~\cite{CDKU}.
 
 \begin{theorem}[Discretization of the uniform norm with $n \geq m$ points]
 \label{thm:uniform-discretization-optimal}
-\lean{Discretization.exists_uniform_discretization,
-      Discretization.exists_uniform_discretization_of_compact,
-      Discretization.exists_uniform_discretization_of_design,
-      Discretization.exists_sparse_design, Discretization.bss_lower}
-\leanok
-Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
-$a = (a_k)_{k \in \iota}$ be bounded functions on a set $D$ with linearly independent
-coordinate functions, and let $\varepsilon > 0$. Then for every $n \geq m$ there are points
-$x_1, \dots, x_n \in D$ and weights $w_1, \dots, w_n > 0$ such that
-\[
-  |f(y)|^2 \; \leq \; \frac{m + \varepsilon}{\bigl( 1 - \sqrt{(m-1)/n} \bigr)^2}
-    \sum_{i=1}^n w_i \, |f(x_i)|^2
-\]
-for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$. If $D$ is a compact space
-and the $a_k$ are continuous, the same holds with $\varepsilon = 0$.
-\end{theorem}
-
-\begin{proof}
-\leanok
-\uses{thm:uniform-discretization, cor:l2-discretization, lem:gram-identities}
-Take a design $x'_1, \dots, x'_N$ with weights $w'_k$ from
-\Cref{thm:uniform-discretization}, with the constant $K = m + \varepsilon$, where
-$\varepsilon = 0$ in the compact case, and positive definite Gram matrix $G$. On the
-index set $\{1, \dots, N\}$ with the probability measure $\varrho = \sum_k w'_k \delta_k$, the
-family $k \mapsto G^{-1/2} a(x'_k)$ has Gram matrix $1$ by \Cref{lem:gram-identities}(b),
-and its span consists of the functions $k \mapsto f(x'_k)$ with
-$f \in \operatorname{span}\{a_k\}$. Since the Gram matrix is $1$, the norm of $L_2(\varrho)$
-on this span is the norm of the coefficient vector, so the span is a Hilbert space $H$ of
-functions on $\{1, \dots, N\}$ of dimension $m$ with $\Lambda = 1$, in which only $g = 0$
-vanishes almost everywhere. \Cref{cor:l2-discretization}, with this family as first family
-and this $H$, gives $n$ indices, that is design points $x_1, \dots, x_n$, and weights
-$w_i > 0$ whose first bound reads
-\[
-  (1 - r)^2 \sum_k w'_k |f(x'_k)|^2 \; \leq \; \sum_i w_i |f(x_i)|^2,
-  \qquad r = \sqrt{(m-1)/n},
-\]
-for every $f \in \operatorname{span}\{a_k\}$, and $r < 1$ because $n \geq m$. The bound of
-the design finishes:
-$|f(y)|^2 \leq K \sum_k w'_k |f(x'_k)|^2 \leq K (1 - r)^{-2} \sum_i w_i |f(x_i)|^2$. In
-Lean the thinning is the lower half of the sparsification theorem for $G$ itself,
-\texttt{Discretization.bss\_lower}, which needs no second family.
-\end{proof}
-
-For $n = 2m$ one has $r < 1/\sqrt{2}$, so the constant is below $12 (m + \varepsilon)$: the
-uniform norm on the span is controlled by $2m$ weighted point evaluations with a constant
-of order $\sqrt{m}$.
-
-With \Cref{cor:one-sided-discretization} in place of the lower half of the sparsification
-theorem, the thinning produces points without weights. For $n = m$ points such a bound is
-due to Novak~\cite[Lemma~1.2.2]{N88}, a form of Auerbach's lemma, which gives points with
-$\|f\|_\infty \leq (m + \varepsilon) \bigl( \frac{1}{m} \sum_{i=1}^m |f(x_i)|^2 \bigr)^{1/2}$.
-For $n = 2m$ points Krieg, Pozharska, Ullrich and Ullrich~\cite[Theorem~2]{KPUU} prove
-$\|f\|_\infty \leq 42 \bigl( \sum_{i=1}^{2m} |f(x_i)|^2 \bigr)^{1/2}$. The corollary below
-is the case $p = \infty$ of Proposition~8 of~\cite{CDKU}.
-
-\begin{corollary}[The uniform norm with $n \geq m$ points and equal weights]
-\label{cor:uniform-discretization-equal-weights}
 \lean{Discretization.exists_uniform_discretization_equal_weights,
-      Discretization.exists_uniform_discretization_of_compact_equal_weights,
-      Discretization.exists_uniform_discretization_of_design_equal_weights,
-      Discretization.exists_sparse_design_equal_weights,
-      Discretization.le_div_sq_mul_of_le_mul}
+      Discretization.exists_uniform_discretization_of_compact_equal_weights}
 \leanok
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let
 $a = (a_k)_{k \in \iota}$ be bounded functions on a set $D$ with linearly independent
@@ -1676,17 +1619,26 @@ $x_1, \dots, x_n \in D$, not necessarily distinct, such that
 \]
 for every $y \in D$ and every $f \in \operatorname{span}\{a_k\}$. If $D$ is a compact space
 and the $a_k$ are continuous, the same holds with $\varepsilon = 0$.
-\end{corollary}
+\end{theorem}
 
 \begin{proof}
 \leanok
-\uses{thm:uniform-discretization, cor:one-sided-discretization, lem:gram-identities}
-As in the proof of \Cref{thm:uniform-discretization-optimal}, with \Cref{cor:one-sided-discretization}
-for the family $k \mapsto a(x'_k)$ on the probability space $\{1, \dots, N\}$ with the
-measure $\varrho = \sum_k w'_k \delta_k$, whose Gram matrix is that of the design. It gives
-$n$ indices, that is design points $x_1, \dots, x_n$, with
-$(1 - r)^2 \sum_k w'_k |f(x'_k)|^2 \leq \frac{1}{n} \sum_i |f(x_i)|^2$, and the bound of the
-design finishes.
+\uses{thm:uniform-discretization, cor:one-sided-discretization}
+Take a design $x'_1, \dots, x'_N$ with weights $w'_k$ from
+\Cref{thm:uniform-discretization}, with the constant $K = m + \varepsilon$, where
+$\varepsilon = 0$ in the compact case, and positive definite Gram matrix $G$. On the index
+set $\{1, \dots, N\}$ the weights define the probability measure
+$\varrho = \sum_k w'_k \delta_k$, with respect to which the family $k \mapsto a(x'_k)$ has
+Gram matrix $G$ and $\int |f(x'_k)|^2 \, d\varrho(k) = \sum_k w'_k |f(x'_k)|^2$.
+\Cref{cor:one-sided-discretization} for this family gives $n$ indices, that is design
+points $x_1, \dots, x_n$, with
+\[
+  (1 - r)^2 \sum_k w'_k |f(x'_k)|^2 \; \leq \; \frac{1}{n} \sum_{i=1}^n |f(x_i)|^2,
+  \qquad r = \sqrt{(m-1)/n},
+\]
+for every $f \in \operatorname{span}\{a_k\}$, and $r < 1$ because $n \geq m$. The bound of
+the design finishes:
+$|f(y)|^2 \leq K \sum_k w'_k |f(x'_k)|^2 \leq K (1 - r)^{-2} \frac{1}{n} \sum_i |f(x_i)|^2$.
 \end{proof}
 
 For $n = 2m$ one has $r < 1/\sqrt{2}$ and $(1 - r)^{-2} / (2m) < 6/m$, so

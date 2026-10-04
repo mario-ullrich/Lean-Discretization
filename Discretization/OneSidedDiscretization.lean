@@ -6,6 +6,7 @@ Authors: Mario Ullrich
 module
 
 public import Discretization.BSS
+public import Discretization.GeneralGram
 public import Discretization.NormDiscretization
 
 /-!

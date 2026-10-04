@@ -6,7 +6,6 @@ Authors: Mario Ullrich
 module
 
 public import Discretization.EdgeCases.BothEdgeCases
-public import Discretization.GeneralGram
 
 /-!
 # The sparsification theorem of Batson, Spielman and Srivastava
@@ -27,9 +26,7 @@ for `n = d·m` the ratio of the upper to the lower constant, the condition numbe
 `((√d + 1)/(√d - 1))²`.  With `m - 1` in place of `m`, following Chkifa, Dolbeault, Krieg
 and Ullrich, the statement here is slightly stronger.
 
-The result is `Discretization.bss`.  Its lower half holds for every positive definite
-Gram matrix `I` in place of the identity, with `(1 - r)² • I` as lower bound
-(`Discretization.bss_lower`).  Taking `μ` the counting measure on a finite set gives
+The result is `Discretization.bss`.  Taking `μ` the counting measure on a finite set gives
 the statement for finitely many vectors that Batson, Spielman and Srivastava prove: for
 vectors `v_y` with `∑ v_y v_y* = 1` there are weights `s_y ≥ 0`, at most `n` of them
 nonzero, squeezed between the same two constants
@@ -72,28 +69,6 @@ theorem bss [Nonempty ι] {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a
     bss_generalized_of_gram_eq_one' (κ := ι) (b := a) Matrix.PosDef.one one_pos
       (by rw [one_smul]) ha ha hgrama hgrama hmn
   exact ⟨x, w, hwpos, hlow, by rwa [htr, mul_one] at hup⟩
-
-/-- **The lower half of the sparsification theorem for a positive definite Gram matrix.**
-
-Let `a` be a family of square-integrable functions indexed by a finite nonempty set `ι` of
-`m` elements whose Gram matrix `I = ∫ a a* dμ` is positive definite.  Then for every `n ≥ m`
-there are `n` points and positive weights with
-
-`(1 - √((m-1)/n))² • I ≤ ∑ wᵢ a(xᵢ) a(xᵢ)*`.
-
-This is `Discretization.bss` for the normalized family `I^{-1/2} a`, conjugated back by
-`Discretization.bss_of_gram_eq_one`. -/
-theorem bss_lower [Nonempty ι] {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ)
-    (hI : (gram a μ).PosDef) {n : ℕ} (hmn : Fintype.card ι ≤ n) :
-    ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
-      (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2 • gram a μ
-        ≤ ∑ i, w i • vecMulVec (a (x i)) (star (a (x i))) := by
-  obtain ⟨x, w, hw, hlow, -⟩ := bss_of_gram_eq_one ha hI
-    (C := (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2) (P := fun _ _ => True)
-    fun _ ha' hgram' => by
-      obtain ⟨x, w, hw, hlow, -⟩ := bss ha' hgram' hmn
-      exact ⟨x, w, hw, hlow, trivial⟩
-  exact ⟨x, w, hw, hlow⟩
 
 /-! ### Finitely many vectors -/
 

@@ -112,8 +112,7 @@ again at the top level.
 * `Discretization.NormDiscretization`: the same statement read as a discretization
   inequality for the `L₂`-norm, `Discretization.exists_discretization`.
 * `Discretization.BSS`: the case of a single family, which is the sparsification theorem
-  of Batson, Spielman and Srivastava, `Discretization.bss`, and its lower half for any
-  positive definite Gram matrix, `Discretization.bss_lower`.
+  of Batson, Spielman and Srivastava, `Discretization.bss`.
 * `Discretization.OneSidedDiscretization`: one-sided discretization, the lower frame bound
   on a probability space with weights at most `1/n` and hence with equal weights, from the
   one-sided construction with the constant upper verifier `n`:
@@ -174,9 +173,7 @@ again at the top level.
 * `Discretization.KieferWolfowitz.PointCount`: the two theorems with the number of points
   bounded.
 * `Discretization.UniformDiscretization`: the Kiefer–Wolfowitz design thinned by the
-  sparsification theorem, which gives the uniform norm with any `n ≥ m` points,
-  `Discretization.exists_uniform_discretization` and
-  `Discretization.exists_uniform_discretization_of_compact`, and with equal weights,
-  `Discretization.exists_uniform_discretization_equal_weights` and
+  one-sided discretization, which gives the uniform norm with any `n ≥ m` equally weighted
+  points, `Discretization.exists_uniform_discretization_equal_weights` and
   `Discretization.exists_uniform_discretization_of_compact_equal_weights`.
 -/
