@@ -7,82 +7,47 @@ Let $(\Omega, \mu)$ be a measure space and $\iota$ a finite nonempty index set w
 $m = \#\iota$ elements. Two objects are given: a finite family $a = (a_k)_{k \in \iota}$ of
 square-integrable functions on $\Omega$, and a square-integrable map $b : \Omega \to H$
 into a separable complex Hilbert space $H$. We ask whether the integral of $|f|^2$ can be
-replaced by finitely many point evaluations, so that the first family stays a frame from
-below and $b$ stays a frame from above. Two cases of $b$ are the ones to keep in mind.
-\begin{itemize}
-  \item A countable family $(b_k)_{k \in \kappa}$ of square-integrable functions, with
-    $b(x) = (b_k(x))_k \in \ell_2(\kappa)$. The functions $\langle c, b(\cdot) \rangle$,
-    for $c \in \ell_2(\kappa)$, form the span of the family.
-  \item A reproducing kernel Hilbert space $H$ of functions on $\Omega$ with kernel $K$,
-    and $b(x) = K(x, \cdot)$, the kernel section at $x$. Then
-    $\langle b(x), g \rangle = g(x)$ for every $g \in H$.
-\end{itemize}
+replaced by finitely many weighted point evaluations, so that the first family stays a
+frame from below and $b$ stays a frame from above.
 
 For a family $a : \Omega \to \mathbb{C}^{\iota}$ that is square-integrable in every
 coordinate, the \emph{Gram matrix} is
 \[
   G(a) = \int_\Omega a(x) a(x)^* \, d\mu(x) \in \mathbb{C}^{\iota \times \iota},
 \]
-the matrix with entries $\int_\Omega a_k \overline{a_l} \, d\mu$; in Lean it is
-\texttt{Discretization.gram}. The same formula defines the \emph{Gram operator}
+in Lean \texttt{Discretization.gram}. The same formula defines the \emph{Gram operator}
 \[
   J = \int_\Omega b(x) b(x)^* \, d\mu(x)
 \]
 of $b$, a Bochner integral of the rank-one operators
-$b(x) b(x)^* = \langle b(x), \cdot \rangle \, b(x)$ on $H$. It is positive, with quadratic
-form $\langle u, J u \rangle = \int_\Omega |\langle u, b(x) \rangle|^2 \, d\mu(x)$, and its
-trace is $\Tr J = \int_\Omega \|b\|^2 \, d\mu$. For $\Lambda > 0$ with
+$b(x) b(x)^* = \langle b(x), \cdot \rangle \, b(x)$ on $H$. For $\Lambda > 0$ with
 $J \preceq \Lambda \cdot 1$, the number $M = \Tr J / \Lambda$ is the \emph{effective
-dimension} of $J$ relative to $\Lambda$. For the family it is
-$M = \sum_k \|b_k\|_{L_2}^2 / \Lambda$; for the kernel it is
-$M = \int_\Omega K(x, x) \, d\mu(x) / \Lambda$, and $\Lambda$ bounds the squared norm of
-the embedding $H \hookrightarrow L_2(\mu)$.
+dimension} of $J$ relative to $\Lambda$; it is at most $\dim H$, and much smaller as soon
+as the eigenvalues of $J$ decay.
 
-Then for every $n \geq m$ there are points $x_1, \dots, x_n \in \Omega$ and weights
-$w_1, \dots, w_n > 0$ with
-\[
-  \Bigl(1 - \sqrt{\tfrac{m-1}{n}}\Bigr)^2 \int_\Omega |f|^2 \, d\mu
-    \; \leq \; \sum_{i=1}^n w_i \, |f(x_i)|^2
-  \qquad \text{for all } f \in \operatorname{span}\{a_k\},
-\]
-and
-\[
-  \sum_{i=1}^n w_i \, |g(x_i)|^2
-    \; \leq \; \Bigl(1 + \sqrt{\tfrac{M-1}{n}}\Bigr)^2 \Lambda \, \|u\|^2
-  \qquad \text{for all } u \in H \text{ and } g = \langle u, b(\cdot) \rangle .
-\]
-This is \Cref{thm:discretization}, read through quadratic forms. The two families enter
-asymmetrically: the first through its size $m$, the second only through $M$, which is at
-most $\dim H$ and much smaller as soon as the eigenvalues of $J$ decay. For the family,
-$g$ runs through the functions $\sum_k c_k \, b_k$ with $c \in \ell_2(\kappa)$ and
-$\|u\| = \|c\|$. For the kernel,
-$|\langle g, b(x) \rangle| = |g(x)|$ for $g \in H$, and the second bound becomes the
-discretization of the norm of the space,
-$\sum_i w_i |g(x_i)|^2 \leq (1 + \sqrt{(M-1)/n})^2 \Lambda \|g\|_H^2$ for every $g \in H$
-(\Cref{cor:l2-discretization}). Taking for $b$ the first family itself, with Gram matrix
-the identity, gives $M = m$ and the sparsification theorem of Batson, Spielman and
-Srivastava~\cite{BSS}, which is \Cref{cor:bss}. On a probability space the lower bound holds with
-equal weights $1/n$, a one-sided discretization (\Cref{cor:one-sided-discretization}).
+\Cref{thm:discretization} gives, for every $n \geq m$, points $x_1, \dots, x_n$ and weights
+$w_i > 0$ that keep the first family a frame from below, with a constant depending only on
+$m$, and $b$ a frame from above, with a constant depending only on $M$. For the kernel
+sections of a reproducing kernel Hilbert space this discretizes the $L_2$-norm on the span
+of the first family from below and the norm of the space from above
+(\Cref{cor:l2-discretization}). For $b = a$ it is the sparsification theorem of Batson,
+Spielman and Srivastava~\cite{BSS} (\Cref{cor:bss}), and on a probability space the lower
+bound holds with equal weights $1/n$ (\Cref{cor:one-sided-discretization}). The last
+chapter produces a measure to start from: by Kiefer and Wolfowitz, finitely many points with
+weights for which the uniform norm on an $m$-dimensional space of bounded functions is
+dominated by the $L_2$ norm of that measure with the constant $\sqrt{m + \varepsilon}$
+(\Cref{thm:uniform-discretization}). Thinning it gives the same with any $n \geq m$ equally
+weighted points, at the price of the factor $(1 - \sqrt{(m-1)/n})^{-2}$
+(\Cref{thm:uniform-discretization-optimal}).
 
-The last chapter answers which measure to discretize in the first place. There $D$ is an
-arbitrary set carrying $m$ bounded, linearly independent functions, and Kiefer and
-Wolfowitz give, for every $\varepsilon > 0$, finitely many points and weights with
-$|f(y)|^2 \leq (m + \varepsilon) \sum_k w_k |f(x_k)|^2$ for every $y \in D$ and every $f$
-in their span: the uniform norm is dominated by the $L_2$ norm of that measure. Thinning
-such a measure gives the same bound with any $n \geq m$ equally weighted points, at the
-price of the factor $(1 - \sqrt{(m-1)/n})^{-2}$ (\Cref{thm:uniform-discretization-optimal}).
-
-A statement about these weighted sums is a statement about the matrix
-$\sum_i w_i \, a(x_i) a(x_i)^*$ and the operator $\sum_i w_i \, b(x_i) b(x_i)^*$, compared
-in the Loewner order: $A \preceq B$ means that $B - A$ is positive semidefinite. That is the
-form the argument takes. Traces appearing below are real, and the formalisation takes
-real parts wherever a real number is needed; it writes a function of a span as
-$f = \langle c, a(\cdot) \rangle$, which conjugates the coefficient vector, and since $c$
-runs over all of $\mathbb{C}^{\iota}$ that is the same set of functions.
-
-Each statement names the Lean declaration that formalises it. Every statement and every
-proof is formalised: the project compiles without \texttt{sorry}, so each result is
-verified by the Lean kernel.
+A statement about weighted sums of $|f(x_i)|^2$ is a statement about the matrix
+$\sum_i w_i \, a(x_i) a(x_i)^*$ or the operator $\sum_i w_i \, b(x_i) b(x_i)^*$, compared in
+the Loewner order: $A \preceq B$ means that $B - A$ is positive semidefinite. That is the
+form the argument takes. The formalisation takes real parts wherever a real number is
+needed, and it writes a function of a span as $f = \langle c, a(\cdot) \rangle$, which
+conjugates the coefficient vector; since $c$ runs over all of $\mathbb{C}^{\iota}$ that is
+the same set of functions. Every statement and every proof is formalised, without
+\texttt{sorry}, and each statement names the Lean declaration that formalises it.
 
 The following theorem is Theorem 3 of Chkifa, Dolbeault, Krieg and Ullrich~\cite{CDKU}, for
 a second family with values in a separable Hilbert space. Its first bound is their factor
