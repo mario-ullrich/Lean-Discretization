@@ -67,6 +67,16 @@ nav.toc {
 	padding-bottom: 4rem;
 }
 
+/* Room after every statement and more after every proof, so that what follows starts
+   clearly apart. */
+div[class*="_thmwrapper"] {
+	margin-bottom: 1rem;
+}
+
+div.proof_wrapper {
+	margin-bottom: 2.5rem;
+}
+
 /* The repository line on the title page, added below the author by the
    workflow: close to the author, with room before the page goes on. */
 div.titlepage p.authors {
