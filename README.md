@@ -1,19 +1,14 @@
 # Norm discretization in Lean 4 / Mathlib
 
-A Lean 4 / Mathlib formalisation of two theorems that replace a norm by finitely many
-point evaluations. The first is the **discretization theorem** of Chkifa, Dolbeault,
-Krieg and Ullrich, a generalization of the Batson–Spielman–Srivastava sparsification
-theorem, with the `L₂`-norm discretization inequality it yields; what the generalisation
-adds is that the two frame bounds may refer to two different families, the second one a
-map into a Hilbert space, and that the upper bound depends on the *effective dimension*
-of the second family rather than on its size. The second is the **Kiefer–Wolfowitz
-theorem** in the form used by Krieg, Pozharska, Ullrich and Ullrich for sampling
-projections: on an `m`-dimensional space of bounded functions the uniform norm is
-dominated by the `L₂` norm of a finitely supported probability measure, with the
-constant `√(m+ε)`. Thinned by the first theorem, the measure can be replaced by any
-`n ≥ m` equally weighted points, at the price of the factor `(1 − √((m−1)/n))⁻²`. The project builds
-without `sorry`, and every theorem uses only the
-three axioms Mathlib relies on throughout (`propext`, `Classical.choice`, `Quot.sound`).
+A Lean 4 / Mathlib formalisation of two theorems that replace a norm on an
+`m`-dimensional space of functions by `n ≥ m` point evaluations. The **discretization
+theorem** of Chkifa, Dolbeault, Krieg and Ullrich does this for the `L₂`-norm: a
+weighted sum `∑ wᵢ |f(xᵢ)|²` bounds `∫ |f|² dμ` from below, and the same weighted sum
+for the functions of a second, possibly infinite-dimensional family is bounded from
+above in terms of its effective dimension. For a single family this is the
+Batson–Spielman–Srivastava sparsification theorem. The **Kiefer–Wolfowitz theorem**
+gives a measure whose `L₂`-norm bounds the uniform norm up to the factor `√(m+ε)`, and
+discretizing that measure gives `n ≥ m` points that control the uniform norm.
 
 * **Blueprint** (a webpage explaining the mathematics):
   <https://mario-ullrich.github.io/Lean-Discretization/>
@@ -21,26 +16,6 @@ three axioms Mathlib relies on throughout (`propext`, `Classical.choice`, `Quot.
   <https://mario-ullrich.github.io/Lean-Discretization/blueprint.pdf>
 * **Dependency graph**:
   <https://mario-ullrich.github.io/Lean-Discretization/dep_graph_document.html>
-
-## The question
-
-Given a family of functions on a measure space, can one replace the integral
-`∫ |f|² dμ` by a finite weighted sum `∑ wᵢ |f(xᵢ)|²` of point evaluations, with a
-controlled loss in both directions? For a finite-dimensional space of functions this is
-the problem of **norm discretization**, and the sharpest known answer of this type is
-the sparsification theorem of Batson, Spielman and Srivastava. Letting the upper bound
-depend on the effective dimension `M = Tr J / Λ` of the second family, rather than on
-its size, is what makes the theorem applicable to infinite-dimensional reproducing
-kernel Hilbert spaces, and it is the reason its constants beat those obtainable from
-the Kadison–Singer theorem.
-
-The second question is which measure to discretize in the first place. On an
-`m`-dimensional space of functions one may ask for a measure for which the uniform norm
-is already controlled by the `L₂` norm, and the answer of Kiefer and Wolfowitz is that a
-measure maximising the determinant of the Gram matrix does this with the constant `√m`,
-up to an arbitrarily small loss on a general domain. Applying the discretization theorem
-to such a measure is how one arrives at sampling projections with few points and small
-norm.
 
 ## Main results
 
