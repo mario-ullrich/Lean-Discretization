@@ -149,6 +149,13 @@ jobs:
         run: |
           sed -i 's/#A3D6FF/#FFFFFF/g; /<dt>Orange border<\/dt>/d; /<dt>Blue border<\/dt>/d; /<dt>Blue background<\/dt>/d; s/\[style=dashed\]//g; s/<h1 id="doc_title">Dependencies<\/h1>/<h1 id="doc_title">Norm Discretization: Dependencies<\/h1>/; s/"lem:rank-one-updates" -> "lem:lower-potential-change"/& [minlen=2]/; s/}`)/ ranksep=0.6; subgraph cluster_uniform { label="Discretization of the uniform norm"; labeljust=l; fontcolor="#808080"; color="#b0b0b0"; style=rounded; penwidth=1; margin=12; "lem:rank-one-determinant"; "lem:mixing-gain"; "prop:almost-maximal-determinant"; "lem:few-design-points"; "thm:uniform-discretization"; "thm:uniform-discretization-optimal"; "cor:uniform-discretization-by-max"; } "lem:lower-barrier" -> "lem:mixing-gain" [style=invis, minlen=2]; "lem:lower-barrier" -> "lem:rank-one-determinant" [style=invis, minlen=2]; subgraph { rank=same; "cor:l2-discretization" -> "cor:bss" -> "cor:one-sided-discretization" [style=invis]; } }`)/' blueprint/web/dep_graph_document.html
 
+      # Zoom the graph, not the page: d3's zoom ignores ctrl+wheel, which is how
+      # a touchpad pinch arrives, so the browser zoomed the whole page and with
+      # it the statement that opens on a click. The script also lets the graph
+      # zoom in further than d3-graphviz's default of ten times the fitted size.
+      - name: Let the dependency graph take pinch and ctrl+wheel zoom
+        run: python blueprint/scripts/dep_graph_zoom.py
+
       # Make the title page reachable from every page and the repository from
       # the title page. The menu of each chapter page gains a first entry
       # "Home" that leads to index.html, as the dependency graph page already
