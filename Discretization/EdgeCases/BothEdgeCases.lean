@@ -11,9 +11,10 @@ public import Discretization.EdgeCases.SmallEffectiveDim
 /-!
 # A single function and a small effective dimension
 
-The two edge cases of the previous files at the same time: `card ι = 1`, so that the lower
-potential is not needed, and `M = Tr J / Λ ≤ 1 + 1/n`, so that the upper potential is not
-needed either.  Both verifiers are constants,
+The two edge cases of `Discretization.EdgeCases.CardOne` and
+`Discretization.EdgeCases.SmallEffectiveDim` at the same time: `card ι = 1`, so that the
+lower potential is not needed, and `M = Tr J / Λ ≤ 1 + 1/n`, so that the upper potential is
+not needed either.  Both verifiers are constants,
 
 `L(x) = n |a(x)|²`   and   `U(x) = n ‖b(x)‖² / Tr J`,   with   `∫ L dμ = ∫ U dμ = n`,
 

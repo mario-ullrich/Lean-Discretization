@@ -305,8 +305,9 @@ second family in a Hilbert space with the theorem for it, a countable family and
 reproducing kernel Hilbert space, and under `Discretization/KieferWolfowitz/` the
 maximisation of the determinant of a Gram matrix, the theorem it yields and John's
 decomposition of the identity beside it, with its thinning to `n ≥ m` points by the
-one-sided discretization and the discretization of the `L_p`-norms at the top level. `BasicResults` holds what the arguments need and
-Mathlib lacks: comparisons in the Loewner order, traces of products and Cauchy–Schwarz for
+one-sided discretization and the discretization of the `L_p`-norms at the top level.
+`BasicResults` holds what the arguments need and Mathlib lacks: comparisons in the Loewner
+order, traces of products and Cauchy–Schwarz for
 them, Sherman–Morrison for rank-one updates of a matrix and of an operator, the trace of
 a positive operator on a Hilbert space, the Gram operator as a Bochner integral, the matrix
 determinant lemma, the compactness of the convex hull of a compact set, and the bridge
