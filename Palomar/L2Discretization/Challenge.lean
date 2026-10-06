@@ -51,7 +51,7 @@ evaluation is continuous. By the Riesz representation theorem evaluation at `x` 
 product with a **kernel section** `kₓ ∈ H`, `⟪kₓ, g⟫ = g(x)`, and `K(x, x) = ‖kₓ‖²` is the
 reproducing kernel on the diagonal. Assume `∫ K(x, x) dμ < ∞`, let `Λ` bound the squared norm
 of the embedding `H → L₂(μ)`, `∫ |g|² dμ ≤ Λ ‖g‖²`, and let that embedding be injective. With
-`I = 1` and `M = ∫ K(x, x) dμ / Λ` the points and weights satisfy
+`M = ∫ K(x, x) dμ / Λ` the points and weights satisfy
 
   `(1 - √((m-1)/n))² · ∫ |f|² dμ ≤ ∑ᵢ wᵢ |f(xᵢ)|²`   for every `f` in the span of `a`, and
   `∑ᵢ wᵢ |g(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ · ‖g‖²`      for every `g ∈ H`.
@@ -139,8 +139,8 @@ theorem bss_generalized [Nonempty ι] [Nonempty κ]
 /-- **Discretization of the `L₂`-norm** (Chkifa–Dolbeault–Krieg–Ullrich, Corollary 4), for
 finite families.
 
-Under the hypotheses of `Discretization.bss_generalized` with `I = 1`, the `n` points and
-weights discretize the norm of every function in the span of the first family from below,
+Under the hypotheses of `Discretization.bss_generalized`, the `n` points and weights
+discretize the norm of every function in the span of the first family from below,
 
 `(1 - √((m-1)/n))² · ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²`,
 
@@ -155,7 +155,7 @@ theorem exists_discretization [Nonempty ι] [Nonempty κ]
     {J : Matrix κ κ ℂ} (hJ : J.PosDef) {Λ : ℝ} (hΛ : 0 < Λ)
     (hJΛ : J ≤ Λ • (1 : Matrix κ κ ℂ)) {a : Ω → ι → ℂ} {b : Ω → κ → ℂ}
     (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
-    (hgrama : gram a μ = 1) (hgramb : gram b μ = J)
+    (hI : (gram a μ).PosDef) (hgramb : gram b μ = J)
     {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
       (∀ c : ι → ℂ, (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
@@ -247,10 +247,10 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 (Chkifa–Dolbeault–Krieg–Ullrich, Corollary 4).
 
 Let `a` be a family of square-integrable functions indexed by a finite nonempty set `ι` of
-`m` elements with Gram matrix `1`.  Let `H` be a nonzero separable Hilbert space of
-measurable functions on `Ω` with continuous point evaluations and reproducing kernel `K`,
-with `∫ K(x, x) dμ(x) < ∞`, let `Λ > 0` satisfy `∫ |g|² dμ ≤ Λ ‖g‖²` for every `g ∈ H`, and
-assume that the only `g ∈ H` vanishing almost everywhere is `g = 0`.  Put
+`m` elements with positive definite Gram matrix.  Let `H` be a nonzero separable Hilbert
+space of measurable functions on `Ω` with continuous point evaluations and reproducing kernel
+`K`, with `∫ K(x, x) dμ(x) < ∞`, let `Λ > 0` satisfy `∫ |g|² dμ ≤ Λ ‖g‖²` for every `g ∈ H`,
+and assume that the only `g ∈ H` vanishing almost everywhere is `g = 0`.  Put
 `M = ∫ K(x, x) dμ(x) / Λ`.  Then for every `n ≥ m` there are `n` points and positive weights
 with
 
@@ -263,7 +263,7 @@ theorem exists_discretization [Nonempty ι] [TopologicalSpace.SeparableSpace H] 
     (hK : Integrable (fun x => ‖kernelSection φ hφ x‖ ^ 2) μ)
     {Λ : ℝ} (hΛ : 0 < Λ) (hHΛ : ∀ g, ∫ x, ‖φ g x‖ ^ 2 ∂μ ≤ Λ * ‖g‖ ^ 2)
     (hinj : ∀ g, (∀ᵐ x ∂μ, φ g x = 0) → g = 0)
-    {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hgrama : gram a μ = 1)
+    {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hI : (gram a μ).PosDef)
     {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
       (∀ c : ι → ℂ, (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2

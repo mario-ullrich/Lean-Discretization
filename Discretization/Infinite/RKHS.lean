@@ -146,10 +146,10 @@ variable {ι : Type*} [Fintype ι] [DecidableEq ι]
 (Chkifa–Dolbeault–Krieg–Ullrich, Corollary 4).
 
 Let `a` be a family of square-integrable functions indexed by a finite nonempty set `ι` of
-`m` elements with Gram matrix `1`.  Let `H` be a nonzero separable Hilbert space of
-measurable functions on `Ω` with continuous point evaluations and reproducing kernel `K`,
-with `∫ K(x, x) dμ(x) < ∞`, let `Λ > 0` satisfy `∫ |g|² dμ ≤ Λ ‖g‖²` for every `g ∈ H`, and
-assume that the only `g ∈ H` vanishing almost everywhere is `g = 0`.  Put
+`m` elements with positive definite Gram matrix.  Let `H` be a nonzero separable Hilbert
+space of measurable functions on `Ω` with continuous point evaluations and reproducing kernel
+`K`, with `∫ K(x, x) dμ(x) < ∞`, let `Λ > 0` satisfy `∫ |g|² dμ ≤ Λ ‖g‖²` for every `g ∈ H`,
+and assume that the only `g ∈ H` vanishing almost everywhere is `g = 0`.  Put
 `M = ∫ K(x, x) dμ(x) / Λ`.  Then for every `n ≥ m` there are `n` points and positive weights
 with
 
@@ -164,7 +164,7 @@ theorem exists_discretization [Nonempty ι] [TopologicalSpace.SeparableSpace H] 
     (hK : Integrable (fun x => ‖kernelSection φ hφ x‖ ^ 2) μ)
     {Λ : ℝ} (hΛ : 0 < Λ) (hHΛ : ∀ g, ∫ x, ‖φ g x‖ ^ 2 ∂μ ≤ Λ * ‖g‖ ^ 2)
     (hinj : ∀ g, (∀ᵐ x ∂μ, φ g x = 0) → g = 0)
-    {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hgrama : gram a μ = 1)
+    {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hI : (gram a μ).PosDef)
     {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
       (∀ c : ι → ℂ, (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
@@ -184,7 +184,7 @@ theorem exists_discretization [Nonempty ι] [TopologicalSpace.SeparableSpace H] 
   have hJinj := (integral_rankOne_self_injective_iff hb).2 fun f hf =>
     hinj f (hf.mono fun y hy => norm_eq_zero.1 ((hcoef f y).symm.trans (by rw [hy, norm_zero])))
   obtain ⟨x, w, hw, hlow, hup⟩ :=
-    Infinite.exists_discretization hΛ hJΛ hJinj ha hb hgrama rfl hmn
+    Infinite.exists_discretization hΛ hJΛ hJinj ha hb hI rfl hmn
   exact ⟨x, w, hw, hlow, fun f => by simpa only [hcoef] using hup f⟩
 
 end RKHS

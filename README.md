@@ -58,10 +58,9 @@ and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0
   `g = ∑_k c_k b_k` (`Discretization.bss_generalized` for finite `κ`, proved with
   matrices; `Discretization.Countable.bss_generalized` for countable `κ`, the case
   `H = ℓ²(κ)`). Nothing pointwise is assumed: `∑_k |b_k(x)|² < ∞` holds almost
-  everywhere, and the points are chosen where it holds. With `I = 1` the first bound
-  reads `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²` for every `f` in the span of the
-  first family (`Discretization.exists_discretization`,
-  `Discretization.Countable.exists_discretization`).
+  everywhere, and the points are chosen where it holds. Read through quadratic forms, the
+  first bound is `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²` for every `f` in the span
+  of the first family (`Discretization.exists_discretization` for finite `κ`).
 * **The special case `a = b`** is the sparsification theorem of Batson, Spielman and
   Srivastava (`Discretization.bss`): one family with Gram matrix the identity, squeezed
   between `(1 - √((m-1)/n))² • 1` and `(1 + √((m-1)/n))² • 1`. For finitely many vectors
@@ -84,7 +83,7 @@ and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0
   Hilbert space of measurable functions on `Ω` with continuous point evaluations and
   reproducing kernel `K`, with `∫ K(x, x) dμ < ∞`; let `∫ |g|² dμ ≤ Λ ‖g‖²_H` for every
   `g ∈ H`, and let `g = 0` be the only function of `H` vanishing almost everywhere. With
-  `I = 1` and `M = ∫ K(x, x) dμ / Λ`, the points and weights satisfy
+  `M = ∫ K(x, x) dμ / Λ`, the points and weights satisfy
   `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²` for every `f` in the span of the first
   family and `∑ wᵢ |g(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖g‖²_H` for every `g ∈ H`
   (`Discretization.RKHS.exists_discretization`). The second family is the kernel

@@ -388,30 +388,6 @@ theorem bss_generalized [Nonempty ι] [Nonempty κ]
     rw [htr'] at h
     exact h
 
-/-- **Discretization of the `L₂`-norm for a countable second family**
-(Chkifa–Dolbeault–Krieg–Ullrich, Corollary 4), in the form of the paper: under the
-hypotheses of `Discretization.Countable.bss_generalized` with a normalized first family, its
-points and weights satisfy
-
-`(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ᵢ wᵢ |f(xᵢ)|²`  for every `f` in the span of `a`, and
-`∑ᵢ wᵢ |∑_k c̄_k b_k(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖c‖²`  for every `c ∈ ℓ²(κ)`. -/
-theorem exists_discretization [Nonempty ι] [Nonempty κ]
-    {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hgrama : gram a μ = 1)
-    (hb : ∀ k, MemLp (fun x => b x k) 2 μ) (htr : Summable fun k => ∫ x, ‖b x k‖ ^ 2 ∂μ)
-    (hinj : ∀ c : ℓ²(κ, ℂ), ∫ x, ‖∑' k, conj (c k) * b x k‖ ^ 2 ∂μ = 0 → c = 0)
-    {Λ : ℝ} (hΛ : 0 < Λ)
-    (hJΛ : ∀ c : ℓ²(κ, ℂ), ∫ x, ‖∑' k, conj (c k) * b x k‖ ^ 2 ∂μ ≤ Λ * ‖c‖ ^ 2)
-    {n : ℕ} (hmn : Fintype.card ι ≤ n) :
-    ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧ (∀ i, Memℓp (b (x i)) 2) ∧
-      (∀ c : ι → ℂ, (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
-            * ∫ y, ‖star c ⬝ᵥ a y‖ ^ 2 ∂μ
-          ≤ ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2) ∧
-      ∀ c : ℓ²(κ, ℂ), ∑ i, w i * ‖∑' k, conj (c k) * b (x i) k‖ ^ 2
-        ≤ (1 + Real.sqrt (((∑' k, ∫ y, ‖b y k‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2 * Λ * ‖c‖ ^ 2 := by
-  obtain ⟨x, w, hw, hmem, hlow, hup⟩ :=
-    bss_generalized ha (by rw [hgrama]; exact Matrix.PosDef.one) hb htr hinj hΛ hJΛ hmn
-  exact ⟨x, w, hw, hmem, mul_integral_norm_sq_le_sum ha hlow, hup⟩
-
 end Countable
 
 end Discretization

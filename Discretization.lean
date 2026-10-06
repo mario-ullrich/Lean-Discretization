@@ -141,8 +141,7 @@ again at the top level.
   inequality, `Discretization.Infinite.exists_discretization`.
 * `Discretization.Infinite.Countable`: the theorem in the form of the paper, for a countable
   family `(b_k)` with `∑_k ‖b_k‖² < ∞` and its Gram matrix, deduced from the Hilbert-space
-  form on `ℓ²(κ)`: `Discretization.Countable.bss_generalized`,
-  `Discretization.Countable.exists_discretization`.
+  form on `ℓ²(κ)`: `Discretization.Countable.bss_generalized`.
 * `Discretization.Infinite.RKHS`: the discretization inequality for the norm of a reproducing
   kernel Hilbert space, with the kernel sections `b(x) = K(x, ·)` as second family and
   `M = ∫ K(x, x) dμ(x) / Λ`, `Discretization.RKHS.exists_discretization`.

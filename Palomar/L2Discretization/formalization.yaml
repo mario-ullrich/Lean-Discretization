@@ -81,8 +81,7 @@ status:
     ∑ᵢ wᵢ |⟨u, b(xᵢ)⟩|² ≤ (1 + √((M−1)/n))² Λ ‖u‖² for a general map b
     (Discretization.Infinite.exists_discretization); the theorem for a countable family
     (bₖ) with its Gram matrix, in the indexing of the source and with nothing assumed
-    pointwise (Discretization.Countable.bss_generalized,
-    Discretization.Countable.exists_discretization); and the potential argument under the
+    pointwise (Discretization.Countable.bss_generalized); and the potential argument under the
     two side conditions m ≥ 2 and M ≥ 1 + 1/n (bss_generalized_of_gram_eq_one) with the
     three edge cases that remove them (bss_generalized_of_unique,
     bss_generalized_of_small_dim, bss_generalized_of_unique_of_small_dim), each proved
@@ -176,8 +175,9 @@ alignment:
       module: "Discretization.NormDiscretization"
       status: "proved"
       note: >-
-        The same statement read through quadratic forms, for a normalized first
-        family; the upper bound is stated with the coefficient norm of g.
+        The same statement read through quadratic forms, for a first family with
+        positive definite Gram matrix; the upper bound is stated with the coefficient
+        norm of g.
     - source: "Constructive discretization and approximation in RKHS, Theorem 3"
       lean: "Discretization.Infinite.bss_generalized"
       module: "Discretization.Infinite.GeneralGram"

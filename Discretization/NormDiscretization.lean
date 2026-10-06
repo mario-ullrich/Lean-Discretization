@@ -6,7 +6,7 @@ Authors: Mario Ullrich
 module
 
 public import BasicResults.Matrix.QuadraticForm
-public import Discretization.EdgeCases.BothEdgeCases
+public import Discretization.GeneralGram
 
 /-!
 # The discretization inequality
@@ -31,8 +31,8 @@ involve the measure, `∫ |f|² dμ = c* (gram a μ) c`
 
 So a Loewner inequality between matrices is exactly an inequality between quadratic forms,
 uniformly in the coefficient vector.  For the lower frame bound this reading is
-`Discretization.mul_integral_norm_sq_le_sum`, which also serves the countable case.  The
-result is `Discretization.exists_discretization`.
+`Discretization.mul_integral_norm_sq_le_sum`, which also serves the operator case and the
+one-sided discretization.  The result is `Discretization.exists_discretization`.
 -/
 
 @[expose] public section
@@ -96,8 +96,8 @@ variable [DecidableEq ι]
 
 /-- **Discretization of the `L₂`-norm.**
 
-Under the hypotheses of `Discretization.bss_generalized_of_gram_eq_one'`, the `n` points and
-weights discretize the norm of every function in the span of the first family from below,
+Under the hypotheses of `Discretization.bss_generalized`, the `n` points and weights
+discretize the norm of every function in the span of the first family from below,
 
 `(1 - √((m-1)/n))² · ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²`,
 
@@ -107,14 +107,17 @@ and bound the weighted sum for every function in the span of the second family f
 
 where `c` is the coefficient vector of `g`.
 
-This is Corollary 4 of the paper, for finite families.  If the second family is an
+This is Corollary 4 of the paper, for finite families.  The hypothesis on the first family
+is that its members are linearly independent in `L₂(μ)`, that is, that its Gram matrix `I`
+is positive definite: the inequality involves only the functions of the span, and
+`I^{-1/2} a` spans the same space with Gram matrix `1`.  If the second family is an
 orthonormal basis of a reproducing kernel Hilbert space `H`, then the coefficient norm on the
 right is the `H`-norm of `g`, and `Λ` bounds the squared norm of the embedding `H → L₂`. -/
 theorem exists_discretization [Nonempty ι] [Nonempty κ]
     {J : Matrix κ κ ℂ} (hJ : J.PosDef) {Λ : ℝ} (hΛ : 0 < Λ)
     (hJΛ : J ≤ Λ • (1 : Matrix κ κ ℂ)) {a : Ω → ι → ℂ} {b : Ω → κ → ℂ}
     (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : ∀ k, MemLp (fun x => b x k) 2 μ)
-    (hgrama : gram a μ = 1) (hgramb : gram b μ = J)
+    (hI : (gram a μ).PosDef) (hgramb : gram b μ = J)
     {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
       (∀ c : ι → ℂ, (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
@@ -123,9 +126,8 @@ theorem exists_discretization [Nonempty ι] [Nonempty κ]
       (∀ c : κ → ℂ, ∑ i, w i * ‖star c ⬝ᵥ b (x i)‖ ^ 2
           ≤ (1 + Real.sqrt ((RCLike.re J.trace / Λ - 1) / n)) ^ 2 * Λ
               * ∑ k, ‖c k‖ ^ 2) := by
-  obtain ⟨x, w, hwpos, hlow, hup⟩ :=
-    bss_generalized_of_gram_eq_one' hJ hΛ hJΛ ha hb hgrama hgramb hmn
-  refine ⟨x, w, hwpos, mul_integral_norm_sq_le_sum ha (by rwa [hgrama]), fun c => ?_⟩
+  obtain ⟨x, w, hwpos, hlow, hup⟩ := bss_generalized hJ hΛ hJΛ ha hb hI hgramb hmn
+  refine ⟨x, w, hwpos, mul_integral_norm_sq_le_sum ha hlow, fun c => ?_⟩
   calc ∑ i, w i * ‖star c ⬝ᵥ b (x i)‖ ^ 2
       = RCLike.re (star c ⬝ᵥ
           ((∑ i, w i • vecMulVec (b (x i)) (star (b (x i)))) *ᵥ c)) :=

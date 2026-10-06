@@ -74,10 +74,9 @@ $c \in \ell_2(\kappa)$. Nothing pointwise is assumed: by Tonelli,
 $\sum_k |b_k(x)|^2 < \infty$ almost everywhere, and the points are chosen there. This is
 the form of Theorem~3 of~\cite{CDKU}; in Lean it is
 \texttt{Discretization.Countable.bss\_generalized}, and for finite $\kappa$, proved with
-matrices, \texttt{Discretization.bss\_generalized}. With $I = 1$, read through quadratic
-forms, the two bounds are inequalities for $\sum_i w_i |f(x_i)|^2$ and
-$\sum_i w_i |\sum_k c_k \, b_k(x_i)|^2$, in Lean
-\texttt{Discretization.Countable.exists\_discretization}, and for finite $\kappa$
+matrices, \texttt{Discretization.bss\_generalized}. Read through quadratic forms, the lower
+bound is $(1 - \sqrt{(m-1)/n})^2 \int_\Omega |f|^2 \, d\mu \leq \sum_i w_i |f(x_i)|^2$ for
+$f$ in the span of the first family; for finite $\kappa$ both bounds in this form are
 \texttt{Discretization.exists\_discretization}.
 \end{remark}
 
@@ -137,10 +136,11 @@ and the norm of the space from above.
 \lean{Discretization.RKHS.exists_discretization}
 \leanok
 Let $(\Omega, \mu)$ be a measure space, let $\iota$ be a finite nonempty set, and let
-$a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in every coordinate with
-$\int_\Omega a(x) a(x)^* \, d\mu(x) = 1$. Let $H$ be a nonzero separable complex Hilbert
-space of measurable functions on $\Omega$ on which every point evaluation is continuous,
-let $K$ be its reproducing kernel, and assume $\int_\Omega K(x, x) \, d\mu(x) < \infty$. Let
+$a : \Omega \to \mathbb{C}^{\iota}$ be square-integrable in every coordinate with positive
+definite Gram matrix $I = \int_\Omega a(x) a(x)^* \, d\mu(x)$. Let $H$ be a nonzero separable
+complex Hilbert space of measurable functions on $\Omega$ on which every point evaluation is
+continuous, let $K$ be its reproducing kernel, and assume
+$\int_\Omega K(x, x) \, d\mu(x) < \infty$. Let
 $\Lambda > 0$ satisfy $\int_\Omega |g|^2 \, d\mu \leq \Lambda \|g\|_H^2$ for every
 $g \in H$, and assume that the only $g \in H$ vanishing almost everywhere is $g = 0$. Put
 $m = \#\iota$ and $M = \int_\Omega K(x, x) \, d\mu(x) / \Lambda$. Then for every $n \geq m$
@@ -165,13 +165,16 @@ square-integrable, $|\langle g, k_x \rangle| = |g(x)|$ and $\|k_x\|^2 = K(x, x)$
 \Cref{lem:gram-operator}(b) and (c) the two assumptions on $H$ say that the Gram operator
 of $b$ satisfies $J \preceq \Lambda \cdot 1$ and is injective, and
 $\int_\Omega \|b\|^2 \, d\mu = \int_\Omega K(x, x) \, d\mu$, so \Cref{thm:discretization}
-applies with $I = 1$. Its two bounds are inequalities between quadratic forms. For
-$f = \sum_k c_k a_k$ one has $\sum_i w_i |f(x_i)|^2 = c^* A c$ with
-$A = \sum_i w_i \, a(x_i) a(x_i)^*$, and $\int_\Omega |f|^2 \, d\mu = c^* G(a) c = \|c\|^2$
-by \Cref{lem:gram-identities}(a) and $G(a) = 1$; this is the first bound. For $g \in H$,
+applies. Its two bounds are inequalities between quadratic forms. For
+$f = \sum_k \overline{c_k} \, a_k$ one has $\sum_i w_i |f(x_i)|^2 = c^* A c$ with
+$A = \sum_i w_i \, a(x_i) a(x_i)^*$, and $\int_\Omega |f|^2 \, d\mu = c^* I c$ by
+\Cref{lem:gram-identities}(a); this is the first bound. For $g \in H$,
 $\langle g, \sum_i w_i \, k_{x_i} k_{x_i}^* \, g \rangle
 = \sum_i w_i |\langle g, k_{x_i} \rangle|^2 = \sum_i w_i |g(x_i)|^2$; this is the second.
 \end{proof}
+
+The first bound involves only the functions of the span, so the case $I = 1$ already gives
+it: $I^{-1/2} a$ spans the same space and has Gram matrix $1$.
 
 The constant $\Lambda$ is the squared norm of the embedding $H \hookrightarrow L_2(\mu)$, and
 the assumption on vanishing functions says that this embedding is injective.

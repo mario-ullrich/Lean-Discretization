@@ -78,17 +78,17 @@ variable [Fintype ι] [DecidableEq ι] [CompleteSpace H] [MeasurableSpace Ω] {�
 space**.
 
 Let `a` be a family of square-integrable functions indexed by a finite nonempty set `ι` of
-`m` elements with Gram matrix `1`, and let `b : Ω → H` be square-integrable, with values in a
-nonzero separable Hilbert space, with injective Gram operator `J = ∫ b(x) b(x)* dμ(x)`
-satisfying `J ≤ Λ • 1`.  Put `M = ∫ ‖b‖² dμ / Λ`.  Then for every `n ≥ m` there are `n`
-points and positive weights with
+`m` elements with positive definite Gram matrix, and let `b : Ω → H` be square-integrable,
+with values in a nonzero separable Hilbert space, with injective Gram operator
+`J = ∫ b(x) b(x)* dμ(x)` satisfying `J ≤ Λ • 1`.  Put `M = ∫ ‖b‖² dμ / Λ`.  Then for every
+`n ≥ m` there are `n` points and positive weights with
 
 `(1 - √((m-1)/n))² · ∫ |f|² dμ ≤ ∑ᵢ wᵢ |f(xᵢ)|²`  for every `f` in the span of `a`, and
 `∑ᵢ wᵢ |⟪u, b(xᵢ)⟫|² ≤ (1 + √((M-1)/n))² Λ · ‖u‖²`  for every `u ∈ H`. -/
 theorem exists_discretization [Nonempty ι] [TopologicalSpace.SeparableSpace H]
     [Nontrivial H] {Λ : ℝ} (hΛ : 0 < Λ) (hJΛ : J ≤ Λ • (1 : H →L[ℂ] H))
     (hJinj : ∀ v, J v = 0 → v = 0) {a : Ω → ι → ℂ} {b : Ω → H}
-    (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : MemLp b 2 μ) (hgrama : gram a μ = 1)
+    (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (hb : MemLp b 2 μ) (hI : (gram a μ).PosDef)
     (hgramb : ∫ x, rankOne ℂ (b x) (b x) ∂μ = J)
     {n : ℕ} (hmn : Fintype.card ι ≤ n) :
     ∃ (x : Fin n → Ω) (w : Fin n → ℝ), (∀ i, 0 < w i) ∧
@@ -97,10 +97,8 @@ theorem exists_discretization [Nonempty ι] [TopologicalSpace.SeparableSpace H]
           ≤ ∑ i, w i * ‖star c ⬝ᵥ a (x i)‖ ^ 2) ∧
       (∀ u : H, ∑ i, w i * ‖⟪u, b (x i)⟫_ℂ‖ ^ 2
           ≤ (1 + Real.sqrt (((∫ y, ‖b y‖ ^ 2 ∂μ) / Λ - 1) / n)) ^ 2 * Λ * ‖u‖ ^ 2) := by
-  obtain ⟨x, w, hwpos, hlow, hup⟩ :=
-    bss_generalized_of_gram_eq_one' hΛ hJΛ hJinj ha hb hgrama hgramb hmn
-  exact ⟨x, w, hwpos, mul_integral_norm_sq_le_sum ha (by rwa [hgrama]),
-    sum_mul_norm_sq_inner_le hup⟩
+  obtain ⟨x, w, hwpos, hlow, hup⟩ := bss_generalized hΛ hJΛ hJinj ha hb hI hgramb hmn
+  exact ⟨x, w, hwpos, mul_integral_norm_sq_le_sum ha hlow, sum_mul_norm_sq_inner_le hup⟩
 
 end Infinite
 
