@@ -7,7 +7,6 @@ module
 
 public import Discretization.OneSidedDiscretization
 public import Discretization.KieferWolfowitz.Measure
-public import Discretization.KieferWolfowitz.Compact
 
 /-!
 # Discretization of the uniform norm with `n ≥ m` points

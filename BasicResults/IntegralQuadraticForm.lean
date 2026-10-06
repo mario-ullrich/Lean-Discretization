@@ -19,7 +19,7 @@ public import Mathlib.MeasureTheory.Measure.Count
 # From integrals of quadratic forms to Gram matrices
 
 The link between the analytic side of the problem (functions on a measure space) and the
-matrix algebra of the previous files is a single identity.  For a finite family of
+matrix algebra of `BasicResults/Matrix/` is a single identity.  For a finite family of
 square-integrable functions, assembled into a vector-valued map `a : Ω → ι → ℂ`, and its
 **Gram matrix**
 

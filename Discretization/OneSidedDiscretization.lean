@@ -5,7 +5,6 @@ Authors: Mario Ullrich
 -/
 module
 
-public import Discretization.BSS
 public import Discretization.GeneralGram
 public import Discretization.NormDiscretization
 
@@ -13,9 +12,9 @@ public import Discretization.NormDiscretization
 # One-sided discretization
 
 On a probability space the lower half of the discretization theorem holds with weights that
-are positive and at most `1/n`.  For a probability measure `μ`, a family `a` of `m` square-integrable functions with
-positive definite Gram matrix `I` and every `n ≥ m`, there are points `x₁, …, xₙ`, not
-necessarily distinct, and weights `0 < wᵢ ≤ 1/n` with
+are positive and at most `1/n`.  For a probability measure `μ`, a family `a` of `m`
+square-integrable functions with positive definite Gram matrix `I` and every `n ≥ m`, there
+are points `x₁, …, xₙ`, not necessarily distinct, and weights `0 < wᵢ ≤ 1/n` with
 
 `(1 - √((m-1)/n))² • I ≤ ∑ᵢ wᵢ a(xᵢ) a(xᵢ)*`.
 
@@ -31,14 +30,14 @@ subsampling of finite frames*) for arbitrary spaces, up to constants.  The form 
 case `p = 2` of Proposition 8 of Chkifa, Dolbeault, Krieg and Ullrich, whose construction is
 the one followed.
 
-The bound comes from the discretization theorem with the constant function `b ≡ 1` as second
-family, that is `H = ℂ`.  Its Gram operator is `J = 1`, so `Λ = 1` and the effective
-dimension is `M = 1 ≤ 1 + 1/n`.  This is the case of a small effective dimension, in which the
-upper verifier is the constant `U(x) = n ‖b(x)‖² / Tr J = n`, and the one-sided construction
-`Discretization.exists_points_weights_of_small_dim` produces weights with `wᵢ U(xᵢ) ≤ 1`, that
-is `wᵢ ≤ 1/n`.  The upper frame bound of the theorem records only the sum `∑ wᵢ ≤ 1`, so the
-bound on each weight is read off the construction.  For a one-element family a single point
-serves, as in `Discretization.bss_generalized_of_unique_of_small_dim`.
+The bound is the case of the discretization theorem with the constant function `b ≡ 1` as
+second family, that is `H = ℂ`.  Its Gram operator is `J = 1`, so `Λ = 1` and the effective
+dimension is `M = 1 ≤ 1 + 1/n`: the case of a small effective dimension, in which the upper
+verifier is the constant `U(x) = n ‖b(x)‖² / Tr J = n`.  The upper frame bound of the theorem
+records only the sum `∑ wᵢ ≤ 1`, so this file runs the construction of that case directly,
+`Discretization.exists_points_weights_of_small_dim` with the constant verifier `n`, and reads
+off the weights it produces: `wᵢ U(xᵢ) ≤ 1`, that is `wᵢ ≤ 1/n`.  For a one-element family a
+single point serves, as in `Discretization.bss_generalized_of_unique_of_small_dim`.
 
 The results are `Discretization.bss_lower_equal_weights` in the Loewner order and
 `Discretization.exists_one_sided_discretization` for the norm.

@@ -89,8 +89,8 @@ theorem exists_mix_ge (k : ℕ) {t : ℝ} (ht : (k : ℝ) + 1 < t) :
 /-- **An exactly maximal determinant bounds the quadratic form by `m`.**
 
 If no mixture increases the determinant, that is, if `g α ≤ 1` for every admissible weight,
-then `t ≤ m`.  This is the sharp, `ε`-free form of the Kiefer–Wolfowitz bound, available
-whenever the maximum of the determinant is attained. -/
+then `t ≤ m`.  This is the Kiefer–Wolfowitz bound with `ε = 0`, available whenever the
+maximum of the determinant is attained. -/
 theorem le_of_forall_mix_le_one (k : ℕ) {t : ℝ}
     (h : ∀ α : ℝ, 0 ≤ α → α < 1 → (1 - α) ^ k * (1 + α * (t - 1)) ≤ 1) :
     t ≤ (k : ℝ) + 1 := by

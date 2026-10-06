@@ -66,6 +66,7 @@ noncomputable def evalCLM (x : Ω) : StrongDual ℂ H :=
   ⟨(LinearMap.proj x).comp φ, hφ x⟩
 
 omit [CompleteSpace H] in
+/-- The evaluation functional at `x` sends `f` to its value `f(x)`, by definition. -/
 @[simp]
 theorem evalCLM_apply (x : Ω) (f : H) : evalCLM φ hφ x f = φ f x := rfl
 

@@ -19,7 +19,7 @@ construction picks points `x₁, …, xₙ` and positive weights `w₁, …, w�
 * `Discretization.UpperBarrier.upperState U B₀ ζ x w = B₀ + k ζ • J - ∑ wᵢ b(xᵢ) b(xᵢ)*`,
 
 the second for an upper barrier `U` (`Discretization.UpperBarrier`), which is a matrix for a
-finite second family and an operator for a countable one.
+finite second family and an operator for a second family in a Hilbert space.
 
 The **invariant** carried through the induction is that both states are admissible and that
 neither potential has increased beyond its initial value.  The invariant keeps the gap

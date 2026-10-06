@@ -9,13 +9,13 @@ public import Discretization.KieferWolfowitz.ConvexHull
 public import Discretization.KieferWolfowitz.MainTheorem
 
 /-!
-# The sharp constant on a compact domain
+# The Kiefer–Wolfowitz theorem on a compact domain
 
-For continuous functions on a compact domain the constant is exactly `√m`, with no `ε`.
-The reason is that here the maximisation of the determinant has an actual maximiser, where
-in general it has to settle for a near-maximiser: the rank-one matrices `a(y) a(y)*` form a
-compact set, its convex hull is compact as well (`IsCompact.convexHull`), the determinant is
-continuous, and every point of that hull is the Gram matrix of a design.
+For continuous functions on a compact domain the theorem holds with `ε = 0`.  The reason is
+that here the maximisation of the determinant has an actual maximiser, where in general it
+has to settle for a near-maximiser: the rank-one matrices `a(y) a(y)*` form a compact set,
+its convex hull is compact as well (`IsCompact.convexHull`), the determinant is continuous,
+and every point of that hull is the Gram matrix of a design.
 
 With the maximum attained, no mixture can increase the determinant at all, and
 `Discretization.KieferWolfowitz.le_of_forall_mix_le_one`, the same real estimate as in the
@@ -69,15 +69,15 @@ theorem exists_maximal_design [Nonempty ι] [CompactSpace Ω] (a : Ω → ι →
   rw [hzero] at hpos
   simp at hpos
 
-/-- **The Kiefer–Wolfowitz theorem on a compact domain**, with the sharp constant.
+/-- **The Kiefer–Wolfowitz theorem on a compact domain**, with `ε = 0`.
 
 For linearly independent continuous functions `a₁, …, a_m` on a compact space there is a
 design with
 
 `|f(y)|² ≤ m · ∑ₖ wₖ |f(xₖ)|²`
 
-for every point `y` and every `f` in the span: the uniform norm is dominated by the `L₂`
-norm of the design with the constant `√m`, and no `ε` is lost. -/
+for every point `y` and every `f` in the span: the bound of the general theorem with
+`ε = 0`. -/
 theorem exists_design_kieferWolfowitz_of_compact [Nonempty ι] [CompactSpace Ω]
     (a : Ω → ι → ℂ) (hcont : ∀ i, Continuous fun y => a y i)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) :

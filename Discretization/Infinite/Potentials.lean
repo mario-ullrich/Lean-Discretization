@@ -11,8 +11,8 @@ public import BasicResults.Operator.Trace
 /-!
 # The upper potential of an operator
 
-The upper half of the construction, for a second family indexed by a countable set, runs on
-the same potential as in finite dimension,
+The upper half of the construction, for a second family with values in a separable Hilbert
+space, runs on the same potential as in finite dimension,
 
 `Ψ_J(B) = Tr (J B⁻¹)`,
 
@@ -55,8 +55,9 @@ local notation "e₀" => HilbertBasis.chosen H
 (`ContinuousLinearMap.summable_re_inner_chosen_iff`).
 
 The first two say that `J` is a positive trace-class operator; the third replaces the
-positive definiteness of the finite-dimensional Gram matrix.  In the application `J` is
-diagonal with strictly positive entries, so all three are immediate. -/
+positive definiteness of the finite-dimensional Gram matrix.  In the application `J` is the
+Gram operator `∫ b b* dμ`, which has all three by
+`Discretization.Infinite.isFiniteTracePos_of_integral_rankOne`. -/
 structure IsFiniteTracePos (J : H →L[ℂ] H) : Prop where
   /-- `J` is a positive operator. -/
   nonneg : 0 ≤ J

@@ -25,8 +25,9 @@ nor the finiteness depends on the basis (`ContinuousLinearMap.traceAlong_eq_of_b
 `ContinuousLinearMap.summable_re_inner_iff_of_basis`), so the basis in the notation only
 records how the trace is computed.  Accordingly `ContinuousLinearMap.trace` is the trace
 along a Hilbert basis `HilbertBasis.chosen H` chosen once and for all, which for a positive
-operator is its trace along every Hilbert basis (`ContinuousLinearMap.trace_eq_traceAlong`).  The chosen basis is countable exactly when the
-space is separable (`HilbertBasis.countable_of_separableSpace`, `HilbertBasis.separableSpace`).
+operator is its trace along every Hilbert basis (`ContinuousLinearMap.trace_eq_traceAlong`).
+The chosen basis is countable exactly when the space is separable
+(`HilbertBasis.countable_of_separableSpace`, `HilbertBasis.separableSpace`).
 
 For a **positive** operator the sum is a sum of nonnegative terms, because
 

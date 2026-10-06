@@ -12,8 +12,8 @@ public import Discretization.KieferWolfowitz.Compact
 /-!
 # The Kiefer–Wolfowitz measure
 
-The theorem was proved with the design kept in the form it is constructed in, a list of
-points with weights.  This file packages that list as an actual measure
+The theorem is proved with the design in the form it is constructed in, a list of points
+with weights.  This file packages that list as an actual measure
 
 `ϱ = ∑ₖ wₖ · δ(xₖ)`,
 

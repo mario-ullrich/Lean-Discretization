@@ -22,10 +22,11 @@ public import BasicResults.Operator.GramOperator
 /-!
 # General ingredients
 
-The matrix analysis and integration facts that the discretization theory consumes.
-Nothing in this library mentions discretization, sampling or measures on the domain of the
-functions; every result here is a statement about matrices over an `RCLike` field or about
-Bochner integrals, and most of them are candidates for Mathlib.
+The matrix analysis, operator theory and integration facts that the discretization theory
+consumes: statements about matrices, operators on a complex Hilbert space and Bochner
+integrals, most of them candidates for Mathlib.  Two files,
+`IntegralQuadraticForm` and `Matrix/QuadraticForm`, use the namespace `Discretization`, since
+their lemmas are phrased for the families of functions of the development.
 
 Throughout, matrices are compared in the **Loewner order** `A ≤ B ↔ (B - A).PosSemidef`.
 In Lean this order is switched on by the command `open scoped MatrixOrder`, and the order on

@@ -13,7 +13,7 @@ public import Discretization.Averages
 
 The construction carries two states: a lower matrix `A`, built from the first family, and an
 upper state `B`, built from the second.  The second family may be finite, and then `B` is a
-matrix, or countably infinite, and then `B` is an operator on a Hilbert space
+matrix, or a map into a Hilbert space, and then `B` is an operator on that space
 (`Discretization/Infinite/`).  The analysis of the upper state differs between the two cases,
 since every trace of an operator is a series, but the construction and the assembly of the
 theorem use only a few of its properties.  A `Discretization.UpperBarrier` collects them: an

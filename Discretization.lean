@@ -64,13 +64,13 @@ large one is an operator, and the two cases share everything but its analysis.  
 numbers, the potentials, measure how close they are to failure.  Each new sampling point is
 chosen so that neither potential gets worse.
 
-The second is the theorem of Kiefer and Wolfowitz in the form needed for sampling
-projections: on an `m`-dimensional space of bounded functions on an arbitrary set, and for
+The second is the theorem of Kiefer and Wolfowitz in the form of Krieg, Pozharska, Ullrich
+and Ullrich: on an `m`-dimensional space of bounded functions on an arbitrary set, and for
 every `ε > 0`, the uniform norm is dominated by the `L₂` norm of a finitely supported
-probability measure with the constant `√(m+ε)`, and by `√m` if the functions are continuous
-on a compact domain.  The measure is one whose Gram matrix has an almost maximal
-determinant, and the whole argument consists of comparing that determinant with the
-determinants obtained by giving one further point a small weight.  Thinned by the
+probability measure with the constant `√(m+ε)`, and the same holds with `ε = 0` if the
+functions are continuous on a compact domain.  The measure is one whose Gram matrix has an
+almost maximal determinant, and the whole argument consists of comparing that determinant
+with the determinants obtained by giving one further point a small weight.  Thinned by the
 one-sided discretization, the measure can be replaced by any `n ≥ m` equally weighted
 points, at the price of the factor `(1 - √((m-1)/n))⁻²`, and the discrete `ℓ₂` norm of the
 sample values by their maximum.
@@ -98,8 +98,8 @@ again at the top level.
   states stay admissible and neither potential exceeds its initial value.
 * `Discretization.PotentialArgument`: the potential argument, under the side conditions
   `m ≥ 2` and `M ≥ 1 + 1/n`: the initial data, the read-off of the frame bounds, and the
-  theorem, for every upper barrier and for finite families,
-  `Discretization.bss_generalized_of_gram_eq_one`.
+  theorem for every upper barrier, `Discretization.UpperBarrier.bss_generalized_of_gram_eq_one`,
+  and for finite families, `Discretization.bss_generalized_of_gram_eq_one`.
 * `Discretization.EdgeCases.CardOne`: the edge case of a one-element first family, where
   the lower verifier becomes a constant, `Discretization.bss_generalized_of_unique`.
 * `Discretization.EdgeCases.SmallEffectiveDim`: the edge case of an effective dimension
@@ -166,7 +166,7 @@ again at the top level.
   hull of the rank-one matrices `a(y) a(y)*`, and Carathéodory's theorem bounds the number
   of points by `2m² + 1`.
 * `Discretization.KieferWolfowitz.Compact`: on a compact domain the maximum is attained and
-  the constant is the sharp `√m`,
+  the theorem holds with `ε = 0`,
   `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`.
 * `Discretization.KieferWolfowitz.JohnDecomposition`: the Gram matrix of a design decomposes
   the identity over the design points, with weights summing to `m`.  This is John's

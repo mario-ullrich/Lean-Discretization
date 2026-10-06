@@ -5,7 +5,6 @@ Authors: Mario Ullrich
 -/
 module
 
-public import Discretization.Infinite.GeneralGram
 public import Discretization.Infinite.NormDiscretization
 public import BasicResults.Operator.GramOperator
 
@@ -67,6 +66,7 @@ section Pointwise
 
 variable (hbx : ∀ x, Memℓp (b x) 2)
 
+/-- The coordinates of the vector `toLp hbx x` are the values `b_k(x)`, by definition. -/
 @[simp]
 theorem toLp_apply (x : Ω) (k : κ) : toLp hbx x k = b x k := rfl
 

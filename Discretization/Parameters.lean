@@ -37,7 +37,7 @@ the arithmetic of these four numbers, with no matrices in sight:
   effective dimension below `1 + 1/n` is itself below `(1+s)²`, which is what the edge cases
   of a small effective dimension need.
 
-Everything here is used twice, once for a finite second family and once for a countable one.
+Everything here serves matrices and operators alike, through `Discretization.UpperBarrier`.
 
 The square roots are never unfolded: only `Real.sq_sqrt`, `Real.sqrt_pos`, `Real.le_sqrt`
 and `Real.sqrt_lt'` are used.

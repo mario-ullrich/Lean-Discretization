@@ -18,7 +18,8 @@ the Kiefer–Wolfowitz theorem depend on the design only through its Gram matrix
 
 `∑ₖ wₖ |f(xₖ)|² = c* G c`
 
-for the coefficient vector `c` of `f`.  So the two theorems of this file are the earlier two
+for the coefficient vector `c` of `f`.  So the two theorems of this file are those of
+`Discretization.KieferWolfowitz.MainTheorem` and `Discretization.KieferWolfowitz.Compact`
 with the number of points bounded.
 
 Nothing later needs the bound: the discretization theorem, which is what the measure is
@@ -50,7 +51,7 @@ theorem exists_design_kieferWolfowitz_card_le [Nonempty ι] (a : Ω → ι → �
   exact hbound c y
 
 /-- **The Kiefer–Wolfowitz theorem on a compact domain, with a bound on the number of
-points.**  At most `2m² + 1` points are needed, and the constant is the sharp `√m`. -/
+points.**  At most `2m² + 1` points are needed, and the bound holds with `ε = 0`. -/
 theorem exists_design_kieferWolfowitz_of_compact_card_le [Nonempty ι] [TopologicalSpace Ω]
     [CompactSpace Ω] (a : Ω → ι → ℂ) (hcont : ∀ i, Continuous fun y => a y i)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) :
