@@ -3,7 +3,8 @@
   "solution_module": "Palomar.OneSidedDiscretization.Solution",
   "theorem_names": [
     "Discretization.bss_lower_equal_weights",
-    "Discretization.exists_one_sided_discretization"
+    "Discretization.exists_one_sided_discretization",
+    "Discretization.exists_lp_discretization"
   ],
   "definition_names": [],
   "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],

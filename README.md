@@ -187,6 +187,23 @@ largest sample value:
 Ullrich state with `√m`. For `n = m` points a bound by the largest sample value is due to
 Novak, who obtains `‖f‖_∞ ≤ (m + ε) maxᵢ₌₁ᵐ |f(xᵢ)|` from a form of Auerbach's lemma.
 
+### The `L_p`-norms with `n ≥ m` points
+
+Let `(Ω, μ)` be a probability space and `a : Ω → ι → ℂ` a bounded measurable family of
+`m = card ι` functions with positive definite Gram matrix `∫ a a* dμ`. Then for every
+`n ≥ m` there are points `x₁, …, xₙ ∈ Ω`, not necessarily distinct, such that
+
+```
+κ ‖f‖_{L_p(μ)}  ≤  m^(1/2 − 1/p) · ((2/n) ∑ |f(xᵢ)|²)^(1/2),    κ = max(1 − √(m/n), 1/(2m)),
+```
+
+for every `f` in the span of the family and every `2 ≤ p ≤ ∞`, with one set of points for
+all `p` (`Discretization.exists_lp_discretization`). This is Proposition 8 of Chkifa,
+Dolbeault, Krieg and Ullrich, whose `2n` points, `n` for `μ` and `n` for the
+Kiefer–Wolfowitz measure, are replaced here by `n` points with the same weight `2/n` each,
+chosen for the mixture of the two measures. For `n = 2m` it gives
+`‖f‖_p ≤ (2 + √2) m^(1/2 − 1/p) ((1/m) ∑ᵢ₌₁²ᵐ |f(xᵢ)|²)^(1/2)`.
+
 ## The proofs
 
 The first proof is the potential-function argument of BSS, with the second potential
@@ -218,7 +235,15 @@ then leaves a positive definite matrix, which read as an inequality between quad
 forms is the theorem. On a compact domain the maximum is attained and the same argument
 gives `t ≤ m`.
 
-The steps the two arguments are built from:
+The `L_p`-norms combine the two. For the Kiefer–Wolfowitz measure `ϱ` of a suitable `ε`,
+the one-sided discretization of the mixture `(μ + ϱ)/2` gives `n` points with
+`(1 − r)² (A + B) ≤ X`, where `A` and `B` are the averages of `|f|²` for `μ` and for `ϱ`,
+`X = (2/n) ∑ᵢ |f(xᵢ)|²` and `r = √((m−1)/n)`. Since `|f|² ≤ (m + ε) B` everywhere,
+`∫ |f|^p dμ ≤ ((m + ε) B)^(p/2 − 1) A`, and `B^q A ≤ (A + B)^(q+1)` finishes. The factor `κ`
+lies strictly below `1 − r`, and the choice `ε = m ((1 − r)²/κ² − 1)` makes this gap absorb
+the `ε`.
+
+The steps the arguments are built from:
 
 * **Barrier lemma.** A weight between the values of the two verifier functions keeps
   both matrices positive definite and lets neither potential increase
@@ -281,7 +306,7 @@ second family in a Hilbert space with the theorem for it, a countable family and
 reproducing kernel Hilbert space, and under `Discretization/KieferWolfowitz/` the
 maximisation of the determinant of a Gram matrix, the theorem it yields and John's
 decomposition of the identity beside it, with its thinning to `n ≥ m` points by the
-one-sided discretization at the top level. `BasicResults` holds what the arguments need and
+one-sided discretization and the discretization of the `L_p`-norms at the top level. `BasicResults` holds what the arguments need and
 Mathlib lacks: comparisons in the Loewner order, traces of products and Cauchy–Schwarz for
 them, Sherman–Morrison for rank-one updates of a matrix and of an operator, the trace of
 a positive operator on a Hilbert space, the Gram operator as a Bochner integral, the matrix
@@ -352,7 +377,8 @@ Apache 2.0, the same as Mathlib. See [LICENSE](LICENSE).
   approximation in reproducing kernel Hilbert spaces*, preprint, 2026,
   [arxiv](https://arxiv.org/abs/2602.18719). Theorem 3 is the result formalised here,
   Corollary 4 the discretization inequality, and its proof the one followed in
-  `Discretization/`. Proposition 8 is the one-sided discretization for `p = 2` and the
+  `Discretization/`. Proposition 8 is the one-sided discretization for `p = 2`, the
+  discretization of all `L_p`-norms, `2 ≤ p ≤ ∞`, with one set of `n ≥ m` points, and the
   discretization of the uniform norm with `n ≥ m` points for `p = ∞`.
 * J. Kiefer, J. Wolfowitz, *The equivalence of two extremum problems*, Canad. J. Math.
   **12** (1960), 363–366, [doi](https://doi.org/10.4153/CJM-1960-030-4). The original

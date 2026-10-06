@@ -3,7 +3,7 @@
 version: "v0.4"
 
 project:
-  name: "One-sided discretization of the L₂ norm with equal weights"
+  name: "One-sided discretization of L_p norms with equal weights"
   description: >-
     Let (Ω, μ) be a probability space and a = (aₖ) a family of m square-integrable
     functions with positive definite Gram matrix I = ∫ a a* dμ. Then for every n ≥ m there
@@ -15,7 +15,9 @@ project:
     no assumption on the space. Limonova and Temlyakov prove such a bound under a
     Nikol'skii-type inequality, Bartel, Schäfer and Ullrich for arbitrary spaces up to
     constants; the form here is Proposition 8 of Chkifa, Dolbeault, Krieg and Ullrich for
-    p = 2.
+    p = 2. For bounded measurable functions there are n points with
+    κ ‖f‖_p ≤ m^{1/2−1/p} ((2/n) ∑ᵢ |f(xᵢ)|²)^{1/2} for every 2 ≤ p ≤ ∞ at once, where
+    κ = max(1 − √(m/n), 1/(2m)): Proposition 8 for all p, with n points in place of 2n.
   authors:
     - "Mario Ullrich"
   license: "Apache-2.0"
@@ -38,12 +40,12 @@ sources:
     location: "https://arxiv.org/abs/2602.18719"
     relationship: "formalizes"
     note: >-
-      Proposition 8 for p = 2 is the statement formalized here, and its proof, the
-      discretization theorem with the constant function as second family and weights
-      1/n read off the construction for a small effective dimension, is the one followed.
-      The cases 2 < p ≤ ∞ of Proposition 8 combine this bound with the theorem of Kiefer
-      and Wolfowitz; p = ∞ is the separate UniformDiscretization submission of this
-      repository.
+      Proposition 8 is formalized here: p = 2 by the discretization theorem with the
+      constant function as second family and weights 1/n read off the construction for a
+      small effective dimension, which is the proof of the source; and all 2 ≤ p ≤ ∞ at
+      once, for bounded functions, by the one-sided discretization of the mixture of μ
+      with the Kiefer–Wolfowitz measure and the interpolation
+      ‖f‖_p ≤ ‖f‖_2^{2/p} ‖f‖_∞^{1−2/p}, as in the source.
     author_endorsement: "participated"
   - title: "On sampling discretization in L₂"
     authors:
@@ -80,6 +82,16 @@ sources:
     note: >-
       SIAM Review 56 (2014), no. 2, 315–334. The original potential-function argument,
       whose lower half is the construction here.
+  - title: "The equivalence of two extremum problems"
+    authors:
+      - "Jack Kiefer"
+      - "Jacob Wolfowitz"
+    type: "paper"
+    location: "https://doi.org/10.4153/CJM-1960-030-4"
+    relationship: "background"
+    note: >-
+      Canad. J. Math. 12 (1960), 363–366. The equivalence theorem for optimal designs,
+      the source of the measure that dominates the uniform norm in the case p > 2.
 
 related_formalizations: []
 
@@ -89,15 +101,9 @@ status:
     (1 − √((m−1)/n))² I ≼ (1/n) ∑ᵢ a(xᵢ) a(xᵢ)* in the Loewner order, and
     Discretization.exists_one_sided_discretization, the same as an inequality between
     the L₂ norm and the average of the sample values, both on a probability space, for
-    every n ≥ m and with no further hypothesis.
-
-    Proved in the repository but not advertised here: the weighted form with weights
-    0 < wᵢ ≤ 1/n that the construction produces for a normalized family
-    (Discretization.bss_lower_le_one_div_of_gram_eq_one, with its cases
-    Discretization.bss_lower_le_one_div_of_gram_eq_one_of_two_le and
-    Discretization.bss_lower_le_one_div_of_gram_eq_one_of_unique).
-
-    Not formalized: the cases 2 < p < ∞ of Proposition 8 of the source.
+    every n ≥ m and with no further hypothesis; and Discretization.exists_lp_discretization,
+    the bound κ ‖f‖_p ≤ m^{1/2−1/p} ((2/n) ∑ᵢ |f(xᵢ)|²)^{1/2} for every 2 ≤ p ≤ ∞ with one
+    set of n ≥ m points, for a bounded measurable family on a probability space.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -143,6 +149,12 @@ fidelity:
     writes the functions of the span as f(y) = ⟨c, a(y)⟩. The points need not be
     distinct, and the functions are complex-valued.
 
+    For 2 ≤ p ≤ ∞ the source takes 2n points, n for μ and n for the Kiefer–Wolfowitz
+    measure, each with weight 1/n; the formalization takes n points, obtained from the
+    mixture of the two measures, each with weight 2/n. The factor max(1 − √(m/n), 1/(2m))
+    combines the two cases n > m and n = m of the source. Finite p are stated for p-th
+    powers, p = ∞ at every point.
+
 review:
   status: "self-assessed"
   reviewers:
@@ -169,6 +181,14 @@ alignment:
       note: >-
         (1 − √((m−1)/n))² ∫ |f|² dμ ≤ (1/n) ∑ᵢ |f(xᵢ)|² for every f in the span; see
         fidelity.divergences.
+    - source: "Constructive discretization and approximation in RKHS, Proposition 8, 2 ≤ p ≤ ∞"
+      lean: "Discretization.exists_lp_discretization"
+      module: "Discretization.LpDiscretization"
+      status: "proved"
+      note: >-
+        κ ‖f‖_p ≤ m^{1/2−1/p} ((2/n) ∑ᵢ |f(xᵢ)|²)^{1/2} for every 2 ≤ p ≤ ∞ and every f in
+        the span of a bounded measurable family, with one set of n points and
+        κ = max(1 − √(m/n), 1/(2m)); see fidelity.divergences.
 
 acknowledgements: >-
   Built on Mathlib. The Challenge module reproduces the definition Discretization.gram

@@ -40,6 +40,7 @@ public import Discretization.KieferWolfowitz.Compact
 public import Discretization.KieferWolfowitz.JohnDecomposition
 public import Discretization.KieferWolfowitz.PointCount
 public import Discretization.UniformDiscretization
+public import Discretization.LpDiscretization
 
 /-!
 # Norm discretization
@@ -73,15 +74,17 @@ almost maximal determinant, and the whole argument consists of comparing that de
 with the determinants obtained by giving one further point a small weight.  Thinned by the
 one-sided discretization, the measure can be replaced by any `n ≥ m` equally weighted
 points, at the price of the factor `(1 - √((m-1)/n))⁻²`, and the discrete `ℓ₂` norm of the
-sample values by their maximum.
+sample values by their maximum.  The one-sided discretization of the mixture of a
+probability measure `μ` with the Kiefer–Wolfowitz measure gives `n ≥ m` points that
+discretize all `L_p(μ)`-norms, `2 ≤ p ≤ ∞`, at once.
 
 ## Layout
 
 The finite theory lies at the top level, with its three edge cases in
 `Discretization/EdgeCases/`; `Discretization/Infinite/` holds the analysis of the upper
 state for a second family in a Hilbert space and the theorems for it, and
-`Discretization/KieferWolfowitz/` the second theorem, whose thinning to `n ≥ m` points is
-again at the top level.
+`Discretization/KieferWolfowitz/` the second theorem, whose thinning to `n ≥ m` points and
+the discretization of the `L_p`-norms are again at the top level.
 
 * `Discretization.Parameters`: the arithmetic of the four parameters `r`, `s`, `δ`, `ζ`
   that drive the construction.
@@ -178,4 +181,7 @@ again at the top level.
   `Discretization.exists_uniform_discretization_of_compact_by_l2`, and hence by their
   maximum, `Discretization.exists_uniform_discretization_by_max` and
   `Discretization.exists_uniform_discretization_of_compact_by_max`.
+* `Discretization.LpDiscretization`: the one-sided discretization of the mixture of `μ` with
+  the Kiefer–Wolfowitz measure, which bounds every `L_p(μ)`-norm, `2 ≤ p ≤ ∞`, by the discrete
+  `ℓ₂` norm of the same `n ≥ m` sample values, `Discretization.exists_lp_discretization`.
 -/

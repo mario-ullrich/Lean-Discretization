@@ -6,9 +6,10 @@ Authors: Mario Ullrich
 module
 
 public import Discretization.OneSidedDiscretization
+public import Discretization.LpDiscretization
 
 /-!
-# One-sided discretization of the `L₂` norm with equal weights: proofs
+# One-sided discretization of the `L_p`-norms with equal weights: proofs
 
 This module is the *Solution* of a Palomar submission. Comparator checks that every
 declaration named in `comparator.json` has, in this module's environment, exactly the same
@@ -23,21 +24,29 @@ Nothing is declared here. The advertised statements
   on a probability space, in the Loewner order,
 * `Discretization.exists_one_sided_discretization`:
   `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ (1/n) ∑ᵢ |f(xᵢ)|²` for every `f` in the span,
+* `Discretization.exists_lp_discretization`:
+  `κ ‖f‖_p ≤ m^{1/2-1/p} ((2/n) ∑ᵢ |f(xᵢ)|²)^{1/2}` for every `2 ≤ p ≤ ∞` and every `f` in
+  the span of a bounded measurable family, with `κ = max(1 - √(m/n), 1/(2m))`,
 
-and the definition they rest on, `Discretization.gram`, arrive through the import above,
-under their own names in the development: from `Discretization/OneSidedDiscretization.lean`
-and `BasicResults/IntegralQuadraticForm.lean`. The Challenge module restates exactly those,
-which is why no wrapper is needed and why the names Palomar records are the names the
-development actually uses.
+and the definition they rest on, `Discretization.gram`, arrive through the imports above,
+under their own names in the development: from `Discretization/OneSidedDiscretization.lean`,
+`Discretization/LpDiscretization.lean` and `BasicResults/IntegralQuadraticForm.lean`. The
+Challenge module restates exactly those, which is why no wrapper is needed and why the names
+Palomar records are the names the development actually uses.
 
-The proof is the lower half of the potential-function argument of Batson, Spielman and
-Srivastava in the form of Chkifa, Dolbeault, Krieg and Ullrich. Only the matrix for the
-lower frame bound is carried along, and the upper verifier is the constant `n`, whose
-average is `n` because `μ` is a probability measure. A point passes when its lower verifier
-exceeds `n`, and the weight it receives, the reciprocal of that verifier, is then at most
-`1/n` (`Discretization.bss_lower_le_one_div_of_gram_eq_one`, for the normalized family).
-Raising every weight to `1/n` only enlarges
-the sum, since the matrices `a(xᵢ) a(xᵢ)*` are positive semidefinite.
+The proof of the first two is the lower half of the potential-function argument of Batson,
+Spielman and Srivastava in the form of Chkifa, Dolbeault, Krieg and Ullrich. Only the matrix
+for the lower frame bound is carried along, and the upper verifier is the constant `n`,
+whose average is `n` because `μ` is a probability measure. A point passes when its lower
+verifier exceeds `n`, and the weight it receives, the reciprocal of that verifier, is then at
+most `1/n` (`Discretization.bss_lower_le_one_div_of_gram_eq_one`, for the normalized family).
+Raising every weight to `1/n` only enlarges the sum, since the matrices `a(xᵢ) a(xᵢ)*` are
+positive semidefinite.
+
+The third applies the second to the mixture of `μ` with the Kiefer–Wolfowitz measure `ϱ`,
+which dominates the uniform norm, `|f(y)|² ≤ (m + ε) ∫ |f|² dϱ`, and interpolates,
+`∫ |f|^p dμ ≤ ‖f‖_∞^{p-2} ∫ |f|² dμ`. The factor `κ` lies strictly below
+`1 - √((m-1)/n)`, and that gap absorbs the `ε`.
 -/
 
 @[expose] public section

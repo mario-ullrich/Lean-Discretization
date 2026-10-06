@@ -1305,7 +1305,7 @@ $\varphi : H \to \mathbb{C}^{\Omega}$, $\varphi(f)(x)$ being the value of $f$ at
 Injectivity of $\varphi$ is not required; in \Cref{cor:l2-discretization} it follows from
 the assumption on vanishing functions.
 
-\chapter{Discretization of the uniform norm}
+\chapter{Discretization of the uniform norm and the $L_p$-norms}
 \label{ch:design}
 
 Let $\Omega$ be an arbitrary set, $\iota$ a finite nonempty index set with $m = \#\iota$
@@ -1315,7 +1315,9 @@ Kiefer and Wolfowitz~\cite{KW} gives a finitely supported probability measure on
 whose $L_2$ norm dominates the uniform norm on the span with the constant
 $\sqrt{m + \varepsilon}$ (\Cref{thm:uniform-discretization}); the complex and non-compact
 case is treated in~\cite{KPUU}. Thinned with the one-sided discretization, the measure
-becomes $n \geq m$ equally weighted points (\Cref{thm:uniform-discretization-optimal}).
+becomes $n \geq m$ equally weighted points (\Cref{thm:uniform-discretization-optimal}), and
+its mixture with a probability measure $\mu$, thinned in the same way, discretizes all
+$L_p(\mu)$-norms at once (\Cref{cor:lp-discretization}).
 
 \begin{theorem}[Optimal design (Kiefer--Wolfowitz)]
 \label{thm:uniform-discretization}
@@ -1429,6 +1431,71 @@ For $n = 2m$ points and a small enough $\varepsilon$ this gives the bound of~\ci
 \[
   \|f\|_\infty \; \leq \; (2 + \sqrt{2}) \sqrt{m} \, \max_{1 \leq i \leq 2m} |f(x_i)|
   \qquad \text{for every } f \in \operatorname{span}\{a_k\}.
+\]
+
+Between $p = 2$, \Cref{cor:one-sided-discretization}, and $p = \infty$ lie the $L_p$-norms,
+Proposition~8 of~\cite{CDKU}. The paper takes $n$ points for $\mu$ and $n$ for the measure of
+\Cref{thm:uniform-discretization}; the mixture $(\mu + \varrho)/2$ serves both with $n$
+points.
+
+\begin{corollary}[Discretization of the $L_p$-norms]
+\label{cor:lp-discretization}
+\lean{Discretization.exists_lp_discretization}
+\leanok
+Let $(\Omega, \mu)$ be a probability space, let $\iota$ be a finite nonempty set with
+$m = \#\iota$ elements, and let $a = (a_k)_{k \in \iota}$ be bounded measurable functions on
+$\Omega$ with positive definite Gram matrix $\int_\Omega a(x) a(x)^* \, d\mu(x)$. Then for
+every $n \geq m$ there are points $x_1, \dots, x_n \in \Omega$, not necessarily distinct, with
+\[
+  \kappa \, \|f\|_{L_p(\mu)}
+  \;\leq\; m^{1/2 - 1/p} \Bigl( \frac{2}{n} \sum_{i=1}^n |f(x_i)|^2 \Bigr)^{1/2},
+  \qquad \kappa = \max\Bigl( 1 - \sqrt{m/n}, \, \frac{1}{2m} \Bigr),
+\]
+for every $f \in \operatorname{span}\{a_k\}$ and every $2 \leq p \leq \infty$.
+\end{corollary}
+
+\begin{proof}
+\leanok
+\uses{thm:uniform-discretization, cor:one-sided-discretization, lem:gram-identities}
+Put $r = \sqrt{(m-1)/n}$ and $s = 1 - r$. First, $0 < \kappa < s$: the term
+$1 - \sqrt{m/n}$ lies below $s$ because $m - 1 < m$, and $1/(2m) < s$ because
+$r \leq \sqrt{(m-1)/m}$ and $(1 - \frac{1}{2m})^2 = \frac{m-1}{m} + \frac{1}{4m^2}$. Put
+$\varepsilon = m (s^2/\kappa^2 - 1) > 0$, so that $\kappa^2 (m + \varepsilon) = m s^2$.
+
+The functions $a_k$ are linearly independent on $\Omega$: if $f = 0$ everywhere, then
+$\int_\Omega |f|^2 \, d\mu = c^* I c = 0$ by \Cref{lem:gram-identities}(a), so $c = 0$. Let
+$\varrho$ be the measure of \Cref{thm:uniform-discretization} for this $\varepsilon$, with
+positive definite Gram matrix and
+$|f(y)|^2 \leq (m + \varepsilon) \int_\Omega |f|^2 \, d\varrho$ at every point. The mixture
+$\nu = (\mu + \varrho)/2$ is a probability measure whose Gram matrix, the mean of the two,
+is positive definite, and the bounded functions $a_k$ are square-integrable for it.
+\Cref{cor:one-sided-discretization} for $\nu$ gives points $x_1, \dots, x_n$ with
+\[
+  s^2 (A + B) \;\leq\; X, \qquad
+  A = \int_\Omega |f|^2 \, d\mu, \quad B = \int_\Omega |f|^2 \, d\varrho, \quad
+  X = \frac{2}{n} \sum_{i=1}^n |f(x_i)|^2 .
+\]
+For $p = \infty$:
+$\kappa^2 |f(y)|^2 \leq \kappa^2 (m + \varepsilon) B \leq m s^2 (A + B) \leq m X$. For
+$2 \leq p < \infty$ put $q = p/2 - 1 \geq 0$. Since $|f(y)|^2 \leq (m + \varepsilon) B$ at every
+point, $|f|^p \leq ((m + \varepsilon) B)^q |f|^2$, and integration against $\mu$ gives
+$\int_\Omega |f|^p \, d\mu \leq ((m + \varepsilon) B)^q A$. With $B^q A \leq (A + B)^{q+1}$
+and $\kappa \leq s$,
+\[
+  \kappa^p \int_\Omega |f|^p \, d\mu
+  \;\leq\; \bigl( \kappa^2 (m + \varepsilon) \bigr)^q \kappa^2 (A + B)^{q+1}
+  \;\leq\; m^q \bigl( s^2 (A + B) \bigr)^{q+1}
+  \;\leq\; m^q X^{q+1},
+\]
+and $q + 1 = p/2$. In Lean the finite $p$ are stated for the $p$-th powers and $p = \infty$
+at every point.
+\end{proof}
+
+For $n = 2m$ one has $\kappa \geq 1 - 1/\sqrt{2}$, hence
+\[
+  \|f\|_{L_p(\mu)} \; \leq \; (2 + \sqrt{2}) \, m^{1/2 - 1/p}
+    \Bigl( \frac{1}{m} \sum_{i=1}^{2m} |f(x_i)|^2 \Bigr)^{1/2}
+  \qquad \text{for every } 2 \leq p \leq \infty .
 \]
 
 \section{The proof of the Kiefer--Wolfowitz theorem}

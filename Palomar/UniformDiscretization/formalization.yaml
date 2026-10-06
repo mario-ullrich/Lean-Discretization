@@ -99,9 +99,6 @@ status:
     design (Discretization.exists_uniform_discretization_of_design_by_l2); the real
     inequalities that combine them (Discretization.le_div_sq_mul_of_le_mul,
     Discretization.inv_mul_sum_le_iSup).
-
-    Not formalized: the cases 2 < p < ∞ of Proposition 8 of the source, and the sampling
-    projections that Krieg, Pozharska, Ullrich and Ullrich build from such points.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []

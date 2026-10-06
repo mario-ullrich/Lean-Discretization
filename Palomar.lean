@@ -42,9 +42,11 @@ exactly as it does without it. Build these modules with `lake build Palomar`.
   `Discretization.exists_discretization`, `Discretization.Infinite.bss_generalized` and
   `Discretization.RKHS.exists_discretization`.
 * `Palomar/OneSidedDiscretization/`: the `L₂` norm on a probability space bounded from below
-  by the average of `n ≥ m` sample values; advertising
-  `Discretization.bss_lower_equal_weights` and
-  `Discretization.exists_one_sided_discretization`.
+  by the average of `n ≥ m` sample values, and every `L_p`-norm, `2 ≤ p ≤ ∞`, by the
+  discrete `ℓ₂` norm of one set of `n ≥ m` sample values; advertising
+  `Discretization.bss_lower_equal_weights`,
+  `Discretization.exists_one_sided_discretization` and
+  `Discretization.exists_lp_discretization`.
 * `Palomar/KieferWolfowitz/`: the Kiefer–Wolfowitz theorem, with at most `2m² + 1` points
   for an `m`-dimensional space, on an arbitrary set and on a compact domain; advertising
   `Discretization.KieferWolfowitz.exists_optimal_design_card_le` and

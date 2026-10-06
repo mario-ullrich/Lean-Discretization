@@ -73,6 +73,17 @@ theorem integral_norm_sq_combination {a : Ω → ι → ℂ}
   rw [integral_congr_ae (Filter.Eventually.of_forall h1), integral_re_quadForm ha,
     Matrix.trace_mul_comm, Matrix.trace_mul_vecMulVec_self_star]
 
+/-- **A positive definite Gram matrix makes the family linearly independent.**  If the Gram
+matrix `I` of `a` is positive definite, then the function `f(y) = ⟪c, a(y)⟫` vanishes
+everywhere only for `c = 0`: otherwise `∫ |f|² dμ = Re (c* I c)` would be zero
+(`Discretization.integral_norm_sq_combination`), while it is positive for `c ≠ 0`. -/
+theorem forall_eq_zero_of_posDef_gram {a : Ω → ι → ℂ} (ha : ∀ k, MemLp (fun x => a x k) 2 μ)
+    (hI : (gram a μ).PosDef) (c : ι → ℂ) (hc : ∀ y, star c ⬝ᵥ a y = 0) : c = 0 := by
+  by_contra hne
+  have hpos := hI.re_dotProduct_pos hne
+  rw [← integral_norm_sq_combination ha c] at hpos
+  simp [hc] at hpos
+
 /-- **A lower frame bound is a discretization inequality.**  If the weighted sum of the
 rank-one matrices `a(xᵢ) a(xᵢ)*` dominates `α` times the Gram matrix of `a`, then every
 function `f` in the span of `a`, with coefficient vector `c`, satisfies
