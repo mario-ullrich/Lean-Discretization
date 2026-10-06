@@ -42,8 +42,9 @@ sources:
       Proposition 8 for p = ∞ is the statement formalized here, together with the bound
       by the largest sample value that the paper derives from it for n = 2m; its proof,
       the Kiefer–Wolfowitz measure thinned by the one-sided discretization with weights
-      1/n, is the one followed. The case p = 2 is the separate OneSidedDiscretization
-      submission of this repository.
+      1/n, is the one followed. The cases 2 ≤ p < ∞ are
+      Discretization.exists_one_sided_discretization and
+      Discretization.exists_lp_discretization of the repository.
     author_endorsement: "participated"
   - title: "Sampling projections in the uniform norm"
     authors:
@@ -59,8 +60,8 @@ sources:
       J. Math. Anal. Appl. 553 (2026), no. 2, Paper No. 129873. Theorem 2 bounds the
       uniform norm by 2m sample values, ‖f‖_∞ ≤ 42 (∑ᵢ |f(xᵢ)|²)^{1/2}, read there also
       as ‖f‖_∞ ≤ c √m maxᵢ |f(xᵢ)| with c = 42√2. Proposition 9, the Kiefer–Wolfowitz
-      theorem on an arbitrary set, is the measure the proof starts from; it is the
-      separate KieferWolfowitz submission of this repository.
+      theorem on an arbitrary set, is the measure the proof starts from
+      (Discretization.KieferWolfowitz.exists_optimal_measure).
     author_endorsement: "participated"
   - title: "Deterministic and stochastic error bounds in numerical analysis"
     authors:
@@ -92,13 +93,6 @@ status:
     Discretization.exists_uniform_discretization_of_compact_by_l2 and
     Discretization.exists_uniform_discretization_of_compact_by_max, the same with ε = 0
     for continuous functions on a compact domain.
-
-    Proved in the repository but not advertised here: the thinning of any design with
-    positive definite Gram matrix to n ≥ m of its points with equal weights
-    (Discretization.exists_sparse_design_equal_weights) and the resulting bound for any
-    design (Discretization.exists_uniform_discretization_of_design_by_l2); the real
-    inequalities that combine them (Discretization.le_div_sq_mul_of_le_mul,
-    Discretization.inv_mul_sum_le_iSup).
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []

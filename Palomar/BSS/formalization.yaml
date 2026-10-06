@@ -57,11 +57,8 @@ sources:
     relationship: "background"
     note: >-
       Proposition 1 restates the theorem for an orthonormal family on a finite set with
-      the uniform distribution, the measure-space form. The proof followed, and the source
-      of the constants √((m−1)/n) in place of √(m/n). The paper states the theorem over a
-      measure space and for two families at once, with the upper bound in terms of the
-      effective dimension of the second; that form is a separate submission
-      (Palomar/L2Discretization).
+      the uniform distribution, the measure-space form. Its proof is the one followed,
+      and it is the source of the constants √((m−1)/n) in place of √(m/n).
     author_endorsement: "participated"
 
 related_formalizations: []

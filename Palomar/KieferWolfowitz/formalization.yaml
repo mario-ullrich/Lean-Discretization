@@ -9,11 +9,9 @@ project:
     every ε > 0, there is a finitely supported probability measure ϱ = ∑ₖ wₖ δ(xₖ) for
     which the uniform norm on V is dominated by the L₂(ϱ) norm with the constant
     √(m + ε): |f(y)|² ≤ (m + ε) ∑ₖ wₖ |f(xₖ)|² for every y ∈ Ω and every f ∈ V.
-    For continuous functions on a compact domain the bound holds with ε = 0, that is
-    with the sharp constant √m. In both cases at most 2m² + 1 points are needed. The
-    measure is one whose Gram matrix has an almost maximal determinant; applying a
-    discretization theorem to such a measure is how one arrives at sampling projections
-    with few points and small norm.
+    For continuous functions on a compact domain the same holds with ε = 0. In both
+    cases at most 2m² + 1 points are needed. The measure is one whose Gram matrix has an
+    almost maximal determinant.
   authors:
     - "Mario Ullrich"
   license: "Apache-2.0"
@@ -37,9 +35,7 @@ sources:
     relationship: "formalizes"
     note: >-
       J. Math. Anal. Appl. 553 (2026), no. 2, Paper No. 129873. Proposition 9 is the
-      statement formalized here, in the form the paper uses it for sampling
-      projections, and its proof is the one followed. The sampling projections built
-      from it are not formalized.
+      statement formalized here, and its proof is the one followed.
     author_endorsement: "participated"
   - title: "The equivalence of two extremum problems"
     authors:
@@ -60,22 +56,14 @@ status:
     Discretization.KieferWolfowitz.exists_optimal_design_card_le, the bound
     with the constant m + ε on an arbitrary set, and
     Discretization.KieferWolfowitz.exists_optimal_design_of_compact_card_le,
-    the sharp constant m for continuous functions on a compact domain. Both give a
+    the same with ε = 0 for continuous functions on a compact domain. Both give a
     design of at most 2m² + 1 points whose Gram matrix is positive definite.
 
-    Proved in the repository but not advertised here: the same two theorems without
-    the bound on the number of points (exists_optimal_design,
-    exists_optimal_design_of_compact); the statement for the measure
-    ϱ = ∑ₖ wₖ δ(xₖ) itself, on an arbitrary measurable space and with ε = 0 on a
-    compact one (exists_optimal_measure,
-    exists_optimal_measure_of_compact), together with the identity
-    gram a ϱ = designGram a x w that hands it to a discretization theorem; the
-    reduction of any design to one with at most 2m² + 1 points and the same Gram
-    matrix (exists_design_card_le), by Carathéodory's theorem; and John's
-    decomposition of the identity over the design points
-    (sum_weight_quadForm_inv_eq_card, sum_weight_smul_quadForm_inv_eq_self).
-
-    Not formalized: the sampling projections the source builds from this theorem.
+    Proved in the repository but not advertised here: the statement for the measure
+    ϱ = ∑ₖ wₖ δ(xₖ) itself (exists_optimal_measure, exists_optimal_measure_of_compact),
+    the reduction of any design to at most 2m² + 1 points with the same Gram matrix
+    (exists_design_card_le), and John's decomposition of the identity over the design
+    points (sum_weight_smul_quadForm_inv_eq_self).
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -129,7 +117,7 @@ fidelity:
     by Bernoulli's inequality with the explicit weight α = (t − m)/(2m(t − 1)). This
     avoids both a Jacobi formula and the compactness of a convex hull, neither of
     which Mathlib has. On a compact domain the maximum is attained and the same
-    computation gives the sharp constant.
+    computation gives the bound with ε = 0.
 
 review:
   status: "self-assessed"
@@ -155,7 +143,7 @@ alignment:
       module: "Discretization.KieferWolfowitz.PointCount"
       status: "proved"
       note: >-
-        The sharp constant m for continuous functions on a compact domain, with at
+        The same with ε = 0 for continuous functions on a compact domain, with at
         most 2m² + 1 points.
 
 acknowledgements: >-

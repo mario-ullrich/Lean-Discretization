@@ -31,13 +31,10 @@ small loss on a general domain:
   `|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²`
 
 for every point `y ∈ Ω` and every `f ∈ V`. On a compact domain and for continuous functions
-the bound holds with `ε = 0`, that is with the sharp constant `√m`. In both cases at most
-`2m² + 1` points are needed, by Carathéodory's theorem applied to the Gram matrices of
-designs.
+the same holds with `ε = 0`. In both cases at most `2m² + 1` points are needed, by
+Carathéodory's theorem applied to the Gram matrices of designs.
 
-The measure is one whose Gram matrix has an almost maximal determinant. Applying a
-discretization theorem to such a measure is how one arrives at sampling projections with few
-points and small norm.
+The measure is one whose Gram matrix has an almost maximal determinant.
 
 ## The definition restated here
 
@@ -98,16 +95,15 @@ theorem exists_optimal_design_card_le [Nonempty ι] (a : Ω → ι → ℂ) {C :
         ‖star c ⬝ᵥ a y‖ ^ 2 ≤ (Fintype.card ι + ε) * ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2 :=
   sorry
 
-/-- **The Kiefer–Wolfowitz theorem on a compact domain**, with the sharp constant and the
-number of points bounded.
+/-- **The Kiefer–Wolfowitz theorem on a compact domain**, with `ε = 0` and the number of
+points bounded.
 
 For linearly independent continuous functions `a₁, …, a_m` on a compact space there is a
 design of at most `2m² + 1` points with
 
 `|f(y)|² ≤ m · ∑ₖ wₖ |f(xₖ)|²`
 
-for every point `y` and every `f` in the span: the uniform norm is dominated by the `L₂`
-norm of the design with the constant `√m`, and no `ε` is lost. -/
+for every point `y` and every `f` in the span: the bound above with `ε = 0`. -/
 theorem exists_optimal_design_of_compact_card_le [Nonempty ι] [TopologicalSpace Ω]
     [CompactSpace Ω] (a : Ω → ι → ℂ) (hcont : ∀ i, Continuous fun y => a y i)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) :

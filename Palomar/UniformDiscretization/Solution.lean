@@ -19,12 +19,12 @@ Nothing is declared here. The advertised statements
 
 * `Discretization.exists_uniform_discretization_by_l2`:
   `|f(y)|² ≤ (m + ε) / (1 - √((m-1)/n))² · (1/n) ∑ᵢ |f(xᵢ)|²` for `n ≥ m` points,
-* `Discretization.exists_uniform_discretization_of_compact_by_l2`: the same with `m` in place
-  of `m + ε` for continuous functions on a compact domain,
+* `Discretization.exists_uniform_discretization_of_compact_by_l2`: the same with `ε = 0` for
+  continuous functions on a compact domain,
 * `Discretization.exists_uniform_discretization_by_max`: the same with `maxᵢ |f(xᵢ)|²` in
   place of the average,
-* `Discretization.exists_uniform_discretization_of_compact_by_max`: that bound with `m` in
-  place of `m + ε` on a compact domain,
+* `Discretization.exists_uniform_discretization_of_compact_by_max`: that bound with `ε = 0`
+  on a compact domain,
 
 arrive through the import above, under their own names in the development, from
 `Discretization/UniformDiscretization.lean`. They use only Mathlib's notions, so the

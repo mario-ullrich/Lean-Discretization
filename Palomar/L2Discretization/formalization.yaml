@@ -48,8 +48,7 @@ sources:
       Theorem 3 is the discretization theorem formalized here, for a finite second
       family and for a map into a separable Hilbert space, and Corollary 4 the
       discretization inequality, for finite families and for a reproducing kernel
-      Hilbert space; its proof is the one followed. The applications to least-squares
-      recovery and sampling numbers are not formalized.
+      Hilbert space; its proof is the one followed.
     author_endorsement: "participated"
   - title: "Twice-Ramanujan sparsifiers"
     authors:
@@ -79,15 +78,9 @@ status:
 
     Proved in the repository but not advertised here: the bound
     ∑ᵢ wᵢ |⟨u, b(xᵢ)⟩|² ≤ (1 + √((M−1)/n))² Λ ‖u‖² for a general map b
-    (Discretization.Infinite.exists_discretization); the theorem for a countable family
+    (Discretization.Infinite.exists_discretization), and the theorem for a countable family
     (bₖ) with its Gram matrix, in the indexing of the source and with nothing assumed
-    pointwise (Discretization.Countable.bss_generalized); and the potential argument under the
-    two side conditions m ≥ 2 and M ≥ 1 + 1/n (bss_generalized_of_gram_eq_one) with the
-    three edge cases that remove them (bss_generalized_of_unique,
-    bss_generalized_of_small_dim, bss_generalized_of_unique_of_small_dim), each proved
-    once for matrices and operators (Discretization.UpperBarrier).
-
-    Not formalized: sampling projections, least-squares recovery and sampling numbers.
+    pointwise (Discretization.Countable.bss_generalized).
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []

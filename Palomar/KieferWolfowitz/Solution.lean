@@ -22,10 +22,10 @@ Nothing is declared here. The advertised statements
 * `Discretization.KieferWolfowitz.exists_optimal_design_card_le`:
   `|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²` for a design of at most `2m² + 1` points,
 * `Discretization.KieferWolfowitz.exists_optimal_design_of_compact_card_le`: the
-  same with the sharp constant `m` for continuous functions on a compact domain,
+  same with `ε = 0` for continuous functions on a compact domain,
 
 and the definition they rest on, `Discretization.KieferWolfowitz.designGram`, arrive through
-the imports above, under their own names in the development: from
+the import above, under their own names in the development: from
 `Discretization/KieferWolfowitz/Design.lean`, `Discretization/KieferWolfowitz/MainTheorem.lean`,
 `Discretization/KieferWolfowitz/Compact.lean` and
 `Discretization/KieferWolfowitz/PointCount.lean`. The Challenge module restates exactly
