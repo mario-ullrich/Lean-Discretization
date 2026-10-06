@@ -20,7 +20,7 @@ public import Mathlib.MeasureTheory.Measure.Count
 
 The link between the analytic side of the problem (functions on a measure space) and the
 matrix algebra of the previous files is a single identity.  For a finite family of
-square-integrable functions, assembled into a vector-valued map `a : D → ι → ℂ`, and its
+square-integrable functions, assembled into a vector-valued map `a : Ω → ι → ℂ`, and its
 **Gram matrix**
 
 `gram a μ k l = ∫ aₖ(x) · conj (aₗ(x)) dμ(x)`,
@@ -49,27 +49,27 @@ open Matrix MeasureTheory
 
 namespace Discretization
 
-variable {ι D : Type*} [MeasurableSpace D] {μ : Measure D} {a : D → ι → ℂ}
+variable {ι Ω : Type*} [MeasurableSpace Ω] {μ : Measure Ω} {a : Ω → ι → ℂ}
 
-/-- The **Gram matrix** of a finite family of functions `a : D → ι → ℂ`, with entries
-`∫ aₖ · conj aₗ dμ`.  In the notation of the paper this is `∫ a(x) a(x)* dμ(x)`. -/
-noncomputable def gram (a : D → ι → ℂ) (μ : Measure D) : Matrix ι ι ℂ :=
+/-- The **Gram matrix** of a finite family of functions `a : Ω → ι → ℂ`, with entries
+`∫ aₖ · conj aₗ dμ`.  In matrix notation this is `∫ a(x) a(x)* dμ(x)`. -/
+noncomputable def gram (a : Ω → ι → ℂ) (μ : Measure Ω) : Matrix ι ι ℂ :=
   Matrix.of fun k l => ∫ x, a x k * star (a x l) ∂μ
 
 /-- The entries of the Gram matrix, by definition. -/
 @[simp]
-theorem gram_apply (a : D → ι → ℂ) (μ : Measure D) (k l : ι) :
+theorem gram_apply (a : Ω → ι → ℂ) (μ : Measure Ω) (k l : ι) :
     gram a μ k l = ∫ x, a x k * star (a x l) ∂μ := rfl
 
 /-- The Gram matrix is Hermitian: swapping the two indices conjugates the entry. -/
-theorem isHermitian_gram (a : D → ι → ℂ) (μ : Measure D) : (gram a μ).IsHermitian := by
+theorem isHermitian_gram (a : Ω → ι → ℂ) (μ : Measure Ω) : (gram a μ).IsHermitian := by
   ext k l
   rw [Matrix.conjTranspose_apply, gram_apply, gram_apply, RCLike.star_def, ← integral_conj]
   exact integral_congr_ae (Filter.Eventually.of_forall fun x => by simp [mul_comm])
 
 /-- **The Gram matrix of the counting measure** on a finite set is the sum of the rank-one
 matrices of the points, `∫ a a* d(count) = ∑_y a(y) a(y)*`. -/
-theorem gram_count [Fintype D] [MeasurableSingletonClass D] (a : D → ι → ℂ) :
+theorem gram_count [Fintype Ω] [MeasurableSingletonClass Ω] (a : Ω → ι → ℂ) :
     gram a Measure.count = ∑ y, vecMulVec (a y) (star (a y)) := by
   ext k l
   rw [gram_apply, integral_fintype Integrable.of_finite, Matrix.sum_apply]
@@ -81,7 +81,7 @@ theorem integrable_mul_star (ha : ∀ k, MemLp (fun x => a x k) 2 μ) (k l : ι)
     Integrable (fun x => a x k * star (a x l)) μ :=
   (ha k).integrable_mul (ha l).star
 
-omit [MeasurableSpace D] in
+omit [MeasurableSpace Ω] in
 /-- The squared modulus of a complex number, as the real part of `z * star z`. -/
 theorem re_mul_star (z : ℂ) : RCLike.re (z * star z) = ‖z‖ ^ 2 := by
   rw [RCLike.star_def, RCLike.mul_conj]; norm_cast
@@ -107,9 +107,9 @@ theorem integral_sum_norm_sq (ha : ∀ k, MemLp (fun x => a x k) 2 μ) :
   rw [integral_finsetSum _ fun p _ => integrable_norm_sq ha p, Matrix.trace, map_sum]
   exact Finset.sum_congr rfl fun p _ => integral_norm_sq ha p
 
-omit [MeasurableSpace D] in
+omit [MeasurableSpace Ω] in
 /-- The quadratic form `a(x)* Q a(x)` written as a double sum. -/
-theorem quadForm_eq_sum (Q : Matrix ι ι ℂ) (x : D) :
+theorem quadForm_eq_sum (Q : Matrix ι ι ℂ) (x : Ω) :
     star (a x) ⬝ᵥ (Q *ᵥ a x) = ∑ k, ∑ l, Q k l * (a x l * star (a x k)) := by
   simp only [dotProduct, Matrix.mulVec, Pi.star_apply, Finset.mul_sum]
   exact Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun l _ => by ring
@@ -151,7 +151,7 @@ of `f`, then `g x < f x` for at least one `x`.
 This is the form in which the existence of an admissible sampling point is used.  The paper
 states that the set of admissible points has positive measure; that is true but not needed.
 The conclusion is strict, which is what makes the weight of the new point finite. -/
-theorem exists_lt_of_integral_lt {f g : D → ℝ} (hf : Integrable f μ) (hg : Integrable g μ)
+theorem exists_lt_of_integral_lt {f g : Ω → ℝ} (hf : Integrable f μ) (hg : Integrable g μ)
     (h : ∫ x, g x ∂μ < ∫ x, f x ∂μ) : ∃ x, g x < f x := by
   by_contra hcon
   simp only [not_exists, not_lt] at hcon
@@ -165,7 +165,7 @@ The positivity of `f x` is what the weight of the new point is built from, and t
 inequality of `Discretization.exists_lt_of_integral_lt` is no longer available when the two
 averages are equal.  The proof is the observation that `f ≤ g` everywhere would force
 `f = g` almost everywhere, and then `f` to vanish almost everywhere. -/
-theorem exists_le_of_integral_le {f g : D → ℝ} (hf : Integrable f μ) (hg : Integrable g μ)
+theorem exists_le_of_integral_le {f g : Ω → ℝ} (hf : Integrable f μ) (hg : Integrable g μ)
     (hf0 : ∀ x, 0 ≤ f x) (hg0 : ∀ x, 0 ≤ g x) (hpos : 0 < ∫ x, f x ∂μ)
     (h : ∫ x, g x ∂μ ≤ ∫ x, f x ∂μ) : ∃ x, g x ≤ f x ∧ 0 < f x := by
   by_contra hcon

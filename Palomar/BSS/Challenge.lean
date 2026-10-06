@@ -61,11 +61,11 @@ namespace Discretization
 
 section Gram
 
-variable {ι D : Type*} [MeasurableSpace D]
+variable {ι Ω : Type*} [MeasurableSpace Ω]
 
-/-- The **Gram matrix** of a finite family of functions `a : D → ι → ℂ`, with entries
-`∫ aₖ · conj aₗ dμ`.  In the notation of the paper this is `∫ a(x) a(x)* dμ(x)`. -/
-noncomputable def gram (a : D → ι → ℂ) (μ : Measure D) : Matrix ι ι ℂ :=
+/-- The **Gram matrix** of a finite family of functions `a : Ω → ι → ℂ`, with entries
+`∫ aₖ · conj aₗ dμ`.  In matrix notation this is `∫ a(x) a(x)* dμ(x)`. -/
+noncomputable def gram (a : Ω → ι → ℂ) (μ : Measure Ω) : Matrix ι ι ℂ :=
   Matrix.of fun k l => ∫ x, a x k * star (a x l) ∂μ
 
 end Gram
