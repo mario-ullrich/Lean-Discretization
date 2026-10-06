@@ -37,14 +37,14 @@ variable {Ω ι : Type*} [Fintype ι] [DecidableEq ι]
 
 /-- **The Kiefer–Wolfowitz theorem with a bound on the number of points.**  At most
 `2m² + 1` points are needed. -/
-theorem exists_design_kieferWolfowitz_card_le [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
+theorem exists_optimal_design_card_le [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
     (hC : ∀ y i, ‖a y i‖ ≤ C) (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0)
     {ε : ℝ} (hε : 0 < ε) :
     ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ 2 * Fintype.card ι ^ 2 + 1 ∧
       (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧ (designGram a x w).PosDef ∧
       ∀ (c : ι → ℂ) (y : Ω),
         ‖star c ⬝ᵥ a y‖ ^ 2 ≤ (Fintype.card ι + ε) * ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2 := by
-  obtain ⟨n, x, w, hw, hw1, hpd, hbound⟩ := exists_design_kieferWolfowitz a hC hli hε
+  obtain ⟨n, x, w, hw, hw1, hpd, hbound⟩ := exists_optimal_design a hC hli hε
   obtain ⟨M, x', w', hM, hw', hw'1, hgram⟩ := exists_design_card_le a x hw hw1
   refine ⟨M, x', w', hM, hw', hw'1, hgram ▸ hpd, fun c y => ?_⟩
   rw [← re_quadForm_designGram, hgram, re_quadForm_designGram]
@@ -52,14 +52,14 @@ theorem exists_design_kieferWolfowitz_card_le [Nonempty ι] (a : Ω → ι → �
 
 /-- **The Kiefer–Wolfowitz theorem on a compact domain, with a bound on the number of
 points.**  At most `2m² + 1` points are needed, and the bound holds with `ε = 0`. -/
-theorem exists_design_kieferWolfowitz_of_compact_card_le [Nonempty ι] [TopologicalSpace Ω]
+theorem exists_optimal_design_of_compact_card_le [Nonempty ι] [TopologicalSpace Ω]
     [CompactSpace Ω] (a : Ω → ι → ℂ) (hcont : ∀ i, Continuous fun y => a y i)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) :
     ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ 2 * Fintype.card ι ^ 2 + 1 ∧
       (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧ (designGram a x w).PosDef ∧
       ∀ (c : ι → ℂ) (y : Ω),
         ‖star c ⬝ᵥ a y‖ ^ 2 ≤ Fintype.card ι * ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2 := by
-  obtain ⟨n, x, w, hw, hw1, hpd, hbound⟩ := exists_design_kieferWolfowitz_of_compact a hcont hli
+  obtain ⟨n, x, w, hw, hw1, hpd, hbound⟩ := exists_optimal_design_of_compact a hcont hli
   obtain ⟨M, x', w', hM, hw', hw'1, hgram⟩ := exists_design_card_le a x hw hw1
   refine ⟨M, x', w', hM, hw', hw'1, hgram ▸ hpd, fun c y => ?_⟩
   rw [← re_quadForm_designGram, hgram, re_quadForm_designGram]

@@ -36,7 +36,7 @@ the body is the unit ball of the uniform norm on the span of `a₁, …, a_m`, t
 the one `G` defines, and the design points take the part of the contact points.
 
 The two Kiefer–Wolfowitz theorems measure how good that contact is.  On a compact domain
-`Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact` gives `t(y) ≤ m`
+`Discretization.KieferWolfowitz.exists_optimal_design_of_compact` gives `t(y) ≤ m`
 everywhere, and then the average `∑ₖ wₖ t(xₖ) = m` forces `t(xₖ) = m` at every point of the
 design: the `uₖ` lie on the sphere and this is John position exactly.  In general
 `Discretization.KieferWolfowitz.exists_design_quadForm_inv_le` gives `t(y) ≤ m + ε` with the

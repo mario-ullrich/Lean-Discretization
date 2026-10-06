@@ -156,18 +156,18 @@ again at the top level.
 * `Discretization.KieferWolfowitz.DetMax`: the maximisation of the determinant and its
   consequence `a(y)* G⁻¹ a(y) ≤ m + ε`, uniformly in `y`.
 * `Discretization.KieferWolfowitz.MainTheorem`: the Kiefer–Wolfowitz theorem in terms of the
-  points and weights, `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz`.
+  points and weights, `Discretization.KieferWolfowitz.exists_optimal_design`.
 * `Discretization.KieferWolfowitz.Measure`: the same statement for the measure
-  `ϱ = ∑ₖ wₖ δ(xₖ)`, `Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz`,
+  `ϱ = ∑ₖ wₖ δ(xₖ)`, `Discretization.KieferWolfowitz.exists_optimal_measure`,
   and with `ε = 0` on a compact domain,
-  `Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz_of_compact`,
+  `Discretization.KieferWolfowitz.exists_optimal_measure_of_compact`,
   together with the identity `gram a ϱ = G` that hands it to the discretization theorem.
 * `Discretization.KieferWolfowitz.ConvexHull`: the Gram matrices of designs are the convex
   hull of the rank-one matrices `a(y) a(y)*`, and Carathéodory's theorem bounds the number
   of points by `2m² + 1`.
 * `Discretization.KieferWolfowitz.Compact`: on a compact domain the maximum is attained and
   the theorem holds with `ε = 0`,
-  `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`.
+  `Discretization.KieferWolfowitz.exists_optimal_design_of_compact`.
 * `Discretization.KieferWolfowitz.JohnDecomposition`: the Gram matrix of a design decomposes
   the identity over the design points, with weights summing to `m`.  This is John's
   decomposition of the identity, the condition dual to the Kiefer–Wolfowitz bound.

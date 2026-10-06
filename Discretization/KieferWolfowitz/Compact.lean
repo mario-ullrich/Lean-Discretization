@@ -78,7 +78,7 @@ design with
 
 for every point `y` and every `f` in the span: the bound of the general theorem with
 `ε = 0`. -/
-theorem exists_design_kieferWolfowitz_of_compact [Nonempty ι] [CompactSpace Ω]
+theorem exists_optimal_design_of_compact [Nonempty ι] [CompactSpace Ω]
     (a : Ω → ι → ℂ) (hcont : ∀ i, Continuous fun y => a y i)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) :
     ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧

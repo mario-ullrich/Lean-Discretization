@@ -118,7 +118,7 @@ summing to one such that
 ```
 
 for every point `y ∈ Ω` and every `f` in the span of the family
-(`Discretization.KieferWolfowitz.exists_design_kieferWolfowitz`). This is the theorem of
+(`Discretization.KieferWolfowitz.exists_optimal_design`). This is the theorem of
 [Kiefer and Wolfowitz](https://doi.org/10.4153/CJM-1960-030-4), in the complex and
 non-compact form of Proposition 9 of
 [Krieg, Pozharska, Ullrich and Ullrich](https://arxiv.org/abs/2401.02220). Three variants
@@ -127,20 +127,20 @@ of it are proved:
 * **As a measure.** The points and weights are a finitely supported probability measure
   `ϱ = ∑ wₖ δ(xₖ)` with invertible Gram matrix, and the inequality reads
   `|f(y)|² ≤ (m + ε) ∫ |f|² dϱ`
-  (`Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz`). The Gram
+  (`Discretization.KieferWolfowitz.exists_optimal_measure`). The Gram
   matrix of `ϱ` in the sense of `Discretization.gram` is the one of the points and
   weights (`.gram_designMeasure`), which is what lets the measure be handed to the
   discretization theorem. On a compact domain this holds with `ε = 0` as well
-  (`.exists_probabilityMeasure_kieferWolfowitz_of_compact`).
+  (`.exists_optimal_measure_of_compact`).
 * **The sharp constant on a compact domain.** For continuous functions on a compact
   space the maximum of the determinant is attained, and the bound holds with `ε = 0`,
   that is with the constant `√m`
-  (`Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact`).
+  (`Discretization.KieferWolfowitz.exists_optimal_design_of_compact`).
 * **At most `2m² + 1` points.** Every design can be replaced by one with at most
   `2m² + 1` points and the same Gram matrix, so both statements hold with that many
   points (`Discretization.KieferWolfowitz.exists_design_card_le`,
-  `.exists_design_kieferWolfowitz_card_le`,
-  `.exists_design_kieferWolfowitz_of_compact_card_le`).
+  `.exists_optimal_design_card_le`,
+  `.exists_optimal_design_of_compact_card_le`).
 
 Alongside these, a design decomposes the identity. Writing `t(y) = a(y)* G⁻¹ a(y)` for
 the variance function, the weights `wₖ t(xₖ)` are nonnegative and sum to `m`

@@ -32,7 +32,7 @@ measurable, since a Dirac measure only sees a function through its value at one 
 
 The second identity is what lets the measure produced here be handed to the discretization
 theorem, which asks for `Discretization.gram` of a measure.  The passage from a design to its
-measure is `Discretization.KieferWolfowitz.exists_probabilityMeasure_of_design`; it gives the
+measure is `Discretization.KieferWolfowitz.exists_measure_of_design`; it gives the
 theorem on an arbitrary measurable space and, with `ε = 0`, for continuous functions on a
 compact space whose `σ`-algebra contains the open sets.
 -/
@@ -91,7 +91,7 @@ summing to one have a positive definite Gram matrix and satisfy
 measure `ϱ = ∑ₖ wₖ δ(xₖ)` is a probability measure with positive definite Gram matrix and
 `|f(y)|² ≤ K · ∫ |f|² dϱ`.  Measurability of the coordinate functions is what lets the
 Dirac measures see them. -/
-theorem exists_probabilityMeasure_of_design {a : Ω → ι → ℂ}
+theorem exists_measure_of_design {a : Ω → ι → ℂ}
     (hmeas : ∀ i, Measurable fun y => a y i) {K : ℝ} {n : ℕ} (x : Fin n → Ω)
     {w : Fin n → ℝ} (hw : ∀ k, 0 ≤ w k) (hw1 : ∑ k, w k = 1) (hpd : (designGram a x w).PosDef)
     (hbound : ∀ (c : ι → ℂ) (y : Ω),
@@ -117,14 +117,14 @@ whose Gram matrix is invertible and for which
 for every point `y` and every function `f(y) = ⟪c, a(y)⟫` in the span.  In words: on an
 `m`-dimensional space of functions, the uniform norm is dominated by the `L₂(ϱ)` norm with
 the constant `√(m+ε)`. -/
-theorem exists_probabilityMeasure_kieferWolfowitz [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
+theorem exists_optimal_measure [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
     (hC : ∀ y i, ‖a y i‖ ≤ C) (hmeas : ∀ i, Measurable fun y => a y i)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) {ε : ℝ} (hε : 0 < ε) :
     ∃ ϱ : Measure Ω, IsProbabilityMeasure ϱ ∧ (gram a ϱ).PosDef ∧
       ∀ (c : ι → ℂ) (y : Ω),
         ‖star c ⬝ᵥ a y‖ ^ 2 ≤ (Fintype.card ι + ε) * ∫ z, ‖star c ⬝ᵥ a z‖ ^ 2 ∂ϱ := by
-  obtain ⟨n, x, w, hw, hw1, hpd, hbound⟩ := exists_design_kieferWolfowitz a hC hli hε
-  exact exists_probabilityMeasure_of_design hmeas x hw hw1 hpd hbound
+  obtain ⟨n, x, w, hw, hw1, hpd, hbound⟩ := exists_optimal_design a hC hli hε
+  exact exists_measure_of_design hmeas x hw hw1 hpd hbound
 
 /-- **The Kiefer–Wolfowitz theorem on a compact domain, in terms of a measure.**
 
@@ -136,14 +136,14 @@ whose Gram matrix is invertible and for which
 
 for every point `y` and every `f` in the span: the bound with `ε = 0`.  Continuity gives
 the measurability of the coordinate functions. -/
-theorem exists_probabilityMeasure_kieferWolfowitz_of_compact [Nonempty ι] [TopologicalSpace Ω]
+theorem exists_optimal_measure_of_compact [Nonempty ι] [TopologicalSpace Ω]
     [CompactSpace Ω] [OpensMeasurableSpace Ω] (a : Ω → ι → ℂ)
     (hcont : ∀ i, Continuous fun y => a y i)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) :
     ∃ ϱ : Measure Ω, IsProbabilityMeasure ϱ ∧ (gram a ϱ).PosDef ∧
       ∀ (c : ι → ℂ) (y : Ω),
         ‖star c ⬝ᵥ a y‖ ^ 2 ≤ Fintype.card ι * ∫ z, ‖star c ⬝ᵥ a z‖ ^ 2 ∂ϱ := by
-  obtain ⟨n, x, w, hw, hw1, hpd, hbound⟩ := exists_design_kieferWolfowitz_of_compact a hcont hli
-  exact exists_probabilityMeasure_of_design (fun i => (hcont i).measurable) x hw hw1 hpd hbound
+  obtain ⟨n, x, w, hw, hw1, hpd, hbound⟩ := exists_optimal_design_of_compact a hcont hli
+  exact exists_measure_of_design (fun i => (hcont i).measurable) x hw hw1 hpd hbound
 
 end Discretization.KieferWolfowitz

@@ -47,8 +47,8 @@ exactly as it does without it. Build these modules with `lake build Palomar`.
   `Discretization.exists_one_sided_discretization`.
 * `Palomar/KieferWolfowitz/`: the Kiefer–Wolfowitz theorem, with at most `2m² + 1` points
   for an `m`-dimensional space, on an arbitrary set and on a compact domain; advertising
-  `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le` and
-  `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le`.
+  `Discretization.KieferWolfowitz.exists_optimal_design_card_le` and
+  `Discretization.KieferWolfowitz.exists_optimal_design_of_compact_card_le`.
 * `Palomar/UniformDiscretization/`: the uniform norm bounded by the discrete `ℓ₂` norm and
   by the largest of `n ≥ m` sample values, on an arbitrary set and on a compact domain;
   advertising `Discretization.exists_uniform_discretization_by_l2`,

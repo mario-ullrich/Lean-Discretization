@@ -89,7 +89,7 @@ probability measure `∑ₖ wₖ δ(xₖ)` with invertible Gram matrix, such tha
 
 for every point `y` and every function `f(y) = ⟪c, a(y)⟫` in the span.  This is
 Proposition 9 of Krieg, Pozharska, Ullrich and Ullrich. -/
-theorem exists_design_kieferWolfowitz_card_le [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
+theorem exists_optimal_design_card_le [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
     (hC : ∀ y i, ‖a y i‖ ≤ C) (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0)
     {ε : ℝ} (hε : 0 < ε) :
     ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ 2 * Fintype.card ι ^ 2 + 1 ∧
@@ -108,7 +108,7 @@ design of at most `2m² + 1` points with
 
 for every point `y` and every `f` in the span: the uniform norm is dominated by the `L₂`
 norm of the design with the constant `√m`, and no `ε` is lost. -/
-theorem exists_design_kieferWolfowitz_of_compact_card_le [Nonempty ι] [TopologicalSpace Ω]
+theorem exists_optimal_design_of_compact_card_le [Nonempty ι] [TopologicalSpace Ω]
     [CompactSpace Ω] (a : Ω → ι → ℂ) (hcont : ∀ i, Continuous fun y => a y i)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) :
     ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ 2 * Fintype.card ι ^ 2 + 1 ∧

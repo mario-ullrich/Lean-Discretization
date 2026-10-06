@@ -160,7 +160,7 @@ theorem exists_uniform_discretization_by_l2 [Nonempty ι] (a : Ω → ι → ℂ
       ‖star c ⬝ᵥ a y‖ ^ 2 ≤ (Fintype.card ι + ε) / (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
         * (1 / (n : ℝ) * ∑ i, ‖star c ⬝ᵥ a (x i)‖ ^ 2) := by
   obtain ⟨N, x, w, hw, hw1, hpd, hbound⟩ :=
-    KieferWolfowitz.exists_design_kieferWolfowitz a hC hli hε
+    KieferWolfowitz.exists_optimal_design a hC hli hε
   exact exists_uniform_discretization_of_design_by_l2 a (by positivity) x hw hw1 hpd
     hbound hmn
 
@@ -182,7 +182,7 @@ theorem exists_uniform_discretization_of_compact_by_l2 [Nonempty ι]
       ‖star c ⬝ᵥ a y‖ ^ 2 ≤ Fintype.card ι / (1 - Real.sqrt ((Fintype.card ι - 1) / n)) ^ 2
         * (1 / (n : ℝ) * ∑ i, ‖star c ⬝ᵥ a (x i)‖ ^ 2) := by
   obtain ⟨N, x, w, hw, hw1, hpd, hbound⟩ :=
-    KieferWolfowitz.exists_design_kieferWolfowitz_of_compact a hcont hli
+    KieferWolfowitz.exists_optimal_design_of_compact a hcont hli
   exact exists_uniform_discretization_of_design_by_l2 a (Nat.cast_nonneg _) x hw hw1
     hpd hbound hmn
 

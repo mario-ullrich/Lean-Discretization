@@ -69,7 +69,7 @@ is used in the form `∀ c, (∀ y, ⟪c, a(y)⟫ = 0) → c = 0`, which
 `Discretization.KieferWolfowitz.linearIndependent_iff_forall_star` identifies with
 `LinearIndependent ℂ`, and boundedness in the form of one constant `C` bounding all the
 values. -/
-theorem exists_design_kieferWolfowitz [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
+theorem exists_optimal_design [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
     (hC : ∀ y i, ‖a y i‖ ≤ C) (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0)
     {ε : ℝ} (hε : 0 < ε) :
     ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧

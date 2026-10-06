@@ -19,9 +19,9 @@ checks that it is the same declaration, body included, in both modules.
 
 Nothing is declared here. The advertised statements
 
-* `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le`:
+* `Discretization.KieferWolfowitz.exists_optimal_design_card_le`:
   `|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²` for a design of at most `2m² + 1` points,
-* `Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le`: the
+* `Discretization.KieferWolfowitz.exists_optimal_design_of_compact_card_le`: the
   same with the sharp constant `m` for continuous functions on a compact domain,
 
 and the definition they rest on, `Discretization.KieferWolfowitz.designGram`, arrive through

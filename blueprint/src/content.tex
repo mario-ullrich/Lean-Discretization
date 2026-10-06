@@ -1316,10 +1316,10 @@ becomes $n \geq m$ equally weighted points (\Cref{thm:uniform-discretization-opt
 
 \begin{theorem}[Optimal design (Kiefer--Wolfowitz)]
 \label{thm:uniform-discretization}
-\lean{Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz,
-      Discretization.KieferWolfowitz.exists_probabilityMeasure_kieferWolfowitz_of_compact,
-      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_card_le,
-      Discretization.KieferWolfowitz.exists_design_kieferWolfowitz_of_compact_card_le}
+\lean{Discretization.KieferWolfowitz.exists_optimal_measure,
+      Discretization.KieferWolfowitz.exists_optimal_measure_of_compact,
+      Discretization.KieferWolfowitz.exists_optimal_design_card_le,
+      Discretization.KieferWolfowitz.exists_optimal_design_of_compact_card_le}
 \leanok
 Let $\iota$ be a finite nonempty index set with $m = \#\iota$ elements, let $\Omega$ carry
 a measurable structure, let $a = (a_k)_{k \in \iota}$ be bounded measurable functions on it
@@ -1563,9 +1563,9 @@ one above for every constant $s > m$, followed by the limit $s \to m$, which is 
 real numbers, and the point count is again \Cref{lem:few-design-points}.
 
 In Lean the design form is
-\texttt{Discretization.KieferWolfowitz.exists\_design\_kieferWolfowitz\_card\_le} and its
+\texttt{Discretization.KieferWolfowitz.exists\_optimal\_design\_card\_le} and its
 compact counterpart, and
-\texttt{Discretization.KieferWolfowitz.exists\_probabilityMeasure\_of\_design} turns a
+\texttt{Discretization.KieferWolfowitz.exists\_measure\_of\_design} turns a
 design into the measure.
 \end{proof}
 
