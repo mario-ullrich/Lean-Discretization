@@ -1,11 +1,12 @@
 # Builds the Lean project and the leanblueprint, then publishes the result
 # two ways:
 #
-#   * GitHub Pages (public repository): the rendered blueprint is deployed to
+#   * GitHub Pages: the rendered blueprint is deployed to
 #     https://<owner>.github.io/Lean-Discretization/ with the PDF at
-#     https://<owner>.github.io/Lean-Discretization/blueprint.pdf.
-#     While the repository is private, the deploy job is skipped (Pages is
-#     unavailable on the free plan for private repositories).
+#     https://<owner>.github.io/Lean-Discretization/blueprint.pdf. The deploy
+#     job runs for the public repository; its condition keeps a private fork
+#     from deploying (Pages is unavailable on the free plan for private
+#     repositories).
 #
 #   * Workflow artifact (always): `blueprint-YYYYMMDD` is downloadable from
 #     every run summary under the Actions tab. It contains the PDF and the
@@ -218,10 +219,10 @@ jobs:
         with:
           path: blueprint/web
 
-  # ----- Deploy the rendered blueprint to GitHub Pages. Skipped while the
-  # repository is private; once it is public, the next push to main (or a
-  # manual workflow_dispatch run) deploys. configure-pages enables Pages
-  # with source "GitHub Actions" automatically on the first run.
+  # ----- Deploy the rendered blueprint to GitHub Pages on every push to main
+  # (or a manual workflow_dispatch run); the condition keeps a private fork
+  # from deploying. configure-pages enables Pages with source "GitHub
+  # Actions" automatically on the first run.
   deploy:
     needs: build
     if: github.ref == 'refs/heads/main' && !github.event.repository.private

@@ -1,9 +1,9 @@
 # Candidates for Mathlib
 
 `BasicResults` is general matrix analysis and operator theory that Mathlib lacks,
-kept here only because the discretization argument needs it. Everything is stated
-over a general `RCLike` field wherever the C⋆-algebra structure is not needed.
-Grouped by topic, with the main declarations:
+kept here only because the discretization argument needs it. The matrix facts are
+stated over a general `RCLike` field wherever the C⋆-algebra structure is not needed;
+the operator layer is stated over `ℂ`. Grouped by topic, with the main declarations:
 
 * **Traces of products of positive matrices** (`BasicResults/Matrix/TraceInequalities.lean`):
   the trace of a product of positive semidefinite matrices is nonnegative
@@ -25,6 +25,12 @@ Grouped by topic, with the main declarations:
 * **Conjugation by a square root** (`BasicResults/SqrtConjugation.lean`): in a
   C⋆-algebra, a bound on the conjugate of `X` by the inverse square root of `B` is a
   bound on `X` itself (`CStarAlgebra.inv_smul_le_of_conj_inv_sqrt_le`).
+* **A bound on the trace of an inverse is a Loewner bound**
+  (`BasicResults/Matrix/LoewnerOrder.lean`, `BasicResults/Matrix/PotentialBounds.lean`):
+  for positive definite `A` and `J`, `(Re Tr A⁻¹)⁻¹ • 1 ≼ A`
+  (`Matrix.PosDef.inv_re_trace_smul_one_le`) and `(Re Tr (J A⁻¹))⁻¹ • J ≼ A`
+  (`Matrix.PosDef.inv_re_trace_mul_smul_le`), the second by conjugation with the positive
+  square root of `A`.
 * **Sherman–Morrison** (`BasicResults/Matrix/ShermanMorrison.lean`,
   `BasicResults/Operator/ShermanMorrison.lean`): the inverse and the trace of a
   rank-one update written with `Matrix.vecMulVec` (`Matrix.inv_add_smul_vecMulVec`,
@@ -37,8 +43,8 @@ Grouped by topic, with the main declarations:
   trace outside finite dimension. `ContinuousLinearMap.traceAlong` defines it along a
   given Hilbert basis and `ContinuousLinearMap.trace` along one chosen once
   (`HilbertBasis.chosen`), and the invariance of the Hilbert–Schmidt sum under adjoints
-  (`.tsum_norm_sq_adjoint`), the cyclicity `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫`
-  (`.tsum_inner_apply_comm`), the bound `T ≼ Tr(T) • 1` (`.le_traceAlong_smul_one`)
+  (`ContinuousLinearMap.tsum_norm_sq_adjoint`), the cyclicity
+  `∑ₖ ⟪S eₖ, T eₖ⟫ = ∑ₖ ⟪T* eₖ, S* eₖ⟫` (`.tsum_inner_apply_comm`), the bound `T ≼ Tr(T) • 1` (`.le_traceAlong_smul_one`)
   and the independence of the basis, for a positive operator of both the finiteness and
   the value of the trace (`.summable_re_inner_iff_of_basis`, `.traceAlong_eq_of_basis`,
   from the two-basis Hilbert–Schmidt identity `.tsum_ofReal_norm_sq_adjoint_of_basis`;

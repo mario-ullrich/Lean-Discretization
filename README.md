@@ -126,14 +126,13 @@ of it are proved:
 * **As a measure.** The points and weights are a finitely supported probability measure
   `ϱ = ∑ wₖ δ(xₖ)` with invertible Gram matrix, and the inequality reads
   `|f(y)|² ≤ (m + ε) ∫ |f|² dϱ`
-  (`Discretization.KieferWolfowitz.exists_optimal_measure`). The Gram
-  matrix of `ϱ` in the sense of `Discretization.gram` is the one of the points and
-  weights (`.gram_designMeasure`), which is what lets the measure be handed to the
-  discretization theorem. On a compact domain this holds with `ε = 0` as well
-  (`.exists_optimal_measure_of_compact`).
-* **The sharp constant on a compact domain.** For continuous functions on a compact
-  space the maximum of the determinant is attained, and the bound holds with `ε = 0`,
-  that is with the constant `√m`
+  (`Discretization.KieferWolfowitz.exists_optimal_measure`). The Gram matrix of `ϱ` in
+  the sense of `Discretization.gram` is the one of the points and weights
+  (`Discretization.KieferWolfowitz.gram_designMeasure`), which is what lets the measure
+  be handed to the discretization theorem. On a compact domain this holds with `ε = 0`
+  as well (`Discretization.KieferWolfowitz.exists_optimal_measure_of_compact`).
+* **A compact domain.** For continuous functions on a compact space the maximum of the
+  determinant is attained, and the same holds with `ε = 0`
   (`Discretization.KieferWolfowitz.exists_optimal_design_of_compact`).
 * **At most `2m² + 1` points.** Every design can be replaced by one with at most
   `2m² + 1` points and the same Gram matrix, so both statements hold with that many
@@ -316,19 +315,14 @@ from Bochner integrals to Gram matrices. The matrix facts lie under
 the general ones at the top level;
 [MathlibCandidates.md](MathlibCandidates.md) lists what could be upstreamed.
 `blueprint/` holds the LaTeX source of the blueprint and the scripts that point its
-`\lean` links at this repository and order its dependency graph. `Palomar/` holds the submission surfaces for the
+`\lean` links at this repository, order its dependency graph and let it zoom.
+`Palomar/` holds the submission surfaces for the
 [Palomar registry](https://palomar-registry.org), one directory per registered result,
 each with a `Challenge` module stating the advertised theorems and a `Solution` module
 supplying their proofs from the development. The placeholder `sorry`s in the `Challenge`
 modules are required by that format: a Challenge advertises statements and imports only
 Mathlib, so a reader can audit what is claimed without reading the development. This
 library sits outside `defaultTargets`; build it with `lake build Palomar`.
-
-## What is left to do
-
-* **Sampling projections in the uniform norm**: the weighted least-squares projection on
-  the `2m` points of the uniform discretization, with norm of order `√m`.
-* **The applications of the paper**: least-squares recovery and sampling numbers.
 
 ## Building
 
