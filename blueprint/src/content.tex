@@ -63,7 +63,7 @@ $J$ is injective exactly when $\langle u, b(\cdot) \rangle = 0$ almost everywher
 $u = 0$.
 
 \begin{remark}[A countable family]
-\label{rem:discretization-forms}
+\label{rem:countable-family}
 A countable family $b = (b_k)_{k \in \kappa}$ of square-integrable functions with
 $\sum_k \|b_k\|_{L_2}^2 < \infty$ is the case $H = \ell_2(\kappa)$ and
 $b(x) = (b_k(x))_k$. The Gram operator is the Gram matrix
@@ -466,8 +466,8 @@ ones.
 
 The next lemma is the reason the whole argument can be run on two real numbers: a bound on
 the trace of an inverse is a bound in the Loewner order. The traces $\Tr A^{-1}$ and
-$\Tr (J B^{-1})$ are the lower and the upper potential of \Cref{ch:barrier} and
-\Cref{ch:infinite}.
+$\Tr (J B^{-1})$ are the lower and the upper potential of \Cref{ch:lower-barrier} and
+\Cref{ch:upper-barrier}.
 
 \begin{lemma}[From the trace of an inverse to the Loewner order]
 \label{lem:trace-to-loewner}
@@ -751,12 +751,12 @@ are needed: for $f = (1, 0)$ and $g = (2, -1)$ on two points with the counting m
 both averages are $1$, and the only point with $g \leq f$ has $f = 0$.
 
 \chapter{The lower potential and its barrier}
-\label{ch:barrier}
+\label{ch:lower-barrier}
 
 The first family is carried through the construction by a positive definite matrix $A$,
 which must stay above a multiple of the identity. It is controlled by a single real
 number, and whether a candidate point may be used is decided by a function of that point.
-The second family is treated in the same way by an operator, in \Cref{ch:infinite}.
+The second family is treated in the same way by an operator, in \Cref{ch:upper-barrier}.
 
 \section{The potential and the verifier}
 
@@ -922,12 +922,12 @@ For $r = \sqrt{(m-1)/n}$ one has $n r^2 + 1 = m$; the lemma is stated in $r$ bec
 proof never unfolds the square root.
 
 \chapter{The upper potential and its barrier}
-\label{ch:infinite}
+\label{ch:upper-barrier}
 
 The second family is carried through the construction by a strictly positive operator $B$
 on a separable Hilbert space $H$, which must stay above a multiple of the Gram operator
 $J = \int_\Omega b(x) b(x)^* \, d\mu(x)$ of \Cref{lem:gram-operator}, as the matrix $A$ of
-\Cref{ch:barrier} stays above a multiple of the identity. It is controlled by a single real
+\Cref{ch:lower-barrier} stays above a multiple of the identity. It is controlled by a single real
 number, and whether a candidate point may be used is decided by a function of that point.
 Nothing in the argument ties the number of points to the size of the second family: it is
 governed by the effective dimension alone. A finite second family is the case
@@ -1176,7 +1176,7 @@ crude bound $b(y) b(y)^* \preceq \|b(y)\|^2 \cdot 1$ with
 $\int_\Omega \|b\|^2 \, d\mu = \Tr J$. In
 Lean they are collected in \texttt{Discretization.UpperBarrier}, and the construction, the
 read-off of the upper frame bound and the theorem with its edge cases are proved once for
-every such upper state. The operators of \Cref{ch:infinite} are one instance
+every such upper state. The operators of \Cref{ch:upper-barrier} are one instance
 (\texttt{Discretization.Infinite.operatorUpperBarrier}); the matrices over a finite set
 $\kappa$, with the matrix proofs of the upper lemmas, are another
 (\texttt{Discretization.matrixUpperBarrier}).
@@ -1258,12 +1258,12 @@ $H = \mathbb{C}^{\kappa}$, is proved with the matrix instance, which keeps \Cref
 free of operators.
 
 \chapter{A reproducing kernel Hilbert space}
-\label{ch:applications}
+\label{ch:rkhs}
 
 The kernel sections of a reproducing kernel Hilbert space, the second case of $b$ named in
 \Cref{ch:problem}, form a square-integrable map into a separable Hilbert space, to which
 \Cref{thm:discretization} applies. The first case, a countable family, needs only
-Tonelli's theorem and is treated in \Cref{rem:discretization-forms}.
+Tonelli's theorem and is treated in \Cref{rem:countable-family}.
 
 \begin{lemma}[Kernel sections]
 \label{lem:kernel-sections}
@@ -1306,21 +1306,21 @@ Injectivity of $\varphi$ is not required; in \Cref{cor:l2-discretization} it fol
 the assumption on vanishing functions.
 
 \chapter{Discretization of the uniform norm and the $L_p$-norms}
-\label{ch:design}
+\label{ch:uniform-lp}
 
 Let $\Omega$ be an arbitrary set, $\iota$ a finite nonempty index set with $m = \#\iota$
 elements, and $a = (a_k)_{k \in \iota}$ a family of bounded functions
 $\Omega \to \mathbb{C}$ whose coordinate functions are linearly independent. The theorem of
 Kiefer and Wolfowitz~\cite{KW} gives a finitely supported probability measure on $\Omega$
 whose $L_2$ norm dominates the uniform norm on the span with the constant
-$\sqrt{m + \varepsilon}$ (\Cref{thm:uniform-discretization}); the complex and non-compact
+$\sqrt{m + \varepsilon}$ (\Cref{thm:optimal-design}); the complex and non-compact
 case is treated in~\cite{KPUU}. Thinned with the one-sided discretization, the measure
-becomes $n \geq m$ equally weighted points (\Cref{thm:uniform-discretization-optimal}), and
+becomes $n \geq m$ equally weighted points (\Cref{thm:uniform-discretization}), and
 its mixture with a probability measure $\mu$, thinned in the same way, discretizes all
 $L_p(\mu)$-norms at once (\Cref{cor:lp-discretization}).
 
 \begin{theorem}[Optimal design (Kiefer--Wolfowitz)]
-\label{thm:uniform-discretization}
+\label{thm:optimal-design}
 \lean{Discretization.KieferWolfowitz.exists_optimal_measure,
       Discretization.KieferWolfowitz.exists_optimal_measure_of_compact,
       Discretization.KieferWolfowitz.exists_optimal_design_card_le,
@@ -1341,7 +1341,7 @@ the same holds with $\varepsilon = 0$. In both cases $\varrho$ can be taken with
 $N = 2m^2 + 1$ atoms.
 \end{theorem}
 
-The proof is given in \Cref{sec:kiefer-wolfowitz-proof}. Thinning the measure with
+The proof is given in \Cref{sec:optimal-design-proof}. Thinning the measure with
 \Cref{cor:one-sided-discretization} gives the bound with any number $n \geq m$ of equally
 weighted points, the case $p = \infty$ of Proposition~8 of~\cite{CDKU}. For $n = 2m$ points
 Krieg, Pozharska, Ullrich and Ullrich~\cite[Theorem~2]{KPUU} prove
@@ -1349,7 +1349,7 @@ $\|f\|_\infty \leq 42 \bigl( \sum_{i=1}^{2m} |f(x_i)|^2 \bigr)^{1/2}$, and Propo
 of~\cite{CDKU} improves the constant.
 
 \begin{theorem}[Discretization of the uniform norm with $n \geq m$ points]
-\label{thm:uniform-discretization-optimal}
+\label{thm:uniform-discretization}
 \lean{Discretization.exists_uniform_discretization_by_l2,
       Discretization.exists_uniform_discretization_of_compact_by_l2}
 \leanok
@@ -1367,10 +1367,10 @@ compact space and the $a_k$ are continuous, the same holds with $\varepsilon = 0
 
 \begin{proof}
 \leanok
-\uses{thm:uniform-discretization, cor:one-sided-discretization}
+\uses{thm:optimal-design, cor:one-sided-discretization}
 Give $\Omega$ the $\sigma$-algebra of all its subsets, or the Borel sets in the compact
 case, and take the measure $\varrho = \sum_k w'_k \delta_{x'_k}$ of
-\Cref{thm:uniform-discretization}, with the constant $K = m + \varepsilon$, where
+\Cref{thm:optimal-design}, with the constant $K = m + \varepsilon$, where
 $\varepsilon = 0$ in the compact case, and positive definite Gram matrix $G$. On the index
 set $\{1, \dots, N\}$ the weights define the probability measure $\sum_k w'_k \delta_k$,
 with respect to which the family $k \mapsto a(x'_k)$ has Gram matrix $G$ and
@@ -1382,7 +1382,7 @@ $x_1, \dots, x_n$ of $\varrho$, with
   \qquad r = \sqrt{(m-1)/n},
 \]
 for every $f \in \operatorname{span}\{a_k\}$, and $r < 1$ because $n \geq m$. The bound of
-\Cref{thm:uniform-discretization} finishes:
+\Cref{thm:optimal-design} finishes:
 $|f(y)|^2 \leq K \int_\Omega |f|^2 \, d\varrho \leq K (1 - r)^{-2} \frac{1}{n} \sum_i |f(x_i)|^2$.
 \end{proof}
 
@@ -1421,8 +1421,8 @@ compact space and the $a_k$ are continuous, the same holds with $\varepsilon = 0
 
 \begin{proof}
 \leanok
-\uses{thm:uniform-discretization-optimal}
-Take the points of \Cref{thm:uniform-discretization-optimal}: the average
+\uses{thm:uniform-discretization}
+Take the points of \Cref{thm:uniform-discretization}: the average
 $\frac{1}{n} \sum_{i=1}^n |f(x_i)|^2$ is at most its largest term
 (\texttt{Discretization.inv\_mul\_sum\_le\_iSup}).
 \end{proof}
@@ -1435,7 +1435,7 @@ For $n = 2m$ points and a small enough $\varepsilon$ this gives the bound of~\ci
 
 Between $p = 2$, \Cref{cor:one-sided-discretization}, and $p = \infty$ lie the $L_p$-norms,
 Proposition~8 of~\cite{CDKU}. The paper takes $n$ points for $\mu$ and $n$ for the measure of
-\Cref{thm:uniform-discretization}; the mixture $(\mu + \varrho)/2$ serves both with $n$
+\Cref{thm:optimal-design}; the mixture $(\mu + \varrho)/2$ serves both with $n$
 points.
 
 \begin{corollary}[Discretization of the $L_p$-norms]
@@ -1456,7 +1456,7 @@ for every $f \in \operatorname{span}\{a_k\}$ and every $2 \leq p \leq \infty$.
 
 \begin{proof}
 \leanok
-\uses{thm:uniform-discretization, cor:one-sided-discretization, lem:gram-identities}
+\uses{thm:optimal-design, cor:one-sided-discretization, lem:gram-identities}
 Put $r = \sqrt{(m-1)/n}$ and $s = 1 - r$. First, $0 < \kappa < s$: the term
 $1 - \sqrt{m/n}$ lies below $s$ because $m - 1 < m$, and $1/(2m) < s$ because
 $r \leq \sqrt{(m-1)/m}$ and $(1 - \frac{1}{2m})^2 = \frac{m-1}{m} + \frac{1}{4m^2}$. Put
@@ -1464,7 +1464,7 @@ $\varepsilon = m (s^2/\kappa^2 - 1) > 0$, so that $\kappa^2 (m + \varepsilon) = 
 
 The functions $a_k$ are linearly independent on $\Omega$: if $f = 0$ everywhere, then
 $\int_\Omega |f|^2 \, d\mu = c^* I c = 0$ by \Cref{lem:gram-identities}(a), so $c = 0$. Let
-$\varrho$ be the measure of \Cref{thm:uniform-discretization} for this $\varepsilon$, with
+$\varrho$ be the measure of \Cref{thm:optimal-design} for this $\varepsilon$, with
 positive definite Gram matrix and
 $|f(y)|^2 \leq (m + \varepsilon) \int_\Omega |f|^2 \, d\varrho$ at every point. The mixture
 $\nu = (\mu + \varrho)/2$ is a probability measure whose Gram matrix, the mean of the two,
@@ -1499,9 +1499,9 @@ For $n = 2m$ one has $\kappa \geq 1 - 1/\sqrt{2}$, hence
 \]
 
 \section{The proof of the Kiefer--Wolfowitz theorem}
-\label{sec:kiefer-wolfowitz-proof}
+\label{sec:optimal-design-proof}
 
-The measure of \Cref{thm:uniform-discretization} is one whose Gram matrix has an almost
+The measure of \Cref{thm:optimal-design} is one whose Gram matrix has an almost
 maximal determinant. Mixing in a further point cannot increase that determinant by much,
 and the matrix determinant lemma turns this into the bound $a(y)^* G^{-1} a(y) \leq m +
 \varepsilon$ of \Cref{prop:almost-maximal-determinant}, from which the theorem follows. No
@@ -1608,8 +1608,8 @@ affinely independent family in the real vector space $\mathbb{C}^{\iota \times \
 whose real dimension is $2m^2$, has at most $2m^2 + 1$ members.
 \end{proof}
 
-\begin{proof}[Proof of \Cref{thm:uniform-discretization}]
-\proves{thm:uniform-discretization}
+\begin{proof}[Proof of \Cref{thm:optimal-design}]
+\proves{thm:optimal-design}
 \leanok
 \uses{prop:almost-maximal-determinant, lem:rank-one-updates, lem:mixing-gain,
       lem:few-design-points}
@@ -1642,7 +1642,7 @@ design into the measure.
 \begin{remark}[What the count is good for]
 \label{rem:point-count}
 \leanok
-\uses{lem:few-design-points, thm:uniform-discretization}
+\uses{lem:few-design-points, thm:optimal-design}
 The sharper count
 $r + 1$, with $r$ the dimension of the span of the products $a_k \overline{a_l}$, is not
 formalised, and nothing needs it.
@@ -1651,7 +1651,7 @@ formalised, and nothing needs it.
 \begin{remark}[The identity decomposed over the design]
 \label{rem:identity-decomposition}
 \leanok
-\uses{prop:almost-maximal-determinant, thm:uniform-discretization}
+\uses{prop:almost-maximal-determinant, thm:optimal-design}
 For a design with points $x_1, \dots, x_n$, weights $w_1, \dots, w_n$ and invertible Gram
 matrix $G$, and with $m = \#\iota$,
 \[
@@ -1666,7 +1666,7 @@ $G G^{-1} z = z$ written out
 decomposition of the identity over the design points, in the inner product
 $\langle u, z \rangle = u^* G^{-1} z$ of the ellipsoid of $G$, and it is the condition
 dual to the bound of \Cref{prop:almost-maximal-determinant}. Under
-\Cref{thm:uniform-discretization} with $\varepsilon = 0$ the average forces
+\Cref{thm:optimal-design} with $\varepsilon = 0$ the average forces
 $a(x_k)^* G^{-1} a(x_k) = m$ at every design point, which makes the points contact
 points. For an arbitrary convex body the theorem is proved in the companion project
 \href{https://mario-ullrich.github.io/Lean-SNumbers/}{Lean-SNumbers}
