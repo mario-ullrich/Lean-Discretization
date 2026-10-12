@@ -716,6 +716,53 @@ $Q^{1/2} J^{1/2}$, once read through the operator and once through its adjoint, 
 the index set of the basis enters here, in the interchange.
 \end{proof}
 
+\section{A reproducing kernel Hilbert space}
+
+The second family of \Cref{cor:l2-discretization} is the map $x \mapsto k_x$ to the
+kernel sections of a reproducing kernel Hilbert space. It is square-integrable with
+values in a separable Hilbert space, and by \Cref{lem:gram-operator}(a) the quadratic
+form of its Gram operator is $\langle g, J g \rangle = \int_\Omega |g|^2 \, d\mu$.
+
+\begin{lemma}[Kernel sections]
+\label{lem:kernel-sections}
+\lean{Discretization.RKHS.evalCLM, Discretization.RKHS.kernelSection,
+      Discretization.RKHS.inner_kernelSection, Discretization.RKHS.norm_inner_kernelSection,
+      Discretization.RKHS.kernel, Discretization.RKHS.kernel_eq,
+      Discretization.RKHS.kernel_self,
+      Discretization.RKHS.aestronglyMeasurable_kernelSection,
+      Discretization.RKHS.memLp_kernelSection}
+\leanok
+Let $H$ be a complex Hilbert space of functions on a set $\Omega$ on which every point
+evaluation $f \mapsto f(x)$ is continuous.
+
+(a) For every $x \in \Omega$ there is $k_x \in H$ with $\langle k_x, f \rangle = f(x)$ for
+every $f \in H$. With $K(x, y) = \langle k_y, k_x \rangle$ one has $K(x, y) = k_x(y)$, so
+$k_x = K(x, \cdot)$ and $K(x, x) = \|k_x\|^2$, and $|\langle f, k_x \rangle| = |f(x)|$ for
+every $f \in H$.
+
+(b) Let $(\Omega, \mu)$ be a measure space, let $H$ be separable, and let every $f \in H$
+be measurable. Then $x \mapsto k_x$ is strongly measurable, and it is square-integrable if
+$\int_\Omega K(x, x) \, d\mu(x) < \infty$.
+\end{lemma}
+
+\begin{proof}
+\leanok
+(a) Evaluation at $x$ is a continuous linear functional, so the Riesz representation
+theorem gives $k_x$. Then $K(x, y) = \langle k_y, k_x \rangle = k_x(y)$,
+$K(x, x) = \|k_x\|^2$, and $\langle f, k_x \rangle = \overline{\langle k_x, f \rangle}
+= \overline{f(x)}$.
+
+(b) Take a Hilbert basis $(e_j)$ of $H$, which is countable because $H$ is separable. Then
+$k_x = \sum_j \langle e_j, k_x \rangle \, e_j$ with
+$\langle e_j, k_x \rangle = \overline{e_j(x)}$, so $x \mapsto k_x$ is the pointwise limit
+of finite sums of measurable maps. Its squared norm is $K(x, x)$.
+\end{proof}
+
+In Lean a Hilbert space of functions is a Hilbert space $H$ together with a linear map
+$\varphi : H \to \mathbb{C}^{\Omega}$, $\varphi(f)(x)$ being the value of $f$ at $x$.
+Injectivity of $\varphi$ is not required; in \Cref{cor:l2-discretization} it follows from
+the assumption on vanishing functions.
+
 \section{A point from two averages}
 
 \begin{lemma}[A good point from two averages]
@@ -1256,54 +1303,6 @@ for an arbitrary conclusion about the second family, and the four cases are prov
 for every upper state of \texttt{Discretization.UpperBarrier}. A finite second family,
 $H = \mathbb{C}^{\kappa}$, is proved with the matrix instance, which keeps \Cref{cor:bss}
 free of operators.
-
-\chapter{A reproducing kernel Hilbert space}
-\label{ch:rkhs}
-
-The kernel sections of a reproducing kernel Hilbert space, the second case of $b$ named in
-\Cref{ch:problem}, form a square-integrable map into a separable Hilbert space, to which
-\Cref{thm:discretization} applies. The first case, a countable family, needs only
-Tonelli's theorem and is treated in \Cref{rem:countable-family}.
-
-\begin{lemma}[Kernel sections]
-\label{lem:kernel-sections}
-\lean{Discretization.RKHS.evalCLM, Discretization.RKHS.kernelSection,
-      Discretization.RKHS.inner_kernelSection, Discretization.RKHS.norm_inner_kernelSection,
-      Discretization.RKHS.kernel, Discretization.RKHS.kernel_eq,
-      Discretization.RKHS.kernel_self,
-      Discretization.RKHS.aestronglyMeasurable_kernelSection,
-      Discretization.RKHS.memLp_kernelSection}
-\leanok
-Let $H$ be a complex Hilbert space of functions on a set $\Omega$ on which every point
-evaluation $f \mapsto f(x)$ is continuous.
-
-(a) For every $x \in \Omega$ there is $k_x \in H$ with $\langle k_x, f \rangle = f(x)$ for
-every $f \in H$. With $K(x, y) = \langle k_y, k_x \rangle$ one has $K(x, y) = k_x(y)$, so
-$k_x = K(x, \cdot)$ and $K(x, x) = \|k_x\|^2$, and $|\langle f, k_x \rangle| = |f(x)|$ for
-every $f \in H$.
-
-(b) Let $(\Omega, \mu)$ be a measure space, let $H$ be separable, and let every $f \in H$
-be measurable. Then $x \mapsto k_x$ is strongly measurable, and it is square-integrable if
-$\int_\Omega K(x, x) \, d\mu(x) < \infty$.
-\end{lemma}
-
-\begin{proof}
-\leanok
-(a) Evaluation at $x$ is a continuous linear functional, so the Riesz representation
-theorem gives $k_x$. Then $K(x, y) = \langle k_y, k_x \rangle = k_x(y)$,
-$K(x, x) = \|k_x\|^2$, and $\langle f, k_x \rangle = \overline{\langle k_x, f \rangle}
-= \overline{f(x)}$.
-
-(b) Take a Hilbert basis $(e_j)$ of $H$, which is countable because $H$ is separable. Then
-$k_x = \sum_j \langle e_j, k_x \rangle \, e_j$ with
-$\langle e_j, k_x \rangle = \overline{e_j(x)}$, so $x \mapsto k_x$ is the pointwise limit
-of finite sums of measurable maps. Its squared norm is $K(x, x)$.
-\end{proof}
-
-In Lean a Hilbert space of functions is a Hilbert space $H$ together with a linear map
-$\varphi : H \to \mathbb{C}^{\Omega}$, $\varphi(f)(x)$ being the value of $f$ at $x$.
-Injectivity of $\varphi$ is not required; in \Cref{cor:l2-discretization} it follows from
-the assumption on vanishing functions.
 
 \chapter{Discretization of the uniform norm and the $L_p$-norms}
 \label{ch:uniform-lp}
