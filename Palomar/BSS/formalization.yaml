@@ -40,11 +40,9 @@ sources:
     note: >-
       SIAM Review 56 (2014), no. 2, 315–334. Theorem 3.1 states the theorem for a finite
       list of vectors summing to the identity and produces a reweighting supported on at
-      most d·m of them, with frame constants (1 ∓ 1/√d)² = (1 ∓ √(m/n))². The measure-space
-      form is the same statement for an orthonormal family in L₂(μ), the vectors being the
-      values of the family at the points. Both are formalized for complex vectors, with
-      m − 1 in place of m, following Chkifa, Dolbeault, Krieg and Ullrich; see
-      fidelity.divergences.
+      most d·m of them, with frame constants (1 ∓ 1/√d)² = (1 ∓ √(m/n))². It is formalized
+      for complex vectors, with m − 1 in place of m; see fidelity.divergences. Its
+      potential-function argument underlies both statements.
   - title: "Constructive discretization and approximation in reproducing kernel Hilbert spaces"
     authors:
       - "Abdellah Chkifa"
@@ -54,11 +52,18 @@ sources:
     id: "arXiv:2602.18719"
     type: "paper"
     location: "https://arxiv.org/abs/2602.18719"
-    relationship: "background"
+    relationship: "formalizes"
     note: >-
-      Proposition 1 restates the theorem for an orthonormal family on a finite set with
-      the uniform distribution, the measure-space form. Its proof is the one followed,
-      and it is the source of the constants √((m−1)/n) in place of √(m/n).
+      Theorem 3 with b = a and Gram matrix the identity is the measure-space statement
+      formalized here: then J = I and the effective dimension M equals m, so both frame
+      bounds carry the constants (1 ∓ √((m−1)/n))², for every n ≥ m on an arbitrary
+      measure space. Its proof is the one followed. The step from finitely many vectors
+      to a measure space is the choice of each new point. Batson, Spielman and
+      Srivastava sum the lower and upper verifiers over all vectors; here they are
+      integrated against μ, and since ∫ a a* dμ = I the integrals obey the same trace
+      bounds as the sums, so the admissible points form a set of positive measure. The
+      remaining steps are linear algebra on m × m matrices. For the counting measure on a
+      finite set the integrals are the sums of the original proof.
     author_endorsement: "participated"
 
 related_formalizations: []
@@ -72,10 +77,10 @@ status:
     identity, with at most n nonzero weights. Both hold for every n ≥ m with no further
     hypothesis.
 
-    Not formalized: the graph-sparsification application of the source, and the
-    algorithmic content, that is the running time of the construction. The proof is
-    constructive in the sense that it selects the points one at a time, but no
-    complexity statement is made.
+    Not formalized: the graph-sparsification application of Batson, Spielman and
+    Srivastava, and the algorithmic content, that is the running time of the
+    construction. The proof is constructive in the sense that it selects the points one
+    at a time, but no complexity statement is made.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -111,19 +116,21 @@ automation:
 
 fidelity:
   divergences: >-
-    The source works with real vectors; the formalized statements take complex vectors
-    v_k ∈ ℂᵐ, respectively a complex-valued family, and the Loewner order on complex
-    matrices. The measure-space form is stated for an arbitrary measure space, where the
-    sources take a finite set with the uniform distribution.
+    Batson, Spielman and Srivastava work with real vectors; the formalized statements
+    take complex vectors v_k ∈ ℂᵐ, respectively a complex-valued family, and the Loewner
+    order on complex matrices, as Chkifa, Dolbeault, Krieg and Ullrich do. The
+    measure-space form is Theorem 3 of Chkifa, Dolbeault, Krieg and Ullrich for b = a;
+    the finitely many vectors of Batson, Spielman and Srivastava are its case of the
+    counting measure on a finite set (Discretization.bss_of_sum_eq_one).
 
-    The source bounds the number of nonzero weights by d·m for a real d > 1; the
-    formalized statements take any natural number n ≥ m instead, which is the same with
-    n = d·m.
+    Batson, Spielman and Srivastava bound the number of nonzero weights by d·m for a
+    real d > 1; the formalized statements take any natural number n ≥ m instead, which
+    is the same with n = d·m.
 
     The constants are (1 − √((m−1)/n))² and (1 + √((m−1)/n))², slightly better than
-    the constants (1 ∓ √(m/n))² of the source. The improvement comes from the proof of
-    Chkifa, Dolbeault, Krieg and Ullrich, which is the potential-function argument of
-    the source in a refined form.
+    the constants (1 ∓ √(m/n))² of Batson, Spielman and Srivastava. They are the
+    constants of Theorem 3 of Chkifa, Dolbeault, Krieg and Ullrich, whose proof is the
+    potential-function argument in a refined form.
 
 review:
   status: "self-assessed"
@@ -137,7 +144,7 @@ review:
 alignment:
   namespace: "Discretization"
   statements:
-    - source: "Twice-Ramanujan sparsifiers, Theorem 3.1, for an orthonormal family in L₂(μ)"
+    - source: "Constructive discretization and approximation in RKHS, Theorem 3, for b = a with Gram matrix the identity"
       lean: "Discretization.bss"
       module: "Discretization.BSS"
       status: "proved"
