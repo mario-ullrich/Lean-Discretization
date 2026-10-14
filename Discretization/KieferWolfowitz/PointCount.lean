@@ -13,7 +13,7 @@ public import Discretization.KieferWolfowitz.Compact
 The design produced by the maximisation of the determinant is an arbitrary near-maximiser,
 so nothing is known about how many points it uses.  Carathéodory's theorem removes that
 defect after the fact: `Discretization.KieferWolfowitz.exists_design_card_le` replaces any
-design by one with at most `2m² + 1` points and *the same Gram matrix*, and both forms of
+design by one with at most `m² + 1` points and *the same Gram matrix*, and both forms of
 the Kiefer–Wolfowitz theorem depend on the design only through its Gram matrix, since
 
 `∑ₖ wₖ |f(xₖ)|² = c* G c`
@@ -36,11 +36,11 @@ namespace Discretization.KieferWolfowitz
 variable {Ω ι : Type*} [Fintype ι] [DecidableEq ι]
 
 /-- **The Kiefer–Wolfowitz theorem with a bound on the number of points.**  At most
-`2m² + 1` points are needed. -/
+`m² + 1` points are needed. -/
 theorem exists_optimal_design_card_le [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
     (hC : ∀ y i, ‖a y i‖ ≤ C) (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0)
     {ε : ℝ} (hε : 0 < ε) :
-    ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ 2 * Fintype.card ι ^ 2 + 1 ∧
+    ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ Fintype.card ι ^ 2 + 1 ∧
       (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧ (designGram a x w).PosDef ∧
       ∀ (c : ι → ℂ) (y : Ω),
         ‖star c ⬝ᵥ a y‖ ^ 2 ≤ (Fintype.card ι + ε) * ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2 := by
@@ -51,11 +51,11 @@ theorem exists_optimal_design_card_le [Nonempty ι] (a : Ω → ι → ℂ) {C :
   exact hbound c y
 
 /-- **The Kiefer–Wolfowitz theorem on a compact domain, with a bound on the number of
-points.**  At most `2m² + 1` points are needed, and the bound holds with `ε = 0`. -/
+points.**  At most `m² + 1` points are needed, and the bound holds with `ε = 0`. -/
 theorem exists_optimal_design_of_compact_card_le [Nonempty ι] [TopologicalSpace Ω]
     [CompactSpace Ω] (a : Ω → ι → ℂ) (hcont : ∀ i, Continuous fun y => a y i)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) :
-    ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ 2 * Fintype.card ι ^ 2 + 1 ∧
+    ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ Fintype.card ι ^ 2 + 1 ∧
       (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧ (designGram a x w).PosDef ∧
       ∀ (c : ι → ℂ) (y : Ω),
         ‖star c ⬝ᵥ a y‖ ^ 2 ≤ Fintype.card ι * ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2 := by

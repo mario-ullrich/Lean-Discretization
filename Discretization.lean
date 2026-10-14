@@ -165,8 +165,8 @@ the discretization of the `L_p`-norms are again at the top level.
   `Discretization.KieferWolfowitz.exists_optimal_measure_of_compact`,
   together with the identity `gram a ϱ = G` that hands it to the discretization theorem.
 * `Discretization.KieferWolfowitz.ConvexHull`: the Gram matrices of designs are the convex
-  hull of the rank-one matrices `a(y) a(y)*`, and Carathéodory's theorem bounds the number
-  of points by `2m² + 1`.
+  hull of the rank-one matrices `a(y) a(y)*`, and Carathéodory's theorem in the Hermitian
+  matrices bounds the number of points by `m² + 1`.
 * `Discretization.KieferWolfowitz.Compact`: on a compact domain the maximum is attained and
   the theorem holds with `ε = 0`,
   `Discretization.KieferWolfowitz.exists_optimal_design_of_compact`.

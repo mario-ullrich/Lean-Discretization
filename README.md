@@ -141,8 +141,8 @@ of it are proved:
 * **A compact domain.** For continuous functions on a compact space the maximum of the
   determinant is attained, and the same holds with `ε = 0`
   (`Discretization.KieferWolfowitz.exists_optimal_design_of_compact`).
-* **At most `2m² + 1` points.** Every design can be replaced by one with at most
-  `2m² + 1` points and the same Gram matrix, so both statements hold with that many
+* **At most `m² + 1` points.** Every design can be replaced by one with at most
+  `m² + 1` points and the same Gram matrix, so both statements hold with that many
   points (`Discretization.KieferWolfowitz.exists_design_card_le`,
   `.exists_optimal_design_card_le`,
   `.exists_optimal_design_of_compact_card_le`).

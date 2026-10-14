@@ -6,8 +6,8 @@ Authors: Mario Ullrich
 module
 
 public import BasicResults.CompactConvexHull
+public import BasicResults.SelfAdjointDimension
 public import Discretization.KieferWolfowitz.Design
-public import Mathlib.LinearAlgebra.Complex.FiniteDimensional
 
 /-!
 # Designs and the convex hull of the rank-one matrices
@@ -20,18 +20,20 @@ The Gram matrices of designs are exactly the convex combinations of the rank-one
 This dictionary is what brings convexity to bear on designs, and it is used twice:
 
 * `Discretization.KieferWolfowitz.exists_design_card_le`: **every design can be replaced by
-  one with at most `2m² + 1` points and the same Gram matrix.**  This is Carathéodory's
-  theorem, in the form `eq_pos_convex_span_of_mem_convexHull`, applied in the real vector
-  space of complex `m × m` matrices, whose real dimension is `2m²`.  Since every conclusion
-  of the Kiefer–Wolfowitz theorem depends on the design only through its Gram matrix, the
-  bound on the number of points transfers to all of them.
+  one with at most `m² + 1` points and the same Gram matrix.**  This is Carathéodory's
+  theorem, in the form `eq_pos_convex_span_of_mem_convexHull`.  The rank-one matrices are
+  Hermitian (`Discretization.KieferWolfowitz.vectorSpan_rankOneSet_le_selfAdjoint`), and the
+  Hermitian matrices form a real vector space of dimension `m²`
+  (`Matrix.finrank_selfAdjoint_submodule`).  Since every conclusion of the Kiefer–Wolfowitz
+  theorem depends on the design only through its Gram matrix, the bound on the number of
+  points transfers to all of them.
 * the compact case, where the convex hull is compact and the determinant therefore attains
   its maximum on it.
 
-The sharper count `r + 1` of the paper, with `r` the dimension of the span of the products
-`aᵢ conj aⱼ`, would need the real dimension of the Hermitian matrices spanned by the
-rank-one matrices.  Nothing downstream depends on it: the discretization theorem accepts any
-finite, indeed any countable, family of points.
+The paper of Krieg, Pozharska, Ullrich and Ullrich has the count `r + 1`, with `r ≤ m²` the
+dimension of the span of the products `aᵢ conj aⱼ`, which is smaller for particular
+families.  The discretization theorem, which receives the design next, accepts any finite,
+indeed any countable, family of points.
 -/
 
 @[expose] public section
@@ -73,27 +75,47 @@ theorem exists_design_of_mem_convexHull {a : Ω → ι → ℂ} {A : Matrix ι �
     exact Finset.sum_congr rfl fun i _ =>
       by rw [show vecMulVec (a (y i)) (star (a (y i))) = z i from hy i]
 
+omit [Fintype ι] [DecidableEq ι] in
+/-- The rank-one matrices `a(y) a(y)*` are Hermitian: `(v v*)* = v v*`. -/
+theorem rankOneSet_subset_selfAdjoint (a : Ω → ι → ℂ) :
+    rankOneSet a ⊆ selfAdjoint.submodule ℝ (Matrix ι ι ℂ) := by
+  rintro _ ⟨y, rfl⟩
+  show star (vecMulVec (a y) (star (a y))) = vecMulVec (a y) (star (a y))
+  rw [star_eq_conjTranspose, conjTranspose_vecMulVec, star_star]
+
+omit [Fintype ι] [DecidableEq ι] in
+/-- Every difference of two rank-one matrices is Hermitian, so the vectors spanned by the
+rank-one matrices lie in the real vector space of Hermitian matrices. -/
+theorem vectorSpan_rankOneSet_le_selfAdjoint (a : Ω → ι → ℂ) :
+    vectorSpan ℝ (rankOneSet a) ≤ selfAdjoint.submodule ℝ (Matrix ι ι ℂ) := by
+  rw [vectorSpan_def, Submodule.span_le]
+  rintro _ ⟨p, hp, q, hq, rfl⟩
+  exact (selfAdjoint.submodule ℝ _).sub_mem (rankOneSet_subset_selfAdjoint a hp)
+    (rankOneSet_subset_selfAdjoint a hq)
+
 omit [DecidableEq ι] in
-/-- **Every design can be replaced by one with at most `2m² + 1` points and the same Gram
+/-- **Every design can be replaced by one with at most `m² + 1` points and the same Gram
 matrix.**
 
 By Carathéodory's theorem the Gram matrix, a point of the convex hull of the rank-one
-matrices, is already a convex combination of affinely independent ones, and an affinely
-independent family in the real vector space of complex `m × m` matrices has at most
-`2m² + 1` members. -/
+matrices, is already a convex combination of affinely independent ones.  These are
+Hermitian, and an affinely independent family in the real vector space of Hermitian
+`m × m` matrices, of dimension `m²` (`Matrix.finrank_selfAdjoint_submodule`), has at most
+`m² + 1` members. -/
 theorem exists_design_card_le (a : Ω → ι → ℂ) {n : ℕ} (x : Fin n → Ω) {w : Fin n → ℝ}
     (hw : ∀ k, 0 ≤ w k) (hw1 : ∑ k, w k = 1) :
-    ∃ (M : ℕ) (x' : Fin M → Ω) (w' : Fin M → ℝ), M ≤ 2 * Fintype.card ι ^ 2 + 1 ∧
+    ∃ (M : ℕ) (x' : Fin M → Ω) (w' : Fin M → ℝ), M ≤ Fintype.card ι ^ 2 + 1 ∧
       (∀ k, 0 ≤ w' k) ∧ ∑ k, w' k = 1 ∧ designGram a x' w' = designGram a x w := by
   classical
   obtain ⟨κ, _, z, v, hzs, hai, hv0, hv1, hsum⟩ :=
     eq_pos_convex_span_of_mem_convexHull (designGram_mem_convexHull a x hw hw1)
-  have hdim : Module.finrank ℝ (Matrix ι ι ℂ) = 2 * Fintype.card ι ^ 2 := by
-    rw [Module.finrank_matrix, Complex.finrank_real_complex]; ring
-  have hcard : Fintype.card κ ≤ 2 * Fintype.card ι ^ 2 + 1 := by
-    refine le_trans (le_trans hai.card_le_finrank_succ
-      (Nat.add_le_add_right (Submodule.finrank_le _) 1)) ?_
-    rw [hdim]
+  -- the affinely independent matrices are Hermitian, a real space of dimension `m²`
+  have hspan : vectorSpan ℝ (Set.range z) ≤ selfAdjoint.submodule ℝ (Matrix ι ι ℂ) :=
+    (vectorSpan_mono ℝ hzs).trans (vectorSpan_rankOneSet_le_selfAdjoint a)
+  have hcard : Fintype.card κ ≤ Fintype.card ι ^ 2 + 1 := by
+    refine le_trans hai.card_le_finrank_succ (Nat.add_le_add_right ?_ 1)
+    rw [← Matrix.finrank_selfAdjoint_submodule ι]
+    exact Submodule.finrank_mono hspan
   choose y hy using fun i => Set.range_subset_iff.1 hzs i
   set e := Fintype.equivFin κ
   refine ⟨Fintype.card κ, fun k => y (e.symm k), fun k => v (e.symm k), hcard,

@@ -8,6 +8,7 @@ module
 public import BasicResults.SqrtConjugation
 public import BasicResults.IntegralQuadraticForm
 public import BasicResults.CompactConvexHull
+public import BasicResults.SelfAdjointDimension
 public import BasicResults.Matrix.LoewnerOrder
 public import BasicResults.Matrix.TraceInequalities
 public import BasicResults.Matrix.PotentialBounds
@@ -45,6 +46,9 @@ a second family in a Hilbert space needs.
   quadratic form along a square-integrable family is the trace against its Gram matrix.
 * `BasicResults.CompactConvexHull`: in finite dimension the convex hull of a compact set is
   compact, by Carathéodory's theorem.
+* `BasicResults.SelfAdjointDimension`: the self-adjoint elements of a complex star module form
+  a real vector space of dimension `dim_ℂ A`; the Hermitian `m × m` matrices have real
+  dimension `m²`.
 * `BasicResults.Matrix.LoewnerOrder`: comparisons with multiples of the identity.  A Hermitian
   matrix is below `c • 1` once `c` bounds its eigenvalues, a positive semidefinite matrix is
   below `(Re Tr A) • 1`, the inverse is antitone, and `A - δ • 1` stays positive definite for

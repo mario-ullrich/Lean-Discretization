@@ -47,7 +47,7 @@ exactly as it does without it. Build these modules with `lake build Palomar`.
   `Discretization.bss_lower_equal_weights`,
   `Discretization.exists_one_sided_discretization` and
   `Discretization.exists_lp_discretization`.
-* `Palomar/KieferWolfowitz/`: the Kiefer–Wolfowitz theorem, with at most `2m² + 1` points
+* `Palomar/KieferWolfowitz/`: the Kiefer–Wolfowitz theorem, with at most `m² + 1` points
   for an `m`-dimensional space, on an arbitrary set and on a compact domain; advertising
   `Discretization.KieferWolfowitz.exists_optimal_design_card_le` and
   `Discretization.KieferWolfowitz.exists_optimal_design_of_compact_card_le`.

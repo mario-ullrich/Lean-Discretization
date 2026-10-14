@@ -31,8 +31,8 @@ small loss on a general domain:
   `|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²`
 
 for every point `y ∈ Ω` and every `f ∈ V`. On a compact domain and for continuous functions
-the same holds with `ε = 0`. In both cases at most `2m² + 1` points are needed, by
-Carathéodory's theorem applied to the Gram matrices of designs.
+the same holds with `ε = 0`. In both cases at most `m² + 1` points are needed, by
+Carathéodory's theorem applied to the Gram matrices of designs, which are Hermitian.
 
 The measure is one whose Gram matrix has an almost maximal determinant.
 
@@ -79,7 +79,7 @@ variable {Ω ι : Type*} [Fintype ι] [DecidableEq ι]
 /-- **The Kiefer–Wolfowitz theorem, with the number of points bounded.**
 
 For linearly independent bounded functions `a₁, …, a_m` on an arbitrary set and every
-`ε > 0` there is a design of at most `2m² + 1` points, that is a finitely supported
+`ε > 0` there is a design of at most `m² + 1` points, that is a finitely supported
 probability measure `∑ₖ wₖ δ(xₖ)` with invertible Gram matrix, such that
 
 `|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²`
@@ -89,7 +89,7 @@ Proposition 9 of Krieg, Pozharska, Ullrich and Ullrich. -/
 theorem exists_optimal_design_card_le [Nonempty ι] (a : Ω → ι → ℂ) {C : ℝ}
     (hC : ∀ y i, ‖a y i‖ ≤ C) (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0)
     {ε : ℝ} (hε : 0 < ε) :
-    ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ 2 * Fintype.card ι ^ 2 + 1 ∧
+    ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ Fintype.card ι ^ 2 + 1 ∧
       (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧ (designGram a x w).PosDef ∧
       ∀ (c : ι → ℂ) (y : Ω),
         ‖star c ⬝ᵥ a y‖ ^ 2 ≤ (Fintype.card ι + ε) * ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2 :=
@@ -99,7 +99,7 @@ theorem exists_optimal_design_card_le [Nonempty ι] (a : Ω → ι → ℂ) {C :
 points bounded.
 
 For linearly independent continuous functions `a₁, …, a_m` on a compact space there is a
-design of at most `2m² + 1` points with
+design of at most `m² + 1` points with
 
 `|f(y)|² ≤ m · ∑ₖ wₖ |f(xₖ)|²`
 
@@ -107,7 +107,7 @@ for every point `y` and every `f` in the span: the bound above with `ε = 0`. -/
 theorem exists_optimal_design_of_compact_card_le [Nonempty ι] [TopologicalSpace Ω]
     [CompactSpace Ω] (a : Ω → ι → ℂ) (hcont : ∀ i, Continuous fun y => a y i)
     (hli : ∀ c : ι → ℂ, (∀ y, star c ⬝ᵥ a y = 0) → c = 0) :
-    ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ 2 * Fintype.card ι ^ 2 + 1 ∧
+    ∃ (n : ℕ) (x : Fin n → Ω) (w : Fin n → ℝ), n ≤ Fintype.card ι ^ 2 + 1 ∧
       (∀ k, 0 ≤ w k) ∧ ∑ k, w k = 1 ∧ (designGram a x w).PosDef ∧
       ∀ (c : ι → ℂ) (y : Ω),
         ‖star c ⬝ᵥ a y‖ ^ 2 ≤ Fintype.card ι * ∑ k, w k * ‖star c ⬝ᵥ a (x k)‖ ^ 2 :=

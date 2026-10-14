@@ -1337,7 +1337,7 @@ $\Omega$ whose Gram matrix $\int_\Omega a(y) a(y)^* \, d\varrho(y)
 for every $y \in \Omega$ and every $f \in \operatorname{span}\{a_k\}$. If $\Omega$ is a
 compact space whose $\sigma$-algebra contains the open sets and the $a_k$ are continuous,
 the same holds with $\varepsilon = 0$. In both cases $\varrho$ can be taken with at most
-$N = 2m^2 + 1$ atoms.
+$N = m^2 + 1$ atoms.
 \end{theorem}
 
 The proof is given in \Cref{sec:optimal-design-proof}. Thinning the measure with
@@ -1594,7 +1594,7 @@ The number of points can be cut down without changing the Gram matrix.
 \leanok
 Let $\Omega$ be a set, let $\iota$ be a finite set with $m = \#\iota$ elements and let
 $a : \Omega \to \mathbb{C}^{\iota}$. For all points $x_1, \dots, x_N \in \Omega$ and weights
-$w_1, \dots, w_N \geq 0$ with $\sum_k w_k = 1$ there are at most $2m^2 + 1$ points
+$w_1, \dots, w_N \geq 0$ with $\sum_k w_k = 1$ there are at most $m^2 + 1$ points
 $y_j \in \Omega$ and weights $v_j \geq 0$ with $\sum_j v_j = 1$ and
 $\sum_j v_j \, a(y_j) a(y_j)^* = \sum_k w_k \, a(x_k) a(x_k)^*$.
 \end{lemma}
@@ -1602,9 +1602,11 @@ $\sum_j v_j \, a(y_j) a(y_j)^* = \sum_k w_k \, a(x_k) a(x_k)^*$.
 \begin{proof}
 \leanok
 The Gram matrix lies in the convex hull of the matrices $a(y) a(y)^*$, so by
-Carath\'eodory's theorem it is a convex combination of affinely independent ones, and an
-affinely independent family in the real vector space $\mathbb{C}^{\iota \times \iota}$,
-whose real dimension is $2m^2$, has at most $2m^2 + 1$ members.
+Carath\'eodory's theorem it is a convex combination of affinely independent ones. These
+matrices are Hermitian, and the Hermitian matrices in $\mathbb{C}^{\iota \times \iota}$ form
+a real vector space of dimension $m^2$, since every complex matrix is uniquely $H + iK$
+with $H$ and $K$ Hermitian. An affinely independent family in it has at most $m^2 + 1$
+members.
 \end{proof}
 
 \begin{proof}[Proof of \Cref{thm:optimal-design}]
@@ -1619,7 +1621,7 @@ $s^{-1} a(y) a(y)^*$ from $G$ leaves a positive definite matrix by
 the coefficient vector $c$ of $f$, with $c^* G c = \sum_k w_k |f(x_k)|^2$, gives
 $|f(y)|^2 \leq s \sum_k w_k |f(x_k)|^2$. This inequality depends on the design only through
 its Gram matrix, which \Cref{lem:few-design-points} preserves while cutting the design down
-to $2m^2 + 1$ points. Read as the measure $\varrho = \sum_k w_k \delta_{x_k}$, the design
+to $m^2 + 1$ points. Read as the measure $\varrho = \sum_k w_k \delta_{x_k}$, the design
 gives the theorem: integration against $\varrho$ is the weighted sum over the points, for
 every measurable integrand.
 

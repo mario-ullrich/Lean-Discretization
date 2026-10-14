@@ -90,6 +90,13 @@ the operator layer is stated over `ℂ`. Grouped by topic, with the main declara
   compactness only of the closure. The proof needs no norm, only continuity of the
   vector space operations, which is what lets it apply to spaces such as
   `Matrix ι ι ℂ`, whose norms are all scoped.
+* **The real dimension of the self-adjoint elements**
+  (`BasicResults/SelfAdjointDimension.lean`): in a complex star module the self-adjoint
+  elements form a real vector space of dimension `dim_ℂ A`
+  (`finrank_selfAdjoint_submodule`), so the Hermitian `m × m` matrices have real
+  dimension `m²` (`Matrix.finrank_selfAdjoint_submodule`). The step added to Mathlib's
+  `StarModule.decomposeProdAdjoint` is that multiplication by `i` maps the self-adjoint
+  elements onto the skew-adjoint ones (`selfAdjointEquivSkewAdjoint`).
 * **Quadratic forms and sums of squares** (`BasicResults/Matrix/QuadraticForm.lean`): the
   quadratic form of a weighted sum of rank-one matrices is the corresponding weighted
   sum of squared moduli (`Discretization.re_dotProduct_sum_mulVec`), and the quadratic

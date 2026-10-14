@@ -20,7 +20,7 @@ checks that it is the same declaration, body included, in both modules.
 Nothing is declared here. The advertised statements
 
 * `Discretization.KieferWolfowitz.exists_optimal_design_card_le`:
-  `|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²` for a design of at most `2m² + 1` points,
+  `|f(y)|² ≤ (m + ε) · ∑ₖ wₖ |f(xₖ)|²` for a design of at most `m² + 1` points,
 * `Discretization.KieferWolfowitz.exists_optimal_design_of_compact_card_le`: the
   same with `ε = 0` for continuous functions on a compact domain,
 
@@ -38,8 +38,9 @@ giving a further point `y` the weight `α` yields such a measure again, and the 
 determinant lemma says exactly what that does to the determinant. Almost maximality bounds
 that factor, and Bernoulli's inequality with the explicit weight `α = (t-m)/(2m(t-1))` turns
 the bound into `t ≤ m + ε` for `t = a(y)* G⁻¹ a(y)`, uniformly in `y`. On a compact domain
-the maximum is attained and the same argument gives `t ≤ m`. Carathéodory's theorem then
-replaces any design by one with at most `2m² + 1` points and the same Gram matrix.
+the maximum is attained and the same argument gives `t ≤ m`. Carathéodory's theorem in the
+real vector space of Hermitian matrices, of dimension `m²`, then replaces any design by one
+with at most `m² + 1` points and the same Gram matrix.
 -/
 
 @[expose] public section
