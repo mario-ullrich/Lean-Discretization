@@ -5,24 +5,20 @@ version: "v0.4"
 project:
   name: "A discretization theorem of Batson, Spielman and Srivastava type"
   description: >-
-    Given a measure space, a finite family a = (aₖ) of m square-integrable functions and a
-    square-integrable map b into a separable Hilbert space, one can select n points and
-    positive weights, for every n ≥ m, so that the first family stays a frame from below
-    and b stays a frame from above, with the constants (1 − √((m−1)/n))² and
-    (1 + √((M−1)/n))² Λ. Here Λ bounds the Gram operator J = ∫ b(x) b(x)* dμ(x) and
-    M = ∫ ‖b‖² dμ / Λ is its effective dimension. What the number of points depends on
-    is M, not the dimension of the space, which is what makes the theorem applicable to
-    infinite families and to reproducing kernel Hilbert spaces, and why its constants
-    beat those obtainable from the theorem of Kadison and Singer. For a = b with Gram
-    matrix the identity, M equals m and the statement is the sparsification theorem of
-    Batson, Spielman and Srivastava with m − 1 in place of m. Formalized as an inequality
-    between matrices, or operators, in the Loewner order and as a discretization
-    inequality for the L₂ norm; the second family is a finite family or a
-    square-integrable map into a separable Hilbert space, and the L₂ inequality is stated
-    for a reproducing kernel Hilbert space H with M = ∫ K(x, x) dμ / Λ:
+    Let (Ω, μ) be a measure space, a = (aₖ) a family of m square-integrable functions with
+    positive definite Gram matrix I = ∫ a a* dμ, and b a square-integrable map into a
+    separable Hilbert space whose Gram operator J = ∫ b b* dμ is injective and bounded by
+    Λ. With the effective dimension M = ∫ ‖b‖² dμ / Λ, for every n ≥ m there are points
+    x₁, …, xₙ ∈ Ω and weights wᵢ > 0 with
+    (1 − √((m−1)/n))² I ≼ ∑ᵢ wᵢ a(xᵢ) a(xᵢ)* and ∑ᵢ wᵢ b(xᵢ) b(xᵢ)* ≼ (1 + √((M−1)/n))² Λ
+    in the Loewner order. The number of points depends on M, not on the dimension of the
+    Hilbert space. For a reproducing kernel Hilbert space H, with M = ∫ K(x, x) dμ / Λ,
+    this is a discretization of the L₂ norm:
     (1 − √((m−1)/n))² ∫ |f|² dμ ≤ ∑ᵢ wᵢ |f(xᵢ)|² for f in the span of a, and
-    ∑ᵢ wᵢ |g(xᵢ)|² ≤ (1 + √((M−1)/n))² Λ ‖g‖²_H for g ∈ H. There is no side condition
-    beyond n ≥ m.
+    ∑ᵢ wᵢ |g(xᵢ)|² ≤ (1 + √((M−1)/n))² Λ ‖g‖²_H for g ∈ H.
+    Both forms are also formalized for a finite second family. The theorem generalizes the
+    sparsification theorem of Batson, Spielman and Srivastava, the case b = a with I the
+    identity.
   authors:
     - "Mario Ullrich"
   license: "Apache-2.0"
@@ -45,10 +41,8 @@ sources:
     location: "https://arxiv.org/abs/2602.18719"
     relationship: "formalizes"
     note: >-
-      Theorem 3 is the discretization theorem formalized here, for a finite second
-      family and for a map into a separable Hilbert space, and Corollary 4 the
-      discretization inequality, for finite families and for a reproducing kernel
-      Hilbert space; its proof is the one followed.
+      Theorem 3 and Corollary 4 are formalized here, each for a finite second family and
+      for a second family in a Hilbert space; the proof of the paper is the one followed.
     author_endorsement: "participated"
   - title: "Twice-Ramanujan sparsifiers"
     authors:
@@ -60,27 +54,25 @@ sources:
     location: "https://doi.org/10.1137/130949117"
     relationship: "background"
     note: >-
-      SIAM Review 56 (2014), no. 2, 315–334. The original potential-function
-      argument, for a single family with Gram matrix the identity and the constants
-      (1 ∓ √(m/n))².
+      SIAM Review 56 (2014), no. 2, 315–334. The original potential-function argument,
+      for a single family with Gram matrix the identity.
 
-related_formalizations: []
+related_formalizations:
+  - id: "PALOMAR-2026-10-14-000002"
+    relationship: "other"
+    note: >-
+      The sparsification theorem of Batson, Spielman and Srivastava, registered from the
+      same repository and development. Its theorems are the case b = a with Gram matrix
+      the identity of the frame bounds formalized here, obtained from a similar
+      construction.
 
 status:
   scope: >-
     Formalized and advertised: Discretization.bss_generalized and
     Discretization.Infinite.bss_generalized, the frame bounds for a finite second family
-    and for a map into a separable Hilbert space; Discretization.exists_discretization,
-    the discretization inequality for finite families; and
-    Discretization.RKHS.exists_discretization, the discretization of the L₂-norm from
-    below and of the norm of a reproducing kernel Hilbert space from above. None of the
-    four carries a side condition beyond n ≥ m.
-
-    Proved in the repository but not advertised here: the bound
-    ∑ᵢ wᵢ |⟨u, b(xᵢ)⟩|² ≤ (1 + √((M−1)/n))² Λ ‖u‖² for a general map b
-    (Discretization.Infinite.exists_discretization), and the theorem for a countable family
-    (bₖ) with its Gram matrix, in the indexing of the source and with nothing assumed
-    pointwise (Discretization.Countable.bss_generalized).
+    and for a map into a separable Hilbert space; Discretization.exists_discretization and
+    Discretization.RKHS.exists_discretization, the discretization inequalities for finite
+    families and for a reproducing kernel Hilbert space. All four hold for every n ≥ m.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -116,33 +108,15 @@ automation:
 
 fidelity:
   divergences: >-
-    The lower frame bound of the source is stated with the factor λ_min(I) for the
-    Gram matrix I of the first family; the formalization states the equivalent
-    Loewner inequality (1 − √((m−1)/n))² I ≼ ∑ᵢ wᵢ a(xᵢ) a(xᵢ)*, from which the
-    eigenvalue form follows.
+    The source states the lower frame bound as (1 − √((m−1)/n))² λ_min(I); the
+    formalization states the Loewner inequality (1 − √((m−1)/n))² I ≼ ∑ᵢ wᵢ a(xᵢ) a(xᵢ)*,
+    from which it follows. J is bounded by any Λ > 0 where the source takes λ_max(J).
 
-    Traces of the matrices involved are real, and the formalization takes real parts
-    explicitly with RCLike.re wherever a real number is needed.
-
-    For an infinite second family the source works with a family (bₖ) indexed by a
-    countable set. The advertised form takes a single square-integrable map b into a
-    nonzero separable Hilbert space H with its Gram operator J = ∫ b(x) b(x)* dμ(x),
-    a Bochner integral of rank-one operators; a family (bₖ) is the case H = ℓ², and
-    that form is proved as well (Discretization.Countable.bss_generalized).
-    Positivity of J and the finiteness of its trace follow from its definition, and
-    the effective dimension is M = ∫ ‖b‖² dμ / Λ, which equals the trace of J along
-    any Hilbert basis. Positive definiteness of the Gram matrix is replaced by
-    injectivity of J, which is the correct hypothesis in infinite dimension because a
-    positive operator of finite trace is compact and hence never bounded away from
-    zero.
-
-    In the corollary for a reproducing kernel Hilbert space, the space enters as a
-    Hilbert space H with a linear map φ : H → (Ω → ℂ) whose point evaluations are
-    continuous, φ g x being the value of g at x. The kernel enters through
-    K(x, x) = ‖kₓ‖², where the kernel section kₓ is the Riesz representer of evaluation
-    at x. Measurability of x ↦ kₓ follows from the measurability of the functions of H
-    and the separability of H. The source states the corollary with an orthonormal
-    basis of H as second family; the kernel sections need no basis.
+    For an infinite second family the source takes a countable family (bₖ); the
+    formalization takes a map b into a separable Hilbert space with the Bochner integral
+    J = ∫ b b* dμ as Gram operator, and (bₖ) is the case H = ℓ²
+    (Discretization.Countable.bss_generalized). Injectivity of J takes the place of
+    positive definiteness: J has finite trace, so it is compact and not bounded below.
 
 review:
   status: "self-assessed"
@@ -160,37 +134,30 @@ alignment:
       lean: "Discretization.bss_generalized"
       module: "Discretization.GeneralGram"
       status: "proved"
-      note: >-
-        The frame bounds with the lower one against the Gram matrix of the first
-        family, for a finite second family, with no side condition beyond n ≥ m.
+      note: "The frame bounds for a finite second family, with M = Tr J / Λ."
     - source: "Constructive discretization and approximation in RKHS, Corollary 4, finite second family"
       lean: "Discretization.exists_discretization"
       module: "Discretization.NormDiscretization"
       status: "proved"
       note: >-
-        The same statement read through quadratic forms, for a first family with
-        positive definite Gram matrix; the upper bound is stated with the coefficient
-        norm of g.
+        The same read through quadratic forms; the upper bound uses the coefficient norm
+        of g.
     - source: "Constructive discretization and approximation in RKHS, Theorem 3"
       lean: "Discretization.Infinite.bss_generalized"
       module: "Discretization.Infinite.GeneralGram"
       status: "proved"
       note: >-
-        For a second family with values in a separable Hilbert space; the upper frame
-        bound is an inequality between operators, and the number of points is
-        unchanged, being governed by the effective dimension M = ∫ ‖b‖² dμ / Λ.
+        The frame bounds for b with values in a separable Hilbert space, the upper one
+        between operators.
     - source: "Constructive discretization and approximation in RKHS, Corollary 4"
       lean: "Discretization.RKHS.exists_discretization"
       module: "Discretization.Infinite.RKHS"
       status: "proved"
       note: >-
-        The discretization of the L₂-norm on the span of the first family from below
-        and of the norm of a reproducing kernel Hilbert space H from above, with
-        M = ∫ K(x, x) dμ / Λ and Λ the squared norm of the embedding H → L₂(μ).
+        The L₂ norm on the span of a from below and the norm of H from above, with
+        M = ∫ K(x, x) dμ / Λ.
 
 acknowledgements: >-
-  Built on Mathlib. The Challenge module reproduces the definition Discretization.gram
-  from the development in BasicResults/IntegralQuadraticForm.lean and the definitions
-  Discretization.RKHS.evalCLM and Discretization.RKHS.kernelSection from
-  Discretization/Infinite/RKHS.lean, so that the advertised statements can be read
-  against Mathlib alone.
+  Built on Mathlib. The Challenge module reproduces the definitions Discretization.gram,
+  Discretization.RKHS.evalCLM and Discretization.RKHS.kernelSection from the
+  development, so that the advertised statements can be read against Mathlib alone.
