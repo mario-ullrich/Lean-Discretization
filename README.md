@@ -16,6 +16,13 @@ discretizing that measure gives `n ≥ m` points that control the uniform norm.
   <https://mario-ullrich.github.io/Lean-Discretization/blueprint.pdf>
 * **Dependency graph**:
   <https://mario-ullrich.github.io/Lean-Discretization/dep_graph_document.html>
+* **Palomar registry**: the sparsification theorem of Batson, Spielman and Srivastava
+  is registered as
+  [PALOMAR-2026-10-14-000002](https://palomar-registry.org/entry?id=PALOMAR-2026-10-14-000002&version=1).
+  The registry re-ran the proof at commit
+  [`209d4bf`](https://github.com/mario-ullrich/Lean-Discretization/tree/209d4bf72bec56fa7b181a24dacb8570b10a6986)
+  against Lean `v4.35.0-rc2` and Mathlib `0653561`, and verified the declarations
+  `Discretization.bss` and `Discretization.bss_of_sum_eq_one`.
 
 ## Main results
 
