@@ -10,7 +10,7 @@ project:
     which the uniform norm on V is dominated by the L₂(ϱ) norm with the constant
     √(m + ε): |f(y)|² ≤ (m + ε) ∑ₖ wₖ |f(xₖ)|² for every y ∈ Ω and every f ∈ V.
     For continuous functions on a compact domain the same holds with ε = 0. In both
-    cases at most 2m² + 1 points are needed. The measure is one whose Gram matrix has an
+    cases at most m² + 1 points are needed. The measure is one whose Gram matrix has an
     almost maximal determinant.
   authors:
     - "Mario Ullrich"
@@ -34,8 +34,10 @@ sources:
     location: "https://doi.org/10.1016/j.jmaa.2025.129873"
     relationship: "formalizes"
     note: >-
-      J. Math. Anal. Appl. 553 (2026), no. 2, Paper No. 129873. Proposition 9 is the
-      statement formalized here, and its proof is the one followed.
+      J. Math. Anal. Appl. 553 (2026), no. 2, Paper No. 129873. Proposition 9, with its
+      compact case, is the statement formalized here. The proof follows the paper with a
+      near-maximiser of the Gram determinant over designs in place of a maximiser in the
+      closure of their Gram matrices.
     author_endorsement: "participated"
   - title: "The equivalence of two extremum problems"
     authors:
@@ -57,13 +59,7 @@ status:
     with the constant m + ε on an arbitrary set, and
     Discretization.KieferWolfowitz.exists_optimal_design_of_compact_card_le,
     the same with ε = 0 for continuous functions on a compact domain. Both give a
-    design of at most 2m² + 1 points whose Gram matrix is positive definite.
-
-    Proved in the repository but not advertised here: the statement for the measure
-    ϱ = ∑ₖ wₖ δ(xₖ) itself (exists_optimal_measure, exists_optimal_measure_of_compact),
-    the reduction of any design to at most 2m² + 1 points with the same Gram matrix
-    (exists_design_card_le), and John's decomposition of the identity over the design
-    points (sum_weight_smul_quadForm_inv_eq_self).
+    design of at most m² + 1 points whose Gram matrix is positive definite.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -99,25 +95,8 @@ automation:
 
 fidelity:
   divergences: >-
-    Linear independence of the functions is stated as the separating condition
-    "for every coefficient vector c, if ⟨c, a(y)⟩ vanishes for every y then c = 0",
-    which the development identifies with LinearIndependent over the complex numbers
-    (linearIndependent_iff_forall_star). Boundedness is stated as one constant C bounding
-    every value |aᵢ(y)|.
-
-    The design is given as points x₁, …, x_N with weights w₁, …, w_N rather
-    than as a measure. The measure form is proved in the repository as
-    exists_optimal_measure, with the identity relating its Gram
-    matrix to the Gram matrix of the points and weights.
-
-    On a general domain the proof does not use a maximiser. Instead of maximising the
-    determinant over the compact convex hull of the rank-one matrices, it takes a
-    near-maximiser of the supremum of the determinants; the perturbation is computed
-    exactly by the matrix determinant lemma, and the first-order condition is replaced
-    by Bernoulli's inequality with the explicit weight α = (t − m)/(2m(t − 1)). This
-    avoids both a Jacobi formula and the compactness of a convex hull, neither of
-    which Mathlib has. On a compact domain the maximum is attained and the same
-    computation gives the bound with ε = 0.
+    Proposition 9 bounds the number of points by dim span{f ḡ : f, g ∈ V} + 1, which is
+    at most m² + 1 and smaller for particular spaces; the formalization states m² + 1.
 
 review:
   status: "self-assessed"
@@ -135,16 +114,12 @@ alignment:
       lean: "Discretization.KieferWolfowitz.exists_optimal_design_card_le"
       module: "Discretization.KieferWolfowitz.PointCount"
       status: "proved"
-      note: >-
-        The bound with the constant m + ε on an arbitrary set, with at most
-        2m² + 1 points.
+      note: "The bound with the constant m + ε on an arbitrary set, with at most m² + 1 points."
     - source: "Sampling projections in the uniform norm, Proposition 9, compact case"
       lean: "Discretization.KieferWolfowitz.exists_optimal_design_of_compact_card_le"
       module: "Discretization.KieferWolfowitz.PointCount"
       status: "proved"
-      note: >-
-        The same with ε = 0 for continuous functions on a compact domain, with at
-        most 2m² + 1 points.
+      note: "The same with ε = 0 for continuous functions on a compact domain."
 
 acknowledgements: >-
   Built on Mathlib. The Challenge module reproduces the definition

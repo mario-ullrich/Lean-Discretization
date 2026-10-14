@@ -8,15 +8,12 @@ project:
     On an m-dimensional space V of bounded functions on an arbitrary set Ω, for every
     ε > 0 and every n ≥ m, there are points x₁, …, xₙ ∈ Ω, not necessarily distinct, with
     |f(y)|² ≤ (m + ε) / (1 − √((m−1)/n))² · (1/n) ∑ᵢ |f(xᵢ)|² for every y ∈ Ω and every
-    f ∈ V: the uniform norm is dominated by the discrete ℓ₂ norm of n sample values. An
-    average is at most its largest term, so the same points give
-    |f(y)|² ≤ (m + ε) / (1 − √((m−1)/n))² · maxᵢ |f(xᵢ)|². For continuous functions on a
-    compact domain both hold with ε = 0. For n = 2m the first bound is
-    ‖f‖_∞ ≤ (1 + √2) √(1 + ε/m) (∑ᵢ |f(xᵢ)|²)^{1/2}, where Krieg, Pozharska, Ullrich and
-    Ullrich have the constant 42, and the second is
-    ‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)|. The points are obtained by thinning the
-    measure of the Kiefer–Wolfowitz theorem with a one-sided discretization of the L₂
-    norm with equal weights.
+    f ∈ V, and hence |f(y)|² ≤ (m + ε) / (1 − √((m−1)/n))² · maxᵢ |f(xᵢ)|². For
+    continuous functions on a compact domain both hold with ε = 0. For n = 2m the first
+    bound is ‖f‖_∞ ≤ (1 + √2) √(1 + ε/m) (∑ᵢ |f(xᵢ)|²)^{1/2}, where Krieg, Pozharska,
+    Ullrich and Ullrich have the constant 42. The points thin out the measure of the
+    Kiefer–Wolfowitz theorem by a one-sided discretization of the L₂ norm with equal
+    weights.
   authors:
     - "Mario Ullrich"
   license: "Apache-2.0"
@@ -39,12 +36,8 @@ sources:
     location: "https://arxiv.org/abs/2602.18719"
     relationship: "formalizes"
     note: >-
-      Proposition 8 for p = ∞ is the statement formalized here, together with the bound
-      by the largest sample value that the paper derives from it for n = 2m; its proof,
-      the Kiefer–Wolfowitz measure thinned by the one-sided discretization with weights
-      1/n, is the one followed. The cases 2 ≤ p < ∞ are
-      Discretization.exists_one_sided_discretization and
-      Discretization.exists_lp_discretization of the repository.
+      Proposition 8 for p = ∞ is formalized here, with the bound by the largest sample
+      value that the paper derives from it for n = 2m; its proof is the one followed.
     author_endorsement: "participated"
   - title: "Sampling projections in the uniform norm"
     authors:
@@ -58,10 +51,9 @@ sources:
     relationship: "background"
     note: >-
       J. Math. Anal. Appl. 553 (2026), no. 2, Paper No. 129873. Theorem 2 bounds the
-      uniform norm by 2m sample values, ‖f‖_∞ ≤ 42 (∑ᵢ |f(xᵢ)|²)^{1/2}, read there also
-      as ‖f‖_∞ ≤ c √m maxᵢ |f(xᵢ)| with c = 42√2. Proposition 9, the Kiefer–Wolfowitz
-      theorem on an arbitrary set, is the measure the proof starts from
-      (Discretization.KieferWolfowitz.exists_optimal_measure).
+      uniform norm by 2m sample values with the constant 42, and Proposition 9, the
+      Kiefer–Wolfowitz theorem on an arbitrary set, supplies the measure the proof starts
+      from.
     author_endorsement: "participated"
   - title: "Deterministic and stochastic error bounds in numerical analysis"
     authors:
@@ -70,8 +62,8 @@ sources:
     location: "Lecture Notes in Mathematics 1349, Springer-Verlag, Berlin, 1988"
     relationship: "background"
     note: >-
-      Lemma 1.2.2, a form of Auerbach's lemma with function values, bounds the uniform
-      norm by the largest of n = m sample values, ‖f‖_∞ ≤ (m + ε) maxᵢ |f(xᵢ)|.
+      Lemma 1.2.2 bounds the uniform norm by the largest of m sample values,
+      ‖f‖_∞ ≤ (m + ε) maxᵢ |f(xᵢ)|.
   - title: "The equivalence of two extremum problems"
     authors:
       - "Jack Kiefer"
@@ -80,8 +72,7 @@ sources:
     location: "https://doi.org/10.4153/CJM-1960-030-4"
     relationship: "background"
     note: >-
-      Canad. J. Math. 12 (1960), 363–366. The equivalence theorem for optimal designs,
-      the source of the measure that is thinned here.
+      Canad. J. Math. 12 (1960), 363–366. The origin of the measure that is thinned here.
 
 related_formalizations: []
 
@@ -128,19 +119,14 @@ automation:
 
 fidelity:
   divergences: >-
-    The source states (1 − √(m/n)) ‖f‖_∞ ≤ √m ((1/n) ∑ᵢ |f(xᵢ)|²)^{1/2}, without ε and
-    with the factor 1/(2m) in place of 1 − √(m/n) for n = m. The formalization keeps the
-    m + ε of the Kiefer–Wolfowitz measure on an arbitrary set and the 1 − √((m−1)/n) of
-    the source's proof, and states the bound for squared values. Since
-    1 − √((m−1)/n) > max(1 − √(m/n), 1/(2m)) strictly, a small enough ε gives the bound
-    of the source for every n ≥ m; on a compact domain ε = 0 is formalized directly.
+    The source states (1 − √(m/n)) ‖f‖_∞ ≤ √m ((1/n) ∑ᵢ |f(xᵢ)|²)^{1/2}, with 1/(2m) in
+    place of 1 − √(m/n) for n = m. The formalization keeps the m + ε of the
+    Kiefer–Wolfowitz measure on an arbitrary set and the factor 1 − √((m−1)/n) of the
+    source's proof, which exceeds both, and states squared values; a small enough ε gives
+    the source's bound, and on a compact domain ε = 0 is formalized directly.
 
     The bound by the largest sample value is stated for every n ≥ m, where the source
-    displays it for n = 2m; the maximum is written as the supremum ⨆ i over the n
-    points. The source takes a space V_m of dimension m; the formalization takes m
-    bounded functions whose linear independence is stated as "⟨c, a(y)⟩ = 0 for every y
-    only for c = 0", writes the functions of the span as f(y) = ⟨c, a(y)⟩, bounds the
-    functions by one constant C, and takes complex scalars.
+    displays it for n = 2m.
 
 review:
   status: "self-assessed"
@@ -158,9 +144,7 @@ alignment:
       lean: "Discretization.exists_uniform_discretization_by_l2"
       module: "Discretization.UniformDiscretization"
       status: "proved"
-      note: >-
-        The uniform norm by the discrete ℓ₂ norm of n ≥ m sample values on an arbitrary
-        set, with the constant (m + ε) / (1 − √((m−1)/n))²; see fidelity.divergences.
+      note: "The bound by the discrete ℓ₂ norm of n ≥ m sample values on an arbitrary set."
     - source: "Constructive discretization and approximation in RKHS, Proposition 8, p = ∞, compact domain"
       lean: "Discretization.exists_uniform_discretization_of_compact_by_l2"
       module: "Discretization.UniformDiscretization"
@@ -172,8 +156,8 @@ alignment:
       module: "Discretization.UniformDiscretization"
       status: "proved"
       note: >-
-        The uniform norm by the largest of n ≥ m sample values; for n = 2m it is the
-        bound ‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)| that the source states with √m.
+        The bound by the largest of n ≥ m sample values; for n = 2m,
+        ‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)|.
     - source: "Constructive discretization and approximation in RKHS, Proposition 8, p = ∞, by the largest sample value, compact domain"
       lean: "Discretization.exists_uniform_discretization_of_compact_by_max"
       module: "Discretization.UniformDiscretization"
