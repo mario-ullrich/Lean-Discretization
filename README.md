@@ -16,13 +16,6 @@ discretizing that measure gives `n ≥ m` points that control the uniform norm.
   <https://mario-ullrich.github.io/Lean-Discretization/blueprint.pdf>
 * **Dependency graph**:
   <https://mario-ullrich.github.io/Lean-Discretization/dep_graph_document.html>
-* **Palomar registry**: the sparsification theorem of Batson, Spielman and Srivastava
-  is registered as
-  [PALOMAR-2026-10-14-000002](https://palomar-registry.org/entry?id=PALOMAR-2026-10-14-000002&version=1).
-  The registry re-ran the proof at commit
-  [`209d4bf`](https://github.com/mario-ullrich/Lean-Discretization/tree/209d4bf72bec56fa7b181a24dacb8570b10a6986)
-  against Lean `v4.35.0-rc2` and Mathlib `0653561`, and verified the declarations
-  `Discretization.bss` and `Discretization.bss_of_sum_eq_one`.
 
 ## Main results
 
@@ -45,72 +38,38 @@ with
 ∑ wᵢ b(xᵢ) b(xᵢ)*      ≤  (1 + √((M-1)/n))² Λ • 1  (upper frame bound)
 ```
 
-in the Loewner order, with no side condition (`Discretization.Infinite.bss_generalized`).
-This is Theorem 3 of
-[Chkifa, Dolbeault, Krieg and Ullrich](https://arxiv.org/abs/2602.18719); in eigenvalue
-form the lower bound is their factor `λ_min(I)`. For `a = b` it is the sparsification
-theorem of [Batson, Spielman and Srivastava](https://arxiv.org/abs/0808.0163) in a
-slightly stronger form, with `√((m-1)/n)` in place of their `√(m/n)`. Positivity
-of `J` and the finiteness of its trace follow from its definition, and both hypotheses on
-`J` can be checked on `b`: `J ≤ Λ • 1` says `∫ |⟪u, b⟫|² dμ ≤ Λ ‖u‖²` for every `u ∈ H`,
-and injectivity says that `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0`
-(`ContinuousLinearMap.integral_rankOne_self_le_iff`,
-`.integral_rankOne_self_injective_iff`). Five statements go with it:
+in the Loewner order (`Discretization.Infinite.bss_generalized`). This is Theorem 3 of
+[Chkifa, Dolbeault, Krieg and Ullrich](https://arxiv.org/abs/2602.18719). Both hypotheses
+on `J` are conditions on `b`: `J ≤ Λ • 1` says `∫ |⟪u, b⟫|² dμ ≤ Λ ‖u‖²` for every
+`u ∈ H`, and `J` is injective when `⟪u, b(·)⟫ = 0` almost everywhere only for `u = 0`.
+Four consequences:
 
-* **A family of functions**, in the form of the paper. Let `b = (b_k)_{k ∈ κ}` be
-  square-integrable functions indexed by a finite or countable set with
-  `∑_k ‖b_k‖²_{L₂} < ∞`, whose Gram matrix `J = (∫ b_k b̄_l dμ)` is injective on `ℓ²(κ)`
-  and bounded by `Λ • 1`, and put `M = ∑_k ‖b_k‖² / Λ`. Then the same two bounds hold,
-  the second one as `∑ wᵢ |g(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖c‖²` for every `c ∈ ℓ²(κ)` and
-  `g = ∑_k c_k b_k` (`Discretization.bss_generalized` for finite `κ`, proved with
-  matrices; `Discretization.Countable.bss_generalized` for countable `κ`, the case
-  `H = ℓ²(κ)`). Nothing pointwise is assumed: `∑_k |b_k(x)|² < ∞` holds almost
-  everywhere, and the points are chosen where it holds. Read through quadratic forms, the
-  first bound is `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²` for every `f` in the span
-  of the first family (`Discretization.exists_discretization` for finite `κ`).
-* **The special case `a = b`** is the sparsification theorem of Batson, Spielman and
-  Srivastava (`Discretization.bss`): one family with Gram matrix the identity, squeezed
-  between `(1 - √((m-1)/n))² • 1` and `(1 + √((m-1)/n))² • 1`. For finitely many vectors
-  `v_k ∈ ℂ^m`, `k ∈ Ω`, with `∑ v_k v_k* = 1`, the form of the original theorem, it gives
-  weights `s_k ≥ 0`, at most `n` of them nonzero, with `∑ s_k v_k v_k*` between the same two
-  constants (`Discretization.bss_of_sum_eq_one`).
-* **One-sided discretization.** On a probability space the lower frame bound holds with
-  equal weights: for every `n ≥ m` there are points `x₁, …, xₙ ∈ Ω`, not necessarily
-  distinct, with `(1 - √((m-1)/n))² • I ≤ (1/n) ∑ a(xᵢ) a(xᵢ)*`
-  (`Discretization.bss_lower_equal_weights`), hence
-  `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ (1/n) ∑ |f(xᵢ)|²` for every `f` in the span of the first
-  family (`Discretization.exists_one_sided_discretization`). This is the theorem for the
-  constant second family `b ≡ 1` in `H = ℂ`, with `M = 1`: the construction for a small
-  effective dimension compares the lower verifier with the constant `n` and so keeps every
-  weight below `1/n`, while the upper bound of the theorem records the sum `∑ wᵢ ≤ 1`.
-  Limonova and Temlyakov prove such a bound for spaces satisfying a Nikol'skii-type
-  inequality, Bartel, Schäfer and Ullrich for arbitrary spaces up to constants; the form here
-  is the case `p = 2` of Proposition 8 of the paper.
+* **Sparsification**, the case `a = b`. The theorem of
+  [Batson, Spielman and Srivastava](https://arxiv.org/abs/0808.0163), with `√((m-1)/n)`
+  in place of their `√(m/n)`: for vectors `v_k ∈ ℂ^m` with `∑ v_k v_k* = 1` there are
+  weights `s_k ≥ 0`, at most `n` of them nonzero, with
+  `(1 - √((m-1)/n))² • 1 ≤ ∑ s_k v_k v_k* ≤ (1 + √((m-1)/n))² • 1`
+  (`Discretization.bss_of_sum_eq_one`, and `Discretization.bss` on a measure space).
+* **A countable family** `b = (b_k)_{k ∈ κ}` with `∑_k ‖b_k‖²_{L₂} < ∞`, the form of the
+  paper: `J` is the Gram matrix `(∫ b_k b̄_l dμ)` on `ℓ²(κ)`, `M = ∑_k ‖b_k‖² / Λ`, and the
+  upper bound reads `∑ wᵢ |∑_k c_k b_k(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖c‖²` for every
+  `c ∈ ℓ²(κ)` (`Discretization.Countable.bss_generalized`, for finite `κ`
+  `Discretization.bss_generalized`).
 * **Discretization of the `L₂`-norm**, Corollary 4 of the paper. Let `H` be a separable
-  Hilbert space of measurable functions on `Ω` with continuous point evaluations and
-  reproducing kernel `K`, with `∫ K(x, x) dμ < ∞`; let `∫ |g|² dμ ≤ Λ ‖g‖²_H` for every
-  `g ∈ H`, and let `g = 0` be the only function of `H` vanishing almost everywhere. With
-  `M = ∫ K(x, x) dμ / Λ`, the points and weights satisfy
+  Hilbert space of measurable functions on `Ω` with reproducing kernel `K` and
+  `∫ K(x, x) dμ < ∞`, whose embedding into `L₂(μ)` is injective with squared norm at most
+  `Λ`, and put `M = ∫ K(x, x) dμ / Λ`. Then
   `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ ∑ wᵢ |f(xᵢ)|²` for every `f` in the span of the first
   family and `∑ wᵢ |g(xᵢ)|² ≤ (1 + √((M-1)/n))² Λ ‖g‖²_H` for every `g ∈ H`
-  (`Discretization.RKHS.exists_discretization`). The second family is the kernel
-  sections `K(x, ·)`, so no basis of `H` and no singular value decomposition of the
-  embedding into `L₂` enter. Every `b` with injective Gram operator leads to such a
-  space: the functions `⟪u, b(·)⟫` with norm `‖u‖` and kernel `⟪b(x), b(y)⟫`. For it the
-  bound reads `∑ wᵢ |⟪u, b(xᵢ)⟫|² ≤ (1 + √((M-1)/n))² Λ ‖u‖²` for every `u ∈ H`
-  (`Discretization.Infinite.exists_discretization`). In the coordinates of an
-  orthonormal basis of `H` it is the family form above.
-* **The four cases underneath.** The potential argument gives the theorem under the two
-  side conditions `m ≥ 2` and `M ≥ 1 + 1/n` (`Discretization.bss_generalized_of_gram_eq_one`
-  for matrices, `Discretization.UpperBarrier.bss_generalized_of_gram_eq_one` for every
-  upper state). Three further theorems cover the cases where one or both of them fail
-  (`.bss_generalized_of_unique`, `.bss_generalized_of_small_dim`,
-  `.bss_generalized_of_unique_of_small_dim`, each also under
-  `Discretization.UpperBarrier`), and they are proved once for matrices and operators
-  alike. For operators the normalized theorem is stated for a nonzero separable Hilbert
-  space, with the same hypothesis `∫ b b* dμ = J` and the same
-  `M = ∫ ‖b‖² dμ / Λ` (`Discretization.Infinite.bss_generalized_of_gram_eq_one'`). The
-  number of points does not depend on the second family beyond `M`.
+  (`Discretization.RKHS.exists_discretization`).
+* **One-sided discretization with equal weights.** On a probability space, for every
+  `n ≥ m` there are points `x₁, …, xₙ`, not necessarily distinct, with
+  `(1 - √((m-1)/n))² ∫ |f|² dμ ≤ (1/n) ∑ |f(xᵢ)|²` for every `f` in the span of the first
+  family (`Discretization.exists_one_sided_discretization`). This is the case `p = 2` of
+  Proposition 8 of the paper; [Limonova and Temlyakov](https://arxiv.org/abs/2009.10789)
+  prove such a bound under a Nikol'skii-type inequality, and
+  [Bartel, Schäfer and Ullrich](https://doi.org/10.1016/j.acha.2023.02.004) for arbitrary
+  spaces up to constants.
 
 ### The Kiefer–Wolfowitz theorem
 
@@ -120,44 +79,27 @@ Then for every `ε > 0` there are points `x₁, …, xₙ ∈ Ω` and weights `w
 summing to one such that
 
 ```
-|f(y)|²  ≤  (m + ε) · ∑ wₖ |f(xₖ)|²
+‖f‖_∞²  ≤  (m + ε) · ∑ wₖ |f(xₖ)|²
 ```
 
-for every point `y ∈ Ω` and every `f` in the span of the family
+for every `f` in the span of the family, where `‖f‖_∞ = sup_{y ∈ Ω} |f(y)|`
 (`Discretization.KieferWolfowitz.exists_optimal_design`). This is the theorem of
 [Kiefer and Wolfowitz](https://doi.org/10.4153/CJM-1960-030-4), in the complex and
 non-compact form of Proposition 9 of
-[Krieg, Pozharska, Ullrich and Ullrich](https://arxiv.org/abs/2401.02220). Three variants
-of it are proved:
+[Krieg, Pozharska, Ullrich and Ullrich](https://arxiv.org/abs/2401.02220). For continuous
+functions on a compact space it holds with `ε = 0`
+(`.exists_optimal_design_of_compact`), and both forms hold with at most `m² + 1` points
+(`.exists_optimal_design_card_le`, `.exists_optimal_design_of_compact_card_le`). Read as a
+finitely supported probability measure `ϱ = ∑ wₖ δ(xₖ)`, the bound is
+`‖f‖_∞² ≤ (m + ε) ∫ |f|² dϱ` (`.exists_optimal_measure`), the form in which the design
+enters the discretization theorem.
 
-* **As a measure.** The points and weights are a finitely supported probability measure
-  `ϱ = ∑ wₖ δ(xₖ)` with invertible Gram matrix, and the inequality reads
-  `|f(y)|² ≤ (m + ε) ∫ |f|² dϱ`
-  (`Discretization.KieferWolfowitz.exists_optimal_measure`). The Gram matrix of `ϱ` in
-  the sense of `Discretization.gram` is the one of the points and weights
-  (`Discretization.KieferWolfowitz.gram_designMeasure`), which is what lets the measure
-  be handed to the discretization theorem. On a compact domain this holds with `ε = 0`
-  as well (`Discretization.KieferWolfowitz.exists_optimal_measure_of_compact`).
-* **A compact domain.** For continuous functions on a compact space the maximum of the
-  determinant is attained, and the same holds with `ε = 0`
-  (`Discretization.KieferWolfowitz.exists_optimal_design_of_compact`).
-* **At most `m² + 1` points.** Every design can be replaced by one with at most
-  `m² + 1` points and the same Gram matrix, so both statements hold with that many
-  points (`Discretization.KieferWolfowitz.exists_design_card_le`,
-  `.exists_optimal_design_card_le`,
-  `.exists_optimal_design_of_compact_card_le`).
-
-Alongside these, a design decomposes the identity. Writing `t(y) = a(y)* G⁻¹ a(y)` for
-the variance function, the weights `wₖ t(xₖ)` are nonnegative and sum to `m`
-(`Discretization.KieferWolfowitz.sum_weight_quadForm_inv_eq_card`), and
-`∑ₖ wₖ ⟪a(xₖ), z⟫ a(xₖ) = z` for every vector `z` in the inner product
-`⟪u, z⟫ = u* G⁻¹ z` of the ellipsoid of `G`
-(`.sum_weight_smul_quadForm_inv_eq_self`). This is John's decomposition of the identity,
-the condition dual to the Kiefer–Wolfowitz bound: on a compact domain the bound
-`t(y) ≤ m` and the average `m` together force `t(xₖ) = m` at every design point, making
-the points contact points. The theorem for a general convex body is proved in the
-companion project [Lean-SNumbers](https://github.com/mario-ullrich/Lean-SNumbers) as
-`John.john_decomposition`.
+A design also decomposes the identity, as in John's theorem: with
+`t(y) = a(y)* G⁻¹ a(y)` for the Gram matrix `G` of the design, the weights `wₖ t(xₖ)` sum
+to `m`, and `∑ₖ wₖ ⟪a(xₖ), z⟫ a(xₖ) = z` in the inner product `⟪u, z⟫ = u* G⁻¹ z`
+(`.sum_weight_quadForm_inv_eq_card`, `.sum_weight_smul_quadForm_inv_eq_self`). John's
+theorem for a general convex body is `John.john_decomposition` in the companion project
+[Lean-SNumbers](https://github.com/mario-ullrich/Lean-SNumbers).
 
 ### The uniform norm with `n ≥ m` points
 
@@ -165,33 +107,28 @@ Under the same hypotheses, for every `ε > 0` and every `n ≥ m` there are poin
 `x₁, …, xₙ ∈ Ω`, not necessarily distinct, such that
 
 ```
-|f(y)|²  ≤  (m + ε) / (1 − √((m−1)/n))² · (1/n) ∑ |f(xᵢ)|²
+‖f‖_∞  ≤  √(m + ε) / (1 − √((m−1)/n)) · ((1/n) ∑ |f(xᵢ)|²)^{1/2}
 ```
 
-for every point `y ∈ Ω` and every `f` in the span of the family
-(`Discretization.exists_uniform_discretization_by_l2`). For continuous functions on a compact
-space the same holds with `ε = 0`
-(`Discretization.exists_uniform_discretization_of_compact_by_l2`). The proof thins the
-Kiefer–Wolfowitz design to `n` of its points by the one-sided discretization
-(`Discretization.exists_one_sided_discretization`). This is the case `p = ∞` of
-Proposition 8 of Chkifa, Dolbeault, Krieg and Ullrich. For `n = 2m` it gives
-`‖f‖_∞ ≤ (1 + √2) √(1 + ε/m) (∑ᵢ₌₁²ᵐ |f(xᵢ)|²)^{1/2}`: the uniform norm on the span is
-dominated by the Euclidean norm of `2m` sample values. Theorem 2 of
-[Krieg, Pozharska, Ullrich and Ullrich](https://arxiv.org/abs/2401.02220) proves this with
-the constant `42`, and Proposition 8 improves it to `1 + √2`.
+for every `f` in the span of the family
+(`Discretization.exists_uniform_discretization_by_l2`), and with `ε = 0` for continuous
+functions on a compact space (`.exists_uniform_discretization_of_compact_by_l2`). This is
+the case `p = ∞` of Proposition 8 of Chkifa, Dolbeault, Krieg and Ullrich, obtained by
+thinning the Kiefer–Wolfowitz design with the one-sided discretization. For `n = 2m` it
+gives `‖f‖_∞ ≤ (1 + √2) √(1 + ε/m) (∑ᵢ₌₁²ᵐ |f(xᵢ)|²)^{1/2}`; Theorem 2 of
+[Krieg, Pozharska, Ullrich and Ullrich](https://arxiv.org/abs/2401.02220) has the
+constant `42` in place of `1 + √2`.
 
 An average is at most its largest term, so the same points bound the uniform norm by the
 largest sample value:
 
 ```
-|f(y)|²  ≤  (m + ε) / (1 − √((m−1)/n))² · maxᵢ |f(xᵢ)|²
+‖f‖_∞  ≤  √(m + ε) / (1 − √((m−1)/n)) · maxᵢ |f(xᵢ)|
 ```
 
-(`Discretization.exists_uniform_discretization_by_max`, and with `ε = 0` on a compact space
-`Discretization.exists_uniform_discretization_of_compact_by_max`). For `n = 2m` this is
-`‖f‖_∞ ≤ (2 + √2) √(m + ε) maxᵢ |f(xᵢ)|`, the bound that Chkifa, Dolbeault, Krieg and
-Ullrich state with `√m`. For `n = m` points a bound by the largest sample value is due to
-Novak, who obtains `‖f‖_∞ ≤ (m + ε) maxᵢ₌₁ᵐ |f(xᵢ)|` from a form of Auerbach's lemma.
+(`.exists_uniform_discretization_by_max`, `.exists_uniform_discretization_of_compact_by_max`).
+For `n = m` points Novak obtains `‖f‖_∞ ≤ (m + ε) maxᵢ |f(xᵢ)|` from a form of Auerbach's
+lemma.
 
 ### The `L_p`-norms with `n ≥ m` points
 
@@ -209,6 +146,14 @@ Dolbeault, Krieg and Ullrich, whose `2n` points, `n` for `μ` and `n` for the
 Kiefer–Wolfowitz measure, are replaced here by `n` points with the same weight `2/n` each,
 chosen for the mixture of the two measures. For `n = 2m` it gives
 `‖f‖_p ≤ (2 + √2) m^(1/2 − 1/p) ((1/m) ∑ᵢ₌₁²ᵐ |f(xᵢ)|²)^(1/2)`.
+
+## Palomar registry
+
+The [Palomar registry](https://palomar-registry.org) re-checks a registered proof at a
+fixed commit. The sparsification theorem of Batson, Spielman and Srivastava is registered
+as [PALOMAR-2026-10-14-000002](https://palomar-registry.org/entry?id=PALOMAR-2026-10-14-000002&version=1),
+checked at commit
+[`209d4bf`](https://github.com/mario-ullrich/Lean-Discretization/tree/209d4bf72bec56fa7b181a24dacb8570b10a6986).
 
 ## The proofs
 
@@ -324,13 +269,10 @@ the general ones at the top level;
 [MathlibCandidates.md](MathlibCandidates.md) lists what could be upstreamed.
 `blueprint/` holds the LaTeX source of the blueprint and the scripts that point its
 `\lean` links at this repository, order its dependency graph and let it zoom.
-`Palomar/` holds the submission surfaces for the
-[Palomar registry](https://palomar-registry.org), one directory per registered result,
-each with a `Challenge` module stating the advertised theorems and a `Solution` module
-supplying their proofs from the development. The placeholder `sorry`s in the `Challenge`
-modules are required by that format: a Challenge advertises statements and imports only
-Mathlib, so a reader can audit what is claimed without reading the development. This
-library sits outside `defaultTargets`; build it with `lake build Palomar`.
+`Palomar/` holds the registry submissions, one directory per entry: a `Challenge` module
+states the registered theorems on Mathlib alone, with `sorry` in place of the proofs as
+the registry format requires, and a `Solution` module proves them from the development.
+Build it separately with `lake build Palomar`.
 
 ## Building
 
