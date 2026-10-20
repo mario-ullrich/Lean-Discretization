@@ -165,7 +165,10 @@ jobs:
       # itself carries a `\uses`; the dependencies of a proof alone are visible
       # only in the dependency graph. The script gives every result with
       # dependencies the button, listing the `\uses` of the statement and of its
-      # proof, and fails if a cited label has no result on the pages.
+      # proof in the order of the document, and puts the lists leanblueprint
+      # renders into that order too. It fails if a cited label has no result on
+      # the pages, if a list in the source is out of document order, or if a
+      # proof repeats a label of its statement, which would show twice.
       - name: Show the dependencies of every result in its heading
         run: python blueprint/scripts/add_uses_buttons.py
 
