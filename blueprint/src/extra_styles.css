@@ -115,7 +115,12 @@ div.titlepage p.repo-link:last-of-type {
    the whole header, centred, while the Home link sits left in the flow, so a long title
    runs over the link on a narrow window. In the flow beside the link the two cannot
    overlap; the title takes the remaining width, is centred there, and wraps and shrinks
-   on phones. The header may then grow beyond its fixed 3rem. */
+   on phones. The header may then grow beyond its fixed 3rem, and no header shrinks for
+   the content below it, which clipped a title of several lines on a phone. */
+body > header {
+	flex-shrink: 0;
+}
+
 body > header h1#doc_title {
 	position: static;
 	flex: 1;
