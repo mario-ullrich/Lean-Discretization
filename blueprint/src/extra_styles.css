@@ -8,6 +8,26 @@ div.thm_header_hidden_extras {
 	display: inline-block;
 }
 
+/* The checkmark that marks a formalised result carries no information where every
+   result is formalised, so it stays out of the heading. */
+div.thm_header_extras {
+	display: none;
+}
+
+/* On a narrow window the heading of a result wraps, and the icon bar (permalink,
+   proof, Uses, Lean) takes a line of its own under "Theorem 1.1 (Title)" instead of
+   squeezing the title. */
+@media (max-width: 640px) {
+	div[class$=_thmheading] {
+		flex-wrap: wrap;
+	}
+
+	div.thm_header_hidden_extras {
+		flex-basis: 100%;
+		margin-top: 0.15rem;
+	}
+}
+
 /* Vertical-line markers for theorem statements and proofs. */
 
 div.theorem_thmcontent {
