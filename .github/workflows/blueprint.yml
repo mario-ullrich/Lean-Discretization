@@ -161,6 +161,14 @@ jobs:
       - name: Let the dependency graph take pinch and ctrl+wheel zoom
         run: python blueprint/scripts/dep_graph_zoom.py
 
+      # leanblueprint shows the "Uses" button of a result only when the statement
+      # itself carries a `\uses`; the dependencies of a proof alone are visible
+      # only in the dependency graph. The script gives every result with
+      # dependencies the button, listing the `\uses` of the statement and of its
+      # proof, and fails if a cited label has no result on the pages.
+      - name: Show the dependencies of every result in its heading
+        run: python blueprint/scripts/add_uses_buttons.py
+
       # Make the title page reachable from every page and the repository from
       # the title page. The menu of each chapter page gains a first entry
       # "Home" that leads to index.html, as the dependency graph page already

@@ -268,7 +268,8 @@ from Bochner integrals to Gram matrices. The matrix facts lie under
 the general ones at the top level;
 [MathlibCandidates.md](MathlibCandidates.md) lists what could be upstreamed.
 `blueprint/` holds the LaTeX source of the blueprint and the scripts that point its
-`\lean` links at this repository, order its dependency graph and let it zoom.
+`\lean` links at this repository, order its dependency graph, let it zoom and give every
+result with dependencies its Uses button.
 `Palomar/` holds the registry submissions, one directory per entry: a `Challenge` module
 states the registered theorems on Mathlib alone, with `sorry` in place of the proofs as
 the registry format requires, and a `Solution` module proves them from the development.
