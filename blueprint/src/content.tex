@@ -159,7 +159,7 @@ for every $g \in H$.
 
 \begin{proof}
 \leanok
-\uses{thm:discretization, lem:kernel-sections, lem:gram-operator, lem:gram-identities}
+\uses{thm:discretization, lem:gram-identities, lem:gram-operator, lem:kernel-sections}
 Take for $b(x)$ the kernel section $k_x$ of \Cref{lem:kernel-sections}: $b$ is
 square-integrable, $|\langle g, k_x \rangle| = |g(x)|$ and $\|k_x\|^2 = K(x, x)$. By
 \Cref{lem:gram-operator}(b) and (c) the two assumptions on $H$ say that the Gram operator
@@ -213,8 +213,8 @@ with
 
 \begin{proof}
 \leanok
-\uses{thm:discretization, lem:lower-barrier, lem:lower-verifier-on-average,
-      lem:point-from-averages, lem:lower-frame-bound, lem:gram-identities}
+\uses{thm:discretization, lem:gram-identities, lem:point-from-averages,
+      lem:lower-barrier, lem:lower-verifier-on-average, lem:lower-frame-bound}
 Put $r = \sqrt{(m-1)/n}$. It suffices to find weights $0 < w_i \leq 1/n$ with
 $(1 - r)^2 \cdot I \preceq \sum_i w_i \, a(x_i) a(x_i)^*$: the quadratic form of this
 inequality at the coefficient vector of $f$ is
@@ -493,7 +493,7 @@ $\Tr (J B^{-1}) > 0$ and
 
 \begin{proof}
 \leanok
-\uses{lem:loewner-basic-bounds, lem:operator-traces, lem:sqrt-conjugation}
+\uses{lem:loewner-basic-bounds, lem:sqrt-conjugation, lem:operator-traces}
 (a) \Cref{lem:loewner-basic-bounds}(b) applied to $A^{-1}$ gives
 $A^{-1} \preceq (\Tr A^{-1}) \cdot 1$, and \Cref{lem:loewner-basic-bounds}(d) turns that
 around.
@@ -880,7 +880,7 @@ definite and
 
 \begin{proof}
 \leanok
-\uses{lem:lower-potential-change, lem:rank-one-updates, lem:trace-to-loewner}
+\uses{lem:trace-to-loewner, lem:rank-one-updates, lem:lower-potential-change}
 The matrix $A - \delta \cdot 1$ is positive definite by \Cref{lem:trace-to-loewner}(b),
 and adding $w \, v v^*$ keeps it so by \Cref{lem:rank-one-updates}(b). The closed form of
 \Cref{lem:lower-potential-change}(b) for $N = A - \delta \cdot 1$, together with the positive
@@ -916,8 +916,8 @@ $U(x) < L_A^{\delta}\bigl( a(x) \bigr)$.
 
 \begin{proof}
 \leanok
-\uses{lem:gram-identities, lem:trace-inequalities, lem:lower-potential-change,
-      lem:point-from-averages}
+\uses{lem:trace-inequalities, lem:gram-identities, lem:point-from-averages,
+      lem:lower-potential-change}
 (a) Write $Y = A^{-1}$ and $Z = (A - \delta \cdot 1)^{-1}$. \Cref{lem:gram-identities}(a)
 turns the average into $\Tr (Z^2) / (\delta \Tr (Y Z)) - \Tr Z$, the denominator being the
 gain of \Cref{lem:lower-potential-change}(a). Writing $t = \Tr (Y Z)$ and $u = \Tr (Y Z^2)$, the
@@ -1074,7 +1074,7 @@ $B + \zeta \cdot J - w \, u u^*$ is strictly positive and
 
 \begin{proof}
 \leanok
-\uses{lem:upper-potential-change, lem:rank-one-updates}
+\uses{lem:rank-one-updates, lem:upper-potential-change}
 Write $X = (B + \zeta \cdot J)^{-1}$. The first summand of $U_B^{\zeta}(u)$ is positive
 for $u \neq 0$, because $\re \langle u, X J X u \rangle = \|J^{1/2} X u\|^2$ and $J$ is
 injective, so the hypothesis gives $w \re \langle u, X u \rangle < 1$: the
@@ -1110,8 +1110,8 @@ and let $\zeta > 0$. Then $x \mapsto U_B^{\zeta}(b(x))$ is integrable and
 
 \begin{proof}
 \leanok
-\uses{lem:gram-operator-trace, lem:operator-traces, lem:upper-potential-change,
-      lem:loewner-basic-bounds}
+\uses{lem:loewner-basic-bounds, lem:operator-traces, lem:gram-operator-trace,
+      lem:upper-potential-change}
 Both summands of the verifier are quadratic forms in $b(x)$, bounded by a multiple of
 $\|b(x)\|^2$, so the verifier is integrable. Write $W = B^{-1}$ and
 $X = (B + \zeta \cdot J)^{-1}$, and let $E = \Psi_J(B) - \Psi_J(B + \zeta \cdot J)$ be the
@@ -1198,8 +1198,8 @@ $\Phi(A_k) \leq \Phi(A_0)$ and $\Psi_J(B_k) \leq \Psi_J(B_0)$.
 
 \begin{proof}
 \leanok
-\uses{lem:lower-verifier-on-average, lem:upper-verifier-on-average, lem:lower-barrier,
-      lem:upper-barrier}
+\uses{lem:lower-barrier, lem:lower-verifier-on-average, lem:upper-barrier,
+      lem:upper-verifier-on-average}
 Induction on $k$; for $k = 0$ there is nothing to show. The invariant keeps the gap open,
 $1/\zeta + \Psi_J(B_k) \leq 1/\zeta + \Psi_J(B_0) \leq 1/\delta - \Phi(A_0)
 \leq 1/\delta - \Phi(A_k)$, and in particular $\delta < \Phi(A_k)^{-1}$. By
@@ -1233,11 +1233,10 @@ $\kappa$, with the matrix proofs of the upper lemmas, are another
 \begin{proof}[Proof of \Cref{thm:discretization}]
 \proves{thm:discretization}
 \leanok
-\uses{lem:gram-identities, lem:gram-operator, lem:gram-operator-trace,
-      prop:barrier-iteration,
-      lem:lower-frame-bound, lem:upper-frame-bound, lem:lower-barrier, lem:upper-barrier,
-      lem:lower-verifier-on-average, lem:upper-verifier-on-average,
-      lem:point-from-averages, lem:rank-one-updates}
+\uses{lem:rank-one-updates, lem:gram-identities, lem:gram-operator,
+      lem:gram-operator-trace, lem:point-from-averages, lem:lower-barrier,
+      lem:lower-verifier-on-average, lem:lower-frame-bound, lem:upper-barrier,
+      lem:upper-verifier-on-average, lem:upper-frame-bound, prop:barrier-iteration}
 The first family is normalized first. Replace $a$ by $I^{-1/2} a$, whose Gram matrix is
 $I^{-1/2} I \, I^{-1/2} = 1$ by \Cref{lem:gram-identities}(b). Once points and weights are
 found for it, conjugating the lower bound by $I^{1/2}$ preserves the Loewner order and
@@ -1366,7 +1365,7 @@ compact space and the $a_k$ are continuous, the same holds with $\varepsilon = 0
 
 \begin{proof}
 \leanok
-\uses{thm:optimal-design, cor:one-sided-discretization}
+\uses{cor:one-sided-discretization, thm:optimal-design}
 Give $\Omega$ the $\sigma$-algebra of all its subsets, or the Borel sets in the compact
 case, and take the measure $\varrho = \sum_k w'_k \delta_{x'_k}$ of
 \Cref{thm:optimal-design}, with the constant $K = m + \varepsilon$, where
@@ -1455,7 +1454,7 @@ for every $f \in \operatorname{span}\{a_k\}$ and every $2 \leq p \leq \infty$.
 
 \begin{proof}
 \leanok
-\uses{thm:optimal-design, cor:one-sided-discretization, lem:gram-identities}
+\uses{cor:one-sided-discretization, lem:gram-identities, thm:optimal-design}
 Put $r = \sqrt{(m-1)/n}$ and $s = 1 - r$. First, $0 < \kappa < s$: the term
 $1 - \sqrt{m/n}$ lies below $s$ because $m - 1 < m$, and $1/(2m) < s$ because
 $r \leq \sqrt{(m-1)/m}$ and $(1 - \frac{1}{2m})^2 = \frac{m-1}{m} + \frac{1}{4m^2}$. Put
@@ -1612,7 +1611,7 @@ members.
 \begin{proof}[Proof of \Cref{thm:optimal-design}]
 \proves{thm:optimal-design}
 \leanok
-\uses{prop:almost-maximal-determinant, lem:rank-one-updates, lem:mixing-gain,
+\uses{lem:rank-one-updates, prop:almost-maximal-determinant, lem:mixing-gain,
       lem:few-design-points}
 Take the design of \Cref{prop:almost-maximal-determinant} for $\varepsilon/2$. For
 $s = m + \varepsilon$ the bound $s^{-1} a(y)^* G^{-1} a(y) < 1$ is strict, so subtracting
@@ -1643,7 +1642,7 @@ design into the measure.
 \begin{remark}[What the count is good for]
 \label{rem:point-count}
 \leanok
-\uses{lem:few-design-points, thm:optimal-design}
+\uses{thm:optimal-design, lem:few-design-points}
 The sharper count
 $r + 1$, with $r$ the dimension of the span of the products $a_k \overline{a_l}$, is not
 formalised, and nothing needs it.
@@ -1652,7 +1651,7 @@ formalised, and nothing needs it.
 \begin{remark}[The identity decomposed over the design]
 \label{rem:identity-decomposition}
 \leanok
-\uses{prop:almost-maximal-determinant, thm:optimal-design}
+\uses{thm:optimal-design, prop:almost-maximal-determinant}
 For a design with points $x_1, \dots, x_n$, weights $w_1, \dots, w_n$ and invertible Gram
 matrix $G$, and with $m = \#\iota$,
 \[
