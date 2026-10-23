@@ -1,12 +1,12 @@
 name = "discretization"
 defaultTargets = ["Discretization", "BasicResults"]
 
-# Mathlib pinned to the v4.35.0-rc2 tag, matching lean-toolchain: a release tag has a
+# Mathlib pinned to the v4.35.0 tag, matching lean-toolchain: a release tag has a
 # fully-published build cache, so `lake exe cache get` finds every olean.
 [[require]]
 name = "mathlib"
 scope = "leanprover-community"
-version = "git#v4.35.0-rc2"
+version = "git#v4.35.0"
 
 # The general matrix and integration facts the theory consumes: the Loewner order, trace
 # inequalities, the Sherman–Morrison formula, and the bridge between integrals of quadratic
